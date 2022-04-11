@@ -1,0 +1,3 @@
+[submodule "libDG"]
+	path = libDG
+	url = https://github.com/smilesun/libDG.git

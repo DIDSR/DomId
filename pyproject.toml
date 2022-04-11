@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "domid"
+version = "0.1.0"
+description = ""
+authors = ["agisga <11449372+agisga@users.noreply.github.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+# this package is included as a git submodule
+libdg = { path = "./libDG", develop = true }
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
