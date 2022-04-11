@@ -1,11 +1,13 @@
 [tool.poetry]
 name = "domid"
 version = "0.1.0"
-description = ""
+description = "Deep unsupervised clustering algorithms for domain identification."
 authors = ["agisga <11449372+agisga@users.noreply.github.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = ">=3.8,<3.11"
+scipy = "^1.8.0"
+sklearn = "^0.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
