@@ -5,7 +5,7 @@ description = "Deep unsupervised clustering algorithms for domain identification
 authors = ["agisga <11449372+agisga@users.noreply.github.com>"]
 
 [tool.poetry.dependencies]
-python = ">=3.8,<3.11"
+python = ">=3.10,<3.11"
 scipy = "^1.8.0"
 sklearn = "^0.0"
 
