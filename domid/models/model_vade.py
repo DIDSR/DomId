@@ -237,8 +237,8 @@ class ModelVaDE(nn.Module):
 
 
 def test_fun(y_dim, zd_dim, device):
-    model = ModelVaDE(y_dim=10, zd_dim=8, device=torch.device("cpu"))
-    device = torch.device("cpu")
+    model = ModelVaDE(y_dim=y_dim, zd_dim=zd_dim, device=torch.device("cpu"))
+    #device = torch.device("cpu")
     x = torch.rand(2, 3, 28, 28)
     import numpy as np
     a = np.zeros((2, 10))
@@ -248,4 +248,4 @@ def test_fun(y_dim, zd_dim, device):
     a
     y = torch.tensor(a, dtype=torch.float)
     model(x, y)
-    model.cal_loss(x, y)
+    model.cal_loss(x, zd_dim)
