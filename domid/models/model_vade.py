@@ -206,7 +206,7 @@ class ModelVaDE(nn.Module):
 
         return -0.5*(torch.sum(np.log(np.pi*2)+log_sigma2+(x-mu).pow(2)/torch.exp(log_sigma2),1))
 
-    def infer_y_vpicn(self, tensor_x, device='cuda'):
+    def infer_y_vpicn(self, tensor_x, device='cpu'):
         """
         This is just a simulation function of the classification function.
         :param tensor_x:
@@ -214,7 +214,7 @@ class ModelVaDE(nn.Module):
         """
 
         pred = torch.zeros((100,10))
-        pred= pred.to(torch.device('cuda'))
+        pred= pred.to(device)
         prob = 0
         ind =0
         confidence =0
