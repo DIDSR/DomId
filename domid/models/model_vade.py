@@ -7,7 +7,7 @@ import itertools
 #import toml
 import numpy as np
 from sklearn.mixture import GaussianMixture
-import tqdm
+#import tqdm
 # from libdg.utils.utils_class import store_args
 # from libdg.compos.vae.compos.decoder_concat_vec_reshape_conv_gated_conv \
 #     import DecoderConcatLatentFCReshapeConvGatedConv
@@ -17,7 +17,7 @@ from libdg.utils.utils_classif import logit2preds_vpic, get_label_na
 from torch.optim import Adam
 from sklearn.metrics import accuracy_score
 from torch.optim.lr_scheduler import StepLR
-from tensorboardX import SummaryWriter
+#from tensorboardX import SummaryWriter
 from sklearn.manifold import TSNE
 import torch.nn as nn
 from libdg.utils.utils_classif import logit2preds_vpic, get_label_na
@@ -206,7 +206,7 @@ class ModelVaDE(nn.Module):
 
         return -0.5*(torch.sum(np.log(np.pi*2)+log_sigma2+(x-mu).pow(2)/torch.exp(log_sigma2),1))
 
-    def infer_y_vpicn(self, tensor_x):
+    def infer_y_vpicn(self, tensor_x, device='cuda'):
         """
         This is just a simulation function of the classification function.
         :param tensor_x:

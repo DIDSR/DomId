@@ -7,7 +7,7 @@ from libdg.algos.observers.c_obvisitor_cleanup import ObVisitorCleanUp
 from libdg.utils.utils_cuda import get_device
 
 from domid.algos.observers.b_obvisitor_clustering import ObVisitorClustering
-from domid.models.model_vade_v2 import ModelVaDE
+from domid.models.model_vade import ModelVaDE
 
 class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
     def init_business(self, exp):
