@@ -25,14 +25,12 @@ import torch
 from torchvision.datasets import MNIST
 from torchvision.transforms import ToTensor
 from torch.utils.data import DataLoader, TensorDataset
-
+#FIXME another builder: define blocks
 """
 input_img = Input(shape=(64, 64, 3)) 
 x = Conv2D(32, (3, 3), padding='same', strides = (2,2))(input_img)
 x = BatchNormalization()(x)
 x = LeakyReLU(alpha=0.3)(x)
-
- 
 
 x = Conv2D(16, (3, 3), padding='same', strides = (2,2))(x)
 x = BatchNormalization()(x)
@@ -49,6 +47,25 @@ x = Flatten()(x)
 
 z_mean = layers.Dense(latent_dim, name="z_mean")(x)
 z_log_var = layers.Dense(latent_dim, name="z_log_var")(x)
+
+
+
+# DECODER
+direct_input = Input(shape=latentSize)
+x = Dense((16*16*16))(direct_input) ##used to be Dense((16*16*16))(direct_input)
+x = Reshape((16,16,16))(x)
+
+x = UpSampling2D((2, 2))(x)
+x = BatchNormalization()(x)
+x = LeakyReLU(alpha=0.3)(x)
+
+
+x = UpSampling2D((2, 2))(x)
+x = BatchNormalization()(x)
+x = LeakyReLU(alpha=0.3)(x)
+
+
+decoded = Conv2D(3, (3, 3), padding='same', strides = (1,1), activation='sigmoid')(x)
 """
 
 def cluster_acc(Y_pred, Y):
@@ -63,18 +80,18 @@ def cluster_acc(Y_pred, Y):
     return sum([w[ind[0], ind[1]] for counter in ind]) * 1.0 / Y_pred.size  # , w[0]
 
 
-def block_encoding(in_c, out_c, kernel_size=(3,3), stride=1, padding=0,):
+def block_encoding(in_c, out_c, kernel_size=(5,5), stride=1, padding=0):
     layers = [
         nn.Conv2d(in_c, out_c, kernel_size, stride, padding),
-        #nn.BatchNorm2d(True),
+        nn.BatchNorm2d(out_c),
         nn.LeakyReLU() #negative slope
     ]
     return layers
 
-def block_decoding(in_c, out_c, kernel_size=(3,3), stride=1, padding=0,):
+def block_decoding(in_c, out_c, kernel_size=(5,5), stride=1, padding=0):
     layers = [
         nn.ConvTranspose2d(in_c, out_c, kernel_size, stride, padding),
-        #nn.BatchNorm2d(True),
+        nn.BatchNorm2d(out_c),
         nn.LeakyReLU()
     ]
     return layers
@@ -84,19 +101,26 @@ class Encoder(nn.Module):
     def __init__(self, z_dim, dim_input=3, filter1=3, filter2=3, filter3=3):
         super(Encoder, self).__init__()
         self.encod = nn.Sequential(
-            *block_encoding(dim_input, filter1)#,
-            #*block(filter1, filter2),
-            #*block(filter2, filter3)
+            *block_encoding(dim_input, filter1),
+            *block_encoding(filter1, filter2),
+            *block_encoding(filter2, filter3)
+            #*block(filter3, filter3)
         )
-        self.mu_l = nn.Linear(filter3, z_dim)
-        self.log_sigma2_l = nn.Linear(filter3, z_dim)
+
+        flat_size = 32768 #FIXME find a way to calculate this
+        self.mu_l = nn.Linear(flat_size, z_dim)
+        self.log_sigma2_l = nn.Linear(flat_size, z_dim)
 
     def forward(self, x):
-        print('encder forward', x.shape)
+        print('encder forward', x[0, 1, 1:3, 1:3])
 
         #x = torch.reshape(x, (x.shape[0], 3, 28 * 28))
         #x = x[:, 0, :]
         e = self.encod(x)  # output shape: [batch_size, z_dim]
+        print(e.shape)
+        e = torch.flatten(e, start_dim=2)
+        e = torch.flatten(e, start_dim=1)
+
         print('e shape', e.shape)
         mu = self.mu_l(e)  # output shape: [batch_size, num_clusters]
         log_sigma2 = self.log_sigma2_l(e)  # same as mu shape
@@ -105,34 +129,45 @@ class Encoder(nn.Module):
 
 
 class Decoder(nn.Module):
-    def __init__(self, z_dim, dim_input=784, filter1=28, filter2=14, filter3=10):
+    def __init__(self, z_dim, dim_input=3, filter1=3, filter2=3, filter3=3):
         super(Decoder, self).__init__()
 
         self.decod = nn.Sequential(
-            *block_decoding(z_dim, filter3)#,
-           # *block(filter3, filter2),
-           # *block(filter2, filter1),
-           # nn.Linear(filter1, dim_input),
-           # nn.Sigmoid()
+            #nn.Linear(dim_input, z_dim),
+            *block_decoding(z_dim, filter3),
+            *block_decoding(filter3, filter2),
+            *block_decoding(filter2, filter1),#,
+            #*block_decoding(filter1, dim_input)#,
+            #nn.Linear(filter1, dim_input)
+            nn.Sigmoid()
         )
 
     def forward(self, z):
         """
         Decoder input shape is [batch_size, 10]
         """
-
+        print(z.shape)
+        #z = torch.unsqueeze(z, 2)
+        #z = torch.unsqueeze(z, 2)
+        z = torch.zeros((2, 4, 16, 16))
+        #breakpoint()
+        print(z.shape)
         x_pro = self.decod(z)
-        x_pro = torch.reshape(x_pro, (x_pro.shape[0], 1, 28, 28))
-        x_pro = torch.cat((x_pro, x_pro, x_pro), 1)
 
+        x_pro = x_pro [:, 0:3, :, :]
+        #x_pro = torch.reshape(x_pro, (x_pro.shape[0], 1, 28, 28))
+        #x_pro = torch.cat((x_pro, x_pro, x_pro), 1)
+        #x_pro = x_p
+        print('x_pro', x_pro[0, 1, 1:3, 1:3])
+        print('decoder shape', x_pro.shape)
         return x_pro
 
 
-class ModelVaDE(nn.Module):
+class ModelVaDECNN(nn.Module):
 
     def __init__(self, y_dim, zd_dim, device):
 
-        super(ModelVaDE, self).__init__()
+        super(ModelVaDECNN, self).__init__()
         """
            :param tensor y_dim: number of original dataset clusters.
            :param tensor zd_dim: number of cluster domains
@@ -144,9 +179,9 @@ class ModelVaDE(nn.Module):
         self.device = device
         print(y_dim, device, zd_dim )
         input_dimention = 3 #28 * 28
-        filter1 = 1
-        filter2 = 1
-        filter3 = 1
+        filter1 = 32
+        filter2 = filter1*2
+        filter3 = filter2*2
 
         self.infer_domain = Encoder(z_dim=zd_dim, dim_input=input_dimention, filter1=filter1, filter2=filter2, filter3=filter3).to(
             device)
@@ -276,14 +311,14 @@ def test_fun(y_dim, zd_dim, device):
     #import numpy as np
     #import torch
     print(torch.__version__)
-    model_cnn = ModelVaDE(y_dim=10, zd_dim=8, device=torch.device("cpu"))
-    #device = torch.device("cpu")
+    model_cnn = ModelVaDECNN(y_dim=y_dim, zd_dim=zd_dim, device=torch.device("cpu"))
+    device = torch.device("cpu")
     #breakpoint()
     #print(model)
 
 
     x = torch.rand(2, 3, 28, 28)
-    a = np.zeros((2, 10))
+    a = np.zeros((2, y_dim))
     a = np.double(a)
     a[0, 1] = 1.0
     a[1, 8] = 1.0
@@ -291,4 +326,5 @@ def test_fun(y_dim, zd_dim, device):
     y = torch.tensor(a, dtype=torch.float)
     print('x, y', x.shape, y.shape)
     model_cnn.encoder(x)
-    #model_cnn.cal_loss(x, zd_dim)
+    loss = model_cnn.cal_loss(x, zd_dim)
+    print(loss)
