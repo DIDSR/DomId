@@ -79,8 +79,10 @@ def cluster_acc(Y_pred, Y):
 
     return sum([w[ind[0], ind[1]] for counter in ind]) * 1.0 / Y_pred.size  # , w[0]
 
+def get_output_shape(model, image_dim):
+    return model(torch.rand(*(image_dim))).data.shape
 
-def block_encoding(in_c, out_c, kernel_size=(5,5), stride=1, padding=0):
+def block_encoding(in_c, out_c, kernel_size=(3,3), stride=2, padding=0):
     layers = [
         nn.Conv2d(in_c, out_c, kernel_size, stride, padding),
         nn.BatchNorm2d(out_c),
@@ -88,7 +90,7 @@ def block_encoding(in_c, out_c, kernel_size=(5,5), stride=1, padding=0):
     ]
     return layers
 
-def block_decoding(in_c, out_c, kernel_size=(5,5), stride=1, padding=0):
+def block_decoding(in_c, out_c, kernel_size=(5,5), stride=2, padding=0):
     layers = [
         nn.ConvTranspose2d(in_c, out_c, kernel_size, stride, padding),
         nn.BatchNorm2d(out_c),
@@ -96,6 +98,24 @@ def block_decoding(in_c, out_c, kernel_size=(5,5), stride=1, padding=0):
     ]
     return layers
 
+class UnFlatten(nn.Module):
+    def __init__(self):
+        super(UnFlatten, self).__init__()
+        #self.flat = nn.Flatten()
+        self.lin = nn.Linear(4, 128)
+        self.lin2 = nn.Linear(128, 128*4)
+    def forward(self, input_im, size=128):
+        #breakpoint()
+        n = int(np.sqrt(input_im.shape[1]))
+        #input_im = torch.flatten(input_im, 0)
+        print('here', input_im.shape)
+        input_im = self.lin(input_im) # [2, 4] *[4, 128] = [2, 128] x [128,
+        input_im = self.lin2(input_im)
+        #np.sqrt(input_im[1]/size)
+        print(n, input_im.shape)
+        input_im = input_im.reshape((2, 128, 2, 2))
+        print(input_im.shape) #[2, 128, 2, 2]
+        return input_im #.view(2, size, n, n)
 
 class Encoder(nn.Module):
     def __init__(self, z_dim, dim_input=3, filter1=3, filter2=3, filter3=3):
@@ -103,28 +123,24 @@ class Encoder(nn.Module):
         self.encod = nn.Sequential(
             *block_encoding(dim_input, filter1),
             *block_encoding(filter1, filter2),
-            *block_encoding(filter2, filter3)
+            *block_encoding(filter2, filter3),
+            nn.Flatten()
             #*block(filter3, filter3)
         )
 
-        flat_size = 32768 #FIXME find a way to calculate this
-        self.mu_l = nn.Linear(flat_size, z_dim)
-        self.log_sigma2_l = nn.Linear(flat_size, z_dim)
+
+        self.flat_size = get_output_shape(self.encod, (1, dim_input, 28, 28))[1]
+        self.mu_l = nn.Linear(self.flat_size, z_dim)
+        self.log_sigma2_l = nn.Linear(self.flat_size, z_dim)
 
     def forward(self, x):
         print('encder forward', x[0, 1, 1:3, 1:3])
-
-        #x = torch.reshape(x, (x.shape[0], 3, 28 * 28))
-        #x = x[:, 0, :]
         e = self.encod(x)  # output shape: [batch_size, z_dim]
-        print(e.shape)
-        e = torch.flatten(e, start_dim=2)
-        e = torch.flatten(e, start_dim=1)
-
-        print('e shape', e.shape)
+        print('e shape', e.shape) # [ 2, 128, 2, 2]
         mu = self.mu_l(e)  # output shape: [batch_size, num_clusters]
+        print(mu.shape, mu)
         log_sigma2 = self.log_sigma2_l(e)  # same as mu shape
-
+        print('sigma', log_sigma2.shape, log_sigma2)
         return mu, log_sigma2
 
 
@@ -133,11 +149,12 @@ class Decoder(nn.Module):
         super(Decoder, self).__init__()
 
         self.decod = nn.Sequential(
+            UnFlatten(),
             #nn.Linear(dim_input, z_dim),
             *block_decoding(z_dim, filter3),
             *block_decoding(filter3, filter2),
             *block_decoding(filter2, filter1),#,
-            #*block_decoding(filter1, dim_input)#,
+            *block_decoding(filter1, dim_input),#,
             #nn.Linear(filter1, dim_input)
             nn.Sigmoid()
         )
@@ -146,18 +163,12 @@ class Decoder(nn.Module):
         """
         Decoder input shape is [batch_size, 10]
         """
-        print(z.shape)
-        #z = torch.unsqueeze(z, 2)
-        #z = torch.unsqueeze(z, 2)
-        z = torch.zeros((2, 4, 16, 16))
-        #breakpoint()
-        print(z.shape)
-        x_pro = self.decod(z)
+        print('z shape',z.shape)
 
+        x_pro = self.decod(z)
+        print('x pro', x_pro.shape)
         x_pro = x_pro [:, 0:3, :, :]
-        #x_pro = torch.reshape(x_pro, (x_pro.shape[0], 1, 28, 28))
-        #x_pro = torch.cat((x_pro, x_pro, x_pro), 1)
-        #x_pro = x_p
+
         print('x_pro', x_pro[0, 1, 1:3, 1:3])
         print('decoder shape', x_pro.shape)
         return x_pro

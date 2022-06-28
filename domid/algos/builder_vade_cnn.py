@@ -7,7 +7,7 @@ from libdg.algos.observers.c_obvisitor_cleanup import ObVisitorCleanUp
 from libdg.utils.utils_cuda import get_device
 
 from domid.algos.observers.b_obvisitor_clustering import ObVisitorClustering
-from domid.models.model_vade_cnn import ModelVaDE
+from domid.models.model_vade_cnn import ModelVaDECNN
 
 class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
     def init_business(self, exp):
@@ -27,7 +27,7 @@ class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
 
 
         model = ModelVaDECNN(y_dim=y_dim, zd_dim=zd_dim, device=device,  i_c = task.isize.c,
-                          i_h = task.isize.h, i_w = task.isize.w, gamma_y = args.gamma_y,list_str_y = task.list_str_y, dim_feat_x = 10)
+                             i_h = task.isize.h, i_w = task.isize.w, gamma_y = args.gamma_y,list_str_y = task.list_str_y, dim_feat_x = 10)
         observer = ObVisitorCleanUp(
             ObVisitorClustering(exp, MSelOracleVisitor(MSelTrLoss(max_es=args.es)), device))
 
