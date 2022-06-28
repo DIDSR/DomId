@@ -8,6 +8,8 @@ authors = ["agisga <11449372+agisga@users.noreply.github.com>"]
 python = ">=3.10,<3.11"
 scipy = "^1.8.0"
 sklearn = "^0.0"
+tensorboard =  "^2.6"
+tensorboardX = "^2.5.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

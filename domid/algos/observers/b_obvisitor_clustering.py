@@ -4,15 +4,16 @@ from domid.utils.perf_cluster import PerfCluster
 from libdg.tasks.task_folder_mk import NodeTaskFolderClassNaMismatch
 from libdg.compos.exp.exp_utils import ExpModelPersistVisitor
 from libdg.algos.observers.b_obvisitor import ObVisitor
+from tensorboardX import SummaryWriter
 from libdg.utils.flows_gen_img_model import fun_gen
 
 def pred2file(loader_te, model, device, fa='path_prediction.txt', flag_pred_scalar=False):
     model.eval()
     model_local = model.to(device)
+
     for i, (x_s, y_s, *_, path) in enumerate(loader_te):
         x_s, y_s = x_s.to(device), y_s.to(device)
         pred, *_ = model_local.infer_y_vpicn(x_s, device)
-        # print(path)
         list_pred_list = pred.tolist()
         list_label_list = y_s.tolist()
         if flag_pred_scalar:
@@ -31,15 +32,20 @@ class ObVisitorClustering(ObVisitor):
     """
 
     def update(self, epoch):
+
         print("epoch:", epoch)
         self.epo = epoch
+        writer = SummaryWriter(logdir="debug")
         if epoch % self.epo_te == 0:
             acc_tr_pool, conf_mat_tr = PerfCluster.cal_acc(self.host_trainer.model, self.loader_tr, self.device)
             print("pooled train clustering acc: ", acc_tr_pool)
             print(conf_mat_tr)
 
+
             acc_val, conf_mat_val = PerfCluster.cal_acc(self.host_trainer.model, self.loader_val, self.device)
             self.acc_val = acc_val
+
+            writer.add_scalar('acc', epoch, acc_val)
 
             print("clustering validation acc: ", acc_val)
             print(conf_mat_val)
