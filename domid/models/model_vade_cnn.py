@@ -80,9 +80,10 @@ def cluster_acc(Y_pred, Y):
     return sum([w[ind[0], ind[1]] for counter in ind]) * 1.0 / Y_pred.size  # , w[0]
 
 def get_output_shape(model, image_dim):
+    print('fake img', model(torch.rand(*(image_dim))).data.shape)
     return model(torch.rand(*(image_dim))).data.shape
 
-def block_encoding(in_c, out_c, kernel_size=(3,3), stride=2, padding=0):
+def block_encoding(in_c, out_c, kernel_size=(4,4), stride=2, padding=1):
     layers = [
         nn.Conv2d(in_c, out_c, kernel_size, stride, padding),
         nn.BatchNorm2d(out_c),
@@ -90,7 +91,7 @@ def block_encoding(in_c, out_c, kernel_size=(3,3), stride=2, padding=0):
     ]
     return layers
 
-def block_decoding(in_c, out_c, kernel_size=(5,5), stride=2, padding=0):
+def block_decoding(in_c, out_c, kernel_size=(3,3), stride=2, padding=1):
     layers = [
         nn.ConvTranspose2d(in_c, out_c, kernel_size, stride, padding),
         nn.BatchNorm2d(out_c),
@@ -99,63 +100,51 @@ def block_decoding(in_c, out_c, kernel_size=(5,5), stride=2, padding=0):
     return layers
 
 class UnFlatten(nn.Module):
-    def __init__(self):
-        super(UnFlatten, self).__init__()
-        #self.flat = nn.Flatten()
-        self.lin = nn.Linear(4, 128)
-        self.lin2 = nn.Linear(128, 128*4)
-    def forward(self, input_im, size=128):
-        #breakpoint()
-        n = int(np.sqrt(input_im.shape[1]))
-        #input_im = torch.flatten(input_im, 0)
-        print('here', input_im.shape)
-        input_im = self.lin(input_im) # [2, 4] *[4, 128] = [2, 128] x [128,
-        input_im = self.lin2(input_im)
-        #np.sqrt(input_im[1]/size)
-        print(n, input_im.shape)
-        input_im = input_im.reshape((2, 128, 2, 2))
-        print(input_im.shape) #[2, 128, 2, 2]
-        return input_im #.view(2, size, n, n)
+    def forward(self, input):
+        self.filter_size = 128 #FIXME same as filter 3
+        n = int(np.sqrt(input.shape[1]/self.filter_size))
+        print('unflatten', input.view(input.size(0), self.filter_size, n, n).shape)
+        return input.view(input.size(0), self.filter_size, 3, 3) #FIXME (3,3)
 
 class Encoder(nn.Module):
-    def __init__(self, z_dim, dim_input=3, filter1=3, filter2=3, filter3=3):
+    def __init__(self, z_dim, dim_input=3, filter1=3, filter2=3, filter3=3, i_w=28, i_h=28):
         super(Encoder, self).__init__()
         self.encod = nn.Sequential(
             *block_encoding(dim_input, filter1),
             *block_encoding(filter1, filter2),
             *block_encoding(filter2, filter3),
-            nn.Flatten()
-            #*block(filter3, filter3)
+            nn.Flatten() #[batch size, filter,3, 3, 3]
         )
 
+        self.h_dim = get_output_shape(self.encod, (3, dim_input, i_w, i_h))[1]
+        print('encoder hidden dim', self.h_dim)
+        self.mu_l = nn.Linear(self.h_dim, z_dim)
+        self.log_sigma2_l = nn.Linear(self.h_dim, z_dim)
 
-        self.flat_size = get_output_shape(self.encod, (1, dim_input, 28, 28))[1]
-        self.mu_l = nn.Linear(self.flat_size, z_dim)
-        self.log_sigma2_l = nn.Linear(self.flat_size, z_dim)
+
 
     def forward(self, x):
-        print('encder forward', x[0, 1, 1:3, 1:3])
         e = self.encod(x)  # output shape: [batch_size, z_dim]
+        #e = self.flat(e)
         print('e shape', e.shape) # [ 2, 128, 2, 2]
         mu = self.mu_l(e)  # output shape: [batch_size, num_clusters]
-        print(mu.shape, mu)
         log_sigma2 = self.log_sigma2_l(e)  # same as mu shape
-        print('sigma', log_sigma2.shape, log_sigma2)
+
         return mu, log_sigma2
 
 
 class Decoder(nn.Module):
-    def __init__(self, z_dim, dim_input=3, filter1=3, filter2=3, filter3=3):
+    def __init__(self, z_dim, dim_input=3, filter1=3, filter2=3, filter3=3, h_dim=1152):
         super(Decoder, self).__init__()
+        self.linear = nn.Linear(z_dim, h_dim)
 
+        #h_filter = get_output_shape(UnFlatten(), (batch_size, h_dim))#batch size!!!!!!!!!
+        #print(h_filter)
         self.decod = nn.Sequential(
             UnFlatten(),
-            #nn.Linear(dim_input, z_dim),
-            *block_decoding(z_dim, filter3),
-            *block_decoding(filter3, filter2),
-            *block_decoding(filter2, filter1),#,
-            *block_decoding(filter1, dim_input),#,
-            #nn.Linear(filter1, dim_input)
+            *block_decoding(filter3, filter2, kernel_size=(4, 4)),
+            *block_decoding(filter2, filter1, kernel_size=(5, 5)),
+            *block_decoding(filter1, dim_input, kernel_size=(6, 6)),
             nn.Sigmoid()
         )
 
@@ -163,46 +152,48 @@ class Decoder(nn.Module):
         """
         Decoder input shape is [batch_size, 10]
         """
+
         print('z shape',z.shape)
-
-        x_pro = self.decod(z)
+        z = self.linear(z)
+        print('z shape after linear',z.shape)
+        x_pro = self.decod(z) #input should be [2, 128, 2, 2]
         print('x pro', x_pro.shape)
-        x_pro = x_pro [:, 0:3, :, :]
 
-        print('x_pro', x_pro[0, 1, 1:3, 1:3])
-        print('decoder shape', x_pro.shape)
         return x_pro
 
 
 class ModelVaDECNN(nn.Module):
 
-    def __init__(self, y_dim, zd_dim, device):
+    def __init__(self, y_dim, zd_dim, device, i_w, i_h):
 
         super(ModelVaDECNN, self).__init__()
         """
            :param tensor y_dim: number of original dataset clusters.
            :param tensor zd_dim: number of cluster domains
         """
-
+        self.i_w = i_w
+        self.i_h = i_h
         self.y_dim = y_dim  # nClusters
         self.zd_dim = zd_dim
         self.dim_y = y_dim
         self.device = device
+
         print(y_dim, device, zd_dim )
         input_dimention = 3 #28 * 28
         filter1 = 32
         filter2 = filter1*2
         filter3 = filter2*2
 
-        self.infer_domain = Encoder(z_dim=zd_dim, dim_input=input_dimention, filter1=filter1, filter2=filter2, filter3=filter3).to(
-            device)
+        self.infer_domain = Encoder(z_dim=zd_dim, dim_input=input_dimention,
+                                    filter1=filter1, filter2=filter2, filter3=filter3,
+                                    i_w = self.i_w, i_h = self.i_h).to(device)
         # self.encoder = self.infer_domain
         self.encoder = Encoder(z_dim=zd_dim, dim_input=input_dimention, filter1=filter1, filter2=filter2, filter3=filter3).to(device)
-        self.decoder = Decoder(z_dim=zd_dim, dim_input=input_dimention, filter1=filter1, filter2=filter2, filter3=filter3).to(device)
+        self.decoder = Decoder(z_dim=zd_dim, dim_input= input_dimention, filter1=filter1,
+                               filter2=filter2, filter3=filter3).to(device)
         self.pi_ = nn.Parameter(torch.FloatTensor(zd_dim, ).fill_(1) / zd_dim, requires_grad=True)  # 1/ndomains
         self.mu_c = nn.Parameter(torch.FloatTensor(zd_dim, zd_dim).fill_(0), requires_grad=True)
         self.log_sigma2_c = nn.Parameter(torch.FloatTensor(zd_dim, zd_dim).fill_(0), requires_grad=True)
-
     def infer_d_v(self, x):
         """encoding function that is used in the perf_cluser.py
             yita corresponds to equation from the paper #10
@@ -319,17 +310,15 @@ class ModelVaDECNN(nn.Module):
 
 
 def test_fun(y_dim, zd_dim, device):
-    #import numpy as np
-    #import torch
     print(torch.__version__)
-    model_cnn = ModelVaDECNN(y_dim=y_dim, zd_dim=zd_dim, device=torch.device("cpu"))
+    i_w =28
+    i_h =28
+    model_cnn = ModelVaDECNN(y_dim=y_dim, zd_dim=zd_dim, device=torch.device("cpu"), i_w=i_w, i_h =i_h)
     device = torch.device("cpu")
-    #breakpoint()
-    #print(model)
 
-
-    x = torch.rand(2, 3, 28, 28)
-    a = np.zeros((2, y_dim))
+    batch_size =5
+    x = torch.rand(batch_size, 3, i_w, i_h)
+    a = np.zeros((batch_size, y_dim))
     a = np.double(a)
     a[0, 1] = 1.0
     a[1, 8] = 1.0

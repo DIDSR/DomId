@@ -8,15 +8,20 @@ from libdg.utils.utils_cuda import get_device
 
 from domid.algos.observers.b_obvisitor_clustering import ObVisitorClustering
 from domid.models.model_vade import ModelVaDE
+from domid.tasks import task_mnist
 
 class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
     def init_business(self, exp):
         """
         return trainer, model, observer
         """
+        #breakpoint()
         task = exp.task
+        print(task)
+
         args = exp.args
         device = get_device(args.nocu)
+        #device = 'cpu'
         # FIXME: add the nevessary function arguments:
         y_dim=len(task.list_str_y)
         #print('y dim in builder', y_dim)
