@@ -19,6 +19,8 @@ from sklearn.metrics import accuracy_score
 from torch.optim.lr_scheduler import StepLR
 #from tensorboardX import SummaryWriter
 from sklearn.manifold import TSNE
+#from torch.utils.tensorboard import SummaryWriter
+from tensorboardX import SummaryWriter
 import torch.nn as nn
 from libdg.utils.utils_classif import logit2preds_vpic, get_label_na
 from domid.compos.nn_net import Net_MNIST
@@ -103,7 +105,7 @@ class ModelVaDE(nn.Module):
            :param tensor y_dim: number of original dataset clusters.
            :param tensor zd_dim: number of cluster domains
         """
-
+        #self.writer = SummaryWriter()
         self.y_dim = y_dim #nClusters
         self.zd_dim = zd_dim
         self.dim_y = y_dim
@@ -128,12 +130,14 @@ class ModelVaDE(nn.Module):
            """
         det = 1e-10
         z_mu, z_sigma2_log = self.encoder(x)
+        #print(z_mu.shape, z_sigma2_log.shape)
+        #self.writer.add_embedding('z mu', z_mu)
         z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
         pi = self.pi_
         log_sigma2_c = self.log_sigma2_c
         mu_c = self.mu_c
         nClusters = self.zd_dim #FIXME
-        yita_c = torch.exp(torch.log(pi.unsqueeze(0))+self.gaussian_pdfs_log(nClusters,z,mu_c,log_sigma2_c))+det#shape [batch_size, 10]
+        yita_c = torch.exp(torch.log(pi.unsqueeze(0))+self.gaussian_pdfs_log(nClusters,z,mu_c,log_sigma2_c)) #+det#shape [batch_size, 10]
         yita = yita_c.cpu()
         prediction, *_ = logit2preds_vpic(yita)
         return prediction
@@ -178,7 +182,7 @@ class ModelVaDE(nn.Module):
 
         Loss-=torch.mean(torch.sum(yita_c*torch.log(pi.unsqueeze(0)/(yita_c)),1))+0.5*torch.mean(torch.sum(1+z_sigma2_log,1))
         #print(Loss)
-        #print('loss out', Loss)
+        print('loss out', Loss)
         return Loss
 
 
@@ -233,6 +237,9 @@ class ModelVaDE(nn.Module):
         loss = self.ELBO_Loss(zd_dim, x)
         loss = loss.cpu()
         return loss
+    #def foward(self):
+
+
 
 
 

@@ -26,8 +26,8 @@ class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
 
 
 
-        model = ModelVaDECNN(y_dim=y_dim, zd_dim=zd_dim, device=device,  i_c = task.isize.c,
-                             i_h = task.isize.h, i_w = task.isize.w, gamma_y = args.gamma_y,list_str_y = task.list_str_y, dim_feat_x = 10)
+        model = ModelVaDECNN(y_dim=y_dim, zd_dim=zd_dim, device=device,
+                             i_h = task.isize.h, i_w = task.isize.w)
         observer = ObVisitorCleanUp(
             ObVisitorClustering(exp, MSelOracleVisitor(MSelTrLoss(max_es=args.es)), device))
 
