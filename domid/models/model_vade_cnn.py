@@ -80,7 +80,7 @@ def cluster_acc(Y_pred, Y):
     return sum([w[ind[0], ind[1]] for counter in ind]) * 1.0 / Y_pred.size  # , w[0]
 
 def get_output_shape(model, image_dim):
-    print('fake img', model(torch.rand(*(image_dim))).data.shape)
+    #print('fake img', model(torch.rand(*(image_dim))).data.shape)
     return model(torch.rand(*(image_dim))).data.shape
 
 def block_encoding(in_c, out_c, kernel_size=(4,4), stride=2, padding=1):
@@ -103,8 +103,8 @@ class UnFlatten(nn.Module):
     def forward(self, input):
         self.filter_size = 128 #FIXME same as filter 3
         n = int(np.sqrt(input.shape[1]/self.filter_size))
-        print('unflatten', input.view(input.size(0), self.filter_size, n, n).shape)
-        return input.view(input.size(0), self.filter_size, 3, 3) #FIXME (3,3)
+        #print('unflatten', input.view(input.size(0), self.filter_size, n, n).shape)
+        return input.view(input.size(0), self.filter_size, 3, 3)#FIXME (3,3)
 
 class Encoder(nn.Module):
     def __init__(self, z_dim, dim_input=3, filter1=3, filter2=3, filter3=3, i_w=28, i_h=28):
@@ -117,7 +117,7 @@ class Encoder(nn.Module):
         )
 
         self.h_dim = get_output_shape(self.encod, (3, dim_input, i_w, i_h))[1]
-        print('encoder hidden dim', self.h_dim)
+        #print('encoder hidden dim', self.h_dim)
         self.mu_l = nn.Linear(self.h_dim, z_dim)
         self.log_sigma2_l = nn.Linear(self.h_dim, z_dim)
 
@@ -126,7 +126,7 @@ class Encoder(nn.Module):
     def forward(self, x):
         e = self.encod(x)  # output shape: [batch_size, z_dim]
         #e = self.flat(e)
-        print('e shape', e.shape) # [ 2, 128, 2, 2]
+        #print('e shape', e.shape) # [ 2, 128, 2, 2]
         mu = self.mu_l(e)  # output shape: [batch_size, num_clusters]
         log_sigma2 = self.log_sigma2_l(e)  # same as mu shape
 
@@ -153,11 +153,11 @@ class Decoder(nn.Module):
         Decoder input shape is [batch_size, 10]
         """
 
-        print('z shape',z.shape)
+        #print('z shape',z.shape)
         z = self.linear(z)
-        print('z shape after linear',z.shape)
+        #print('z shape after linear',z.shape)
         x_pro = self.decod(z) #input should be [2, 128, 2, 2]
-        print('x pro', x_pro.shape)
+        #print('x pro', x_pro.shape)
 
         return x_pro
 
@@ -178,7 +178,7 @@ class ModelVaDECNN(nn.Module):
         self.dim_y = y_dim
         self.device = device
 
-        print(y_dim, device, zd_dim )
+        #print(y_dim, device, zd_dim )
         input_dimention = 3 #28 * 28
         filter1 = 32
         filter2 = filter1*2
@@ -213,6 +213,24 @@ class ModelVaDECNN(nn.Module):
         yita = yita_c.cpu()
         prediction, *_ = logit2preds_vpic(yita)
         return prediction
+    def infer_d_v_2(self, x):
+
+        det = 1e-10
+        z_mu, z_sigma2_log = self.encoder(x)
+        #print(z_mu.shape, z_sigma2_log.shape)
+        #self.writer.add_embedding('z mu', z_mu)
+        z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
+        pi = self.pi_
+        log_sigma2_c = self.log_sigma2_c
+        mu_c = self.mu_c
+        nClusters = self.zd_dim #FIXME
+
+        x_pro = self.decoder(z)
+        yita_c = torch.exp(torch.log(pi.unsqueeze(0))+self.gaussian_pdfs_log(nClusters,z,mu_c,log_sigma2_c))+det#shape [batch_size, 10]
+        yita = yita_c.cpu()
+        prediction, *_ = logit2preds_vpic(yita)
+
+        return prediction, pi, z_mu, log_sigma2_c, yita, x_pro
 
     def ELBO_Loss(self, zd_dim, x, L=1):
         """Loss function
@@ -243,6 +261,7 @@ class ModelVaDECNN(nn.Module):
         mu_c = self.mu_c
 
         z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
+        print('ELBO loss z', z.shape)
         yita_c = torch.exp(torch.log(pi.unsqueeze(0)) + self.gaussian_pdfs_log(zd_dim, z, mu_c, log_sigma2_c)) + det
         yita_c = yita_c / (yita_c.sum(1).view(-1, 1))  # batch_size*Clusters
         Loss += 0.5 * torch.mean(torch.sum(yita_c * torch.sum(log_sigma2_c.unsqueeze(0) +
@@ -290,7 +309,7 @@ class ModelVaDECNN(nn.Module):
         """
 
         pred = torch.zeros((100, 10))
-        pred = pred.to(device)
+        pred = pred#.to(device)
         prob = 0
         ind = 0
         confidence = 0
@@ -310,7 +329,7 @@ class ModelVaDECNN(nn.Module):
 
 
 def test_fun(y_dim, zd_dim, device):
-    print(torch.__version__)
+    #print(torch.__version__)
     i_w =28
     i_h =28
     model_cnn = ModelVaDECNN(y_dim=y_dim, zd_dim=zd_dim, device=torch.device("cpu"), i_w=i_w, i_h =i_h)

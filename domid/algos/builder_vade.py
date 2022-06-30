@@ -5,7 +5,7 @@ from libdg.algos.msels.c_msel import MSelTrLoss
 from libdg.algos.msels.c_msel_oracle import MSelOracleVisitor
 from libdg.algos.observers.c_obvisitor_cleanup import ObVisitorCleanUp
 from libdg.utils.utils_cuda import get_device
-
+from tensorboardX import SummaryWriter
 from domid.algos.observers.b_obvisitor_clustering import ObVisitorClustering
 from domid.models.model_vade import ModelVaDE
 from domid.tasks import task_mnist
@@ -34,8 +34,8 @@ class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
                           i_h = task.isize.h, i_w = task.isize.w, gamma_y = args.gamma_y,list_str_y = task.list_str_y, dim_feat_x = 10)
         observer = ObVisitorCleanUp(
             ObVisitorClustering(exp, MSelOracleVisitor(MSelTrLoss(max_es=args.es)), device))
-
-        trainer = TrainerVADE(model, task, observer, device, aconf=args)
+        writer = SummaryWriter(logdir="debug")
+        trainer = TrainerVADE(model, task, observer, device, writer, aconf=args)
 
         return trainer
 
