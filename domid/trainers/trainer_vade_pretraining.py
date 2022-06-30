@@ -1,0 +1,66 @@
+"""
+Base Class for trainer
+"""
+import abc
+import torch
+from libdg.utils.perf import PerfClassif
+from domid.utils.perf_cluster import PerfCluster
+from libdg.algos.trainers.a_trainer import TrainerClassif
+import torch.optim as optim
+from tensorboardX import SummaryWriter
+from sklearn.manifold import TSNE
+
+
+
+class TrainerVADE(TrainerClassif):
+    def __init__(self, model, task, observer, device, writer, aconf=None):
+        super().__init__(model, task, observer, device, aconf)
+        self.optimizer = optim.Adam(self.model.parameters(), lr=aconf.lr)
+        self.epo_loss_tr = None
+        self.writer = writer
+
+    def tr_epoch(self, epoch):
+        self.model.train()
+        self.epo_loss_tr = 0
+        #breakpoint()
+
+        if epoch<2:
+            for _, (tensor_x, vec_y, vec_d) in enumerate(self.loader_tr):
+                tensor_x, vec_y, vec_d = \
+                    tensor_x.to(self.device), vec_y.to(self.device), vec_d.to(self.device)
+                self.optimizer.zero_grad()
+                #with torch.no_grad():
+                loss = self.model.pretrain_loss(tensor_x, self.model.zd_dim)
+                loss = loss.sum()
+            print(epoch, loss)
+            loss.backward()
+            self.optimizer.step()
+            self.epo_loss_tr += loss.detach().item()
+
+        #MSE loss - loss = self.MSE_cal_loss
+        else:
+            for _, (tensor_x, vec_y, vec_d) in enumerate(self.loader_tr):
+                tensor_x, vec_y, vec_d = \
+                    tensor_x.to(self.device), vec_y.to(self.device), vec_d.to(self.device)
+                self.optimizer.zero_grad()
+                loss = self.model.cal_loss(tensor_x, self.model.zd_dim)
+                loss = loss.sum()
+
+            loss.backward()
+            self.optimizer.step()
+            self.epo_loss_tr += loss.detach().item()
+
+        flag_stop = self.observer.update(epoch)  # notify observer
+
+
+        return flag_stop
+
+    def before_tr(self):
+        """
+        check the performance of randomly initialized weight
+        """
+
+        acc = PerfCluster.cal_acc(self.model, self.loader_tr, self.device)
+        #print('ACC', acc)
+        print("before training, model accuracy:", acc)
+

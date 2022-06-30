@@ -5,6 +5,7 @@ import torch.nn.functional as F
 import os
 import itertools
 # import toml
+from sklearn.mixture import GaussianMixture
 import numpy as np
 #from sklearn.mixture import GaussianMixture
 # import tqdm
@@ -214,20 +215,81 @@ class ModelVaDECNN(nn.Module):
            """
         det = 1e-10
         z_mu, z_sigma2_log = self.encoder(x)
-        z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
+        z = torch.rand_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
+        #breakpoint()
         pi = self.pi_
+        print('SIGMA IN THE INFER DV',self.log_sigma2_c[0] )
         log_sigma2_c = self.log_sigma2_c
         mu_c = self.mu_c
         nClusters = self.zd_dim  # FIXME
-        yita_c = torch.exp(torch.log(pi.unsqueeze(0)) + self.gaussian_pdfs_log(nClusters, z, mu_c,
-                                                                               log_sigma2_c)) + det  # shape [batch_size, 10]
+        yita_c = torch.exp(torch.log(pi.unsqueeze(0)) + self.gaussian_pdfs_log(nClusters, z, mu_c, log_sigma2_c)) + det  # shape [batch_size, 10]
         yita = yita_c.cpu()
         prediction, *_ = logit2preds_vpic(yita)
+
+
+        #yita_c = self.gaussian_pdfs_log(nClusters, z_mu, mu_c, log_sigma2_c)
+
+        # import matplotlib.pyplot as plt
+        # plt.subplot(1,3,1)
+        # plt.imshow(z_mu)
+        # plt.subplot(1,3,2)
+        # plt.imshow(yita_c)
+        # plt.subplot(1,3,3)
+        # plt.imshow(yita_c)
+        # plt.show()
         return prediction
+    #implement foward function
+    # pretrain
+    def pretrain_loss(self, x, zd_dim):
+
+
+        Loss = nn.MSELoss()
+
+        #ENCODES
+        z_mu, z_sigma2_log = self.encoder(x)
+        #print(z_mu.shape, z_sigma2_log.shape)
+        # not quite sure what the loop is for
+        z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
+        #DECODES
+        x_pro = self.decoder(z)
+        #print(x_pro.shape)
+        loss = Loss(x, x_pro)
+        #print('pretrain loss', loss)
+
+        #Z = []
+       # Y = []
+
+        # with torch.no_grad():
+        #     z1, z2 = self.encoder(x)
+        #     assert F.mse_loss(z1, z2) == 0
+        #     Z.append(z1)
+        #     Y.append(y)
+
+        #Z = torch.cat(z, 0)#.detach().cpu().numpy()
+        #Y = torch.cat(Y, 0)#.detach().numpy()
+        #with torch.no_grad():
+        Z = z.detach().numpy()
+        nClusters = self.zd_dim
+        gmm = GaussianMixture(n_components=nClusters, covariance_type='diag')
+
+        pre = gmm.fit_predict(Z)
+        print(pre)
+        #print('Acc={:.4f}%'.format(cluster_acc(pre, Y)[0] * 100))
+
+        self.pi_.data = torch.from_numpy(gmm.weights_)#.cuda().float()
+        self.mu_c.data = torch.from_numpy(gmm.means_)#.cuda().float()
+        self.log_sigma2_c.data = torch.log(torch.from_numpy(gmm.covariances_))#.cuda().float())
+        #print('sigma in the pretrain', self.log_sigma2_c.data)
+        return loss
+        #print('ELBO INIT VARIABLES', self.pi_.shape, self.mu_c.shape, self.log_sigma2_c.shape)
+
+
+
+
     def infer_d_v_2(self, x):
 
         det = 1e-10
-        z_mu, z_sigma2_log = self.encoder(x)
+        z_mu, z_sigma2_log = self.encoder(x) #Z_mu plot in the tensoboard
         #print(z_mu.shape, z_sigma2_log.shape)
         #self.writer.add_embedding('z mu', z_mu)
         z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
@@ -241,7 +303,8 @@ class ModelVaDECNN(nn.Module):
         yita = yita_c.cpu()
         prediction, *_ = logit2preds_vpic(yita)
 
-        return prediction, pi, z_mu, log_sigma2_c, yita, x_pro
+        return prediction, z_mu, z, log_sigma2_c, yita, x_pro #remove unnessessary outputs
+
 
     def ELBO_Loss(self, zd_dim, x, L=1):
         """Loss function
@@ -272,7 +335,7 @@ class ModelVaDECNN(nn.Module):
         mu_c = self.mu_c
 
         z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
-        print('ELBO loss z', z.shape)
+        #print('ELBO loss z', z.shape)
         yita_c = torch.exp(torch.log(pi.unsqueeze(0)) + self.gaussian_pdfs_log(zd_dim, z, mu_c, log_sigma2_c)) + det
         yita_c = yita_c / (yita_c.sum(1).view(-1, 1))  # batch_size*Clusters
         Loss += 0.5 * torch.mean(torch.sum(yita_c * torch.sum(log_sigma2_c.unsqueeze(0) +

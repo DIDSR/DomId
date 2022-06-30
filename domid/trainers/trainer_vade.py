@@ -24,6 +24,9 @@ class TrainerVADE(TrainerClassif):
         self.epo_loss_tr = 0
         #breakpoint()
         counter = 0
+        # if epoch<10 (make a differnet file)
+        #MSE loss - loss = self.MSE_cal_loss
+
         for _, (tensor_x, vec_y, vec_d) in enumerate(self.loader_tr):
             tensor_x, vec_y, vec_d = \
                 tensor_x.to(self.device), vec_y.to(self.device), vec_d.to(self.device)
@@ -31,44 +34,17 @@ class TrainerVADE(TrainerClassif):
             loss = self.model.cal_loss(tensor_x, self.model.zd_dim)
 
             loss = loss.sum()
-            #print(loss)
 
-            #tsne = TSNE(n_components=2, random_state=0)
-
-            #tsne = TSNE(random_state=42, n_components=2, verbose=0, perplexity=40, n_iter=500).fit_transform(X)
-
-            #breakpoint()
-            #labels = torch.cat((num, color))
-            #labels = torch.cat((num.unsqueeze(0), color.unsqueeze(0)), 1)
-            #
-            # config = writer.ProjectorConfig()
-            # embedding = config.embeddings.add()
-            # embedding.tensor_name = embedding_var.name
-            # embedding.metadata_path = os.path.join(logdir, 'metadata.tsv')
-            # embedding.sprite.image_path = os.path.join(logdir, 'sprite.png')
-            # embedding.sprite.single_image_dim.extend([28, 28])
-
-            #meta = [str(int(num[i]))+str(int(color[i])) for i in range(len(color))]
-            # meta.write('Index\tLabel\n')
-            # for index, label in enumerate(labels):
-            #     meta.write('{}\t{}\n'.format(index, label))
-
-            if epoch == 150:
+            if epoch == 10:
                 #self.writer.add_embedding(tsne, metadata = meta, label_img=tensor_x)
                 #self.writer.add_embedding(X, label_img=tensor_x)
-                pred, pi, mu, sigma, yita, x_pro = self.model.infer_d_v_2(tensor_x)
-                X = torch.flatten(x_pro, start_dim=1).cpu()
-                num = torch.argmax(vec_y, 1).cpu()
-                color = torch.argmax(vec_d, 1).cpu()
+                prediction, z_mu, z, log_sigma2_c, yita, x_pro = self.model.infer_d_v_2(tensor_x)
+                #X = torch.flatten(z_mu, start_dim=1).cpu()
+                # num = torch.argmax(vec_y, 1).cpu()
+                # color = torch.argmax(vec_d, 1).cpu()
 
+                self.writer.add_embedding(z_mu, label_img=x_pro)
 
-
-
-                self.writer.add_embedding(X, label_img=x_pro)
-
-            #print('tsne', tsne.shape, num.shape, color.shape, meta.shape)
-            #model.infer_d_v
-            #writer.add_images()
             loss.backward()
             self.optimizer.step()
             self.epo_loss_tr += loss.detach().item()

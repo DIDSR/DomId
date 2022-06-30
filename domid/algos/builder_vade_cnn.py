@@ -1,6 +1,7 @@
 from libdg.algos.a_algo_builder import NodeAlgoBuilder
 #from libdg.algos.trainers.train_basic import TrainerBasic
-from domid.trainers.trainer_vade import TrainerVADE
+from domid.trainers.trainer_vade_pretraining import TrainerVADE #CHANGE HERE
+
 from libdg.algos.msels.c_msel import MSelTrLoss
 from libdg.algos.msels.c_msel_oracle import MSelOracleVisitor
 from libdg.algos.observers.c_obvisitor_cleanup import ObVisitorCleanUp
@@ -16,8 +17,8 @@ class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
         """
         task = exp.task
         args = exp.args
-        device = get_device(args.nocu)
-        #device = 'cpu'
+        #device = get_device(args.nocu)
+        device = 'cpu'
         # FIXME: add the nevessary function arguments:
         y_dim=len(task.list_str_y)
         #print('y dim in builder', y_dim)
