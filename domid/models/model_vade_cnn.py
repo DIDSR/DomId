@@ -100,11 +100,20 @@ def block_decoding(in_c, out_c, kernel_size=(3,3), stride=2, padding=1):
     return layers
 
 class UnFlatten(nn.Module):
+    def __init__(self, filter3):
+        super(UnFlatten, self).__init__()
+        self.filter3 = filter3
+        print(self.filter3)
     def forward(self, input):
-        self.filter_size = 128 #FIXME same as filter 3
-        n = int(np.sqrt(input.shape[1]/self.filter_size))
+        #
+        # self.filter_size = 128 #FIXME same as filter 3
+        # n = int(np.sqrt(input.shape[1]/self.filter_size))
+        # #print('unflatten', input.view(input.size(0), self.filter_size, n, n).shape)
+        # return input.view(input.size(0), self.filter_size, 3, 3)#FIXME (3,3)
+        filter_size = self.filter3 #FIXME same as filter 3
+        n = int(np.sqrt(input.shape[1]/filter_size))
         #print('unflatten', input.view(input.size(0), self.filter_size, n, n).shape)
-        return input.view(input.size(0), self.filter_size, 3, 3)#FIXME (3,3)
+        return input.view(input.size(0), filter_size, 3, 3)#FIXME (3,3)
 
 class Encoder(nn.Module):
     def __init__(self, z_dim, dim_input=3, filter1=3, filter2=3, filter3=3, i_w=28, i_h=28):
@@ -140,8 +149,9 @@ class Decoder(nn.Module):
 
         #h_filter = get_output_shape(UnFlatten(), (batch_size, h_dim))#batch size!!!!!!!!!
         #print(h_filter)
+        self.unflat = UnFlatten(128)
         self.decod = nn.Sequential(
-            UnFlatten(),
+            #UnFlatten(128),
             *block_decoding(filter3, filter2, kernel_size=(4, 4)),
             *block_decoding(filter2, filter1, kernel_size=(5, 5)),
             *block_decoding(filter1, dim_input, kernel_size=(6, 6)),
@@ -155,6 +165,7 @@ class Decoder(nn.Module):
 
         #print('z shape',z.shape)
         z = self.linear(z)
+        z = self.unflat(z)
         #print('z shape after linear',z.shape)
         x_pro = self.decod(z) #input should be [2, 128, 2, 2]
         #print('x pro', x_pro.shape)
