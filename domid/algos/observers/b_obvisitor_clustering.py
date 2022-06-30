@@ -4,7 +4,7 @@ from domid.utils.perf_cluster import PerfCluster
 from libdg.tasks.task_folder_mk import NodeTaskFolderClassNaMismatch
 from libdg.compos.exp.exp_utils import ExpModelPersistVisitor
 from libdg.algos.observers.b_obvisitor import ObVisitor
-from tensorboardX import SummaryWriter
+
 from libdg.utils.flows_gen_img_model import fun_gen
 
 def pred2file(loader_te, model, device, fa='path_prediction.txt', flag_pred_scalar=False):
@@ -35,7 +35,7 @@ class ObVisitorClustering(ObVisitor):
 
         print("epoch:", epoch)
         self.epo = epoch
-        writer = SummaryWriter(logdir="debug")
+
         if epoch % self.epo_te == 0:
             acc_tr_pool, conf_mat_tr = PerfCluster.cal_acc(self.host_trainer.model, self.loader_tr, self.device)
             print("pooled train clustering acc: ", acc_tr_pool)
@@ -45,7 +45,7 @@ class ObVisitorClustering(ObVisitor):
             acc_val, conf_mat_val = PerfCluster.cal_acc(self.host_trainer.model, self.loader_val, self.device)
             self.acc_val = acc_val
 
-            writer.add_scalar('acc', epoch, acc_val)
+            #writer.add_scalar('acc', epoch, acc_tr_pool)
 
             print("clustering validation acc: ", acc_val)
             print(conf_mat_val)

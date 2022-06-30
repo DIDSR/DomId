@@ -8,10 +8,13 @@ if __name__ == "__main__":
     print('torch version', torch.__version__,torch.cuda.is_available(), torch.cuda.device_count(), torch.version.cuda)
     print('python version', sys.version)
     args = parse_cmd_args()
-    print(args)
-    breakpoint()
+    #print(args)
+    #breakpoint()
     if args.task == 'mnist':
         from domid.compos.exp.exp_main import Exp
+    else:
+        from libdg.compos.exp.exp_main import Exp
+    print(args)
 
     set_seed(args.seed)
     #breakpoint()

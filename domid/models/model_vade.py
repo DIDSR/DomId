@@ -142,6 +142,23 @@ class ModelVaDE(nn.Module):
         prediction, *_ = logit2preds_vpic(yita)
         return prediction
 
+    def infer_d_v_2(self, x):
+
+        det = 1e-10
+        z_mu, z_sigma2_log = self.encoder(x)
+        #print(z_mu.shape, z_sigma2_log.shape)
+        #self.writer.add_embedding('z mu', z_mu)
+        z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
+        pi = self.pi_
+        log_sigma2_c = self.log_sigma2_c
+        mu_c = self.mu_c
+        nClusters = self.zd_dim #FIXME
+
+        x_pro = self.decoder(z)
+        yita_c = torch.exp(torch.log(pi.unsqueeze(0))+self.gaussian_pdfs_log(nClusters,z,mu_c,log_sigma2_c))+det#shape [batch_size, 10]
+        yita = yita_c.cpu()
+        prediction, *_ = logit2preds_vpic(yita)
+        return prediction, pi, z_mu, log_sigma2_c, yita, x_pro
 
     def ELBO_Loss(self,zd_dim, x,L=1):
         """Loss function
@@ -182,7 +199,7 @@ class ModelVaDE(nn.Module):
 
         Loss-=torch.mean(torch.sum(yita_c*torch.log(pi.unsqueeze(0)/(yita_c)),1))+0.5*torch.mean(torch.sum(1+z_sigma2_log,1))
         #print(Loss)
-        print('loss out', Loss)
+        #print('loss out', Loss)
         return Loss
 
 
