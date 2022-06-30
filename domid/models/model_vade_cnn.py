@@ -319,12 +319,12 @@ class ModelVaDECNN(nn.Module):
         :return:
         """
 
-        pred = torch.zeros((100, 10))
-        pred = pred#.to(device)
-        prob = 0
-        ind = 0
-        confidence = 0
-        na_class = 0
+        pred = torch.zeros((tensor_x.shape[0], 10))
+        pred = pred.to(device)
+        prob = None
+        ind = None
+        confidence = None
+        na_class = None
         return pred, prob, ind, confidence, na_class
 
     def cal_loss(self, x, zd_dim):

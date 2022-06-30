@@ -1,23 +1,25 @@
 """
-Color MNIST with palette
+Basic MNIST task where the digits are considered "domains"
 """
-from torch.utils.data.dataset import ConcatDataset
+
 from torch.utils.data import random_split
-from libDG.libdg.tasks.b_task import NodeTaskDict
 from libDG.libdg.tasks.utils_task import DsetDomainVecDecorator, mk_onehot, mk_loader, ImSize
-from libDG.libdg.dsets.dset_mnist_color_solo_default import DsetMNISTColorSoloDefault
-from libDG.libdg.dsets.utils_color_palette import default_rgb_palette   # FIXME
 from libDG.libdg.utils.utils_classif import mk_dummy_label_list_str
+from libDG.libdg.tasks.task_mnist_color import NodeTaskMNISTColor10
+from domid.dsets.dset_mnist import DsetMNIST
 
 
-class NodeTaskMNIST(NodeTaskDict):
+class NodeTaskMNIST(NodeTaskMNISTColor10):
     """
-    Use the deafult palette with 10 colors
+    Based on NodeTaskMNISTColor10 from libDG.
+    The digits (0, 1, ..., 9) are regarded as domains (to be separated by unsupervised clustering).
     """
     @property
     def list_str_y(self):
-        #print('here')
-        return mk_dummy_label_list_str("digit", 10)
+        """
+        MNIST task has no labels (digits are considered domains)
+        """
+        return mk_dummy_label_list_str("dummy", 10)
 
     @property
     def isize(self):
@@ -26,19 +28,9 @@ class NodeTaskMNIST(NodeTaskDict):
 
     def get_list_domains(self):
         """
-        1. get list of domain names
-        2. better use method than property so new domains can be added
+        Get list of domain names
         """
-        list_domains = []
-        counter = 0
-        for rgb_list in default_rgb_palette:   # 10 colors
-
-            domain = "_".join([str(c) for c in rgb_list])
-            domain = "rgb_" + domain
-            domain = str(counter)
-            counter+=1
-            list_domains.append(domain)
-        return list_domains
+        return mk_dummy_label_list_str("digit", 10)
 
     def get_dset_by_domain(self, args, na_domain, split=True):
         """get_dset_by_domain.
@@ -55,10 +47,10 @@ class NodeTaskMNIST(NodeTaskDict):
         # set will be created. Otherwise, this argument is
         # the split ratio
         ind_global = self.get_list_domains().index(na_domain)
-        dset = DsetMNISTColorSoloDefault(ind_global, args.dpath)
+        dset = DsetMNIST(ind_global, args.dpath)
         train_set = dset
         val_set = dset
-        # split dset into training and test
+        # split dset into training and validation sets
         if ratio_split:
             train_len = int(len(dset) * ratio_split)
             val_len = len(dset) - train_len
@@ -66,10 +58,10 @@ class NodeTaskMNIST(NodeTaskDict):
         return train_set, val_set
 
 def test_fun():
-    from libdg.utils.arg_parser import mk_parser_main
+    from libdg.arg_parser import mk_parser_main
     parser = mk_parser_main()
-    args = parser.parse_args(["--te_d", "1", "--dpath", "zout"])
-    node = NodeTaskMNISTC0()
+    args = parser.parse_args(["--te_d", "0", "--dpath", "zout"])
+    node = NodeTaskMNIST()
     node.get_list_domains()
     node.list_str_y
     node.init_business(args)
