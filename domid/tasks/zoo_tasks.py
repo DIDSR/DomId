@@ -1,10 +1,11 @@
 import os
 from torchvision import transforms
-from domid.tasks.task_mnist import NodeTaskMNIST
+from libdg.tasks.task_mnist_color import NodeTaskMNISTColor10
 from libdg.tasks.task_folder_mk import mk_task_folder
 from libdg.tasks.utils_task import ImSize
 from libdg.utils.u_import import import_path
 from libdg.compos.pcr.request import RequestTask
+from domid.tasks.task_mnist import NodeTaskMNIST
 
 path_this_file = os.path.dirname(os.path.realpath(__file__))
 
@@ -27,7 +28,9 @@ class TaskChainNodeGetter(object):
         1. construct the chain, filter out responsible node, create heavy-weight business object
         2. hard code seems to be the best solution
         """
-        chain = NodeTaskMNIST(None)
+        chain = NodeTaskMNISTColor10(None)
+
+        chain = NodeTaskMNIST(succ=chain)
 
         chain = mk_task_folder(extensions={"caltech": "jpg", "sun": "jpg", "labelme": "jpg"},
                                list_str_y=["chair", "car"],

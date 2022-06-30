@@ -1,9 +1,8 @@
 import os
 import datetime
-from domid.tasks.zoo_tasks import TaskChainNodeGetter
 from libdg.compos.exp.exp_utils import AggWriter
 from libdg.algos.zoo_algos import AlgoBuilderChainNodeGetter
-os.environ['CUDA_LAUNCH_BLOCKING'] = "1"  # debug
+from domid.tasks.zoo_tasks import TaskChainNodeGetter
 
 
 class Exp():
