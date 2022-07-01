@@ -106,11 +106,7 @@ class UnFlatten(nn.Module):
         self.filter3 = filter3
         print(self.filter3)
     def forward(self, input):
-        #
-        # self.filter_size = 128 #FIXME same as filter 3
-        # n = int(np.sqrt(input.shape[1]/self.filter_size))
-        # #print('unflatten', input.view(input.size(0), self.filter_size, n, n).shape)
-        # return input.view(input.size(0), self.filter_size, 3, 3)#FIXME (3,3)
+
         filter_size = self.filter3 #FIXME same as filter 3
         n = int(np.sqrt(input.shape[1]/filter_size))
         #print('unflatten', input.view(input.size(0), self.filter_size, n, n).shape)
@@ -196,9 +192,7 @@ class ModelVaDECNN(nn.Module):
         filter2 = filter1*2
         filter3 = filter2*2
 
-        self.infer_domain = Encoder(z_dim=zd_dim, dim_input=input_dimention,
-                                    filter1=filter1, filter2=filter2, filter3=filter3,
-                                    i_w = self.i_w, i_h = self.i_h).to(device)
+        self.infer_domain = Encoder(z_dim=zd_dim, dim_input=input_dimention, filter1=filter1, filter2=filter2, filter3=filter3,i_w = self.i_w, i_h = self.i_h).to(device)
         # self.encoder = self.infer_domain
         self.encoder = Encoder(z_dim=zd_dim, dim_input=input_dimention, filter1=filter1, filter2=filter2, filter3=filter3).to(device)
         self.decoder = Decoder(z_dim=zd_dim, dim_input= input_dimention, filter1=filter1,
@@ -215,10 +209,10 @@ class ModelVaDECNN(nn.Module):
            """
         det = 1e-10
         z_mu, z_sigma2_log = self.encoder(x)
-        z = torch.rand_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
+        z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
         #breakpoint()
         pi = self.pi_
-        print('SIGMA IN THE INFER DV',self.log_sigma2_c[0] )
+        #print('SIGMA IN THE INFER DV',self.log_sigma2_c[0] )
         log_sigma2_c = self.log_sigma2_c
         mu_c = self.mu_c
         nClusters = self.zd_dim  # FIXME
@@ -240,46 +234,28 @@ class ModelVaDECNN(nn.Module):
         return prediction
     #implement foward function
     # pretrain
-    def pretrain_loss(self, x, zd_dim):
+    def pretrain_loss(self, x, zd_dim, device, epoch):
 
 
         Loss = nn.MSELoss()
-
+        #breakpoint()
         #ENCODES
         z_mu, z_sigma2_log = self.encoder(x)
-        #print(z_mu.shape, z_sigma2_log.shape)
-        # not quite sure what the loop is for
         z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
         #DECODES
         x_pro = self.decoder(z)
-        #print(x_pro.shape)
         loss = Loss(x, x_pro)
-        #print('pretrain loss', loss)
-
-        #Z = []
-       # Y = []
-
-        # with torch.no_grad():
-        #     z1, z2 = self.encoder(x)
-        #     assert F.mse_loss(z1, z2) == 0
-        #     Z.append(z1)
-        #     Y.append(y)
-
-        #Z = torch.cat(z, 0)#.detach().cpu().numpy()
-        #Y = torch.cat(Y, 0)#.detach().numpy()
-        #with torch.no_grad():
         Z = z.detach().numpy()
-        nClusters = self.zd_dim
-        gmm = GaussianMixture(n_components=nClusters, covariance_type='diag')
-
+        #if epoch==50:
+        gmm = GaussianMixture(n_components=self.zd_dim, covariance_type='diag', reg_covar = 10**-3)
         pre = gmm.fit_predict(Z)
-        print(pre)
-        #print('Acc={:.4f}%'.format(cluster_acc(pre, Y)[0] * 100))
+        #gmm = gmm.fit(Z) #FIXME
+        #print(gmm.weights_[1:3], '\n', gmm.means_[0, 1:3])
 
-        self.pi_.data = torch.from_numpy(gmm.weights_)#.cuda().float()
-        self.mu_c.data = torch.from_numpy(gmm.means_)#.cuda().float()
-        self.log_sigma2_c.data = torch.log(torch.from_numpy(gmm.covariances_))#.cuda().float())
-        #print('sigma in the pretrain', self.log_sigma2_c.data)
+        self.pi_.data = torch.from_numpy(gmm.weights_).to(device).float()
+        self.mu_c.data = torch.from_numpy(gmm.means_).to(device).float()
+        self.log_sigma2_c.data = torch.log(torch.from_numpy(gmm.covariances_)).to(device).float()
+        #print('sigma in the pretrain', self.log_sigma2_c.data[0])
         return loss
         #print('ELBO INIT VARIABLES', self.pi_.shape, self.mu_c.shape, self.log_sigma2_c.shape)
 
