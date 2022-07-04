@@ -173,33 +173,46 @@ class ModelVaDE(nn.Module):
 
         """
 
+        det = 1e-10
+        z_mu, z_sigma2_log = self.encoder(x)  # shape [batch_size, self.zd_dim]
 
+        L_rec = 0.0
+        for l in range(L):
+            z = torch.randn_like(z_mu)*torch.exp(z_sigma2_log/2)+z_mu  # shape [batch_size, self.zd_dim]
+            x_pro = self.decoder(z)
+            L_rec += F.binary_cross_entropy(x_pro, x)  # TODO: this is the reconstruction loss for a binary-valued x (such as MNIST digits); need to implement another version for a real-valued x.
 
-        det=1e-10
-        L_rec=0
-        z_mu, z_sigma2_log = self.encoder(x)
-        for l in range(L): #not quite sure what the loop is for
-            z=torch.randn_like(z_mu)*torch.exp(z_sigma2_log/2)+z_mu
-            x_pro=self.decoder(z)
-            L_rec+=F.binary_cross_entropy(x_pro,x) #why binary cross entropy?
+        L_rec /= L
+        Loss = L_rec*x.size(1)  # don't take the mean over the channels; i.e., the recon loss is taken as an average over (batch size * L * width * height)
+        # --> this is the -"first line" of eq (12) in the paper with additional averaging over the batch.
 
-        L_rec/=L
-        Loss=L_rec*x.size(1)
-        
-        pi=self.pi_
-        log_sigma2_c=self.log_sigma2_c
-        mu_c=self.mu_c
+        pi = self.pi_  # FIXME: shape [self.zd_dim] -> should be [self.d_dim] with self.d_dim being the number of clusters/domains, after zd_dim and number of clusters are decoupled as separate parameters
+        log_sigma2_c = self.log_sigma2_c  # FIXME: shape [self.zd_dim, self.zd_dim] -> should be [self.d_dim, self.zd_dim] with self.d_dim being the number of clusters/domains, after zd_dim and number of clusters are decoupled as separate parameters
+        mu_c = self.mu_c  # FIXME: shape [self.zd_dim, self.zd_dim] -> should be [self.d_dim, self.zd_dim] with self.d_dim being the number of clusters/domains, after zd_dim and number of clusters are decoupled as separate parameters
 
         z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
-        yita_c=torch.exp(torch.log(pi.unsqueeze(0))+self.gaussian_pdfs_log(zd_dim, z,mu_c,log_sigma2_c))+det
-        yita_c=yita_c/(yita_c.sum(1).view(-1,1))#batch_size*Clusters
-        Loss+=0.5*torch.mean(torch.sum(yita_c*torch.sum(log_sigma2_c.unsqueeze(0)+
-                                                torch.exp(z_sigma2_log.unsqueeze(1)-log_sigma2_c.unsqueeze(0))+
-                                                (z_mu.unsqueeze(1)-mu_c.unsqueeze(0)).pow(2)/torch.exp(log_sigma2_c.unsqueeze(0)),2),1))
+        yita_c = torch.exp(torch.log(pi.unsqueeze(0)) + self.gaussian_pdfs_log(zd_dim, z, mu_c, log_sigma2_c)) + det  # FIXME: shape [batch_size, self.d_dim] (should be this shape after zd_dim and number of clusters are decoupled as separate parameters); each column contains the probability p(c)p(z|c) for cluster c=1,...,self.d_dim.
+        yita_c = yita_c / (yita_c.sum(1).view(-1, 1))  # shape [batch_size, self.d_dim]; this is q(c|x) per eq. (16) or gamma_c in eq. (12)
 
-        Loss-=torch.mean(torch.sum(yita_c*torch.log(pi.unsqueeze(0)/(yita_c)),1))+0.5*torch.mean(torch.sum(1+z_sigma2_log,1))
-        #print(Loss)
-        #print('loss out', Loss)
+        Loss += 0.5*torch.mean(torch.sum(yita_c*torch.sum(log_sigma2_c.unsqueeze(0) +
+                                                          torch.exp(z_sigma2_log.unsqueeze(1) - log_sigma2_c.unsqueeze(0)) +
+                                                          (z_mu.unsqueeze(1) - mu_c.unsqueeze(0)).pow(2) / torch.exp(log_sigma2_c.unsqueeze(0)),
+                                                          2),
+                                         1)
+                               )
+        # most inner sum dimentions:
+        # [1, d_dim, zd_dim] + exp([batch_size, 1, zd_dim] - [1, d_dim, zd_dim]) + ([batch_size, 1, zd_dim] - [1, d_dim, zd_dim])^2 / exp([1, d_dim, zd_dim])
+        # = [batch_size, d_dim, zd_dim] -> sum of zd_dim dimensions
+        # the next sum is over d_dim dimensions
+        # the mean is over the batch
+        # --> overall, this is -"second line of eq. (12)" with additional mean over the batch
+
+        Loss -= torch.mean(torch.sum(yita_c * torch.log(pi.unsqueeze(0) / (yita_c)), 1))
+        # sum( [batch_size, d_dim] * log([1, d_dim] / [batch_size, d_dim]) ) where the sum is over d_dim dimensions --> [batch_size] --> mean over the batch
+        Loss -= 0.5 * torch.mean(torch.sum(1.0 + z_sigma2_log, 1))
+        # mean( sum( [batch_size, zd_dim], 1 ) ) where the sum is over zd_dim dimensions and mean over the batch
+        # --> overall, this is -"third line of eq. (12)" with additional mean over the batch
+
         return Loss
 
 
@@ -209,7 +222,7 @@ class ModelVaDE(nn.Module):
         """
         G=[]
 
-        for c in range(y_dim):
+        for c in range(y_dim):  # FIXME: y_dim should be self.d_dim with self.d_dim being the number of clusters/domains (after zd_dim and number of clusters are decoupled as separate parameters everywhere else too); function argument y_dim shoud be removed.
             G.append(self.gaussian_pdf_log(x,mus[c:c+1,:],log_sigma2s[c:c+1,:]).view(-1,1))
 
         return torch.cat(G,1)
