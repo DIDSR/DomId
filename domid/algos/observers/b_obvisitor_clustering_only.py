@@ -20,6 +20,7 @@ class ObVisitorClusteringOnly(ObVisitor):
             self.acc_val = acc_val
             print("clustering validation acc: ", acc_val)
             print(conf_mat_val)
+
         return self.model_sel.if_stop()
 
 

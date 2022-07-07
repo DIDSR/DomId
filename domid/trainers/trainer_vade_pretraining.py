@@ -45,6 +45,11 @@ class TrainerVADE(TrainerClassif):
         from sklearn.metrics.pairwise import cosine_similarity
         from scipy import sparse
         from sklearn import metrics
+        acc_tr_pool, conf_mat_tr = PerfCluster.cal_acc(self.model, self.loader_tr, self.device)
+        #acc_val, conf_mat_val = PerfCluster.cal_acc(self.model, self.loader_te, self.device)
+
+        self.writer.add_scalar("pooled train clustering acc: ", acc_tr_pool, epoch)
+        #self.writer.add_scalar("clustering validation acc: ", acc_val)
         # import numpy as np
         # #breakpoint()
         # flat_a, flat_b = torch.flatten(tensor_x, 1), torch.flatten(x_pro,1)
@@ -83,7 +88,7 @@ class TrainerVADE(TrainerClassif):
 
             class_labels = torch.argmax(vec_y, 1)
             self.writer.add_embedding(z, metadata= class_labels, label_img=x_pro) #FIXME set global trainer step
-            F1()
+
 
 
         flag_stop = self.observer.update(epoch)  # notify observer

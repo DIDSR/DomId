@@ -17,20 +17,20 @@ class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
         """
         task = exp.task
         args = exp.args
-        #device = get_device(args.nocu)
-        device = 'cpu'
+        device = get_device(args.nocu)
         # FIXME: add the nevessary function arguments:
         y_dim=len(task.list_str_y)
-        #print('y dim in builder', y_dim)
+        #print('y dim in builder', y_dimg)
         zd_dim = args.zd_dim
         #y_dim = len(task.list_str_y),
 
-
+        import datetime
+        now = datetime.datetime.now()
 
         model = ModelVaDECNN(y_dim=y_dim, zd_dim=zd_dim, device=device, i_h = task.isize.h, i_w = task.isize.w)
         observer = ObVisitorCleanUp(
             ObVisitorClusteringOnly(exp, MSelOracleVisitor(MSelTrLoss(max_es=args.es)), device))
-        writer = SummaryWriter(logdir="debug_cnn")
+        writer = SummaryWriter(logdir="debug_cnn/"+str(now))
         trainer = TrainerVADE(model, task, observer, device, writer,aconf=args)
 
         return trainer
