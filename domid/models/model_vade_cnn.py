@@ -240,14 +240,19 @@ class ModelVaDECNN(nn.Module):
         Loss = nn.MSELoss()
         #breakpoint()
         #ENCODES
+        #print(x.shape)
         z_mu, z_sigma2_log = self.encoder(x)
         z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
         #DECODES
+        #print(z.shape)
         x_pro = self.decoder(z)
+        #breakpoint()
         loss = Loss(x, x_pro)
+        z = z.cpu()
         Z = z.detach().numpy()
         #if epoch==50:
-        gmm = GaussianMixture(n_components=self.zd_dim, covariance_type='diag', reg_covar = 10**-3)
+        gmm = GaussianMixture(n_components=self.zd_dim, covariance_type='diag', reg_covar = 10)
+        #breakpoint()
         pre = gmm.fit_predict(Z)
         #gmm = gmm.fit(Z) #FIXME
         #print(gmm.weights_[1:3], '\n', gmm.means_[0, 1:3])
@@ -298,10 +303,10 @@ class ModelVaDECNN(nn.Module):
         det = 1e-10
         L_rec = 0
         z_mu, z_sigma2_log = self.encoder(x)
-        for l in range(L):  # not quite sure what the loop is for
-            z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
-            x_pro = self.decoder(z)
-            L_rec += F.binary_cross_entropy(x_pro, x)  # why binary cross entropy?
+        # for l in range(L):
+        z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
+        x_pro = self.decoder(z)
+        #     L_rec += F.binary_cross_entropy(x_pro, x)
 
         L_rec /= L
         Loss = L_rec * x.size(1)

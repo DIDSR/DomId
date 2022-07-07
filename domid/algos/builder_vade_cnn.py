@@ -7,7 +7,7 @@ from libdg.algos.msels.c_msel_oracle import MSelOracleVisitor
 from libdg.algos.observers.c_obvisitor_cleanup import ObVisitorCleanUp
 from libdg.utils.utils_cuda import get_device
 from tensorboardX import SummaryWriter
-from domid.algos.observers.b_obvisitor_clustering import ObVisitorClustering
+from domid.algos.observers.b_obvisitor_clustering_only import ObVisitorClusteringOnly
 from domid.models.model_vade_cnn import ModelVaDECNN
 
 class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
@@ -17,8 +17,8 @@ class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
         """
         task = exp.task
         args = exp.args
-        device = get_device(args.nocu)
-        #device = 'cpu'
+        #device = get_device(args.nocu)
+        device = 'cpu'
         # FIXME: add the nevessary function arguments:
         y_dim=len(task.list_str_y)
         #print('y dim in builder', y_dim)
@@ -27,10 +27,9 @@ class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
 
 
 
-        model = ModelVaDECNN(y_dim=y_dim, zd_dim=zd_dim, device=device,
-                             i_h = task.isize.h, i_w = task.isize.w)
+        model = ModelVaDECNN(y_dim=y_dim, zd_dim=zd_dim, device=device, i_h = task.isize.h, i_w = task.isize.w)
         observer = ObVisitorCleanUp(
-            ObVisitorClustering(exp, MSelOracleVisitor(MSelTrLoss(max_es=args.es)), device))
+            ObVisitorClusteringOnly(exp, MSelOracleVisitor(MSelTrLoss(max_es=args.es)), device))
         writer = SummaryWriter(logdir="debug_cnn")
         trainer = TrainerVADE(model, task, observer, device, writer,aconf=args)
 
