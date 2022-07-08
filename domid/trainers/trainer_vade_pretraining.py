@@ -31,20 +31,18 @@ class TrainerVADE(TrainerClassif):
                 tensor_x.to(self.device), vec_y.to(self.device), vec_d.to(self.device)
             self.optimizer.zero_grad()
             if epoch<mse_n:
-                loss = self.model.pretrain_loss(tensor_x, self.model.zd_dim, self.device)
-                print("LOOOOSSS", loss)
+                loss = self.model.pretrain_loss(tensor_x)
+                #print("LOOOOSSS", loss)
 
             else:
                 loss = self.model.cal_loss(tensor_x, self.model.zd_dim)
 
             loss=loss.sum()
-            print("LOSS back", loss)
+            #print("LOSS back", loss)
             loss.backward()
             self.optimizer.step()
             self.epo_loss_tr += loss.detach().item()
 
-            if i>3:
-                break
 
 
 
@@ -52,7 +50,7 @@ class TrainerVADE(TrainerClassif):
 
 
 
-        if epoch ==mse_n-1:
+        if epoch==mse_n-1:
 
             #batch = len(next(iter(self.loader_tr)))
             num_img = len(self.loader_tr.dataset)
