@@ -211,15 +211,26 @@ class ModelVaDECNN(nn.Module):
         z_mu, z_sigma2_log = self.encoder(x)
         z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
         #breakpoint()
+        #breakpoint()
+
         pi = self.pi_
+        pi_num = self.pi_.detach().cpu().numpy()
+
+
         #print('SIGMA IN THE INFER DV',self.log_sigma2_c[0] )
         log_sigma2_c = self.log_sigma2_c
         mu_c = self.mu_c
         nClusters = self.zd_dim  # FIXME
-        yita_c = torch.exp(torch.log(pi.unsqueeze(0)) + self.gaussian_pdfs_log(nClusters, z, mu_c, log_sigma2_c)) + det  # shape [batch_size, 10]
-        yita = yita_c.cpu()
-        prediction, *_ = logit2preds_vpic(yita)
+        #breakpoint()
+        if np.all(pi_num == pi_num[0]):
 
+            prediction, *_ = logit2preds_vpic(z)
+        else:
+            yita_c = torch.exp(torch.log(pi.unsqueeze(0)) + self.gaussian_pdfs_log(nClusters, z, mu_c, log_sigma2_c)) + det  # shape [batch_size, 10]
+            yita = yita_c.cpu()
+            prediction, *_ = logit2preds_vpic(yita)
+
+        #breakpoint()
 
         #yita_c = self.gaussian_pdfs_log(nClusters, z_mu, mu_c, log_sigma2_c)
 
@@ -234,34 +245,15 @@ class ModelVaDECNN(nn.Module):
         return prediction
     #implement foward function
     # pretrain
-    def pretrain_loss(self, x, zd_dim, device, epoch):
-
-
+    def pretrain_loss(self, x, zd_dim, device):
         Loss = nn.MSELoss()
-        #breakpoint()
-        #ENCODES
-        #print(x.shape)
         z_mu, z_sigma2_log = self.encoder(x)
         z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
-        #DECODES
-        #print(z.shape)
         x_pro = self.decoder(z)
-        #breakpoint()
         loss = Loss(x, x_pro)
-        z = z.cpu()
-        Z = z.detach().numpy()
-        #if epoch==50:
-        gmm = GaussianMixture(n_components=self.zd_dim, covariance_type='diag', reg_covar = 10)
-        #breakpoint()
-        pre = gmm.fit_predict(Z)
-        #gmm = gmm.fit(Z) #FIXME
-        #print(gmm.weights_[1:3], '\n', gmm.means_[0, 1:3])
+        print(loss)
 
-        self.pi_.data = torch.from_numpy(gmm.weights_).to(device).float()
-        self.mu_c.data = torch.from_numpy(gmm.means_).to(device).float()
-        self.log_sigma2_c.data = torch.log(torch.from_numpy(gmm.covariances_)).to(device).float()
-        #print('sigma in the pretrain', self.log_sigma2_c.data[0])
-        return loss
+        return loss.cpu()
         #print('ELBO INIT VARIABLES', self.pi_.shape, self.mu_c.shape, self.log_sigma2_c.shape)
 
 
