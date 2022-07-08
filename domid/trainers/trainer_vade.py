@@ -3,7 +3,6 @@ Base Class for trainer
 """
 import abc
 import torch
-from libdg.utils.perf import PerfClassif
 from domid.utils.perf_cluster import PerfCluster
 from libdg.algos.trainers.a_trainer import TrainerClassif
 import torch.optim as optim
@@ -31,7 +30,7 @@ class TrainerVADE(TrainerClassif):
             tensor_x, vec_y, vec_d = \
                 tensor_x.to(self.device), vec_y.to(self.device), vec_d.to(self.device)
             self.optimizer.zero_grad()
-            loss = self.model.cal_loss(tensor_x, self.model.zd_dim)
+            loss = self.model.cal_loss(tensor_x)
 
             loss = loss.sum()
 

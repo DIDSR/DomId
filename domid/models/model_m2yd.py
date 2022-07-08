@@ -52,6 +52,7 @@ class ModelXY2D(AModelClassif):
         :param aux_y:
         """
         super().__init__(list_str_y, list_str_d)
+        self.d_dim = zd_dim  # number of domains
         self.infer_y_from_x = Net_MNIST(y_dim, self.i_h)
         self.feat_x2concat_y = Net_MNIST(self.dim_feat_x, self.i_h)
         # FIXME: shall we share parameters between infer_y_from_x and self.feat_x2concat_y?
