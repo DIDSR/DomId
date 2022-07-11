@@ -1,16 +1,12 @@
-"""
-Base Class for trainer
-"""
-import abc
-import torch
-from libdg.utils.perf import PerfClassif
-from domid.utils.perf_cluster import PerfCluster
-from libdg.algos.trainers.a_trainer import TrainerClassif
-import torch.optim as optim
-from tensorboardX import SummaryWriter
-from sklearn.manifold import TSNE
 import numpy as np
 from sklearn.mixture import GaussianMixture
+import torch
+import torch.optim as optim
+
+from libdg.algos.trainers.a_trainer import TrainerClassif
+
+from domid.utils.perf_cluster import PerfCluster
+
 
 class TrainerVADE(TrainerClassif):
     def __init__(self, model, task, observer, device, writer, aconf=None):
@@ -23,51 +19,40 @@ class TrainerVADE(TrainerClassif):
         self.model.train()
         self.epo_loss_tr = 0
         #breakpoint()
-        mse_n = 10
+        mse_n = 10  # FIXME: maybe have a command line argument to specify mse_n and elbo_n
         elbo_n = 30
         #breakpoint()
         for i, (tensor_x, vec_y, vec_d) in enumerate(self.loader_tr):
-            tensor_x, vec_y, vec_d = \
-                tensor_x.to(self.device), vec_y.to(self.device), vec_d.to(self.device)
+            tensor_x = tensor_x.to(self.device)
             self.optimizer.zero_grad()
-            if epoch<mse_n:
+            if epoch < mse_n:
                 loss = self.model.pretrain_loss(tensor_x)
                 #print("LOOOOSSS", loss)
-
             else:
-                loss = self.model.cal_loss(tensor_x, self.model.zd_dim)
+                loss = self.model.cal_loss(tensor_x)
 
-            loss=loss.sum()
+            loss = loss.sum()
             #print("LOSS back", loss)
             loss.backward()
             self.optimizer.step()
-            self.epo_loss_tr += loss.detach().item()
+            self.epo_loss_tr += loss.cpu().detach().item()
 
-
-
-
-
-
-
-
-        if epoch==mse_n-1:
-
-            #batch = len(next(iter(self.loader_tr)))
+        # During pre-training we estimate pi, mu_c, and log_sigma2_c with a GMM at the end of each epoch.
+        # After pre-training these initial parameter values are used in the calculation of the ELBO loss,
+        # and are further updated with backpropagation like all other neural network weights.
+        if epoch < mse_n:
             num_img = len(self.loader_tr.dataset)
             Z = np.zeros((num_img, self.model.zd_dim))
-            #Z = torch.tensot(())
-            counter =0
-            for _, (tensor_x, vec_y, vec_d) in enumerate(self.loader_tr):
-
+            counter = 0
+            for tensor_x, vec_y, vec_d in self.loader_tr:
+                tensor_x = tensor_x.to(self.device)
                 preds, z_mu, z, _, _, x_pro = self.model.infer_d_v_2(tensor_x)
-
                 z = z.detach().cpu().numpy() #[batch_size, zd_dim]
-                Z[counter:counter+z.shape[0],:] = z
-                counter+=z.shape[0]
-
+                Z[counter:counter+z.shape[0], :] = z
+                counter += z.shape[0]
 
             #breakpoint()
-            gmm = GaussianMixture(n_components=self.model.zd_dim, covariance_type='diag', reg_covar=10 ** -4)
+            gmm = GaussianMixture(n_components=self.model.d_dim, covariance_type='diag', reg_covar=10 ** -4)
             # breakpoint()
             pre = gmm.fit_predict(Z)
             # gmm = gmm.fit(Z) #FIXME
@@ -127,10 +112,7 @@ class TrainerVADE(TrainerClassif):
         #     class_labels = torch.argmax(vec_y, 1)
         #     self.writer.add_embedding(z, metadata= class_labels, label_img=x_pro) #FIXME set global trainer step
 
-
-
         flag_stop = self.observer.update(epoch)  # notify observer
-
 
         return flag_stop
 
@@ -138,8 +120,6 @@ class TrainerVADE(TrainerClassif):
         """
         check the performance of randomly initialized weight
         """
-
         acc = PerfCluster.cal_acc(self.model, self.loader_tr, self.device)
-        #print('ACC', acc)
         print("before training, model accuracy:", acc)
 

@@ -220,22 +220,15 @@ class ModelVaDECNN(nn.Module):
         """
         z_mu, z_sigma2_log = self.encoder(x)
         z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
-        breakpoint()
-        if np.all(self.pi_.detach().cpu().numpy()==self.pi_[0].detach().cpu().numpy()):
-            preds, probs_c, *_ = logit2preds_vpic(z)
 
-            mu_c, log_sigma2_c, pi, logits = None
+        pi = self.pi_
+        mu_c = self.mu_c
+        log_sigma2_c = self.log_sigma2_c
 
-        else:
-            pi = self.pi_
-            mu_c = self.mu_c
-            log_sigma2_c = self.log_sigma2_c
+        logits = torch.log(pi.unsqueeze(0)) + self.gaussian_pdfs_log(z, mu_c, log_sigma2_c)
+        # shape [batch_size, self.d_dim], each column contains the log-probability p(c)p(z|c) for cluster c=0,...,self.d_dim-1.
 
-
-            logits = torch.log(pi.unsqueeze(0)) + self.gaussian_pdfs_log(z, mu_c, log_sigma2_c)
-            # shape [batch_size, self.d_dim], each column contains the log-probability p(c)p(z|c) for cluster c=0,...,self.d_dim-1.
-
-            preds_c, probs_c, *_ = logit2preds_vpic(logits)
+        preds_c, probs_c, *_ = logit2preds_vpic(logits)
 
         return preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits
 
@@ -246,10 +239,7 @@ class ModelVaDECNN(nn.Module):
         :param tensor x: Input tensor of a shape [batchsize, 3, horzintal dim, vertical dim].
         :return tensor preds: One hot encoded tensor of the predicted cluster assignment.
         """
-        preds, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = self._inference(x)
-
-
-
+        preds, *_ = self._inference(x)
         return preds.cpu().detach()
 
     def infer_d_v_2(self, x):
@@ -274,8 +264,6 @@ class ModelVaDECNN(nn.Module):
         z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
         x_pro = self.decoder(z)
         loss = Loss(x, x_pro)
-
-
         return loss
 
     def ELBO_Loss(self, x, L=1):
@@ -322,7 +310,7 @@ class ModelVaDECNN(nn.Module):
         # the mean is over the batch
         # --> overall, this is -"second line of eq. (12)" with additional mean over the batch
 
-        Loss -= torch.mean(torch.sum(probs * torch.log(pi.unsqueeze(0) / (probs)), 1))
+        Loss -= torch.mean(torch.sum(probs * torch.log(pi.unsqueeze(0) / (probs + eps)), 1))  # FIXME: (+eps) is a hack to avoid NaN. Is there a better way?
         # dimensions: [batch_size, d_dim] * log([1, d_dim] / [batch_size, d_dim]), where the sum is over d_dim dimensions --> [batch_size] --> mean over the batch --> a scalar
         Loss -= 0.5 * torch.mean(torch.sum(1.0 + z_sigma2_log, 1))
         # dimensions: mean( sum( [batch_size, zd_dim], 1 ) ) where the sum is over zd_dim dimensions and mean over the batch
@@ -372,5 +360,5 @@ def test_fun(y_dim, zd_dim, device):
     y = torch.tensor(a, dtype=torch.float)
     print('x, y', x.shape, y.shape)
     model_cnn.encoder(x)
-    loss = model_cnn.cal_loss(x, zd_dim)
+    loss = model_cnn.cal_loss(x)
     print(loss)

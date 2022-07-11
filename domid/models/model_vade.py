@@ -194,7 +194,7 @@ class ModelVaDE(nn.Module):
         # the mean is over the batch
         # --> overall, this is -"second line of eq. (12)" with additional mean over the batch
 
-        Loss -= torch.mean(torch.sum(probs * torch.log(pi.unsqueeze(0) / (probs)), 1))
+        Loss -= torch.mean(torch.sum(probs * torch.log(pi.unsqueeze(0) / (probs + eps)), 1))  # FIXME: (+eps) is a hack to avoid NaN. Is there a better way?
         # dimensions: [batch_size, d_dim] * log([1, d_dim] / [batch_size, d_dim]), where the sum is over d_dim dimensions --> [batch_size] --> mean over the batch --> a scalar
         Loss -= 0.5 * torch.mean(torch.sum(1.0 + z_sigma2_log, 1))
         # dimensions: mean( sum( [batch_size, zd_dim], 1 ) ) where the sum is over zd_dim dimensions and mean over the batch

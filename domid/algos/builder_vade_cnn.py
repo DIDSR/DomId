@@ -1,14 +1,16 @@
-from libdg.algos.a_algo_builder import NodeAlgoBuilder
-#from libdg.algos.trainers.train_basic import TrainerBasic
-from domid.trainers.trainer_vade_pretraining import TrainerVADE #CHANGE HERE
+import datetime
+from tensorboardX import SummaryWriter
 
+from libdg.algos.a_algo_builder import NodeAlgoBuilder
 from libdg.algos.msels.c_msel import MSelTrLoss
 from libdg.algos.msels.c_msel_oracle import MSelOracleVisitor
 from libdg.algos.observers.c_obvisitor_cleanup import ObVisitorCleanUp
 from libdg.utils.utils_cuda import get_device
-from tensorboardX import SummaryWriter
+
 from domid.algos.observers.b_obvisitor_clustering_only import ObVisitorClusteringOnly
 from domid.models.model_vade_cnn import ModelVaDECNN
+from domid.trainers.trainer_vade_pretraining import TrainerVADE  # CHANGE HERE
+
 
 class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
     def init_business(self, exp):
@@ -22,14 +24,14 @@ class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
         zd_dim = args.zd_dim
         d_dim = args.d_dim
 
-        import datetime
         now = datetime.datetime.now()
 
-        model = ModelVaDECNN(zd_dim=zd_dim, d_dim=d_dim, device=device,  i_c = task.isize.c,
-                          i_h = task.isize.h, i_w = task.isize.w)
+        model = ModelVaDECNN(
+            zd_dim=zd_dim, d_dim=d_dim, device=device, i_c=task.isize.c, i_h=task.isize.h, i_w=task.isize.w
+        )
         observer = ObVisitorCleanUp(ObVisitorClusteringOnly(exp, MSelOracleVisitor(MSelTrLoss(max_es=args.es)), device))
-        writer = SummaryWriter(logdir="debug_cnn/"+str(now))
-        trainer = TrainerVADE(model, task, observer, device, writer,aconf=args)
+        writer = SummaryWriter(logdir="debug_cnn/" + str(now))
+        trainer = TrainerVADE(model, task, observer, device, writer, aconf=args)
 
         return trainer
 
