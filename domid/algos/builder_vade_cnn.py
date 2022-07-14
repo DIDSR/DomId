@@ -23,14 +23,14 @@ class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
 
         zd_dim = args.zd_dim
         d_dim = args.d_dim
-
+        lr = args.lr
         now = datetime.datetime.now()
 
         model = ModelVaDECNN(
             zd_dim=zd_dim, d_dim=d_dim, device=device, i_c=task.isize.c, i_h=task.isize.h, i_w=task.isize.w
         )
         observer = ObVisitorCleanUp(ObVisitorClusteringOnly(exp, MSelOracleVisitor(MSelTrLoss(max_es=args.es)), device))
-        writer = SummaryWriter(logdir="debug_cnn/" + str(now))
+        writer = SummaryWriter(logdir="CNN/" + str(lr))
         trainer = TrainerVADE(model, task, observer, device, writer, aconf=args)
 
         return trainer
