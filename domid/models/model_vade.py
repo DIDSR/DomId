@@ -2,7 +2,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
+from tensorboardX import SummaryWriter
 from libdg.utils.utils_classif import logit2preds_vpic
 
 
@@ -12,7 +12,7 @@ def linear_block(in_c, out_c):
 
 
 class LinearEncoder(nn.Module):
-    def __init__(self, zd_dim, input_dim=(28, 28), features_dim=[300, 500, 700]):
+    def __init__(self, zd_dim, input_dim=(28, 28), features_dim=[500, 500, 2000]):
         """
         VAE Encoder
         :param zd_dim: dimension of the latent space
@@ -42,7 +42,7 @@ class LinearEncoder(nn.Module):
 
 
 class LinearDecoder(nn.Module):
-    def __init__(self, zd_dim, input_dim=(28, 28), features_dim=[300, 500, 700]):
+    def __init__(self, zd_dim, input_dim=(28, 28), features_dim=[500, 500, 2000]):
         """
         VAE Decoder
         :param zd_dim: dimension of the latent space
@@ -76,7 +76,6 @@ class ModelVaDE(nn.Module):
         VaDE model (Jiang et al. 2017 "Variational Deep Embedding:
         An Unsupervised and Generative Approach to Clustering") with
         fully connected encoder and decoder.
-
         :param zd_dim: dimension of the latent space
         :param d_dim: number of clusters for the clustering task
         :param device: device to use, e.g., "cuda" or "cpu"
@@ -96,6 +95,7 @@ class ModelVaDE(nn.Module):
                                 requires_grad=True)
         self.mu_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
         self.log_sigma2_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
+        self.wr =  SummaryWriter(logdir="inference_fun/")
 
     def _inference(self, x):
         """Auxiliary function for inference
@@ -110,8 +110,31 @@ class ModelVaDE(nn.Module):
         :return tensor pi: Tensor of the estimated cluster prevalences, p(c) (shape: [self.d_dim])
         :return tensor logits: Tensor where each column contains the log-probability p(c)p(z|c) for cluster c=0,...,self.d_dim-1 (shape: [batch_size, self.d_dim]).
         """
+
+        #breakpoint()
         z_mu, z_sigma2_log = self.encoder(x)
+        import matplotlib.pyplot as plt
+        import io
+        counter =0
+
+
+        #fig, ax = plt.subplots(nrows=1, ncols=1)  # create figure & 1 axis
+        #ax.imshow(z_mu)
+
+        # Convert the figure to numpy array, read the pixel values and reshape the array
+        #img = np.fromstring(plt.canvas.tostring_rgb(), dtype=np.uint8, sep='')
+        #img = img.reshape(plt.canvas.get_width_height()[::-1] + (3,))
+
+        # Normalize into 0-1 range for TensorBoard(X). Swap axes for newer versions where API expects colors in first dim
+        #img = img / 255.0
+
+
+        #self.wr.add_image('Zmu'+str(counter), z_mu.unsqueeze(0),0)
+        #self.wr.add_scalar('counter', counter, counter)
+        counter+=1
         z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
+        #print(z_sigma2_log[1, :])
+
 
         pi = self.pi_
         mu_c = self.mu_c
@@ -150,12 +173,18 @@ class ModelVaDE(nn.Module):
         """
         return self.ELBO_Loss(x)
 
+    def pretrain_loss(self, x):
+        Loss = nn.MSELoss()
+        z_mu, z_sigma2_log = self.encoder(x)
+        z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
+        x_pro = self.decoder(z)
+        loss = Loss(x, x_pro)
+        return loss
+
     def ELBO_Loss(self, x, L=1):
         """ELBO loss function
-
         Using SGVB estimator and the reparametrization trick calculates ELBO loss.
         Calculates loss between encoded input and input using ELBO equation (12) in the papaer.
-
         :param tensor x: Input tensor of a shape [batchsize, 3, horzintal dim, vertical dim].
         :param int L: Number of Monte Carlo samples in the SOVB
         """
@@ -166,7 +195,7 @@ class ModelVaDE(nn.Module):
         for l in range(L):
             z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu  # shape [batch_size, self.zd_dim]
             x_pro = self.decoder(z)
-            L_rec += F.binary_cross_entropy(
+            L_rec += F.cross_entropy(
                 x_pro, x
             )  # TODO: this is the reconstruction loss for a binary-valued x (such as MNIST digits); need to implement another version for a real-valued x.
 
@@ -214,7 +243,6 @@ class ModelVaDE(nn.Module):
     def gaussian_pdf_log(x, mu, log_sigma2):
         """
         subhelper function just one gausian pdf log calculation, used as a basis for gaussian_pdfs_log function
-
         :param x: tensor of shape [batch_size, self.zd_dim]
         :param mu: mean for the cluster distribution
         :param log_sigma2: variance parameters of the cluster distribtion
