@@ -8,7 +8,7 @@ from libdg.algos.trainers.a_trainer import TrainerClassif
 import torch.optim as optim
 from tensorboardX import SummaryWriter
 from sklearn.manifold import TSNE
-from domid.trainers.pretraining import pretraining
+from domid.trainers.pretraining import Pretraining
 
 
 
@@ -24,25 +24,20 @@ class TrainerVADE(TrainerClassif):
         self.epo_loss_tr = 0
         #breakpoint()
         counter = 0
-        mse_n = 2
-        # if epoch<10 (make a differnet file)
-        #MSE loss - loss = self.MSE_cal_loss
-        p = pretraining(self.model, self.device, self.optimizer, self.epo_loss_tr, self.loader_tr)
-        for _, (tensor_x, vec_y, vec_d) in enumerate(self.loader_tr):
+
+        for k, (tensor_x, vec_y, vec_d) in enumerate(self.loader_tr):
             tensor_x, vec_y, vec_d = \
                 tensor_x.to(self.device), vec_y.to(self.device), vec_d.to(self.device)
             self.optimizer.zero_grad()
-            if epoch < mse_n:
-                loss = p.pretrain_loss(tensor_x, mse_n, epoch)
-            else:
-                loss = self.model.cal_loss(tensor_x)
+
+            loss = self.model.cal_loss(tensor_x)
 
             loss = loss.sum()
             loss.backward()
             self.optimizer.step()
             self.epo_loss_tr += loss.detach().item()
-        if epoch < mse_n:
-            p.GMM_fit()
+
+
 
             # if epoch == 10:
             #     #self.writer.add_embedding(tsne, metadata = meta, label_img=tensor_x)
@@ -54,12 +49,6 @@ class TrainerVADE(TrainerClassif):
             #
             #     self.writer.add_embedding(z_mu, label_img=x_pro)
             #
-
-
-
-            #print('Shapes for epcoh', counter, epoch, pred.shape, pi.shape, mu.shape, sigma.shape, yita.shape, x_pro.shape)
-            counter += 1
-        flag_stop = self.observer.update(epoch)  # notify observer
 
 
 

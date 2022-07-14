@@ -6,7 +6,7 @@ import torch.optim as optim
 from libdg.algos.trainers.a_trainer import TrainerClassif
 
 from domid.utils.perf_cluster import PerfCluster
-from domid.trainers.pretraining import pretraining
+from domid.trainers.pretraining import Pretraining
 
 
 class TrainerVADE(TrainerClassif):
@@ -47,7 +47,7 @@ class TrainerVADE(TrainerClassif):
 
         # if epoch>mse_n-2:
         #     self.LR = 0.0000001
-        p = pretraining(self.model, self.device, self.optimizer, self.epo_loss_tr, self.loader_tr)
+        p = Pretraining(self.model, self.device, self.loader_tr)
         for i, (tensor_x, vec_y, vec_d) in enumerate(self.loader_tr):
             tensor_x, vec_y, vec_d = \
                 tensor_x.to(self.device), vec_y.to(self.device), vec_d.to(self.device)
@@ -55,7 +55,7 @@ class TrainerVADE(TrainerClassif):
                 loss = p.pretrain_loss(tensor_x, mse_n,epoch)
             else:
                 loss = self.model.cal_loss(tensor_x)
-
+            self.optimizer.zero_grad()
             loss = loss.sum()
             # print("LOSS back", loss)
             loss.backward()
@@ -66,6 +66,39 @@ class TrainerVADE(TrainerClassif):
         if epoch<mse_n:
             p.GMM_fit()
 
+        import matplotlib.pyplot as plt
+        preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = self.model._inference(tensor_x)
+        z_mu = z_mu.detach().cpu().numpy()
+        z_sigma2_log = z_sigma2_log.detach().cpu().numpy()
+        z = z.detach().cpu().numpy()
+        log_sigma2_c = log_sigma2_c.detach().cpu().numpy()
+        pi = pi.detach().cpu().numpy()
+        mu_c = mu_c.detach().cpu().numpy()
+
+        plt.figure()
+        plt.subplot(1, 6, 1)
+        plt.imshow(z_mu)
+        plt.title('Z mu')
+        plt.subplot(1, 6, 2)
+        plt.imshow(z_sigma2_log)
+        plt.title('Z sigma2 log')
+        plt.subplot(1, 6, 3)
+        plt.imshow(z)
+        plt.title('Z')
+        plt.subplot(1, 6, 4)
+        plt.imshow(mu_c)
+        plt.title('Mu c')
+        plt.subplot(1, 6, 5)
+        plt.imshow(log_sigma2_c)
+        plt.title('log sigma c')
+        plt.subplot(1, 6, 6)
+        plt.plot(pi)
+        plt.title('pi')
+        plt.show()
+
+        # print('Shapes for epcoh', counter, epoch, pred.shape, pi.shape, mu.shape, sigma.shape, yita.shape, x_pro.shape)
+        counter += 1
+        flag_stop = self.observer.update(epoch)  # notify observer
 
         preds, z_mu, z, _, _, x_pro = self.model.infer_d_v_2(tensor_x)
         name = "Output of the decoder" + str(epoch)
