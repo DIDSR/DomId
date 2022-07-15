@@ -42,7 +42,7 @@ class TrainerVADE(TrainerClassif):
         self.model.train()
         self.epo_loss_tr = 0
         #breakpoint()
-        mse_n =5 # FIXME: maybe have a command line argument to specify mse_n and elbo_n
+        mse_n =5# FIXME: maybe have a command line argument to specify mse_n and elbo_n
         elbo_n = 300
 
         # if epoch>mse_n-2:
@@ -51,11 +51,12 @@ class TrainerVADE(TrainerClassif):
         for i, (tensor_x, vec_y, vec_d) in enumerate(self.loader_tr):
             tensor_x, vec_y, vec_d = \
                 tensor_x.to(self.device), vec_y.to(self.device), vec_d.to(self.device)
+            self.optimizer.zero_grad()
             if epoch<mse_n:
                 loss = p.pretrain_loss(tensor_x, mse_n,epoch)
             else:
                 loss = self.model.cal_loss(tensor_x)
-            self.optimizer.zero_grad()
+
             loss = loss.sum()
             # print("LOSS back", loss)
             loss.backward()
@@ -64,7 +65,10 @@ class TrainerVADE(TrainerClassif):
             self.epo_loss_tr += loss.cpu().detach().item()
 
         if epoch<mse_n:
-            p.GMM_fit()
+            gmm = p.GMM_fit()
+            self.model.pi_.data = torch.from_numpy(gmm.weights_).to(self.device).float()
+            self.model.mu_c.data = torch.from_numpy(gmm.means_).to(self.device).float()
+            self.model.log_sigma2_c.data = torch.log(torch.from_numpy(gmm.covariances_)).to(self.device).float()
 
         import matplotlib.pyplot as plt
         preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = self.model._inference(tensor_x)
@@ -73,31 +77,34 @@ class TrainerVADE(TrainerClassif):
         z = z.detach().cpu().numpy()
         log_sigma2_c = log_sigma2_c.detach().cpu().numpy()
         pi = pi.detach().cpu().numpy()
+        print('sum of weights', torch.sum(self.model.encoder.mu_layer.weight.data))
         mu_c = mu_c.detach().cpu().numpy()
-
-        plt.figure()
-        plt.subplot(1, 6, 1)
+        print('PARAMETERS', pi, mu_c, log_sigma2_c)
+        plt.figure(dpi = 800)
+        plt.subplot(6,1, 1)
         plt.imshow(z_mu)
-        plt.title('Z mu')
-        plt.subplot(1, 6, 2)
+        plt.title('Z mu', fontsize=8)
+        plt.subplot(6,1, 2)
+
+
         plt.imshow(z_sigma2_log)
-        plt.title('Z sigma2 log')
-        plt.subplot(1, 6, 3)
+        plt.title('Z sigma2 log', fontsize=8)
+        plt.subplot(6,1, 3)
         plt.imshow(z)
-        plt.title('Z')
-        plt.subplot(1, 6, 4)
+        plt.title('Z', fontsize=8)
+        plt.subplot(6,1, 4)
         plt.imshow(mu_c)
-        plt.title('Mu c')
-        plt.subplot(1, 6, 5)
+        plt.title('Mu c', fontsize=8)
+        plt.subplot(6,1, 5)
         plt.imshow(log_sigma2_c)
-        plt.title('log sigma c')
-        plt.subplot(1, 6, 6)
+        plt.title('log sigma c', fontsize=8)
+        plt.subplot(6,1, 6)
         plt.plot(pi)
-        plt.title('pi')
-        plt.show()
+        plt.title('pi', fontsize=8)
+        plt.savefig('figures/'+str(epoch))
 
         # print('Shapes for epcoh', counter, epoch, pred.shape, pi.shape, mu.shape, sigma.shape, yita.shape, x_pro.shape)
-        counter += 1
+
         flag_stop = self.observer.update(epoch)  # notify observer
 
         preds, z_mu, z, _, _, x_pro = self.model.infer_d_v_2(tensor_x)

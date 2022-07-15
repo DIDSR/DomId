@@ -104,9 +104,9 @@ class UnFlatten(nn.Module):
     def __init__(self, filter3):
         super(UnFlatten, self).__init__()
         self.filter3 = filter3
-        print(self.filter3)
+
     def forward(self, input):
-        filter_size = self.filter3 #FIXME same as filter 3
+        filter_size = self.filter3
         n = int(np.sqrt(input.shape[1]/filter_size))
         return input.view(input.size(0), filter_size, 3, 3)#FIXME (3,3)
 
@@ -156,7 +156,7 @@ class ConvolutionalDecoder(nn.Module):
 
         # h_filter = get_output_shape(UnFlatten(), (batch_size, h_dim))#batch size!!!!!!!!!
         # print(h_filter)
-        self.unflat = UnFlatten(128) #FIXME 
+        self.unflat = UnFlatten(features_dim[-1])
         self.decod = nn.Sequential(
 
             *cnn_decoding_block(features_dim[-1], features_dim[1], kernel_size=(4, 4)),
@@ -277,7 +277,6 @@ class ModelVaDECNN(nn.Module):
         """
         preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = self._inference(x)
         eps = 1e-10
-
         L_rec = 0.0
         for l in range(L):
             z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu  # shape [batch_size, self.zd_dim]
@@ -287,10 +286,11 @@ class ModelVaDECNN(nn.Module):
             )  # TODO: this is the reconstruction loss for a binary-valued x (such as MNIST digits); need to implement another version for a real-valued x.
 
         L_rec /= L
+
         Loss = L_rec * x.size(1)
         # doesn't take the mean over the channels; i.e., the recon loss is taken as an average over (batch size * L * width * height)
         # --> this is the -"first line" of eq (12) in the paper with additional averaging over the batch.
-
+        print('chepoint 1', Loss)
         Loss += 0.5 * torch.mean(
             torch.sum(
                 probs
@@ -309,10 +309,14 @@ class ModelVaDECNN(nn.Module):
         # the next sum is over d_dim dimensions
         # the mean is over the batch
         # --> overall, this is -"second line of eq. (12)" with additional mean over the batch
-
+        print('Checkpoint 2' , Loss)
         Loss -= torch.mean(torch.sum(probs * torch.log(pi.unsqueeze(0) / (probs + eps)), 1))  # FIXME: (+eps) is a hack to avoid NaN. Is there a better way?
         # dimensions: [batch_size, d_dim] * log([1, d_dim] / [batch_size, d_dim]), where the sum is over d_dim dimensions --> [batch_size] --> mean over the batch --> a scalar
+        print('chepoint 3', Loss)
         Loss -= 0.5 * torch.mean(torch.sum(1.0 + z_sigma2_log, 1))
+        print('chepoint 4', Loss)
+        print('_________________________________')
+
         # dimensions: mean( sum( [batch_size, zd_dim], 1 ) ) where the sum is over zd_dim dimensions and mean over the batch
         # --> overall, this is -"third line of eq. (12)" with additional mean over the batch
 

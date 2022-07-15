@@ -28,7 +28,7 @@ class Pretraining():
             #print("LOOOOSSS", loss)
 
     def GMM_fit(self ):
-        print('PIIII', self.model.log_sigma2_c.data)
+        #print('PIIII', self.model.log_sigma2_c.data)
         # During pre-training we estimate pi, mu_c, and log_sigma2_c with a GMM at the end of each epoch.
         # After pre-training these initial parameter values are used in the calculation of the ELBO loss,
         # and are further updated with backpropagation like all other neural network weights.
@@ -52,9 +52,7 @@ class Pretraining():
         # gmm = gmm.fit(Z) #FIXME
         # print(gmm.weights_[1:3], '\n', gmm.means_[0, 1:3])
 
-        self.model.pi_.data = torch.from_numpy(gmm.weights_).to(self.device).float()
-        self.model.mu_c.data = torch.from_numpy(gmm.means_).to(self.device).float()
-        self.model.log_sigma2_c.data = torch.log(torch.from_numpy(gmm.covariances_)).to(self.device).float()
+        return gmm
 
 
 

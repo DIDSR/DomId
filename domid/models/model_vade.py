@@ -111,31 +111,9 @@ class ModelVaDE(nn.Module):
         :return tensor logits: Tensor where each column contains the log-probability p(c)p(z|c) for cluster c=0,...,self.d_dim-1 (shape: [batch_size, self.d_dim]).
         """
 
-        #breakpoint()
         z_mu, z_sigma2_log = self.encoder(x)
-        import matplotlib.pyplot as plt
-        import io
-        counter =0
 
-
-        #fig, ax = plt.subplots(nrows=1, ncols=1)  # create figure & 1 axis
-        #ax.imshow(z_mu)
-
-        # Convert the figure to numpy array, read the pixel values and reshape the array
-        #img = np.fromstring(plt.canvas.tostring_rgb(), dtype=np.uint8, sep='')
-        #img = img.reshape(plt.canvas.get_width_height()[::-1] + (3,))
-
-        # Normalize into 0-1 range for TensorBoard(X). Swap axes for newer versions where API expects colors in first dim
-        #img = img / 255.0
-
-
-        #self.wr.add_image('Zmu'+str(counter), z_mu.unsqueeze(0),0)
-        #self.wr.add_scalar('counter', counter, counter)
-        counter+=1
         z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
-        #print(z_sigma2_log[1, :])
-
-
         pi = self.pi_
         mu_c = self.mu_c
         log_sigma2_c = self.log_sigma2_c
@@ -195,7 +173,7 @@ class ModelVaDE(nn.Module):
         for l in range(L):
             z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu  # shape [batch_size, self.zd_dim]
             x_pro = self.decoder(z)
-            L_rec += F.cross_entropy(
+            L_rec += F.binary_cross_entropy(
                 x_pro, x
             )  # TODO: this is the reconstruction loss for a binary-valued x (such as MNIST digits); need to implement another version for a real-valued x.
 
@@ -216,6 +194,9 @@ class ModelVaDE(nn.Module):
                 1,
             )
         )
+       # Loss += 0.5 * torch.mean(torch.sum(probs * torch.sum(log_sigma2_c.unsqueeze(0) + torch.exp(z_sigma2_log.unsqueeze(1) - log_sigma2_c.unsqueeze(0)) + (z_mu.unsqueeze(1) - mu_c.unsqueeze(0)).pow(2) / torch.exp(log_sigma2_c.unsqueeze(0)), 2, ),))
+        if torch.isnan(Loss):
+            breakpoint()
         # inner sum dimentions:
         # [1, d_dim, zd_dim] + exp([batch_size, 1, zd_dim] - [1, d_dim, zd_dim]) + ([batch_size, 1, zd_dim] - [1, d_dim, zd_dim])^2 / exp([1, d_dim, zd_dim])
         # = [batch_size, d_dim, zd_dim] -> sum of zd_dim dimensions
@@ -228,7 +209,7 @@ class ModelVaDE(nn.Module):
         Loss -= 0.5 * torch.mean(torch.sum(1.0 + z_sigma2_log, 1))
         # dimensions: mean( sum( [batch_size, zd_dim], 1 ) ) where the sum is over zd_dim dimensions and mean over the batch
         # --> overall, this is -"third line of eq. (12)" with additional mean over the batch
-
+        print('loss', Loss)
         return Loss
 
     def gaussian_pdfs_log(self, x, mus, log_sigma2s):
