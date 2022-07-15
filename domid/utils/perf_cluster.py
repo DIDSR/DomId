@@ -119,7 +119,8 @@ class PerfCluster(PerfClassif):
 
                 cluster_pred_scalar = pred.cpu().numpy().argmax(axis=1)
                 cluster_true_scalar = d_s.cpu().numpy().argmax(axis=1)
-                cost = cost - confusion_matrix(cluster_pred_scalar, cluster_true_scalar)
+                cost = cost - confusion_matrix(cluster_pred_scalar, cluster_true_scalar,
+                                               labels=list(range(model_local.d_dim)))
 
                 list_vec_preds.append(pred)
                 list_vec_labels.append(d_s)
