@@ -66,7 +66,7 @@ class TrainerVADE(TrainerClassif):
 
         if epoch<mse_n:
             gmm = p.GMM_fit()
-            self.model.pi_.data = torch.from_numpy(gmm.weights_).to(self.device).float()
+            self.model.log_pi.data = torch.from_numpy(np.log(gmm.weights_)).to(self.device).float()
             self.model.mu_c.data = torch.from_numpy(gmm.means_).to(self.device).float()
             self.model.log_sigma2_c.data = torch.log(torch.from_numpy(gmm.covariances_)).to(self.device).float()
 

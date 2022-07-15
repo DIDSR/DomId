@@ -91,8 +91,8 @@ class ModelVaDE(nn.Module):
         self.encoder = LinearEncoder(zd_dim=zd_dim, input_dim=(i_h, i_w)).to(device)
         self.decoder = LinearDecoder(zd_dim=zd_dim, input_dim=(i_h, i_w)).to(device)
 
-        self.pi_ = nn.Parameter(torch.FloatTensor(self.d_dim,).fill_(1) / self.d_dim,
-                                requires_grad=True)
+        self.log_pi = nn.Parameter(torch.FloatTensor(self.d_dim,).fill_(1.0/self.d_dim).log(),
+                                   requires_grad=True)
         self.mu_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
         self.log_sigma2_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
         self.wr =  SummaryWriter(logdir="inference_fun/")
@@ -114,7 +114,7 @@ class ModelVaDE(nn.Module):
         z_mu, z_sigma2_log = self.encoder(x)
 
         z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
-        pi = self.pi_
+        pi = self.log_pi.exp()
         mu_c = self.mu_c
         log_sigma2_c = self.log_sigma2_c
 
