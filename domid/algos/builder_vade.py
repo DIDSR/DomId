@@ -26,7 +26,7 @@ class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
                           i_h = task.isize.h, i_w = task.isize.w)
         observer = ObVisitorCleanUp(
             ObVisitorClusteringOnly(exp, MSelOracleVisitor(MSelTrLoss(max_es=args.es)), device))
-        writer = SummaryWriter(logdir="debug/"+str(args.lr))
+        writer = SummaryWriter(logdir="debug/"+'0.0001elbolossdev10')
         trainer = TrainerVADE(model, task, observer, device, writer, aconf=args)
 
         return trainer

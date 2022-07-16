@@ -281,16 +281,15 @@ class ModelVaDECNN(nn.Module):
         for l in range(L):
             z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu  # shape [batch_size, self.zd_dim]
             x_pro = self.decoder(z)
-            L_rec += F.binary_cross_entropy(
-                x_pro, x
-            )  # TODO: this is the reconstruction loss for a binary-valued x (such as MNIST digits); need to implement another version for a real-valued x.
+            L_rec += F.binary_cross_entropy(x_pro, x)
+            # TODO: this is the reconstruction loss for a binary-valued x (such as MNIST digits); need to implement another version for a real-valued x.
 
         L_rec /= L
 
         Loss = L_rec * x.size(1)
         # doesn't take the mean over the channels; i.e., the recon loss is taken as an average over (batch size * L * width * height)
         # --> this is the -"first line" of eq (12) in the paper with additional averaging over the batch.
-        print('chepoint 1', Loss)
+        #print('chepoint 1', Loss)
         Loss += 0.5 * torch.mean(
             torch.sum(
                 probs
@@ -309,13 +308,13 @@ class ModelVaDECNN(nn.Module):
         # the next sum is over d_dim dimensions
         # the mean is over the batch
         # --> overall, this is -"second line of eq. (12)" with additional mean over the batch
-        print('Checkpoint 2' , Loss)
+        #print('Checkpoint 2' , Loss)
         Loss -= torch.mean(torch.sum(probs * torch.log(pi.unsqueeze(0) / (probs + eps)), 1))  # FIXME: (+eps) is a hack to avoid NaN. Is there a better way?
         # dimensions: [batch_size, d_dim] * log([1, d_dim] / [batch_size, d_dim]), where the sum is over d_dim dimensions --> [batch_size] --> mean over the batch --> a scalar
-        print('chepoint 3', Loss)
+        #print('chepoint 3', Loss)
         Loss -= 0.5 * torch.mean(torch.sum(1.0 + z_sigma2_log, 1))
-        print('chepoint 4', Loss)
-        print('_________________________________')
+        #print('chepoint 4', Loss)
+        #print('_________________________________')
 
         # dimensions: mean( sum( [batch_size, zd_dim], 1 ) ) where the sum is over zd_dim dimensions and mean over the batch
         # --> overall, this is -"third line of eq. (12)" with additional mean over the batch

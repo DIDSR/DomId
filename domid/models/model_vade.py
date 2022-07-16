@@ -112,8 +112,8 @@ class ModelVaDE(nn.Module):
         """
 
         z_mu, z_sigma2_log = self.encoder(x)
-
-        z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
+        det = 1e-10
+        z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu + det
         pi = self.log_pi.exp()
         mu_c = self.mu_c
         log_sigma2_c = self.log_sigma2_c
@@ -168,17 +168,19 @@ class ModelVaDE(nn.Module):
         """
         preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = self._inference(x)
         eps = 1e-10
-
+        det = 1e-10
         L_rec = 0.0
         for l in range(L):
-            z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu  # shape [batch_size, self.zd_dim]
+            z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu+det # shape [batch_size, self.zd_dim]
             x_pro = self.decoder(z)
-            L_rec += F.binary_cross_entropy(
-                x_pro, x
-            )  # TODO: this is the reconstruction loss for a binary-valued x (such as MNIST digits); need to implement another version for a real-valued x.
-
+            # L_rec += F.binary_cross_entropy(
+            #     x_pro, x
+            # )  # TODO: this is the reconstruction loss for a binary-valued x (such as MNIST digits); need to implement another version for a real-valued x.
+            #breakpoint()
+            L_rec+=F.binary_cross_entropy(x_pro, x)
         L_rec /= L
         Loss = L_rec * x.size(1)
+        #print('checkpoint 1', Loss)
         # doesn't take the mean over the channels; i.e., the recon loss is taken as an average over (batch size * L * width * height)
         # --> this is the -"first line" of eq (12) in the paper with additional averaging over the batch.
 
@@ -195,6 +197,8 @@ class ModelVaDE(nn.Module):
             )
         )
        # Loss += 0.5 * torch.mean(torch.sum(probs * torch.sum(log_sigma2_c.unsqueeze(0) + torch.exp(z_sigma2_log.unsqueeze(1) - log_sigma2_c.unsqueeze(0)) + (z_mu.unsqueeze(1) - mu_c.unsqueeze(0)).pow(2) / torch.exp(log_sigma2_c.unsqueeze(0)), 2, ),))
+        #print('checkpoint 2', Loss)
+
         if torch.isnan(Loss):
             breakpoint()
         # inner sum dimentions:
@@ -206,11 +210,13 @@ class ModelVaDE(nn.Module):
 
         Loss -= torch.mean(torch.sum(probs * torch.log(pi.unsqueeze(0) / (probs + eps)), 1))  # FIXME: (+eps) is a hack to avoid NaN. Is there a better way?
         # dimensions: [batch_size, d_dim] * log([1, d_dim] / [batch_size, d_dim]), where the sum is over d_dim dimensions --> [batch_size] --> mean over the batch --> a scalar
+        #print('checkpoint 3', Loss)
         Loss -= 0.5 * torch.mean(torch.sum(1.0 + z_sigma2_log, 1))
+        #print('checkpoint 4', Loss)
         # dimensions: mean( sum( [batch_size, zd_dim], 1 ) ) where the sum is over zd_dim dimensions and mean over the batch
         # --> overall, this is -"third line of eq. (12)" with additional mean over the batch
-        print('loss', Loss)
-        return Loss
+        #print('loss', Loss)
+        return Loss/100
 
     def gaussian_pdfs_log(self, x, mus, log_sigma2s):
         """helper function

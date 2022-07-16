@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.mixture import GaussianMixture
 import torch
 import torch.optim as optim
-
+from domid.utils.perf_cluster import PerfCluster
 class Pretraining():
     def __init__(self, model, device, loader_tr):
         #super().__init__(tensor_x, mse_n, epoch, model, device, optimizer)
@@ -18,7 +18,7 @@ class Pretraining():
         #print('i was in pretrain epoch')
         tensor_x = tensor_x.to(self.device)
 
-        assert epoch<mse_n
+        #assert epoch<mse_n
 
         loss = self.model.pretrain_loss(tensor_x)
 
@@ -49,10 +49,16 @@ class Pretraining():
         gmm = GaussianMixture(n_components=self.model.d_dim, covariance_type='diag', reg_covar=10 ** -5)
         # breakpoint()
         pre = gmm.fit_predict(Z)
+        self.model.log_pi.data = torch.from_numpy(np.log(gmm.weights_)).to(self.device).float()
+        self.model.mu_c.data = torch.from_numpy(gmm.means_).to(self.device).float()
+        self.model.log_sigma2_c.data = torch.log(torch.from_numpy(gmm.covariances_)).to(self.device).float()
         # gmm = gmm.fit(Z) #FIXME
         # print(gmm.weights_[1:3], '\n', gmm.means_[0, 1:3])
 
         return gmm
+    def epoch_val_acc(self):
+        acc, conf = PerfCluster.cal_acc(self.model, self.loader_tr, self.device, max_batches=None) #FIXME change to validation loader
+        return acc, conf
 
 
 
