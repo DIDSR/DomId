@@ -60,7 +60,7 @@ class NodeTaskMNIST(NodeTaskMNISTColor10):
 def test_fun():
     from libdg.arg_parser import mk_parser_main
     parser = mk_parser_main()
-    args = parser.parse_args(["--te_d", "0", "--dpath", "zout"])
+    args = parser.parse_args(["--te_d", "0", "--dpath", "zout", "--split", "0.2"])
     node = NodeTaskMNIST()
     node.get_list_domains()
     node.list_str_y

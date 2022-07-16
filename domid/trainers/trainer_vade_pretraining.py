@@ -1,3 +1,4 @@
+import itertools
 import numpy as np
 from sklearn.mixture import GaussianMixture
 import torch
@@ -10,11 +11,17 @@ from domid.trainers.pretraining import Pretraining
 
 
 class TrainerVADE(TrainerClassif):
-    def __init__(self, model, task, observer, device, writer, aconf=None):
+    def __init__(self, model, task, observer, device, writer, pretrain=True, aconf=None):
         super().__init__(model, task, observer, device, aconf)
 
+        self.pretrain = pretrain
+        self.pretraining_finished = not self.pretrain
         self.LR = aconf.lr
-        self.optimizer = optim.Adam(self.model.parameters(), lr=aconf.lr)
+
+        if not self.pretraining_finished:
+            self.optimizer = optim.Adam(itertools.chain(self.model.encoder.parameters(), self.model.decoder.parameters()), lr=self.LR)
+        else:
+            self.optimizer = optim.Adam(self.model.parameters(), lr=self.LR)
 
         self.epo_loss_tr = None
         self.writer = writer
@@ -76,6 +83,13 @@ class TrainerVADE(TrainerClassif):
             if acc_d<self.thres:
                 loss = p.pretrain_loss(tensor_x, mse_n,epoch)
             else:
+                if not self.pretraining_finished:
+                    self.pretraining_finished = True
+                    # reset the optimizer
+                    self.optimizer = optim.Adam(self.model.parameters(), lr=self.LR)
+                    print("##############################################################")
+                    print("Epoch {}: Finished pretraining and starting to use ELBO loss.".format(epoch))
+                    print("##############################################################")
 
                 #print('elbo LOSS______________________________')
                 loss = self.model.cal_loss(tensor_x)
