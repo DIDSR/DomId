@@ -49,7 +49,7 @@ class Pretraining():
         gmm = GaussianMixture(n_components=self.model.d_dim, covariance_type='diag', reg_covar=10 ** -5)
         # breakpoint()
         pre = gmm.fit_predict(Z)
-        self.model.log_pi.data = torch.from_numpy(np.log(gmm.weights_)).to(self.device).float()
+        self.model.log_pi.data = torch.log(torch.from_numpy(gmm.weights_)).to(self.device).float()
         self.model.mu_c.data = torch.from_numpy(gmm.means_).to(self.device).float()
         self.model.log_sigma2_c.data = torch.log(torch.from_numpy(gmm.covariances_)).to(self.device).float()
         # gmm = gmm.fit(Z) #FIXME

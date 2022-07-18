@@ -20,6 +20,7 @@ class TrainerVADE(TrainerClassif):
 
         if not self.pretraining_finished:
             self.optimizer = optim.Adam(itertools.chain(self.model.encoder.parameters(), self.model.decoder.parameters()), lr=self.LR)
+            print("".join(["#"]*60) + "\nPretraining initialized.\n" + "".join(["#"]*60))
         else:
             self.optimizer = optim.Adam(self.model.parameters(), lr=self.LR)
 
@@ -47,6 +48,7 @@ class TrainerVADE(TrainerClassif):
 
 
     def tr_epoch(self, epoch):
+        print("Epoch {}. ELBO loss".format(epoch)) if self.pretraining_finished else print("Epoch {}. MSE loss".format(epoch))
         print('LEARNING RATE', self.LR)
         # print("Model's state_dict:")
         # for param_tensor in self.model.state_dict():
@@ -111,7 +113,9 @@ class TrainerVADE(TrainerClassif):
         #
         # import matplotlib.pyplot as plt
         #
-        # preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = self.model._inference(tensor_x)
+        preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = self.model._inference(tensor_x)
+        print("pi:")
+        print(pi.cpu().detach().numpy())
         # z_mu = z_mu.detach().cpu().numpy()
         # z_sigma2_log = z_sigma2_log.detach().cpu().numpy()
         # z = z.detach().cpu().numpy()

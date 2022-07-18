@@ -114,7 +114,7 @@ class ModelVaDE(nn.Module):
         z_mu, z_sigma2_log = self.encoder(x)
         det = 1e-10
         z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu + det
-        pi = self.log_pi.exp()
+        pi = F.softmax(self.log_pi, dim=0)
         mu_c = self.mu_c
         log_sigma2_c = self.log_sigma2_c
 
