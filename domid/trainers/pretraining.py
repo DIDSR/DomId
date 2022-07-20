@@ -42,11 +42,13 @@ class Pretraining():
                 preds, z_mu, z, *_ = self.model.infer_d_v_2(tensor_x)
                 z = z.detach().cpu().numpy() #[batch_size, zd_dim]
                 #print('ZZZZZ', z)
+
+                #print(Z.shape, counter, counter+z.shape[0])
                 Z[counter:counter+z.shape[0], :] = z
                 counter += z.shape[0]
 
         #breakpoint()
-        gmm = GaussianMixture(n_components=self.model.d_dim, covariance_type='diag', reg_covar=10 ** -5)
+        gmm = GaussianMixture(n_components=self.model.d_dim, covariance_type='diag', reg_covar = 10 ** -5) #, reg_covar=10)
         # breakpoint()
         pre = gmm.fit_predict(Z)
         self.model.log_pi.data = torch.log(torch.from_numpy(gmm.weights_)).to(self.device).float()

@@ -26,9 +26,10 @@ class TrainerVADE(TrainerClassif):
 
         self.epo_loss_tr = None
         self.writer = writer
-        self.thres = 0.7
+        self.thres = 0.85
 
-        #self.scheduler = torch.optim.lr_scheduler.StepLR(self.optimizer, step_size=2, gamma=0.1)
+
+        #self.scheduler = torch.optim.lr_scheduler.StepLR(self.optimizer, step_size=2, gamma=0.95)
         # step_size = 10, gamma = 0.95
         #optimizer Adam
 
@@ -49,7 +50,7 @@ class TrainerVADE(TrainerClassif):
 
     def tr_epoch(self, epoch):
         print("Epoch {}. ELBO loss".format(epoch)) if self.pretraining_finished else print("Epoch {}. MSE loss".format(epoch))
-        print('LEARNING RATE', self.LR)
+        #print('LEARNING RATE', self.LR)
         # print("Model's state_dict:")
         # for param_tensor in self.model.state_dict():
         #     print(param_tensor, "\t", self.model.state_dict()[param_tensor].size())
@@ -89,6 +90,8 @@ class TrainerVADE(TrainerClassif):
                     self.pretraining_finished = True
                     # reset the optimizer
                     self.optimizer = optim.Adam(self.model.parameters(), lr=self.LR)
+                    #self.scheduler = torch.optim.lr_scheduler.StepLR(self.optimizer, step_size=15, gamma=0.95)
+                    self.LR = self.LR*10
                     print("##############################################################")
                     print("Epoch {}: Finished pretraining and starting to use ELBO loss.".format(epoch))
                     print("##############################################################")
@@ -97,25 +100,29 @@ class TrainerVADE(TrainerClassif):
                 loss = self.model.cal_loss(tensor_x)
                 self.thres = -1
 
+
+                #print("PRINT LR", self.scheduler.print_lr())
             loss = loss.sum()
             # print("LOSS back", loss)
             loss.backward()
             self.optimizer.step()
-            # self.scheduler.step()
             self.epo_loss_tr += loss.cpu().detach().item()
+
+        print('LEARNING RATE Value', self.LR)
 
         if acc_d<self.thres:
             gmm = p.GMM_fit()
 
-
-        #
-        #
-        #
-        # import matplotlib.pyplot as plt
-        #
         preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = self.model._inference(tensor_x)
         print("pi:")
         print(pi.cpu().detach().numpy())
+        # if self.pretraining_finished == True:
+        #     self.scheduler.step()
+        #     print('learning rate', self.scheduler.get_lr()[0])
+
+
+        #self.scheduler.step()
+
         # z_mu = z_mu.detach().cpu().numpy()
         # z_sigma2_log = z_sigma2_log.detach().cpu().numpy()
         # z = z.detach().cpu().numpy()

@@ -112,8 +112,7 @@ class ModelVaDE(nn.Module):
         """
 
         z_mu, z_sigma2_log = self.encoder(x)
-        det = 1e-10
-        z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu + det
+        z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
         pi = F.softmax(self.log_pi, dim=0)
         mu_c = self.mu_c
         log_sigma2_c = self.log_sigma2_c
@@ -168,10 +167,10 @@ class ModelVaDE(nn.Module):
         """
         preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = self._inference(x)
         eps = 1e-10
-        det = 1e-10
+        L=15
         L_rec = 0.0
         for l in range(L):
-            z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu+det # shape [batch_size, self.zd_dim]
+            z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu # shape [batch_size, self.zd_dim]
             x_pro = self.decoder(z)
             # L_rec += F.binary_cross_entropy(
             #     x_pro, x
@@ -216,7 +215,7 @@ class ModelVaDE(nn.Module):
         # dimensions: mean( sum( [batch_size, zd_dim], 1 ) ) where the sum is over zd_dim dimensions and mean over the batch
         # --> overall, this is -"third line of eq. (12)" with additional mean over the batch
         #print('loss', Loss)
-        return Loss/100
+        return Loss
 
     def gaussian_pdfs_log(self, x, mus, log_sigma2s):
         """helper function

@@ -30,7 +30,7 @@ class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
             zd_dim=zd_dim, d_dim=d_dim, device=device, i_c=task.isize.c, i_h=task.isize.h, i_w=task.isize.w
         )
         observer = ObVisitorCleanUp(ObVisitorClusteringOnly(exp, MSelOracleVisitor(MSelTrLoss(max_es=args.es)), device))
-        writer = SummaryWriter(logdir="CNN/" + str(lr))
+        writer = SummaryWriter(logdir="CNN/" + str(now))
         trainer = TrainerVADE(model, task, observer, device, writer, aconf=args)
 
         return trainer

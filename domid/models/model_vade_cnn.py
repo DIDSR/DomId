@@ -91,6 +91,13 @@ def cnn_encoding_block(in_c, out_c, kernel_size=(4,4), stride=2, padding=1):
         nn.LeakyReLU() #negative slope
     ]
     return layers
+def cnn_encoding_block(in_c, out_c, kernel_size=(4,4), stride=2, padding=1):
+
+    nn.Conv2d(in_c, out_c, kernel_size, stride, padding)
+    nn.BatchNorm2d(out_c)
+    nn.LeakyReLU() #negative slope
+
+
 
 def cnn_decoding_block(in_c, out_c, kernel_size=(3,3), stride=2, padding=1):
     layers = [
@@ -107,11 +114,11 @@ class UnFlatten(nn.Module):
 
     def forward(self, input):
         filter_size = self.filter3
-        n = int(np.sqrt(input.shape[1]/filter_size))
-        return input.view(input.size(0), filter_size, 3, 3)#FIXME (3,3)
+        N = int(np.sqrt(input.shape[1]/filter_size))
+        return input.view(input.size(0), filter_size, N, N)#FIXME (3,3)
 
 class ConvolutionalEncoder(nn.Module):
-    def __init__(self, zd_dim, input_dim=3, features_dim=[32, 64, 128], i_w=28, i_h=28):
+    def __init__(self, zd_dim, input_dim=3, features_dim=[32, 64, 128, 256], i_w=28, i_h=28):
         """
         VAE Encoder
         :param zd_dim: dimension of the latent space
@@ -120,13 +127,23 @@ class ConvolutionalEncoder(nn.Module):
         """
         super(ConvolutionalEncoder, self).__init__()
         self.input_dim = np.prod(input_dim)
-        self.encod = nn.Sequential(
-            *cnn_encoding_block(input_dim, features_dim[0]),
-            *cnn_encoding_block(features_dim[0], features_dim[1]),
-            *cnn_encoding_block(features_dim[1], features_dim[2]),
-            nn.Flatten()  # [batch size, filter,3, 3, 3]
+        #breakpoint()
+        self.encod = nn.Sequential()
+        features_dim = [input_dim]+features_dim
+        k = [4, 4, 4, 4]
+        for i in range(len(features_dim)-1):
+            self.encod.append(nn.Conv2d(features_dim[i], features_dim[i+1],kernel_size=k[i], stride=2, padding=1))
+            self.encod.append(nn.BatchNorm2d(features_dim[i+1]))
+            self.encod.append(nn.LeakyReLU())
+        self.encod.append(nn.Flatten())
 
-        )
+        # self.encod = nn.Sequential(
+        #     *cnn_encoding_block(input_dim, features_dim[0]),
+        #     *cnn_encoding_block(features_dim[0], features_dim[1]),
+        #     *cnn_encoding_block(features_dim[1], features_dim[2]),
+        #     nn.Flatten()  # [batch size, filter,3, 3, 3]
+        #
+        # )
         self.h_dim = get_output_shape(self.encod, (3, input_dim, i_w, i_h))[1]
         self.mu_layer = nn.Linear(self.h_dim, zd_dim)
         self.log_sigma2_layer = nn.Linear(self.h_dim, zd_dim)
@@ -144,7 +161,7 @@ class ConvolutionalEncoder(nn.Module):
 
 
 class ConvolutionalDecoder(nn.Module):
-    def __init__(self, zd_dim, input_dim=3, features_dim=[32, 64, 128], h_dim =1152): #FIXME
+    def __init__(self, zd_dim, input_dim=3, features_dim=[32, 64, 128, 256]):
         """
         VAE Decoder
         :param zd_dim: dimension of the latent space
@@ -152,28 +169,40 @@ class ConvolutionalDecoder(nn.Module):
         :param features_dim: list of dimensions of the hidden layers
         """
         super(ConvolutionalDecoder, self).__init__()
-        self.linear = nn.Linear(zd_dim, h_dim)
+        e = ConvolutionalEncoder(zd_dim, input_dim=3, features_dim=features_dim)
+        self.linear = nn.Linear(zd_dim, e.h_dim)
 
         # h_filter = get_output_shape(UnFlatten(), (batch_size, h_dim))#batch size!!!!!!!!!
         # print(h_filter)
         self.unflat = UnFlatten(features_dim[-1])
-        self.decod = nn.Sequential(
-
-            *cnn_decoding_block(features_dim[-1], features_dim[1], kernel_size=(4, 4)),
-            *cnn_decoding_block(features_dim[1], features_dim[0], kernel_size=(5, 5)),
-            *cnn_decoding_block(features_dim[0], input_dim, kernel_size=(6, 6)),
-            nn.Sigmoid()
-        )
+        self.decod = nn.Sequential()
+        features_dim = [input_dim]+features_dim
+        features_dim.reverse()
+        #breakpoint()
+        k = [5, 5, 4, 4]
+        for i in range(len(features_dim)-1):
+            self.decod.append(nn.ConvTranspose2d(features_dim[i], features_dim[i+1], kernel_size = k[i], stride = 2, padding = 1))
+            self.decod.append(nn.BatchNorm2d(features_dim[i+1]))
+            self.decod.append(nn.LeakyReLU())
+        self.decod.append(nn.Sigmoid())
+        # self.decod = nn.Sequential(
+        #
+        #     *cnn_decoding_block(features_dim[-1], features_dim[1], kernel_size=(4, 4)),
+        #     *cnn_decoding_block(features_dim[1], features_dim[0], kernel_size=(5, 5)),
+        #     *cnn_decoding_block(features_dim[0], input_dim, kernel_size=(6, 6)),
+        #     nn.Sigmoid()
+        # )
 
     def forward(self, z):
         """
         :param z: latent space representation
         :return x_pro: reconstructed data, which is assumed to have 3 channels, but the channels are assumed to be equal to each other.
         """
+
         z = self.linear(z)
         z = self.unflat(z)
         x_pro = self.decod(z)
-
+        #print(x_pro.shape)
 
         return x_pro
 
@@ -278,10 +307,17 @@ class ModelVaDECNN(nn.Module):
         preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = self._inference(x)
         eps = 1e-10
         L_rec = 0.0
+        L = 5
         for l in range(L):
+            #xprint(l)
             z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu  # shape [batch_size, self.zd_dim]
             x_pro = self.decoder(z)
-            L_rec += F.binary_cross_entropy(x_pro, x)
+            #breakpoint()
+            try:
+                L_rec += F.binary_cross_entropy(x_pro, x)
+            except:
+                breakpoint()
+            #print(L_rec)
             # TODO: this is the reconstruction loss for a binary-valued x (such as MNIST digits); need to implement another version for a real-valued x.
 
         L_rec /= L
