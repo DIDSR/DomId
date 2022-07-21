@@ -26,7 +26,7 @@ class TrainerVADE(TrainerClassif):
 
         self.epo_loss_tr = None
         self.writer = writer
-        self.thres = 0.85
+        self.thres = 0.7
 
 
         #self.scheduler = torch.optim.lr_scheduler.StepLR(self.optimizer, step_size=2, gamma=0.95)
@@ -112,6 +112,8 @@ class TrainerVADE(TrainerClassif):
 
         if acc_d<self.thres:
             gmm = p.GMM_fit()
+
+
 
         preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = self.model._inference(tensor_x)
         print("pi:")
