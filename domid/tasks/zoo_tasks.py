@@ -6,6 +6,7 @@ from libdg.tasks.utils_task import ImSize
 from libdg.utils.u_import import import_path
 from libdg.compos.pcr.request import RequestTask
 from domid.tasks.task_mnist import NodeTaskMNIST
+from domid.tasks.her2_task import NodeTaskHER2
 
 path_this_file = os.path.dirname(os.path.realpath(__file__))
 
@@ -31,6 +32,8 @@ class TaskChainNodeGetter(object):
         chain = NodeTaskMNISTColor10(None)
 
         chain = NodeTaskMNIST(succ=chain)
+
+        chain = NodeTaskHER2()
 
         chain = mk_task_folder(extensions={"caltech": "jpg", "sun": "jpg", "labelme": "jpg"},
                                list_str_y=["chair", "car"],

@@ -9,7 +9,7 @@ from libDG.libdg.tasks.task_mnist_color import NodeTaskMNISTColor10
 from domid.dsets.dset_her2 import DsetHER2
 
 
-class NodeTaskHER2():
+class NodeTaskHER2(NodeTaskMNISTColor10):
     """
     Based on NodeTaskMNISTColor10 from libDG.
     The digits (0, 1, ..., 9) are regarded as domains (to be separated by unsupervised clustering).
@@ -32,7 +32,7 @@ class NodeTaskHER2():
         """
         Get list of domain names
         """
-        return mk_dummy_label_list_str("digit", 3)
+        return mk_dummy_label_list_str("class", 3)
 
     def get_dset_by_domain(self, args): #, na_domain, split=True):
         """get_dset_by_domain.
@@ -50,8 +50,12 @@ class NodeTaskHER2():
         # set will be created. Otherwise, this argument is
         # the split ratio
         ind_global = self.get_list_domains() #.index(na_domain)
-        print('IND global', ind_global)
+        #print('IND global', ind_global)
+        #breakpoint()
         dset = DsetHER2(args.dpath, 1 , None)
+        import torch
+        #dataloader = torch.utils.data.DataLoader(dset)
+        #images, labels = next(iter(dataloader))
         train_set = dset
         val_set = dset
         # split dset into training and validation sets
@@ -59,14 +63,18 @@ class NodeTaskHER2():
             train_len = int(len(dset) * ratio_split)
             val_len = len(dset) - train_len
             train_set, val_set = random_split(dset, [train_len, val_len])
+
+
         return train_set, val_set
+
+
 
 def test_fun():
     from libdg.arg_parser import mk_parser_main
 
     parser = mk_parser_main()
     print(parser)
-    args = parser.parse_args(["--te_d", "0", "--dpath", "./HER2/Testing_fixed/categorized/combined_train/*jpg", "--split", "0.2"])
+    args = parser.parse_args(["--te_d", "0", "--dpath", "./HER2/combined_train", "--split", "0.2"])
     print(args)
     node = NodeTaskHER2()
     na_domain = 3 #['0', '1', '2']
@@ -75,3 +83,6 @@ def test_fun():
     node.list_str_y
     node.init_business(args)
 
+if __name__ == "__main__":
+    print("Hello, World!")
+    test_fun()

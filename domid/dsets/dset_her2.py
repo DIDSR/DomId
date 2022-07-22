@@ -21,22 +21,25 @@ class DsetHER2(Dataset):
     def __init__(self, path, subset_step = 1, transform = None):
 
         dpath = os.path.normpath(path)
-        print('here 1')
+        print('Initialization')
+        self.images = datasets.ImageFolder(dpath)
+        print('after self.images')
+        #breakpoint()
 
         # #dataset = datasets.MNIST(root=dpath,
         #                          train=True,
         #                          download=True,
         #                          transform=transforms.ToTensor())
         # keep only images of specified digit
-        #self.images = dataset.data[dataset.targets==digit]
+        #self.images = dataset
         #inds_subset = list(range(0, self.images.shape[0], subset_step))
         #self.images = self.images[inds_subset]
         #n_img = self.images.shape[0]
         # dummy class labels (should not be used; included for consistency with libDG)
         #self.labels = torch.randint(10, (n_img,), dtype=torch.int32)
         import pandas as pd
-        self.img_labels = []# pd.read_csv(annotations_file)
-        path = "./HER2/Testing_fixed/categorized/combined_train/*jpg"
+        self.img_labels = self.images.class_to_idx# pd.read_csv(annotations_file)
+        #path = "./HER2/Testing_fixed/categorized/combined_train/*jpg"
         self.img_dir = path
         self.transform = transforms.ToTensor()
 
@@ -56,7 +59,7 @@ class DsetHER2(Dataset):
         print('here 2')
         image = read_image(img_path)
         print(image)
-        label = self.img_labels.iloc[idx, 1]
+        #label = self.img_labels.iloc[idx, 1]
         if self.transform:
             image = self.transform(image)
         if self.target_transform:
