@@ -18,11 +18,12 @@ from libdg.utils.utils_class import store_args
 class DsetHER2(Dataset):
 
     @store_args
-    def __init__(self, path, subset_step = 1, transform = None):
+    def __init__(self, class_num, path, subset_step = 1, transform = None):
 
-        dpath = os.path.normpath(path)
+        self.dpath = os.path.normpath(path)
         print('Initialization')
-        self.images = datasets.ImageFolder(dpath)
+        #breakpoint()
+        dataset = datasets.ImageFolder(self.dpath)#, transform = transforms.ToTensor()) #672 samples
         print('after self.images')
         #breakpoint()
 
@@ -31,17 +32,21 @@ class DsetHER2(Dataset):
         #                          download=True,
         #                          transform=transforms.ToTensor())
         # keep only images of specified digit
-        #self.images = dataset
-        #inds_subset = list(range(0, self.images.shape[0], subset_step))
-        #self.images = self.images[inds_subset]
-        #n_img = self.images.shape[0]
+        #breakpoint()
+        self.images = dataset[dataset.targets==class_num] #FIXME dataset.data
+        _, counts = torch.unique(torch.Tensor(dataset.targets), return_counts=True)
+        n_img = counts[class_num]
+        #n_img = 2 #672 #torch.unique(targets, return_counts=True)
+
         # dummy class labels (should not be used; included for consistency with libDG)
-        #self.labels = torch.randint(10, (n_img,), dtype=torch.int32)
+        self.images = dataset
+        self.img_labels = torch.randint(3, (n_img,), dtype=torch.int32)
         import pandas as pd
-        self.img_labels = self.images.class_to_idx# pd.read_csv(annotations_file)
+        #self.img_labels = self.images.class_to_idx# pd.read_csv(annotations_file)
         #path = "./HER2/Testing_fixed/categorized/combined_train/*jpg"
-        self.img_dir = path
-        self.transform = transforms.ToTensor()
+        self.img_dir = os.path.join(path, 'class'+str(class_num+1)+'jpg')
+
+        self.transform = None
 
         #dataset = None
         #self.target_transform = target_transform
@@ -55,15 +60,34 @@ class DsetHER2(Dataset):
     #
     #
     def __getitem__(self, idx):
-        img_path = os.path.join(self.img_dir, self.img_labels)
-        print('here 2')
-        image = read_image(img_path)
-        print(image)
-        #label = self.img_labels.iloc[idx, 1]
-        if self.transform:
-            image = self.transform(image)
-        if self.target_transform:
-            label = self.target_transform(label)
+        #breakpoint()
+        #print(idx)
+        # image = self.images[idx]
+        # import torch
+        # image = torch.Tensor(image)
+        #breakpoint()
+        idx = 0
+        img_name= os.listdir(self.img_dir)[idx]
+        img_path = os.path.join(self.img_dir, img_name)
+        #img_path = './HER2/combined_train/class1jpg/6670-6027,6543FD.jpg'
+        #img_path = os.path.join(self.img_dir, self.img_labels[idx])
+        image = read_image(img_path)/1000 #FIXME needs transform
+        label = self.img_labels[idx]
+        #image = np.asarray(image)
+        # image = Image.fromarray(image)
+        # image = image.convert('RGB')
+        # if self.list_transforms is not None:
+        #     for trans in self.list_transforms:
+        #         image = trans(image)
+        #image = transforms.ToTensor()(image)  # range of pixel [0,1]
+
+        # dummy class labels (should not be used; included for consistency with libDG)
+        label = torch.randint(0, 1, (1,)) #self.img_labels[idx]
+        #label = mk_fun_label2onehot(10)(label)
+        #breakpoint()
+
+
+
         return image, label
 
     # def __getitem__(self, idx):

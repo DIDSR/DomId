@@ -5,23 +5,23 @@ Basic MNIST task where the digits are considered "domains"
 from torch.utils.data import random_split
 from libDG.libdg.tasks.utils_task import DsetDomainVecDecorator, mk_onehot, mk_loader, ImSize
 from libDG.libdg.utils.utils_classif import mk_dummy_label_list_str
-from libDG.libdg.tasks.task_mnist_color import NodeTaskMNISTColor10
+from libDG.libdg.tasks.b_task import NodeTaskDict
 from domid.dsets.dset_her2 import DsetHER2
 
 
-class NodeTaskHER2(NodeTaskMNISTColor10):
+class NodeTaskHER2(NodeTaskDict):
     """
     Based on NodeTaskMNISTColor10 from libDG.
     The digits (0, 1, ..., 9) are regarded as domains (to be separated by unsupervised clustering).
     """
-    def init_business(self, a):
-        print('i do not know what this function is')
+    # def init_business(self, a):
+    #     print('i do not know what this function is')
     @property
     def list_str_y(self):
         """
         MNIST task has no labels (digits are considered domains)
         """
-        return mk_dummy_label_list_str("dummy", 3)
+        return mk_dummy_label_list_str("dummy", 4)
 
     @property
     def isize(self):
@@ -32,9 +32,9 @@ class NodeTaskHER2(NodeTaskMNISTColor10):
         """
         Get list of domain names
         """
-        return mk_dummy_label_list_str("class", 3)
+        return mk_dummy_label_list_str("class", 4)
 
-    def get_dset_by_domain(self, args): #, na_domain, split=True):
+    def get_dset_by_domain(self, args, na_domain, split = True): #, na_domain, split=True):
         """get_dset_by_domain.
         :param args:
         :param na_domain:
@@ -49,11 +49,14 @@ class NodeTaskHER2(NodeTaskMNISTColor10):
         # be evaluated in if statement, in which case, no validation
         # set will be created. Otherwise, this argument is
         # the split ratio
-        ind_global = self.get_list_domains() #.index(na_domain)
+        #breakpoint()
+        #ind_global = self.get_list_domains().index(na_domain)
         #print('IND global', ind_global)
         #breakpoint()
-        dset = DsetHER2(args.dpath, 1 , None)
-        import torch
+        ind_global = self.get_list_domains().index(na_domain)
+        dset = DsetHER2(ind_global, args.dpath, 1 , None)
+
+        #import torch
         #dataloader = torch.utils.data.DataLoader(dset)
         #images, labels = next(iter(dataloader))
         train_set = dset
@@ -82,7 +85,3 @@ def test_fun():
     print(node.get_list_domains())
     node.list_str_y
     node.init_business(args)
-
-if __name__ == "__main__":
-    print("Hello, World!")
-    test_fun()

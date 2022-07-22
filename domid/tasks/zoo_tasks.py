@@ -33,7 +33,7 @@ class TaskChainNodeGetter(object):
 
         chain = NodeTaskMNIST(succ=chain)
 
-        chain = NodeTaskHER2()
+        chain = NodeTaskHER2(succ=chain)
 
         chain = mk_task_folder(extensions={"caltech": "jpg", "sun": "jpg", "labelme": "jpg"},
                                list_str_y=["chair", "car"],
