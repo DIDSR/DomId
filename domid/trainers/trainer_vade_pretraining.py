@@ -49,6 +49,7 @@ class TrainerVADE(TrainerClassif):
 
 
     def tr_epoch(self, epoch):
+
         print("Epoch {}. ELBO loss".format(epoch)) if self.pretraining_finished else print("Epoch {}. MSE loss".format(epoch))
         #print('LEARNING RATE', self.LR)
         # print("Model's state_dict:")

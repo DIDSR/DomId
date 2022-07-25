@@ -153,7 +153,6 @@ class ConvolutionalEncoder(nn.Module):
         """
         :param x: input data, assumed to have 3 channels, but only the first one is passed through the network.
         """
-
         z = self.encod(x)
         mu = self.mu_layer(z)
         log_sigma2 = self.log_sigma2_layer(z)

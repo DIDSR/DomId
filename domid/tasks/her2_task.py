@@ -54,6 +54,7 @@ class NodeTaskHER2(NodeTaskDict):
         #print('IND global', ind_global)
         #breakpoint()
         ind_global = self.get_list_domains().index(na_domain)
+
         dset = DsetHER2(ind_global, args.dpath, 1 , None)
 
         #import torch
