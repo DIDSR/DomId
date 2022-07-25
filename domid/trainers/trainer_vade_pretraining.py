@@ -26,7 +26,8 @@ class TrainerVADE(TrainerClassif):
 
         self.epo_loss_tr = None
         self.writer = writer
-        self.thres = 0.7
+        self.thres = aconf.pre_tr
+
 
 
         #self.scheduler = torch.optim.lr_scheduler.StepLR(self.optimizer, step_size=2, gamma=0.95)

@@ -26,6 +26,7 @@ class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
         lr = args.lr
         now = datetime.datetime.now()
 
+
         model = ModelVaDECNN(
             zd_dim=zd_dim, d_dim=d_dim, device=device, i_c=task.isize.c, i_h=task.isize.h, i_w=task.isize.w
         )

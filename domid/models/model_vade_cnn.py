@@ -118,7 +118,7 @@ class UnFlatten(nn.Module):
         return input.view(input.size(0), filter_size, N, N)#FIXME (3,3)
 
 class ConvolutionalEncoder(nn.Module):
-    def __init__(self, zd_dim, input_dim=3, features_dim=[32, 64, 128, 256], i_w=28, i_h=28):
+    def __init__(self, zd_dim, input_dim=3, features_dim=[32, 64], i_w=28, i_h=28):
         """
         VAE Encoder
         :param zd_dim: dimension of the latent space
@@ -130,7 +130,7 @@ class ConvolutionalEncoder(nn.Module):
         #breakpoint()
         self.encod = nn.Sequential()
         features_dim = [input_dim]+features_dim
-        k = [4, 4, 4, 4]
+        k = [3, 3]
         for i in range(len(features_dim)-1):
             self.encod.append(nn.Conv2d(features_dim[i], features_dim[i+1],kernel_size=k[i], stride=2, padding=1))
             self.encod.append(nn.BatchNorm2d(features_dim[i+1]))
@@ -160,7 +160,7 @@ class ConvolutionalEncoder(nn.Module):
 
 
 class ConvolutionalDecoder(nn.Module):
-    def __init__(self, zd_dim, h_dim, input_dim=3, features_dim=[32, 64, 128, 256]):
+    def __init__(self, zd_dim, h_dim, input_dim=3, features_dim=[32, 64]):
         """
         VAE Decoder
         :param zd_dim: dimension of the latent space
@@ -178,7 +178,7 @@ class ConvolutionalDecoder(nn.Module):
         features_dim = [input_dim]+features_dim
         features_dim.reverse()
         #breakpoint()
-        k = [5, 5, 4, 4]
+        k = [4, 4, 4, 4]
         for i in range(len(features_dim)-1):
             self.decod.append(nn.ConvTranspose2d(features_dim[i], features_dim[i+1], kernel_size = k[i], stride = 2, padding = 1))
             self.decod.append(nn.BatchNorm2d(features_dim[i+1]))
@@ -306,7 +306,7 @@ class ModelVaDECNN(nn.Module):
         preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = self._inference(x)
         eps = 1e-10
         L_rec = 0.0
-        L = 3
+        L = 5
         for l in range(L):
             #xprint(l)
             z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu  # shape [batch_size, self.zd_dim]
