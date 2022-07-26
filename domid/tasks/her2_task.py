@@ -1,9 +1,10 @@
 """
-Basic MNIST task where the digits are considered "domains"
+HER2 task where the HER2 categories are considered "domains"
 """
 
 from torch.utils.data import random_split
-from libDG.libdg.tasks.utils_task import DsetDomainVecDecorator, mk_onehot, mk_loader, ImSize
+from torchvision import transforms
+from libDG.libdg.tasks.utils_task import ImSize
 from libDG.libdg.utils.utils_classif import mk_dummy_label_list_str
 from libDG.libdg.tasks.b_task import NodeTaskDict
 from domid.dsets.dset_her2 import DsetHER2
@@ -14,6 +15,7 @@ class NodeTaskHER2(NodeTaskDict):
     Based on NodeTaskMNISTColor10 from libDG.
     The digits (0, 1, ..., 9) are regarded as domains (to be separated by unsupervised clustering).
     """
+
     # def init_business(self, a):
     #     print('i do not know what this function is')
     @property
@@ -21,20 +23,20 @@ class NodeTaskHER2(NodeTaskDict):
         """
         MNIST task has no labels (digits are considered domains)
         """
-        return mk_dummy_label_list_str("dummy", 4)
+        return mk_dummy_label_list_str("dummy", 3)
 
     @property
     def isize(self):
         """image channel, height, width"""
-        return ImSize(3, 400, 400) #FIXME should be in sync with transforms
+        return ImSize(3, 400, 400)  # FIXME should be in sync with transforms
 
     def get_list_domains(self):
         """
         Get list of domain names
         """
-        return mk_dummy_label_list_str("class", 4)
+        return mk_dummy_label_list_str("class", 3)
 
-    def get_dset_by_domain(self, args, na_domain, split = True): #, na_domain, split=True):
+    def get_dset_by_domain(self, args, na_domain, split=True):  # , na_domain, split=True):
         """get_dset_by_domain.
         :param args:
         :param na_domain:
@@ -49,17 +51,11 @@ class NodeTaskHER2(NodeTaskDict):
         # be evaluated in if statement, in which case, no validation
         # set will be created. Otherwise, this argument is
         # the split ratio
-        #breakpoint()
-        #ind_global = self.get_list_domains().index(na_domain)
-        #print('IND global', ind_global)
-        #breakpoint()
         ind_global = self.get_list_domains().index(na_domain)
 
-        dset = DsetHER2(ind_global, args.dpath, 1 , None)
+        trans = transforms.Compose([transforms.Resize((400, 400)), transforms.ToTensor()])
+        dset = DsetHER2(ind_global, args.dpath, transform=trans)
 
-        #import torch
-        #dataloader = torch.utils.data.DataLoader(dset)
-        #images, labels = next(iter(dataloader))
         train_set = dset
         val_set = dset
         # split dset into training and validation sets
@@ -68,9 +64,7 @@ class NodeTaskHER2(NodeTaskDict):
             val_len = len(dset) - train_len
             train_set, val_set = random_split(dset, [train_len, val_len])
 
-
         return train_set, val_set
-
 
 
 def test_fun():
@@ -81,8 +75,8 @@ def test_fun():
     args = parser.parse_args(["--te_d", "0", "--dpath", "./HER2/combined_train", "--split", "0.2"])
     print(args)
     node = NodeTaskHER2()
-    na_domain = 3 #['0', '1', '2']
-    node.get_dset_by_domain(args) #, na_domain)
+    na_domain = 3  # ['0', '1', '2']
+    node.get_dset_by_domain(args)  # , na_domain)
     print(node.get_list_domains())
     node.list_str_y
     node.init_business(args)
