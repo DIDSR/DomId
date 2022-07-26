@@ -71,7 +71,7 @@ class LinearDecoder(nn.Module):
 
 
 class ModelVaDE(nn.Module):
-    def __init__(self, zd_dim, d_dim, device, i_c, i_h, i_w):
+    def __init__(self, zd_dim, d_dim, device, L, i_c, i_h, i_w):
         """
         VaDE model (Jiang et al. 2017 "Variational Deep Embedding:
         An Unsupervised and Generative Approach to Clustering") with
@@ -158,7 +158,7 @@ class ModelVaDE(nn.Module):
         loss = Loss(x, x_pro)
         return loss
 
-    def ELBO_Loss(self, x, L=1):
+    def ELBO_Loss(self, x):
         """ELBO loss function
         Using SGVB estimator and the reparametrization trick calculates ELBO loss.
         Calculates loss between encoded input and input using ELBO equation (12) in the papaer.
@@ -167,9 +167,9 @@ class ModelVaDE(nn.Module):
         """
         preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = self._inference(x)
         eps = 1e-10
-        L=15
+
         L_rec = 0.0
-        for l in range(L):
+        for l in range(self.L):
             z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu # shape [batch_size, self.zd_dim]
             x_pro = self.decoder(z)
             # L_rec += F.binary_cross_entropy(
@@ -177,7 +177,7 @@ class ModelVaDE(nn.Module):
             # )  # TODO: this is the reconstruction loss for a binary-valued x (such as MNIST digits); need to implement another version for a real-valued x.
             #breakpoint()
             L_rec+=F.binary_cross_entropy(x_pro, x)
-        L_rec /= L
+        L_rec /= self.L
         Loss = L_rec * x.size(1)
         #print('checkpoint 1', Loss)
         # doesn't take the mean over the channels; i.e., the recon loss is taken as an average over (batch size * L * width * height)

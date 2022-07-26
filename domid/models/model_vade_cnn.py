@@ -144,6 +144,7 @@ class ConvolutionalEncoder(nn.Module):
         #     nn.Flatten()  # [batch size, filter,3, 3, 3]
         #
         # )
+
         self.h_dim = get_output_shape(self.encod, (3, input_dim, i_w, i_h))[1]
         self.mu_layer = nn.Linear(self.h_dim, zd_dim)
         self.log_sigma2_layer = nn.Linear(self.h_dim, zd_dim)
@@ -207,7 +208,7 @@ class ConvolutionalDecoder(nn.Module):
 
 
 class ModelVaDECNN(nn.Module):
-    def __init__(self, zd_dim, d_dim, device, i_c, i_h, i_w):
+    def __init__(self, zd_dim, d_dim, device, L, i_c, i_h, i_w):
         """
         VaDE model (Jiang et al. 2017 "Variational Deep Embedding:
         An Unsupervised and Generative Approach to Clustering") with
@@ -225,7 +226,8 @@ class ModelVaDECNN(nn.Module):
         self.zd_dim = zd_dim
         self.d_dim = d_dim
         self.device = device
-        self.encoder = ConvolutionalEncoder(zd_dim=zd_dim, input_dim=i_c).to(device)
+        self.L = L
+        self.encoder = ConvolutionalEncoder(zd_dim=zd_dim, input_dim=i_c, i_w = i_w, i_h = i_h).to(device)
         self.decoder = ConvolutionalDecoder(zd_dim=zd_dim, h_dim=self.encoder.h_dim, input_dim=i_c).to(device)
 
         self.log_pi = nn.Parameter(torch.FloatTensor(self.d_dim,).fill_(1.0/self.d_dim).log(),
@@ -294,7 +296,7 @@ class ModelVaDECNN(nn.Module):
         loss = Loss(x, x_pro)
         return loss
 
-    def ELBO_Loss(self, x, L=1):
+    def ELBO_Loss(self, x):
         """ELBO loss function
 
         Using SGVB estimator and the reparametrization trick calculates ELBO loss.
@@ -306,8 +308,8 @@ class ModelVaDECNN(nn.Module):
         preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = self._inference(x)
         eps = 1e-10
         L_rec = 0.0
-        L = 5
-        for l in range(L):
+
+        for l in range(self.L):
             #xprint(l)
             z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu  # shape [batch_size, self.zd_dim]
             x_pro = self.decoder(z)
@@ -319,7 +321,7 @@ class ModelVaDECNN(nn.Module):
             #print(L_rec)
             # TODO: this is the reconstruction loss for a binary-valued x (such as MNIST digits); need to implement another version for a real-valued x.
 
-        L_rec /= L
+        L_rec /= self.L
 
         Loss = L_rec * x.size(1)*10
         # doesn't take the mean over the channels; i.e., the recon loss is taken as an average over (batch size * L * width * height)

@@ -80,6 +80,9 @@ class TrainerVADE(TrainerClassif):
 
 
         for i, (tensor_x, vec_y, vec_d) in enumerate(self.loader_tr):
+            # import matplotlib.pyplot as plt
+            # plt.imshow(tensor_x[1, :, :, :].reshape((100,100,3)))
+            # plt.show()
             tensor_x, vec_y, vec_d = \
                 tensor_x.to(self.device), vec_y.to(self.device), vec_d.to(self.device)
             self.optimizer.zero_grad()

@@ -15,7 +15,7 @@ def mk_parser_main():
     parser.add_argument('--d_dim', type=int, default=7,
                         help='number of domains (or clusters)')
     parser.add_argument('--pre_tr', type=float, default=0.5, help="threshold for pretraining")
-
+    parser.add_argument('--L', type=int, default=3, help="number of MC runs")
     return parser
 
 

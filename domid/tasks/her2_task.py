@@ -26,7 +26,7 @@ class NodeTaskHER2(NodeTaskDict):
     @property
     def isize(self):
         """image channel, height, width"""
-        return ImSize(3, 28, 28)
+        return ImSize(3, 400, 400) #FIXME should be in sync with transforms
 
     def get_list_domains(self):
         """
