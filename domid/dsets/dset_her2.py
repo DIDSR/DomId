@@ -81,12 +81,26 @@ class DsetHER2(Dataset):
     def __getitem__(self, idx):
         #print(idx)
 
-        #breakpoint()
-        trans = transforms.Compose([transforms.ToTensor(),transforms.Resize((28, 28))])
-        #breakpoint()
+
+        trans = transforms.Compose([transforms.ToTensor(),transforms.Resize((400, 400))])
+
+        #trans = transforms.Compose([transforms.Resize((400, 400))])
         img_loc = os.path.join(self.folder[idx],self.images[idx])
-        image = Image.open(img_loc).convert("RGB")
+
+        #import cv2
+        #image = cv2.imread(img_loc)
+        #image1 = image[:, :, ::-1]
+        #im = torch.flip(torch.from_numpy(image.copy()), dims=(2,))
+
+
+        image = Image.open(img_loc)#.convert("RGB")
         image = trans(image)
+
+        import matplotlib.pyplot as plt
+        # im = image.reshape((image.shape[2], image.shape[1], 3))
+        # plt.imshow(im)
+        # plt.show()
+
         label = self.labels[idx]
         #return tensor_image
         #breakpoint()
