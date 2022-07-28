@@ -1,7 +1,7 @@
 import os
 
 from PIL import Image
-
+import torch
 from torch.utils.data import Dataset
 from libdg.utils.utils_class import store_args
 from libdg.dsets.utils_data import mk_fun_label2onehot
@@ -29,6 +29,7 @@ class DsetHER2(Dataset):
         # im = torch.flip(torch.from_numpy(image.copy()), dims=(2,))
 
         image = Image.open(img_loc)
+        # image = torch.Tensor(image)
         image = self.transform(image)
         label = mk_fun_label2onehot(3)(self.class_num)
 

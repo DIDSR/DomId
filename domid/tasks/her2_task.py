@@ -28,7 +28,7 @@ class NodeTaskHER2(NodeTaskDict):
     @property
     def isize(self):
         """image channel, height, width"""
-        return ImSize(3, 400, 400)  # FIXME should be in sync with transforms
+        return ImSize(3, 100, 100)  # FIXME should be in sync with transforms
 
     def get_list_domains(self):
         """
@@ -52,8 +52,9 @@ class NodeTaskHER2(NodeTaskDict):
         # set will be created. Otherwise, this argument is
         # the split ratio
         ind_global = self.get_list_domains().index(na_domain)
-
-        trans = transforms.Compose([transforms.Resize((400, 400)), transforms.ToTensor()])
+        mean = [0.4916, 0.4498, 0.4]
+        std = [0.2478, 0.2376, 0.2322]
+        trans = transforms.Compose([transforms.Resize((100, 100)), transforms.RandomHorizontalFlip(),transforms.ToTensor(), transforms.Normalize(mean, std)])
         dset = DsetHER2(ind_global, args.dpath, transform=trans)
 
         train_set = dset

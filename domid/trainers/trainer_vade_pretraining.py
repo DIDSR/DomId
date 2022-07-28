@@ -69,7 +69,7 @@ class TrainerVADE(TrainerClassif):
         self.epo_loss_tr = 0
         #breakpoint()
         mse_n =5# FIXME: maybe have a command line argument to specify mse_n and elbo_n
-        elbo_n = 300
+        elbo_n = 100
 
         # if epoch>mse_n-2:
         #      self.LR = 0.001
