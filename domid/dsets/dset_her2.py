@@ -5,7 +5,7 @@ import torch
 from torch.utils.data import Dataset
 from libdg.utils.utils_class import store_args
 from libdg.dsets.utils_data import mk_fun_label2onehot
-
+from torchvision import transforms
 
 class DsetHER2(Dataset):
     @store_args
@@ -30,7 +30,19 @@ class DsetHER2(Dataset):
 
         image = Image.open(img_loc)
         # image = torch.Tensor(image)
-        image = self.transform(image)
-        label = mk_fun_label2onehot(3)(self.class_num)
+        if self.transform is None:
 
-        return image, label
+            self.transform = transforms.ToTensor()
+        image = self.transform(image)
+        label = mk_fun_label2onehot(3)(self.class_num) #FIXME 3
+        machine = img_loc[-6:-4]
+
+        #domain = mk_fun_label2onehot(2)(self.class_num+1) #FIXME 2
+        #A_FDA, A_NIH, H1, H2
+
+        if 'class2' in img_loc:
+            domain = torch.Tensor([0, 1])
+        else:
+            domain = torch.Tensor([1, 0])
+
+        return image, label, domain, machine, img_loc

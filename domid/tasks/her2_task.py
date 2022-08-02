@@ -6,7 +6,8 @@ from torch.utils.data import random_split
 from torchvision import transforms
 from libDG.libdg.tasks.utils_task import ImSize
 from libDG.libdg.utils.utils_classif import mk_dummy_label_list_str
-from libDG.libdg.tasks.b_task import NodeTaskDict
+#from libDG.libdg.tasks.b_task import NodeTaskDict
+from domid.tasks.b_task import NodeTaskDict
 from domid.dsets.dset_her2 import DsetHER2
 
 
@@ -23,6 +24,7 @@ class NodeTaskHER2(NodeTaskDict):
         """
         MNIST task has no labels (digits are considered domains)
         """
+        #['FD', 'ND', 'H1', 'H2']
         return mk_dummy_label_list_str("dummy", 3)
 
     @property
@@ -52,9 +54,12 @@ class NodeTaskHER2(NodeTaskDict):
         # set will be created. Otherwise, this argument is
         # the split ratio
         ind_global = self.get_list_domains().index(na_domain)
-        mean = [0.4916, 0.4498, 0.4]
-        std = [0.2478, 0.2376, 0.2322]
-        trans = transforms.Compose([transforms.Resize((100, 100)), transforms.RandomHorizontalFlip(),transforms.ToTensor(), transforms.Normalize(mean, std)])
+        mean = [0.6399, 0.5951, 0.6179]
+        std = [0.1800, 0.1980, 0.2070] #[0.1582, 0.1728, 0.1728]
+        #mean = [0.4, 0.4, 0.4]
+        #mean = [0.5, 0.5, 0.5]
+        #confirm mean 0 and std 1 after the normalization
+        trans = transforms.Compose([transforms.Resize((100, 100)), transforms.RandomHorizontalFlip(),transforms.ToTensor()])#, transforms.Normalize(mean, std)])
         dset = DsetHER2(ind_global, args.dpath, transform=trans)
 
         train_set = dset

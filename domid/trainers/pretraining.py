@@ -26,26 +26,49 @@ class Pretraining():
 
         return loss
             #print("LOOOOSSS", loss)
+    def prediction(self):
+        num_img = len(self.loader_tr.dataset)
+        Z = np.zeros((num_img, self.model.zd_dim))
+        i_w, i_h = 100, 100
+        IMGS = np.zeros((num_img,3,i_w, i_h))
+        domain_labels = np.zeros((num_img, 1))
+        machine_labels = []
+        counter = 0
+        with torch.no_grad():
+            for tensor_x, vec_y, vec_d, machine, image_loc in self.loader_tr:
 
-    def GMM_fit(self ):
+                tensor_x = tensor_x.to(self.device)
+                preds, z_mu, z, *_ = self.model.infer_d_v_2(tensor_x)
+                z = z.detach().cpu().numpy()  # [batch_size, zd_dim]
+                # print('ZZZZZ', z)
+
+                # print(Z.shape, counter, counter+z.shape[0])
+                IMGS[counter:counter+z.shape[0], :, :, :] = tensor_x
+                Z[counter:counter + z.shape[0], :] = z
+                domain_labels[counter:counter + z.shape[0], 0] = torch.argmax(preds, 1)+1
+                machine_labels.append(machine)
+                counter += z.shape[0]
+        return IMGS, Z, domain_labels, machine_labels
+
+    def GMM_fit(self):
         #print('PIIII', self.model.log_sigma2_c.data)
         # During pre-training we estimate pi, mu_c, and log_sigma2_c with a GMM at the end of each epoch.
         # After pre-training these initial parameter values are used in the calculation of the ELBO loss,
         # and are further updated with backpropagation like all other neural network weights.
-
         num_img = len(self.loader_tr.dataset)
         Z = np.zeros((num_img, self.model.zd_dim))
         counter = 0
         with torch.no_grad():
-            for tensor_x, vec_y, vec_d in self.loader_tr:
+            for tensor_x, vec_y, vec_d, *_ in self.loader_tr:
                 tensor_x = tensor_x.to(self.device)
                 preds, z_mu, z, *_ = self.model.infer_d_v_2(tensor_x)
-                z = z.detach().cpu().numpy() #[batch_size, zd_dim]
-                #print('ZZZZZ', z)
+                z = z.detach().cpu().numpy()  # [batch_size, zd_dim]
+                # print('ZZZZZ', z)
 
-                #print(Z.shape, counter, counter+z.shape[0])
-                Z[counter:counter+z.shape[0], :] = z
+                # print(Z.shape, counter, counter+z.shape[0])
+                Z[counter:counter + z.shape[0], :] = z
                 counter += z.shape[0]
+
         try:
         #breakpoint()
             gmm = GaussianMixture(n_components=self.model.d_dim, covariance_type='diag', reg_covar = 10 ** -5) #, reg_covar=10)

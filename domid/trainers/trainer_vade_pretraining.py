@@ -79,7 +79,7 @@ class TrainerVADE(TrainerClassif):
         print(acc_d)
 
 
-        for i, (tensor_x, vec_y, vec_d) in enumerate(self.loader_tr):
+        for i, (tensor_x, vec_y, vec_d, machine, path) in enumerate(self.loader_tr):
             # import matplotlib.pyplot as plt
             # plt.imshow(tensor_x[1, :, :, :].reshape((100,100,3)))
             # plt.show()
@@ -112,14 +112,9 @@ class TrainerVADE(TrainerClassif):
             loss.backward()
             self.optimizer.step()
             self.epo_loss_tr += loss.cpu().detach().item()
-
         print('LEARNING RATE Value', self.LR)
-
         if acc_d<self.thres:
             gmm = p.GMM_fit()
-
-
-
         preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = self.model._inference(tensor_x)
         print("pi:")
         print(pi.cpu().detach().numpy())
@@ -130,44 +125,9 @@ class TrainerVADE(TrainerClassif):
 
         #self.scheduler.step()
 
-        # z_mu = z_mu.detach().cpu().numpy()
-        # z_sigma2_log = z_sigma2_log.detach().cpu().numpy()
-        # z = z.detach().cpu().numpy()
-        # log_sigma2_c = log_sigma2_c.detach().cpu().numpy()
-        # pi = pi.detach().cpu().numpy()
-        # print('sum of weights', torch.sum(self.model.encoder.mu_layer.weight.data))
-        # mu_c = mu_c.detach().cpu().numpy()
-        # #print('PARAMETERS', pi, mu_c, log_sigma2_c)
-        # plt.figure(dpi = 800)
-        # plt.subplot(6,1, 1)
-        # plt.imshow(z_mu)
-        # plt.title('Z mu', fontsize=8)
-        # plt.subplot(6,1, 2)
-        #
-        #
-        # plt.imshow(z_sigma2_log)
-        # plt.title('Z sigma2 log', fontsize=8)
-        # plt.subplot(6,1, 3)
-        # plt.imshow(z)
-        # plt.title('Z', fontsize=8)
-        # plt.subplot(6,1, 4)
-        # plt.imshow(mu_c)
-        # plt.title('Mu c', fontsize=8)
-        # plt.subplot(6,1, 5)
-        # plt.imshow(log_sigma2_c)
-        # plt.title('log sigma c', fontsize=8)
-        # plt.subplot(6,1, 6)
-        # plt.plot(pi)
-        # plt.title('pi', fontsize=8)
-        # plt.savefig('figures/'+str(epoch))
-
-        # print('Shapes for epcoh', counter, epoch, pred.shape, pi.shape, mu.shape, sigma.shape, yita.shape, x_pro.shape)
-
-
-
         preds, z_mu, z, _, _, x_pro = self.model.infer_d_v_2(tensor_x)
-        name = "Output of the decoder" + str(epoch)
         imgs = torch.cat((tensor_x[0:8,:, :, :], x_pro[0:8,:, :, :],), 0)
+        name = 'Decoder images epoch # ' + str(epoch)
         self.writer.add_images(name, imgs, epoch)
         self.writer.add_scalar('Training acc', acc_d, epoch)
 
@@ -178,11 +138,13 @@ class TrainerVADE(TrainerClassif):
             self.writer.add_scalar('ELBO loss', self.epo_loss_tr, epoch)
             #self.writer.add_scalar('Reconstraction Accuracy (cos similarity)', reconstruction_acc, epoch)
             #self.writer.add_scalar('Domain clustering acc', clustering_acc, epoch)
-        if epoch ==elbo_n:
+        if epoch==1:
 
-            class_labels = torch.argmax(vec_y, 1)
+            IMGS, Z, domain_labels, machine_label = p.prediction()
+            class_labels = torch.argmax(vec_y[1:], 1)
 
-            self.writer.add_embedding(z, metadata= class_labels, label_img=x_pro) #FIXME set global trainer step
+            print('before writer', z[1:, :].shape, vec_y[1:, :].shape)
+            self.writer.add_embedding(Z, metadata=domain_labels ,label_img=IMGS, global_step = epoch, tag = str(epoch)+'_'+str(acc_d)) #FIXME set global trainer step
 
         flag_stop = self.observer.update(epoch)  # notify observer
 
@@ -192,6 +154,7 @@ class TrainerVADE(TrainerClassif):
         """
         check the performance of randomly initialized weight
         """
-        acc = PerfCluster.cal_acc(self.model, self.loader_tr, self.device)
+
+        acc = PerfCluster.cal_acc(self.model, self.loader_tr, self.device) #FIXME change tr to te
         print("before training, model accuracy:", acc)
 
