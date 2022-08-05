@@ -3,15 +3,15 @@ Basic MNIST task where the digits are considered "domains"
 """
 
 from torch.utils.data import random_split
-from libDG.libdg.tasks.utils_task import DsetDomainVecDecorator, mk_onehot, mk_loader, ImSize
-from libDG.libdg.utils.utils_classif import mk_dummy_label_list_str
-from libDG.libdg.tasks.task_mnist_color import NodeTaskMNISTColor10
+from DomainLab.domainlab.tasks.utils_task import DsetDomainVecDecorator, mk_onehot, mk_loader, ImSize
+from DomainLab.domainlab.utils.utils_classif import mk_dummy_label_list_str
+from DomainLab.domainlab.tasks.task_mnist_color import NodeTaskMNISTColor10
 from domid.dsets.dset_mnist import DsetMNIST
 
 
 class NodeTaskMNIST(NodeTaskMNISTColor10):
     """
-    Based on NodeTaskMNISTColor10 from libDG.
+    Based on NodeTaskMNISTColor10 from DomainLab.
     The digits (0, 1, ..., 9) are regarded as domains (to be separated by unsupervised clustering).
     """
     @property
@@ -58,7 +58,7 @@ class NodeTaskMNIST(NodeTaskMNISTColor10):
         return train_set, val_set
 
 def test_fun():
-    from libdg.arg_parser import mk_parser_main
+    from domainlab.arg_parser import mk_parser_main
     parser = mk_parser_main()
     args = parser.parse_args(["--te_d", "0", "--dpath", "zout", "--split", "0.2"])
     node = NodeTaskMNIST()

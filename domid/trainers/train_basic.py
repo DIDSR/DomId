@@ -1,4 +1,4 @@
-from libdg.algos.trainers.a_trainer import TrainerClassif
+from domainlab.algos.trainers.a_trainer import TrainerClassif
 import torch.optim as optim
 
 

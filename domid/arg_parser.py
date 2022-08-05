@@ -4,7 +4,7 @@ Command line arguments
 import argparse
 import warnings
 
-from libdg import arg_parser
+from domainlab import arg_parser
 
 
 def mk_parser_main():

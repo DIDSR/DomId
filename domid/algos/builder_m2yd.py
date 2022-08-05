@@ -1,9 +1,9 @@
-from libdg.algos.a_algo_builder import NodeAlgoBuilder
-from libdg.algos.trainers.train_basic import TrainerBasic
-from libdg.algos.msels.c_msel import MSelTrLoss
-from libdg.algos.msels.c_msel_oracle import MSelOracleVisitor
-from libdg.algos.observers.c_obvisitor_cleanup import ObVisitorCleanUp
-from libdg.utils.utils_cuda import get_device
+from domainlab.algos.a_algo_builder import NodeAlgoBuilder
+from domainlab.algos.trainers.train_basic import TrainerBasic
+from domainlab.algos.msels.c_msel import MSelTrLoss
+from domainlab.algos.msels.c_msel_oracle import MSelOracleVisitor
+from domainlab.algos.observers.c_obvisitor_cleanup import ObVisitorCleanUp
+from domainlab.utils.utils_cuda import get_device
 
 from domid.algos.observers.b_obvisitor_clustering import ObVisitorClustering
 from domid.models.model_m2yd import ModelXY2D

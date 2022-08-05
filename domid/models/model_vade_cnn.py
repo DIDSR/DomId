@@ -9,18 +9,18 @@ from sklearn.mixture import GaussianMixture
 import numpy as np
 #from sklearn.mixture import GaussianMixture
 # import tqdm
-from libdg.utils.utils_class import store_args
-from libdg.compos.vae.compos.decoder_concat_vec_reshape_conv_gated_conv import DecoderConcatLatentFCReshapeConvGatedConv
-from libdg.compos.vae.compos.encoder import LSEncoderDense
-from libdg.models.a_model_classif import AModelClassif
-from libdg.utils.utils_classif import logit2preds_vpic, get_label_na
+from domainlab.utils.utils_class import store_args
+from domainlab.compos.vae.compos.decoder_concat_vec_reshape_conv_gated_conv import DecoderConcatLatentFCReshapeConvGatedConv
+from domainlab.compos.vae.compos.encoder import LSEncoderDense
+from domainlab.models.a_model_classif import AModelClassif
+from domainlab.utils.utils_classif import logit2preds_vpic, get_label_na
 #from torch.optim import Adam
 #from sklearn.metrics import accuracy_score
 #from torch.optim.lr_scheduler import StepLR
 # from tensorboardX import SummaryWriter
 #from sklearn.manifold import TSNE
 import torch.nn as nn
-from libdg.utils.utils_classif import logit2preds_vpic, get_label_na
+from domainlab.utils.utils_classif import logit2preds_vpic, get_label_na
 from domid.compos.nn_net import Net_MNIST
 import torch
 from torchvision.datasets import MNIST

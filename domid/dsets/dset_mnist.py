@@ -11,8 +11,8 @@ import torch
 from torch.utils.data import Dataset
 from torchvision import datasets, transforms
 
-from libdg.dsets.utils_data import mk_fun_label2onehot
-from libdg.utils.utils_class import store_args
+from domainlab.dsets.utils_data import mk_fun_label2onehot
+from domainlab.utils.utils_class import store_args
 
 
 class DsetMNIST(Dataset):
@@ -44,7 +44,7 @@ class DsetMNIST(Dataset):
         inds_subset = list(range(0, self.images.shape[0], subset_step))
         self.images = self.images[inds_subset]
         n_img = self.images.shape[0]
-        # dummy class labels (should not be used; included for consistency with libDG)
+        # dummy class labels (should not be used; included for consistency with DomainLab)
         self.labels = torch.randint(10, (n_img,), dtype=torch.int32)
 
     def __len__(self):
@@ -59,7 +59,7 @@ class DsetMNIST(Dataset):
                 image = trans(image)
         image = transforms.ToTensor()(image)  # range of pixel [0,1]
 
-        # dummy class labels (should not be used; included for consistency with libDG)
+        # dummy class labels (should not be used; included for consistency with DomainLab)
         label = self.labels[idx]
         label = mk_fun_label2onehot(10)(label)
         return image, label

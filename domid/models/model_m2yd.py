@@ -3,12 +3,12 @@ import torch.nn as nn
 import torch.distributions as dist
 import torch.nn.functional as F
 
-from libdg.utils.utils_class import store_args
-from libdg.compos.vae.compos.decoder_concat_vec_reshape_conv_gated_conv \
+from domainlab.utils.utils_class import store_args
+from domainlab.compos.vae.compos.decoder_concat_vec_reshape_conv_gated_conv \
     import DecoderConcatLatentFCReshapeConvGatedConv
-from libdg.compos.vae.compos.encoder import LSEncoderDense
-from libdg.models.a_model_classif import AModelClassif
-from libdg.utils.utils_classif import logit2preds_vpic, get_label_na
+from domainlab.compos.vae.compos.encoder import LSEncoderDense
+from domainlab.models.a_model_classif import AModelClassif
+from domainlab.utils.utils_classif import logit2preds_vpic, get_label_na
 
 from domid.compos.nn_net import Net_MNIST
 

@@ -86,7 +86,7 @@ import torch
 from scipy.optimize import linear_sum_assignment
 from sklearn.metrics import confusion_matrix
 
-from libdg.utils.perf import PerfClassif
+from domainlab.utils.perf import PerfClassif
 
 
 class PerfCluster(PerfClassif):

@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from tensorboardX import SummaryWriter
-from libdg.utils.utils_classif import logit2preds_vpic
+from domainlab.utils.utils_classif import logit2preds_vpic
 
 
 def linear_block(in_c, out_c):

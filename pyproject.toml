@@ -15,7 +15,7 @@ pandas = "^1.4.3"
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
 # this package is included as a git submodule
-libdg = { path = "./libDG", develop = true }
+domainlab = { path = "./DomainLab", develop = true }
 jupyterlab = "^3.4.3"
 
 [build-system]

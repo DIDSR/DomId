@@ -1,7 +1,7 @@
 import os
 import datetime
-from libdg.compos.exp.exp_utils import AggWriter
-from libdg.algos.zoo_algos import AlgoBuilderChainNodeGetter
+from domainlab.compos.exp.exp_utils import AggWriter
+from domainlab.algos.zoo_algos import AlgoBuilderChainNodeGetter
 from domid.tasks.zoo_tasks import TaskChainNodeGetter
 
 
@@ -52,7 +52,7 @@ class Exp():
         self.trainer.post_tr()
 
 def test_exp():
-    from libdg.utils.arg_parser import mk_parser_main
+    from domainlab.utils.arg_parser import mk_parser_main
     parser = mk_parser_main()
     args = parser.parse_args(["--te_d", "2", "--task", "mnistcolor10", "--debug"])
     exp = Exp(args)

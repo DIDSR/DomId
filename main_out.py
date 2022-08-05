@@ -1,7 +1,7 @@
 import sys
 import torch
 
-from libdg.compos.exp.exp_cuda_seed import set_seed  # reproducibility
+from domainlab.compos.exp.exp_cuda_seed import set_seed  # reproducibility
 
 from domid.compos.exp.exp_main import Exp
 from domid.arg_parser import parse_cmd_args

@@ -4,7 +4,7 @@ from sklearn.mixture import GaussianMixture
 import torch
 import torch.optim as optim
 
-from libdg.algos.trainers.a_trainer import TrainerClassif
+from domainlab.algos.trainers.a_trainer import TrainerClassif
 
 from domid.utils.perf_cluster import PerfCluster
 from domid.trainers.pretraining import Pretraining

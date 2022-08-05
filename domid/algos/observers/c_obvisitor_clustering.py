@@ -4,11 +4,11 @@ import torch
 
 import numpy as np
 
-from libdg.algos.observers.a_observer import AObVisitor
-from libdg.utils.utils_class import store_args
-from libdg.utils.perf import PerfClassif
-from libdg.compos.exp.exp_utils import ExpModelPersistVisitor
-from libdg.tasks.task_folder_mk import NodeTaskFolderClassNaMismatch
+from domainlab.algos.observers.a_observer import AObVisitor
+from domainlab.utils.utils_class import store_args
+from domainlab.utils.perf import PerfClassif
+from domainlab.compos.exp.exp_utils import ExpModelPersistVisitor
+from domainlab.tasks.task_folder_mk import NodeTaskFolderClassNaMismatch
 
 def pred2file(loader_te, model, device, fa='path_prediction.txt', flag_pred_scalar=False):
     model.eval()

@@ -5,9 +5,9 @@ from collections import Counter
 import torch
 from torch.utils.data.dataset import ConcatDataset
 
-from libdg.tasks.a_task import NodeTaskDGClassif
-from libdg.tasks.utils_task import mk_loader, mk_onehot, DsetDomainVecDecorator, DsetDomainVecDecoratorImgPath
-from libdg.tasks.utils_task_dset import DsetIndDecorator4XYD
+from domainlab.tasks.a_task import NodeTaskDGClassif
+from domainlab.tasks.utils_task import mk_loader, mk_onehot, DsetDomainVecDecorator, DsetDomainVecDecoratorImgPath
+from domainlab.tasks.utils_task_dset import DsetIndDecorator4XYD
 
 
 def dset_decoration_args_algo(args, ddset):

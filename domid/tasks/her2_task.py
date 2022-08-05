@@ -4,16 +4,16 @@ HER2 task where the HER2 categories are considered "domains"
 
 from torch.utils.data import random_split
 from torchvision import transforms
-from libDG.libdg.tasks.utils_task import ImSize
-from libDG.libdg.utils.utils_classif import mk_dummy_label_list_str
-#from libDG.libdg.tasks.b_task import NodeTaskDict
+from DomainLab.domainlab.tasks.utils_task import ImSize
+from DomainLab.domainlab.utils.utils_classif import mk_dummy_label_list_str
+#from DomainLab.domainlab.tasks.b_task import NodeTaskDict
 from domid.tasks.b_task import NodeTaskDict
 from domid.dsets.dset_her2 import DsetHER2
 
 
 class NodeTaskHER2(NodeTaskDict):
     """
-    Based on NodeTaskMNISTColor10 from libDG.
+    Based on NodeTaskMNISTColor10 from DomainLab.
     The digits (0, 1, ..., 9) are regarded as domains (to be separated by unsupervised clustering).
     """
 
@@ -74,7 +74,7 @@ class NodeTaskHER2(NodeTaskDict):
 
 
 def test_fun():
-    from libdg.arg_parser import mk_parser_main
+    from domainlab.arg_parser import mk_parser_main
 
     parser = mk_parser_main()
     print(parser)

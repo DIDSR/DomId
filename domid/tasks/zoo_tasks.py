@@ -1,10 +1,10 @@
 import os
 from torchvision import transforms
-from libdg.tasks.task_mnist_color import NodeTaskMNISTColor10
-from libdg.tasks.task_folder_mk import mk_task_folder
-from libdg.tasks.utils_task import ImSize
-from libdg.utils.u_import import import_path
-from libdg.compos.pcr.request import RequestTask
+from domainlab.tasks.task_mnist_color import NodeTaskMNISTColor10
+from domainlab.tasks.task_folder_mk import mk_task_folder
+from domainlab.tasks.utils_task import ImSize
+from domainlab.utils.u_import import import_path
+from domainlab.compos.pcr.request import RequestTask
 from domid.tasks.task_mnist import NodeTaskMNIST
 from domid.tasks.her2_task import NodeTaskHER2
 

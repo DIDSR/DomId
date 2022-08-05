@@ -1,5 +1,5 @@
 from domid.algos.observers.c_obvisitor_clustering import ObVisitor
-#from libdg.algos.observers.b_obvisitor import ObVisitor
+#from domainlab.algos.observers.b_obvisitor import ObVisitor
 from domid.utils.perf_cluster import PerfCluster
 
 

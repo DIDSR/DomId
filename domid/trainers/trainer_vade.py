@@ -4,7 +4,7 @@ Base Class for trainer
 import abc
 import torch
 from domid.utils.perf_cluster import PerfCluster
-from libdg.algos.trainers.a_trainer import TrainerClassif
+from domainlab.algos.trainers.a_trainer import TrainerClassif
 import torch.optim as optim
 from tensorboardX import SummaryWriter
 from sklearn.manifold import TSNE
