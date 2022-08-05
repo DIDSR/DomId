@@ -4,13 +4,14 @@ import torch
 import torch.optim as optim
 from domid.utils.perf_cluster import PerfCluster
 class Pretraining():
-    def __init__(self, model, device, loader_tr):
+    def __init__(self, model, device, loader_tr, i_h, i_w):
         #super().__init__(tensor_x, mse_n, epoch, model, device, optimizer)
         self.model = model
         self.device = device
         #self.optimizer = optimizer
         #self.epo_loss_tr = epo_loss_tr
         self.loader_tr = loader_tr
+        self.i_h, self.i_w = i_h, i_w
 
 
 
@@ -29,14 +30,15 @@ class Pretraining():
     def prediction(self):
         num_img = len(self.loader_tr.dataset)
         Z = np.zeros((num_img, self.model.zd_dim))
-        i_w, i_h = 100, 100
-        IMGS = np.zeros((num_img,3,i_w, i_h))
+        IMGS = np.zeros((num_img, 3, self.i_h, self.i_w))
         domain_labels = np.zeros((num_img, 1))
         machine_labels = []
         counter = 0
         with torch.no_grad():
-            for tensor_x, vec_y, vec_d, machine, image_loc in self.loader_tr:
-
+            for tensor_x, vec_y, vec_d, *other_vars in self.loader_tr:
+                if len(other_vars) > 0:
+                    machine, image_loc = other_vars
+                    machine_labels.append(machine)
                 tensor_x = tensor_x.to(self.device)
                 preds, z_mu, z, *_ = self.model.infer_d_v_2(tensor_x)
                 z = z.detach().cpu().numpy()  # [batch_size, zd_dim]
@@ -46,7 +48,6 @@ class Pretraining():
                 IMGS[counter:counter+z.shape[0], :, :, :] = tensor_x
                 Z[counter:counter + z.shape[0], :] = z
                 domain_labels[counter:counter + z.shape[0], 0] = torch.argmax(preds, 1)+1
-                machine_labels.append(machine)
                 counter += z.shape[0]
         return IMGS, Z, domain_labels, machine_labels
 
