@@ -6,7 +6,7 @@ from domainlab.tasks.utils_task import ImSize
 from domainlab.utils.u_import import import_path
 from domainlab.compos.pcr.request import RequestTask
 from domid.tasks.task_mnist import NodeTaskMNIST
-from domid.tasks.her2_task import NodeTaskHER2
+from domid.tasks.task_her2 import NodeTaskHER2
 
 path_this_file = os.path.dirname(os.path.realpath(__file__))
 
