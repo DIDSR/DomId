@@ -1,4 +1,0 @@
-[submodule "libDG"]
-	path = libDG
-	url = https://github.com/smilesun/libDG.git
-	branch = python-3-10
