@@ -40,9 +40,9 @@ class DsetHER2(Dataset):
         #domain = mk_fun_label2onehot(2)(self.class_num+1) #FIXME 2
         #A_FDA, A_NIH, H1, H2
 
-        if 'class2' in img_loc:
-            domain = torch.Tensor([0, 1])
-        else:
-            domain = torch.Tensor([1, 0])
+        # if 'class2' in img_loc:
+        #     domain = torch.Tensor([0, 1])
+        # else:
+        #     domain = torch.Tensor([1, 0])
 
-        return image, label, domain, machine, img_loc
+        return image, label, machine, img_loc

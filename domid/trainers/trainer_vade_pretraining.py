@@ -132,14 +132,35 @@ class TrainerVADE(TrainerClassif):
             self.writer.add_scalar("ELBO loss", self.epo_loss_tr, epoch)
             # self.writer.add_scalar('Reconstraction Accuracy (cos similarity)', reconstruction_acc, epoch)
             # self.writer.add_scalar('Domain clustering acc', clustering_acc, epoch)
-        if epoch == 1:
+        if epoch >0 :
             IMGS, Z, domain_labels, machine_label = p.prediction()
-            class_labels = torch.argmax(vec_y[1:], 1)
 
-            print("before writer", z[1:, :].shape, vec_y[1:, :].shape)
-            self.writer.add_embedding(
-                Z, metadata=domain_labels, label_img=IMGS, global_step=epoch, tag=str(epoch) + "_" + str(acc_d)
-            )  # FIXME set global trainer step
+            d1_machine = []
+            d2_machine =[]
+
+            for i in range(0, len(domain_labels)-1):
+
+                if domain_labels[i]==1:
+                    d1_machine.append(machine_label[i])
+                elif domain_labels[i]==2:
+                    d2_machine.append(machine_label[i])
+
+            from matplotlib import pyplot as plt
+
+            plt.subplot(2,1,1)
+            plt.hist(d1_machine)
+            plt.title('Class 1 Cancerous Tissue Scan Sources')
+
+            plt.subplot(2,1,2)
+            plt.hist(d2_machine)
+            plt.title('Class 2 Cancerous Tissue Scan Sources')
+            plt.show()
+            #plt.savefig('./figures/hist_results'+str(epoch)+'.png')
+            plt.close()
+            # print("before writer", z[1:, :].shape, vec_y[1:, :].shape)
+            # self.writer.add_embedding(
+            #     Z, metadata=domain_labels, label_img=IMGS, global_step=epoch, tag=str(epoch) + "_" + str(acc_d)
+            # )  # FIXME set global trainer step
 
         flag_stop = self.observer.update(epoch)  # notify observer
 

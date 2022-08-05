@@ -312,6 +312,8 @@ class ModelVaDECNN(nn.Module):
         for l in range(self.L):
             #xprint(l)
             z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu  # shape [batch_size, self.zd_dim]
+            breakpoint()
+            z = - 0.5 *(torch.randn_like(z_mu)-mu_c)^2 / torch.exp(log_sigma2_c) - log_sigma2_c #FIXME check the shape
             x_pro = self.decoder(z)
             #breakpoint()
             try:
@@ -339,6 +341,8 @@ class ModelVaDECNN(nn.Module):
                 1,
             )
         )
+
+
         # inner sum dimentions:
         # [1, d_dim, zd_dim] + exp([batch_size, 1, zd_dim] - [1, d_dim, zd_dim]) + ([batch_size, 1, zd_dim] - [1, d_dim, zd_dim])^2 / exp([1, d_dim, zd_dim])
         # = [batch_size, d_dim, zd_dim] -> sum of zd_dim dimensions

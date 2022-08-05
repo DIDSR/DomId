@@ -7,7 +7,7 @@ from torchvision import transforms
 from domainlab.tasks.utils_task import ImSize
 from domainlab.utils.utils_classif import mk_dummy_label_list_str
 #from domainlab.tasks.b_task import NodeTaskDict
-from domid.tasks.b_task import NodeTaskDict
+from domainlab.tasks.b_task import NodeTaskDict
 from domid.dsets.dset_her2 import DsetHER2
 
 
