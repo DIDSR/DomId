@@ -4,9 +4,9 @@ HER2 task where the HER2 categories are considered "domains"
 
 from torch.utils.data import random_split
 from torchvision import transforms
-from DomainLab.domainlab.tasks.utils_task import ImSize
-from DomainLab.domainlab.utils.utils_classif import mk_dummy_label_list_str
-#from DomainLab.domainlab.tasks.b_task import NodeTaskDict
+from domainlab.tasks.utils_task import ImSize
+from domainlab.utils.utils_classif import mk_dummy_label_list_str
+#from domainlab.tasks.b_task import NodeTaskDict
 from domid.tasks.b_task import NodeTaskDict
 from domid.dsets.dset_her2 import DsetHER2
 
