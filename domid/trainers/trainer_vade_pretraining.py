@@ -8,7 +8,7 @@ from domainlab.algos.trainers.a_trainer import TrainerClassif
 
 from domid.utils.perf_cluster import PerfCluster
 from domid.trainers.pretraining import Pretraining
-
+from domid.trainers.storing_plotting import Storing
 
 class TrainerVADE(TrainerClassif):
     def __init__(self, model, task, observer, device, writer, pretrain=True, aconf=None):
@@ -39,6 +39,7 @@ class TrainerVADE(TrainerClassif):
         self.writer = writer
         self.thres = aconf.pre_tr
         self.i_h, self.i_w = task.isize.h, task.isize.w
+        self.args = aconf
         # self.scheduler = torch.optim.lr_scheduler.StepLR(self.optimizer, step_size=2, gamma=0.95)
         # step_size = 10, gamma = 0.95
         # optimizer Adam
@@ -115,11 +116,19 @@ class TrainerVADE(TrainerClassif):
         preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = self.model._inference(tensor_x)
         print("pi:")
         print(pi.cpu().detach().numpy())
+
+        # ______________ changinge LR _____________________
         # if self.pretraining_finished:
         #     self.scheduler.step()
         #     print('learning rate', self.scheduler.get_lr()[0])
         # self.scheduler.step()
+        #_______________________________________________________
 
+        s = Storing(self.args,epoch,acc_d)
+        s.storing_plotting(self.args,epoch,acc_d)
+
+
+        # ___________ Tensorboard______________________________
         preds, z_mu, z, _, _, x_pro = self.model.infer_d_v_2(tensor_x)
         imgs = torch.cat((tensor_x[0:8, :, :, :], x_pro[0:8, :, :, :],), 0)
         name = "Decoder images epoch # " + str(epoch)
@@ -130,38 +139,7 @@ class TrainerVADE(TrainerClassif):
             self.writer.add_scalar("MSE loss", self.epo_loss_tr, epoch)
         else:
             self.writer.add_scalar("ELBO loss", self.epo_loss_tr, epoch)
-            # self.writer.add_scalar('Reconstraction Accuracy (cos similarity)', reconstruction_acc, epoch)
-            # self.writer.add_scalar('Domain clustering acc', clustering_acc, epoch)
-        if epoch >0 :
-            IMGS, Z, domain_labels, machine_label = p.prediction()
-
-            d1_machine = []
-            d2_machine =[]
-
-            for i in range(0, len(domain_labels)-1):
-
-                if domain_labels[i]==1:
-                    d1_machine.append(machine_label[i])
-                elif domain_labels[i]==2:
-                    d2_machine.append(machine_label[i])
-
-            from matplotlib import pyplot as plt
-
-            plt.subplot(2,1,1)
-            plt.hist(d1_machine)
-            plt.title('Class 1 Cancerous Tissue Scan Sources')
-
-            plt.subplot(2,1,2)
-            plt.hist(d2_machine)
-            plt.title('Class 2 Cancerous Tissue Scan Sources')
-            plt.show()
-            #plt.savefig('./figures/hist_results'+str(epoch)+'.png')
-            plt.close()
-            # print("before writer", z[1:, :].shape, vec_y[1:, :].shape)
-            # self.writer.add_embedding(
-            #     Z, metadata=domain_labels, label_img=IMGS, global_step=epoch, tag=str(epoch) + "_" + str(acc_d)
-            # )  # FIXME set global trainer step
-
+        #________________________________________________________---
         flag_stop = self.observer.update(epoch)  # notify observer
 
         return flag_stop

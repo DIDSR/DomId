@@ -205,17 +205,19 @@ class ModelVaDE(nn.Module):
 
             #breakpoint()
             #log_sigma2_c, mu_c - [d_dim, z_dim] - 6 x 200
-            for img in range(0, x_pro2.shape[0]):
-                for channel in range(0,x_pro2.shape[1]):
-                    for i in range(0, x_pro2.shape[1]): #dimentionality of
-                        for j in range(0, x_pro2.shape[0]): #number of clusters
-                            L_rec += - sigma[j, i] - 0.5 * (x_pro2[img, channel, j, i] - mu[j, i]) ** 2 / torch.exp(sigma[j, i])
+            # for img in range(0, x_pro2.shape[0]):
+            #     for channel in range(0,x_pro2.shape[1]):
+            #         for i in range(0, x_pro2.shape[1]): #dimentionality of
+            #            for j in range(0, x_pro2.shape[0]): #number of clusters
+            #                 L_rec += - sigma[j, i] - 0.5 * (x_pro2[img, channel, j, i] - mu[j, i]) ** 2 / torch.exp(sigma[j, i])
                             #L_rec += - torch.log_(sigma[j, i]) - 0.5 * (x_pro2[img,channel,j, i] - mu[j, i])**2/torch.exp(torch.log_(sigma[j, i]))
             #L_rec+=F.binary_cross_entropy(x_pro, x)
+            L_rec+= torch.sum(-sigma - 0.5 * (x_pro2[:,0, :, :]-mu**2)/(torch.exp(sigma)))
 
         #breakpoint()
         L_rec /= self.L
-        print(L_rec)
+        #print(L_rec)
+        #breakpoint()
         Loss = L_rec * x.size(1)
         #print('checkpoint 1', Loss)
         # doesn't take the mean over the channels; i.e., the recon loss is taken as an average over (batch size * L * width * height)
@@ -248,11 +250,13 @@ class ModelVaDE(nn.Module):
         Loss -= torch.mean(torch.sum(probs * torch.log(pi.unsqueeze(0) / (probs + eps)), 1))  # FIXME: (+eps) is a hack to avoid NaN. Is there a better way?
         # dimensions: [batch_size, d_dim] * log([1, d_dim] / [batch_size, d_dim]), where the sum is over d_dim dimensions --> [batch_size] --> mean over the batch --> a scalar
         #print('checkpoint 3', Loss)
+
         Loss -= 0.5 * torch.mean(torch.sum(1.0 + z_sigma2_log, 1))
         #print('checkpoint 4', Loss)
         # dimensions: mean( sum( [batch_size, zd_dim], 1 ) ) where the sum is over zd_dim dimensions and mean over the batch
         # --> overall, this is -"third line of eq. (12)" with additional mean over the batch
         #print('loss', Loss)
+        #print(Loss)
         return Loss
 
     def gaussian_pdfs_log(self, x, mus, log_sigma2s):
