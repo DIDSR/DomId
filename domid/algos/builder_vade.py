@@ -7,7 +7,7 @@ from domainlab.algos.observers.c_obvisitor_cleanup import ObVisitorCleanUp
 from domainlab.utils.utils_cuda import get_device
 from tensorboardX import SummaryWriter
 from domid.algos.observers.b_obvisitor_clustering_only import ObVisitorClusteringOnly
-from domid.models.model_vade import ModelVaDE
+from domid.models.model_vade_nonbinary import ModelVaDE
 
 class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
     def init_business(self, exp):

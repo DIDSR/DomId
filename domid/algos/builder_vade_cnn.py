@@ -8,7 +8,7 @@ from domainlab.algos.observers.c_obvisitor_cleanup import ObVisitorCleanUp
 from domainlab.utils.utils_cuda import get_device
 
 from domid.algos.observers.b_obvisitor_clustering_only import ObVisitorClusteringOnly
-from domid.models.model_vade_cnn import ModelVaDECNN
+from domid.models.model_vade_cnn_nonbinary import ModelVaDECNN
 from domid.trainers.trainer_vade_pretraining import TrainerVADE  # CHANGE HERE
 
 

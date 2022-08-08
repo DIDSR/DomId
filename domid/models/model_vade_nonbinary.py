@@ -58,38 +58,16 @@ class LinearDecoder(nn.Module):
             nn.Linear(features_dim[0], np.prod(input_dim)),
             nn.Sigmoid()
         )
-        self.decod_2 = nn.Sequential(
-            *linear_block(zd_dim, features_dim[2]),
-            *linear_block(features_dim[2], features_dim[1]),
-            *linear_block(features_dim[1], np.prod(input_dim))
-        )
-
-        self.mu_layer = nn.Linear(np.prod(input_dim), input_dim[0])#input_dim[0], input_dim[1])#shape of the [ 3, 28, 28] FIXME
-        self.log_sigma2_layer = nn.Linear(np.prod(input_dim),input_dim[0])#input_dim[0], input_dim[1])
-
 
     def forward(self, z):
         """
         :param z: latent space representation
         :return x_pro: reconstructed data, which is assumed to have 3 channels, but the channels are assumed to be equal to each other.
         """
-        #print('here1')
         x_pro = self.decod(z)
-        #print(x_pro.shape)
-
-        x_pro2 = self.decod_2(z)
-
-        mu = self.mu_layer(x_pro2)
-        sigma = self.log_sigma2_layer(x_pro2)
-
-        #FIXME
         x_pro = torch.reshape(x_pro, (x_pro.shape[0], 1, *self.input_dim))
         x_pro = torch.cat((x_pro, x_pro, x_pro), 1)
-
-        x_pro2 = torch.reshape(x_pro2, (x_pro2.shape[0], 1, *self.input_dim)) #FIXME reshape instead of concat
-        x_pro2 = torch.cat((x_pro2, x_pro2, x_pro2), 1)
-
-        return x_pro, x_pro2, mu, sigma
+        return x_pro
 
 
 class ModelVaDE(nn.Module):
@@ -109,7 +87,6 @@ class ModelVaDE(nn.Module):
         self.zd_dim = zd_dim
         self.d_dim = d_dim
         self.device = device
-        self.L = L
 
         self.encoder = LinearEncoder(zd_dim=zd_dim, input_dim=(i_h, i_w)).to(device)
         self.decoder = LinearDecoder(zd_dim=zd_dim, input_dim=(i_h, i_w)).to(device)
@@ -162,7 +139,7 @@ class ModelVaDE(nn.Module):
         Used for tensorboard visualizations only.
         """
         results = self._inference(x)
-        x_pro, *_ = self.decoder(results[2])
+        x_pro = self.decoder(results[2])
         preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = (r.cpu().detach() for r in results)
         return preds, z_mu, z, log_sigma2_c, probs, x_pro
 
@@ -177,7 +154,7 @@ class ModelVaDE(nn.Module):
         Loss = nn.MSELoss()
         z_mu, z_sigma2_log = self.encoder(x)
         z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
-        x_pro,*_ = self.decoder(z)
+        x_pro = self.decoder(z)
         loss = Loss(x, x_pro)
         return loss
 
@@ -189,43 +166,18 @@ class ModelVaDE(nn.Module):
         :param int L: Number of Monte Carlo samples in the SOVB
         """
         preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = self._inference(x)
-        #mu, sigma from the decoder
         eps = 1e-10
-        print('here')
 
         L_rec = 0.0
         for l in range(self.L):
-
             z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu # shape [batch_size, self.zd_dim]
-
-            x_pro, x_pro2, mu, sigma = self.decoder(z) #x_pro, mu, sigma
+            x_pro = self.decoder(z)
             # L_rec += F.binary_cross_entropy(
             #     x_pro, x
             # )  # TODO: this is the reconstruction loss for a binary-valued x (such as MNIST digits); need to implement another version for a real-valued x.
-
             #breakpoint()
-            #log_sigma2_c, mu_c - [d_dim, z_dim] - 6 x 200
-            # for img in range(0, x_pro2.shape[0]):
-            #     for channel in range(0,x_pro2.shape[1]):
-            #         for i in range(0, x_pro2.shape[1]): #dimentionality of
-            #            for j in range(0, x_pro2.shape[0]): #number of clusters
-            #                 L_rec += - sigma[j, i] - 0.5 * (x_pro2[img, channel, j, i] - mu[j, i]) ** 2 / torch.exp(sigma[j, i])
-                            #L_rec += - torch.log_(sigma[j, i]) - 0.5 * (x_pro2[img,channel,j, i] - mu[j, i])**2/torch.exp(torch.log_(sigma[j, i]))
-            #L_rec+=F.binary_cross_entropy(x_pro, x)
-            L_rec_= torch.sum(-sigma - 0.5 * (x-mu**2)/(torch.exp(sigma)))
-            L_rec+=L_rec_/z.shape[0]
-            print(L_rec)
-            #FIXME call log sigma, seperate into two different sums
-            # FIXME take the mean over batches
-            # sum of one dimention and then mean
-            # vectorize mu and sum over the columns 4
-            # devive by the batch size
-
-
-        #breakpoint()
+            L_rec+=F.binary_cross_entropy(x_pro, x)
         L_rec /= self.L
-        #print(L_rec)
-        #breakpoint()
         Loss = L_rec * x.size(1)
         #print('checkpoint 1', Loss)
         # doesn't take the mean over the channels; i.e., the recon loss is taken as an average over (batch size * L * width * height)
@@ -258,13 +210,11 @@ class ModelVaDE(nn.Module):
         Loss -= torch.mean(torch.sum(probs * torch.log(pi.unsqueeze(0) / (probs + eps)), 1))  # FIXME: (+eps) is a hack to avoid NaN. Is there a better way?
         # dimensions: [batch_size, d_dim] * log([1, d_dim] / [batch_size, d_dim]), where the sum is over d_dim dimensions --> [batch_size] --> mean over the batch --> a scalar
         #print('checkpoint 3', Loss)
-
         Loss -= 0.5 * torch.mean(torch.sum(1.0 + z_sigma2_log, 1))
         #print('checkpoint 4', Loss)
         # dimensions: mean( sum( [batch_size, zd_dim], 1 ) ) where the sum is over zd_dim dimensions and mean over the batch
         # --> overall, this is -"third line of eq. (12)" with additional mean over the batch
         #print('loss', Loss)
-        #print(Loss)
         return Loss
 
     def gaussian_pdfs_log(self, x, mus, log_sigma2s):

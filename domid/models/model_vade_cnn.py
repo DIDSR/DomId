@@ -310,12 +310,8 @@ class ModelVaDECNN(nn.Module):
         L_rec = 0.0
 
         for l in range(self.L):
-            #xprint(l)
             z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu  # shape [batch_size, self.zd_dim]
-            breakpoint()
-            z = - 0.5 *(torch.randn_like(z_mu)-mu_c)^2 / torch.exp(log_sigma2_c) - log_sigma2_c #FIXME check the shape
             x_pro = self.decoder(z)
-            #breakpoint()
             try:
                 L_rec += F.binary_cross_entropy(x_pro, x)
             except:
