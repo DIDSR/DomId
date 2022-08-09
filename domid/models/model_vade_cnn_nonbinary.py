@@ -23,6 +23,9 @@ import torch.nn as nn
 from domainlab.utils.utils_classif import logit2preds_vpic, get_label_na
 from domid.compos.nn_net import Net_MNIST
 import torch
+
+
+
 from torchvision.datasets import MNIST
 from torchvision.transforms import ToTensor
 from torch.utils.data import DataLoader, TensorDataset
@@ -118,7 +121,7 @@ class UnFlatten(nn.Module):
         return input.view(input.size(0), filter_size, N, N)#FIXME (3,3)
 
 class ConvolutionalEncoder(nn.Module):
-    def __init__(self, zd_dim, input_dim=3, features_dim=[32, 64], i_w=28, i_h=28):
+    def __init__(self, zd_dim, input_dim=3, features_dim=[32, 64, 128], i_w=28, i_h=28):
         """
         VAE Encoder
         :param zd_dim: dimension of the latent space
@@ -129,14 +132,19 @@ class ConvolutionalEncoder(nn.Module):
         self.input_dim = np.prod(input_dim)
         #breakpoint()
         self.encod = nn.Sequential()
+
         features_dim = [input_dim]+features_dim
-        k = [3, 3]
+        k = [3, 3, 3] #, 3, 3, 3]
         for i in range(len(features_dim)-1):
             self.encod.append(nn.Conv2d(features_dim[i], features_dim[i+1],kernel_size=k[i], stride=2, padding=1))
             self.encod.append(nn.BatchNorm2d(features_dim[i+1]))
             self.encod.append(nn.LeakyReLU())
         self.encod.append(nn.Flatten())
-
+        # nn.init.xavier_uniform_(self.lstm.weight_ih_l0, gain=np.sqrt(2))
+        # nn.init.xavier_uniform_(self.lstm.weight_hh_l0, gain=np.sqrt(2))
+        #breakpoint()
+        #nn.init.xavier_uniform_(self.encod[0].weight.data, gain=np.sqrt(2))
+        #nn.init.orthogonal_(self.encod[0].bias.data, gain=np.sqrt(2))
         # self.encod = nn.Sequential(
         #     *cnn_encoding_block(input_dim, features_dim[0]),
         #     *cnn_encoding_block(features_dim[0], features_dim[1]),
@@ -161,7 +169,7 @@ class ConvolutionalEncoder(nn.Module):
 
 
 class ConvolutionalDecoder(nn.Module):
-    def __init__(self, zd_dim, h_dim, input_dim=3, features_dim=[32, 64]):
+    def __init__(self, zd_dim, h_dim, input_dim=3, features_dim=[32, 64, 128]): #, 256, 512, 1024]):
         """
         VAE Decoder
         :param zd_dim: dimension of the latent space
@@ -179,12 +187,14 @@ class ConvolutionalDecoder(nn.Module):
         features_dim = [input_dim]+features_dim
         features_dim.reverse()
         #breakpoint()
-        k = [4, 4, 4, 4]
+        k = [3, 4, 4]
+        #k = [4, 3, 3, 3, 4, 4]
         for i in range(len(features_dim)-1):
             self.decod.append(nn.ConvTranspose2d(features_dim[i], features_dim[i+1], kernel_size = k[i], stride = 2, padding = 1))
             self.decod.append(nn.BatchNorm2d(features_dim[i+1]))
             self.decod.append(nn.LeakyReLU())
-        # self.decod.append(nn.Sigmoid())
+        self.decod.append(nn.Sigmoid())
+        #nn.init.xavier_uniform_(self.decod[0].weight.data, gain=np.sqrt(2))
         # self.decod = nn.Sequential(
         #
         #     *cnn_decoding_block(features_dim[-1], features_dim[1], kernel_size=(4, 4)),
@@ -206,6 +216,9 @@ class ConvolutionalDecoder(nn.Module):
         z = self.linear(z)
         z = self.unflat(z)
         x_pro = self.decod(z)
+
+
+        #print(x_pro.shape)
 
         mu = self.mu_layer(x_pro)
         log_sigma = self.log_sigma2_layer(x_pro)
@@ -297,11 +310,18 @@ class ModelVaDECNN(nn.Module):
         return self.ELBO_Loss(x)
 
     def pretrain_loss(self, x):
-        Loss = nn.MSELoss()
+        Loss = nn.HuberLoss()
+
+
+        # provider = LossProvider()
+        # loss_function = provider.get_loss_function('Watson-DFT', colorspace='RGB', pretrained=True, reduction='sum')
         z_mu, z_sigma2_log = self.encoder(x)
         z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
         x_pro, *_ = self.decoder(z)
+        # print('out', x_pro[0, 0, 0:5, 0:3])
+        # print('in', x[0, 0, 0:5, 0:3])
         loss = Loss(x, x_pro)
+
         return loss
 
     def ELBO_Loss(self, x):
@@ -314,6 +334,8 @@ class ModelVaDECNN(nn.Module):
         :param int L: Number of Monte Carlo samples in the SOVB
         """
         preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = self._inference(x)
+
+        pi = torch.sigmoid(pi)
         eps = 1e-10
         L_rec = 0.0
 
@@ -324,16 +346,22 @@ class ModelVaDECNN(nn.Module):
 
             try:
 
-                L_rec_ = torch.sum(-log_sigma - 0.5 * (x - mu ** 2) / (torch.exp(log_sigma)))
-                L_rec += L_rec_ / z.shape[0]
+                #x.unsqueexe(1)-mu.unsqueeze(0)
+
+                L_rec += F.mse_loss(x_pro, x, reduction='sum') #sum(-log_sigma0.5 * (x - mu)**2 / torch.exp((log_sigma)))
+
+                #L_rec += L_rec_ / z.shape[0]
+
             except:
+                print('loss is nan')
                 breakpoint()
-            #print(L_rec)
+        #print(L_rec)
             # TODO: this is the reconstruction loss for a binary-valued x (such as MNIST digits); need to implement another version for a real-valued x.
 
         L_rec /= self.L
 
-        Loss = L_rec * x.size(1)*10
+        Loss = L_rec
+
         # doesn't take the mean over the channels; i.e., the recon loss is taken as an average over (batch size * L * width * height)
         # --> this is the -"first line" of eq (12) in the paper with additional averaging over the batch.
         #print('chepoint 1', Loss)

@@ -26,6 +26,7 @@ class TrainerVADE(TrainerClassif):
         self.pretrain = pretrain
         self.pretraining_finished = not self.pretrain
         self.LR = aconf.lr
+        self.warmup = 0
 
         if not self.pretraining_finished:
             self.optimizer = optim.Adam(
@@ -81,6 +82,14 @@ class TrainerVADE(TrainerClassif):
 
         acc_d, _ = p.epoch_val_acc()
         print(acc_d)
+        #____________ warmup ____________
+        N = 25 # max warmup steps
+        if acc_d > self.thres or self.pretraining_finished:
+            if self.warmup <= N:
+                print(self.LR)
+                self.LR = (self.warmup + 1)*self.LR/N
+                self.warmup += 1
+
 
         for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
             # import matplotlib.pyplot as plt
@@ -91,19 +100,26 @@ class TrainerVADE(TrainerClassif):
             tensor_x, vec_y, vec_d = tensor_x.to(self.device), vec_y.to(self.device), vec_d.to(self.device)
             self.optimizer.zero_grad()
 
+
+
+
             if acc_d < self.thres and not self.pretraining_finished:
                 loss = p.pretrain_loss(tensor_x, mse_n, epoch)
             else:
                 if not self.pretraining_finished:
                     self.pretraining_finished = True
                     # reset the optimizer
-                    self.optimizer = optim.Adam(self.model.parameters(), lr=self.LR)
+
+                    self.optimizer = optim.Adam(self.model.parameters(), lr=self.LR, betas = (0.5, 0.9), weight_decay = 0.0001)
                     # self.scheduler = torch.optim.lr_scheduler.StepLR(self.optimizer, step_size=15, gamma=0.95)
-                    self.LR = self.LR * 10
+
                     print("".join(["#"] * 60))
                     print("Epoch {}: Finished pretraining and starting to use ELBO loss.".format(epoch))
                     print("".join(["#"] * 60))
+
+
                 loss = self.model.cal_loss(tensor_x)
+
 
             loss = loss.sum()
             loss.backward()
@@ -123,9 +139,13 @@ class TrainerVADE(TrainerClassif):
         #     print('learning rate', self.scheduler.get_lr()[0])
         # self.scheduler.step()
         #_______________________________________________________
-
-        s = Storing(self.args,epoch,acc_d)
-        s.storing_plotting(self.args,epoch,acc_d)
+        #
+        # if not self.pretraining_finished:
+        #     loss_store = 0
+        # else:
+        #     loss_store = self.epo_loss_tr
+        # s = Storing(self.args,epoch,acc_d)
+        # s.storing_plotting(self.args,epoch,acc_d,loss_store)
 
 
         # ___________ Tensorboard______________________________
