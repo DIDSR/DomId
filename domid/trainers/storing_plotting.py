@@ -7,30 +7,44 @@ class Storing():
         self.epoch = epoch
         self.accuracy = accuracy
 
-    def storing_plotting(self, args, epoch, accuracy):
+    def storing_plotting(self, args, epoch, accuracy, loss):
 
 
         # Create the pandas DataFrame with column name is provided explicitly
-        # constant lr for differentL: 0.0001
+        # constant lr for different L: 0.0001
         # constant L for different lr: L =5
         # Constant L and lr for different zd_dim
-        if not os.path.exists('results.cvs'):
+
+        if epoch == 1:
 
 
             columns = ['L5_lr0.0001_z50','L10_lr0.0001_z50', 'L25_lr0.0001_z50',
-                       'L5_lr0.00001_z50', 'L5_lr0.01_z50','L5_lr0.000001_z50',
+                       'L5_lr0.001_z50', 'L5_lr0.00001_z50','L5_lr0.000001_z50',
                        'L5_lr0.0001_z10', 'L5_lr0.0001_z50', 'L5_lr0.0001_z100', 'L5_lr0.0001_z500']
-            data = np.zeros((args.epos, 10))
-            df = pd.DataFrame(data, columns = columns)
-
+            data = np.zeros((args.epos, len(columns)))
+            acc_df = pd.DataFrame(data, columns = columns)
             experiment_name = 'L' + str(args.L) + '_lr' + str(args.lr) + '_z' + str(args.zd_dim)
-            df.iloc[epoch][experiment_name] = accuracy
-            df.to_csv('results.csv')
+            acc_df.at[epoch, experiment_name] = accuracy
+            acc_df.to_csv('results.csv')
+
+
+
+            loss_df = pd.DataFrame(data, columns=columns)
+            experiment_name = 'L' + str(args.L) + '_lr' + str(args.lr) + '_z' + str(args.zd_dim)
+            loss_df.at[epoch, experiment_name] = loss
+            loss_df.to_csv('loss.csv')
+
         else:
-            df = pd.read_csv('results.csv')
 
+            acc_df = pd.read_csv('results.csv')
+            loss_df = pd.read_csv('loss.csv')
             experiment_name = 'L' + str(args.L) + '_lr' + str(args.lr) + '_z' + str(args.zd_dim)
-            df.iloc[epoch][experiment_name] = accuracy
+            acc_df.at[epoch, experiment_name] = accuracy
+
+            loss_df.at[epoch, experiment_name] = loss
+            loss_df.to_csv('loss.csv')
+
+
 
     def plot_histogram(self, epoch):
         if epoch > 0:
