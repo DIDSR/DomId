@@ -349,10 +349,12 @@ class ModelVaDECNN(nn.Module):
                 #breakpoint()
                 breakpoint()
 
-                L_rec = torch.mean(torch.sum(-log_sigma, 1))-torch.mean(torch.sum(torch.sum(0.5 * (x - mu)**2 / torch.exp(log_sigma), 2),2))
-                L_rec = torch.mean(torch.sum(-log_sigma, 1))-0.5*F.mse_loss(x, x_pro)
+                #L_rec = torch.mean(torch.sum(-log_sigma, 1))-torch.mean(torch.sum(torch.sum(0.5 * (x - mu)**2 / torch.exp(log_sigma), 2),2))
+                #L_rec = torch.mean(torch.sum(-log_sigma, 1))-0.5*F.mse_loss(x, x_pro)
 
-
+                L_rec = torch.mean(torch.sum(torch.sum(-log_sigma, 2),2))\
+                        -torch.mean(torch.sum(torch.sum(0.5 * (x - mu) ** 2 / torch.exp(log_sigma), 2), 2))
+                # sum across i_w and i_c and average across batch and channels
                 #print(L_rec_)
                 #L_rec += L_rec_ / z.shape[0]
 
