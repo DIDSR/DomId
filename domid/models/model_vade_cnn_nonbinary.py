@@ -7,29 +7,29 @@ import itertools
 # import toml
 from sklearn.mixture import GaussianMixture
 import numpy as np
-#from sklearn.mixture import GaussianMixture
+# from sklearn.mixture import GaussianMixture
 # import tqdm
 from domainlab.utils.utils_class import store_args
-from domainlab.compos.vae.compos.decoder_concat_vec_reshape_conv_gated_conv import DecoderConcatLatentFCReshapeConvGatedConv
+from domainlab.compos.vae.compos.decoder_concat_vec_reshape_conv_gated_conv import \
+    DecoderConcatLatentFCReshapeConvGatedConv
 from domainlab.compos.vae.compos.encoder import LSEncoderDense
 from domainlab.models.a_model_classif import AModelClassif
 from domainlab.utils.utils_classif import logit2preds_vpic, get_label_na
-#from torch.optim import Adam
-#from sklearn.metrics import accuracy_score
-#from torch.optim.lr_scheduler import StepLR
+# from torch.optim import Adam
+# from sklearn.metrics import accuracy_score
+# from torch.optim.lr_scheduler import StepLR
 # from tensorboardX import SummaryWriter
-#from sklearn.manifold import TSNE
+# from sklearn.manifold import TSNE
 import torch.nn as nn
 from domainlab.utils.utils_classif import logit2preds_vpic, get_label_na
 from domid.compos.nn_net import Net_MNIST
 import torch
 
-
-
 from torchvision.datasets import MNIST
 from torchvision.transforms import ToTensor
 from torch.utils.data import DataLoader, TensorDataset
-#FIXME another builder: define blocks
+
+# FIXME another builder: define blocks
 """
 input_img = Input(shape=(64, 64, 3)) 
 x = Conv2D(32, (3, 3), padding='same', strides = (2,2))(input_img)
@@ -72,6 +72,7 @@ x = LeakyReLU(alpha=0.3)(x)
 decoded = Conv2D(3, (3, 3), padding='same', strides = (1,1), activation='sigmoid')(x)
 """
 
+
 def cluster_acc(Y_pred, Y):
     from scipy.optimize import linear_sum_assignment as linear_assignment
     assert Y_pred.size == Y.size
@@ -83,32 +84,35 @@ def cluster_acc(Y_pred, Y):
 
     return sum([w[ind[0], ind[1]] for counter in ind]) * 1.0 / Y_pred.size  # , w[0]
 
+
 def get_output_shape(model, image_dim):
-    #print('fake img', model(torch.rand(*(image_dim))).data.shape)
+    # print('fake img', model(torch.rand(*(image_dim))).data.shape)
     return model(torch.rand(*(image_dim))).data.shape
 
-def cnn_encoding_block(in_c, out_c, kernel_size=(4,4), stride=2, padding=1):
+
+def cnn_encoding_block(in_c, out_c, kernel_size=(4, 4), stride=2, padding=1):
     layers = [
         nn.Conv2d(in_c, out_c, kernel_size, stride, padding),
         nn.BatchNorm2d(out_c),
-        nn.LeakyReLU() #negative slope
+        nn.LeakyReLU()  # negative slope
     ]
     return layers
-def cnn_encoding_block(in_c, out_c, kernel_size=(4,4), stride=2, padding=1):
 
+
+def cnn_encoding_block(in_c, out_c, kernel_size=(4, 4), stride=2, padding=1):
     nn.Conv2d(in_c, out_c, kernel_size, stride, padding)
     nn.BatchNorm2d(out_c)
-    nn.LeakyReLU() #negative slope
+    nn.LeakyReLU()  # negative slope
 
 
-
-def cnn_decoding_block(in_c, out_c, kernel_size=(3,3), stride=2, padding=1):
+def cnn_decoding_block(in_c, out_c, kernel_size=(3, 3), stride=2, padding=1):
     layers = [
         nn.ConvTranspose2d(in_c, out_c, kernel_size, stride, padding),
         nn.BatchNorm2d(out_c),
         nn.LeakyReLU()
     ]
     return layers
+
 
 class UnFlatten(nn.Module):
     def __init__(self, filter3):
@@ -117,8 +121,9 @@ class UnFlatten(nn.Module):
 
     def forward(self, input):
         filter_size = self.filter3
-        N = int(np.sqrt(input.shape[1]/filter_size))
-        return input.view(input.size(0), filter_size, N, N)#FIXME (3,3)
+        N = int(np.sqrt(input.shape[1] / filter_size))
+        return input.view(input.size(0), filter_size, N, N)  # FIXME (3,3)
+
 
 class ConvolutionalEncoder(nn.Module):
     def __init__(self, zd_dim, input_dim=3, features_dim=[32, 64, 128], i_w=28, i_h=28):
@@ -130,21 +135,21 @@ class ConvolutionalEncoder(nn.Module):
         """
         super(ConvolutionalEncoder, self).__init__()
         self.input_dim = np.prod(input_dim)
-        #breakpoint()
+        # breakpoint()
         self.encod = nn.Sequential()
 
-        features_dim = [input_dim]+features_dim
-        k = [3, 3, 3] #, 3, 3, 3]
-        for i in range(len(features_dim)-1):
-            self.encod.append(nn.Conv2d(features_dim[i], features_dim[i+1],kernel_size=k[i], stride=2, padding=1))
-            self.encod.append(nn.BatchNorm2d(features_dim[i+1]))
+        features_dim = [input_dim] + features_dim
+        k = [3, 3, 3]  # , 3, 3, 3]
+        for i in range(len(features_dim) - 1):
+            self.encod.append(nn.Conv2d(features_dim[i], features_dim[i + 1], kernel_size=k[i], stride=2, padding=1))
+            self.encod.append(nn.BatchNorm2d(features_dim[i + 1]))
             self.encod.append(nn.LeakyReLU())
         self.encod.append(nn.Flatten())
         # nn.init.xavier_uniform_(self.lstm.weight_ih_l0, gain=np.sqrt(2))
         # nn.init.xavier_uniform_(self.lstm.weight_hh_l0, gain=np.sqrt(2))
-        #breakpoint()
-        #nn.init.xavier_uniform_(self.encod[0].weight.data, gain=np.sqrt(2))
-        #nn.init.orthogonal_(self.encod[0].bias.data, gain=np.sqrt(2))
+        # breakpoint()
+        # nn.init.xavier_uniform_(self.encod[0].weight.data, gain=np.sqrt(2))
+        # nn.init.orthogonal_(self.encod[0].bias.data, gain=np.sqrt(2))
         # self.encod = nn.Sequential(
         #     *cnn_encoding_block(input_dim, features_dim[0]),
         #     *cnn_encoding_block(features_dim[0], features_dim[1]),
@@ -157,7 +162,6 @@ class ConvolutionalEncoder(nn.Module):
         self.mu_layer = nn.Linear(self.h_dim, zd_dim)
         self.log_sigma2_layer = nn.Linear(self.h_dim, zd_dim)
 
-
     def forward(self, x):
         """
         :param x: input data, assumed to have 3 channels, but only the first one is passed through the network.
@@ -169,7 +173,7 @@ class ConvolutionalEncoder(nn.Module):
 
 
 class ConvolutionalDecoder(nn.Module):
-    def __init__(self, zd_dim, h_dim, input_dim=3, features_dim=[32, 64, 128]): #, 256, 512, 1024]):
+    def __init__(self, zd_dim, h_dim, input_dim=3, features_dim=[32, 64, 128]):  # , 256, 512, 1024]):
         """
         VAE Decoder
         :param zd_dim: dimension of the latent space
@@ -177,24 +181,26 @@ class ConvolutionalDecoder(nn.Module):
         :param features_dim: list of dimensions of the hidden layers
         """
         super(ConvolutionalDecoder, self).__init__()
-        #e = ConvolutionalEncoder(zd_dim, input_dim=3, features_dim=features_dim)
+        # e = ConvolutionalEncoder(zd_dim, input_dim=3, features_dim=features_dim)
         self.linear = nn.Linear(zd_dim, h_dim)
 
         # h_filter = get_output_shape(UnFlatten(), (batch_size, h_dim))#batch size!!!!!!!!!
         # print(h_filter)
         self.unflat = UnFlatten(features_dim[-1])
         self.decod = nn.Sequential()
-        features_dim = [input_dim]+features_dim
+        features_dim = [input_dim] + features_dim
         features_dim.reverse()
-        #breakpoint()
+        # breakpoint()
         k = [3, 4, 4]
-        #k = [4, 3, 3, 3, 4, 4]
-        for i in range(len(features_dim)-1):
-            self.decod.append(nn.ConvTranspose2d(features_dim[i], features_dim[i+1], kernel_size = k[i], stride = 2, padding = 1))
-            self.decod.append(nn.BatchNorm2d(features_dim[i+1]))
+        # k = [4, 3, 3, 3, 4, 4]
+        for i in range(len(features_dim) - 1):
+            self.decod.append(
+                nn.ConvTranspose2d(features_dim[i], features_dim[i + 1], kernel_size=k[i], stride=2, padding=1))
+            self.decod.append(nn.BatchNorm2d(features_dim[i + 1]))
             self.decod.append(nn.LeakyReLU())
         self.decod.append(nn.Sigmoid())
-        #nn.init.xavier_uniform_(self.decod[0].weight.data, gain=np.sqrt(2))
+        # nn.init.xavier_uniform_(self.decod[0].weight.data, gain=np.sqrt(2))
+        #
         # self.decod = nn.Sequential(
         #
         #     *cnn_decoding_block(features_dim[-1], features_dim[1], kernel_size=(4, 4)),
@@ -203,9 +209,9 @@ class ConvolutionalDecoder(nn.Module):
         #     nn.Sigmoid()
         # )
 
-        #sizee = get_output_shape(self.decod, (3, input_dim, 100, 100))[1]
-        self.mu_layer = nn.Linear(100, 100)#input_dim[0], input_dim[1])#shape of the [ 3, 28, 28] FIXME
-        self.log_sigma2_layer = nn.Linear(100,100)#input_dim[0], input_dim[1])
+        # sizee = get_output_shape(self.decod, (3, input_dim, 100, 100))[1]
+        self.mu_layer = nn.Linear(30000, 30000)  # input_dim[0], input_dim[1])#shape of the [ 3, 28, 28] FIXME
+        self.log_sigma2_layer = nn.Linear(30000, 30000)  # input_dim[0], input_dim[1])
 
     def forward(self, z):
         """
@@ -215,10 +221,19 @@ class ConvolutionalDecoder(nn.Module):
 
         z = self.linear(z)
         z = self.unflat(z)
-        x_pro = self.decod(z)
-        mu = torch.sigmoid(self.mu_layer(x_pro))
-        log_sigma = self.log_sigma2_layer(x_pro)
+        x_decoded = self.decod(z)
 
+        # flatten x_pro and change the in of linear layer
+        x_flatten = x_decoded.view(x_decoded.shape[0], x_decoded.shape[1] * x_decoded.shape[2] * x_decoded.shape[3])
+
+        mu = torch.sigmoid(self.mu_layer(x_flatten))
+        log_sigma = self.log_sigma2_layer(x_flatten)
+
+        x_pro = torch.reshape(mu, (x_decoded.shape[0], x_decoded.shape[1], x_decoded.shape[2], x_decoded.shape[3]))
+        # mean value anf mean for each pixel
+        # treat mu as reconstruction
+        # mu (bs x 30000)
+        # x_pro reshaped mu
         return x_pro, mu, log_sigma
 
 
@@ -242,10 +257,10 @@ class ModelVaDECNN(nn.Module):
         self.d_dim = d_dim
         self.device = device
         self.L = L
-        self.encoder = ConvolutionalEncoder(zd_dim=zd_dim, input_dim=i_c, i_w = i_w, i_h = i_h).to(device)
+        self.encoder = ConvolutionalEncoder(zd_dim=zd_dim, input_dim=i_c, i_w=i_w, i_h=i_h).to(device)
         self.decoder = ConvolutionalDecoder(zd_dim=zd_dim, h_dim=self.encoder.h_dim, input_dim=i_c).to(device)
 
-        self.log_pi = nn.Parameter(torch.FloatTensor(self.d_dim,).fill_(1.0/self.d_dim).log(),
+        self.log_pi = nn.Parameter(torch.FloatTensor(self.d_dim, ).fill_(1.0 / self.d_dim).log(),
                                    requires_grad=True)
         self.mu_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
         self.log_sigma2_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
@@ -266,7 +281,7 @@ class ModelVaDECNN(nn.Module):
         z_mu, z_sigma2_log = self.encoder(x)
         z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
 
-        pi = self.log_pi.exp()
+        # pi = self.log_pi.exp()
         pi = F.softmax(self.log_pi, dim=0)
         mu_c = self.mu_c
         log_sigma2_c = self.log_sigma2_c
@@ -305,7 +320,7 @@ class ModelVaDECNN(nn.Module):
         return self.ELBO_Loss(x)
 
     def pretrain_loss(self, x):
-        #Loss = nn.HuberLoss()
+        # Loss = nn.HuberLoss()
         Loss = nn.MSELoss()
 
         # provider = LossProvider()
@@ -319,7 +334,7 @@ class ModelVaDECNN(nn.Module):
 
         return loss
 
-    def ELBO_Loss(self, x):
+    def ELBO_Loss(self, x):  # warmup_beta - 0-1
         """ELBO loss function
 
         Using SGVB estimator and the reparametrization trick calculates ELBO loss.
@@ -330,39 +345,37 @@ class ModelVaDECNN(nn.Module):
         """
         preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = self._inference(x)
 
-
         eps = 1e-10
         L_rec = 0.0
 
         for l in range(self.L):
-            #xprint(l)
+            # xprint(l)
             x_pro, mu, log_sigma = self.decoder(z)
-            #print('mean mu', torch.mean(mu), 'max mu', torch.max(mu))
-            #print('mean log sigma', torch.mean(log_sigma), 'max log sigma', torch.max(log_sigma))
+            # print('mean mu', torch.mean(mu), 'max mu', torch.max(mu))
+            # print('mean log sigma', torch.mean(log_sigma), 'max log sigma', torch.max(log_sigma))
             z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu  # shape [batch_size, self.zd_dim]
 
             try:
 
-                #x.unsqueexe(1)-mu.unsqueeze(0)
 
-                #L_rec_ += F.mse_loss(x_pro, x, reduction='sum')
-                #breakpoint()
-                breakpoint()
+                #L_rec += torch.mean(torch.sum(log_sigma, 1),0)+0.5*F.mse_loss(x, x_pro, reduction = "sum")/z.shape[0]
+                #L_rec += torch.mean(torch.sum(log_sigma, 1),0)
 
-                #L_rec = torch.mean(torch.sum(-log_sigma, 1))-torch.mean(torch.sum(torch.sum(0.5 * (x - mu)**2 / torch.exp(log_sigma), 2),2))
-                #L_rec = torch.mean(torch.sum(-log_sigma, 1))-0.5*F.mse_loss(x, x_pro)
+                #x_flatten = x.view(x_pro.shape[0], x_pro.shape[1] * x_pro.shape[2] * x_pro.shape[3])
 
-                L_rec = torch.mean(torch.sum(torch.sum(-log_sigma, 2),2))\
-                        -torch.mean(torch.sum(torch.sum(0.5 * (x - mu) ** 2 / torch.exp(log_sigma), 2), 2))
-                # sum across i_w and i_c and average across batch and channels
-                #print(L_rec_)
-                #L_rec += L_rec_ / z.shape[0]
+                L_rec += 0.5*F.mse_loss(x, x_pro, reduction = "sum")/z.shape[0]
+
+
+
+                #L_rec = torch.mean(torch.sum(-log_sigma, 1)-torch.sum(0.5 * (x_flatten - mu) / torch.exp(log_sigma), 1),0)
+                #_rec = 10
+
 
             except:
                 print('loss is nan')
                 breakpoint()
-        #print(L_rec)
-            # TODO: this is the reconstruction loss for a binary-valued x (such as MNIST digits); need to implement another version for a real-valued x.
+        # print(L_rec)
+        # TODO: this is the reconstruction loss for a binary-valued x (such as MNIST digits); need to implement another version for a real-valued x.
 
         L_rec /= self.L
 
@@ -370,6 +383,8 @@ class ModelVaDECNN(nn.Module):
 
         # doesn't take the mean over the channels; i.e., the recon loss is taken as an average over (batch size * L * width * height)
         # --> this is the -"first line" of eq (12) in the paper with additional averaging over the batch.
+
+        # warmUp beta is multiplied here and incresing to 1
         print('Checkpoint 1 (reconstruction)', Loss)
         Loss += 0.5 * torch.mean(
             torch.sum(
@@ -384,17 +399,17 @@ class ModelVaDECNN(nn.Module):
             )
         )
 
-
         # inner sum dimentions:
         # [1, d_dim, zd_dim] + exp([batch_size, 1, zd_dim] - [1, d_dim, zd_dim]) + ([batch_size, 1, zd_dim] - [1, d_dim, zd_dim])^2 / exp([1, d_dim, zd_dim])
         # = [batch_size, d_dim, zd_dim] -> sum of zd_dim dimensions
         # the next sum is over d_dim dimensions
         # the mean is over the batch
         # --> overall, this is -"second line of eq. (12)" with additional mean over the batch
-        print('Checkpoint 2' , Loss)
-        Loss -= torch.mean(torch.sum(probs * torch.log(pi.unsqueeze(0) / (probs + eps)), 1))  # FIXME: (+eps) is a hack to avoid NaN. Is there a better way?
+        print('Checkpoint 2', Loss)
+        Loss -= torch.mean(torch.sum(probs * torch.log(pi.unsqueeze(0) / (probs + eps)),
+                                     1))  # FIXME: (+eps) is a hack to avoid NaN. Is there a better way?
         # dimensions: [batch_size, d_dim] * log([1, d_dim] / [batch_size, d_dim]), where the sum is over d_dim dimensions --> [batch_size] --> mean over the batch --> a scalar
-        #print('chepoint 3', Loss)
+        # print('chepoint 3', Loss)
         Loss -= 0.5 * torch.mean(torch.sum(1.0 + z_sigma2_log, 1))
         print('Checkpoint 4', Loss)
         print('_________________________________')
@@ -429,14 +444,15 @@ class ModelVaDECNN(nn.Module):
             )
         )
 
+
 def test_fun(y_dim, zd_dim, device):
-    #print(torch.__version__)
-    i_w =28
-    i_h =28
-    model_cnn = ModelVaDECNN(y_dim=y_dim, zd_dim=zd_dim, device=torch.device("cpu"), i_w=i_w, i_h =i_h)
+    # print(torch.__version__)
+    i_w = 28
+    i_h = 28
+    model_cnn = ModelVaDECNN(y_dim=y_dim, zd_dim=zd_dim, device=torch.device("cpu"), i_w=i_w, i_h=i_h)
     device = torch.device("cpu")
 
-    batch_size =5
+    batch_size = 5
     x = torch.rand(batch_size, 3, i_w, i_h)
     a = np.zeros((batch_size, y_dim))
     a = np.double(a)
