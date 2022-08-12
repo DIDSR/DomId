@@ -193,12 +193,13 @@ class ConvolutionalDecoder(nn.Module):
         # breakpoint()
         k = [3, 4, 4]
         # k = [4, 3, 3, 3, 4, 4]
-        for i in range(len(features_dim) - 1):
+        for i in range(len(features_dim) - 2):
             self.decod.append(
                 nn.ConvTranspose2d(features_dim[i], features_dim[i + 1], kernel_size=k[i], stride=2, padding=1))
             self.decod.append(nn.BatchNorm2d(features_dim[i + 1]))
             self.decod.append(nn.LeakyReLU())
         self.decod.append(nn.Sigmoid())
+        self.decod.append(nn.ConvTranspose2d(features_dim[-2], input_dim * 2, kernel_size=k[-1], stride=2, padding=1))
         # nn.init.xavier_uniform_(self.decod[0].weight.data, gain=np.sqrt(2))
         #
         # self.decod = nn.Sequential(
@@ -210,8 +211,8 @@ class ConvolutionalDecoder(nn.Module):
         # )
 
         # sizee = get_output_shape(self.decod, (3, input_dim, 100, 100))[1]
-        self.mu_layer = nn.Linear(30000, 30000)  # input_dim[0], input_dim[1])#shape of the [ 3, 28, 28] FIXME
-        self.log_sigma2_layer = nn.Linear(30000, 30000)  # input_dim[0], input_dim[1])
+        # self.mu_layer = nn.Linear(30000, 100)  # input_dim[0], input_dim[1])#shape of the [ 3, 28, 28] FIXME
+        # self.log_sigma2_layer = nn.Linear(30000, 100)  # input_dim[0], input_dim[1])
 
     def forward(self, z):
         """
@@ -222,14 +223,19 @@ class ConvolutionalDecoder(nn.Module):
         z = self.linear(z)
         z = self.unflat(z)
         x_decoded = self.decod(z)
+        #breakpoint()
+        #print('here')
+        # flatten x_pro and    hange the in of linear layer
+        #x_flatten = x_decoded.view(x_decoded.shape[0], x_decoded.shape[1] * x_decoded.shape[2] * x_decoded.shape[3])
+        #print('here')
+        mu = torch.sigmoid(x_decoded[:, 0:3, :, :])
+        #print('here')
+        #log_sigma = self.log_sigma2_layer(x_flatten)
+        #print('here')
+        log_sigma = x_decoded[:, 3:, :, :]
+        x_pro = mu
 
-        # flatten x_pro and change the in of linear layer
-        x_flatten = x_decoded.view(x_decoded.shape[0], x_decoded.shape[1] * x_decoded.shape[2] * x_decoded.shape[3])
-
-        mu = torch.sigmoid(self.mu_layer(x_flatten))
-        log_sigma = self.log_sigma2_layer(x_flatten)
-
-        x_pro = torch.reshape(mu, (x_decoded.shape[0], x_decoded.shape[1], x_decoded.shape[2], x_decoded.shape[3]))
+        #x_pro = torch.reshape(mu, (x_decoded.shape[0], x_decoded.shape[1], x_decoded.shape[2], x_decoded.shape[3]))
         # mean value anf mean for each pixel
         # treat mu as reconstruction
         # mu (bs x 30000)
@@ -256,6 +262,7 @@ class ModelVaDECNN(nn.Module):
         self.zd_dim = zd_dim
         self.d_dim = d_dim
         self.device = device
+
         self.L = L
         self.encoder = ConvolutionalEncoder(zd_dim=zd_dim, input_dim=i_c, i_w=i_w, i_h=i_h).to(device)
         self.decoder = ConvolutionalDecoder(zd_dim=zd_dim, h_dim=self.encoder.h_dim, input_dim=i_c).to(device)
@@ -320,8 +327,8 @@ class ModelVaDECNN(nn.Module):
         return self.ELBO_Loss(x)
 
     def pretrain_loss(self, x):
-        # Loss = nn.HuberLoss()
-        Loss = nn.MSELoss()
+        Loss = nn.HuberLoss()
+        #Loss = nn.MSELoss()
 
         # provider = LossProvider()
         # loss_function = provider.get_loss_function('Watson-DFT', colorspace='RGB', pretrained=True, reduction='sum')
@@ -357,18 +364,30 @@ class ModelVaDECNN(nn.Module):
 
             try:
 
+                #breakpoint()
 
-                #L_rec += torch.mean(torch.sum(log_sigma, 1),0)+0.5*F.mse_loss(x, x_pro, reduction = "sum")/z.shape[0]
-                #L_rec += torch.mean(torch.sum(log_sigma, 1),0)
+                #Loss Version 1:
+                #L_rec += torch.mean(torch.sum(torch.sum(torch.sum(-log_sigma, 2),2),1),0)-0.5*F.mse_loss(x, x_pro, reduction = "sum")/z.shape[0]
 
-                #x_flatten = x.view(x_pro.shape[0], x_pro.shape[1] * x_pro.shape[2] * x_pro.shape[3])
+                # Loss Version 2:
+                #L_rec += torch.sum(-log_sigma)/z.shape[0] - torch.sum(0.5 * (x - mu) ** 2 / torch.exp(log_sigma) ** 2)/z.shape[0]
 
-                L_rec += 0.5*F.mse_loss(x, x_pro, reduction = "sum")/z.shape[0]
+                #Loss Version 3:
+                #L_rec += 0.5*F.mse_loss(x, x_pro, reduction = "sum")/z.shape[0]
+
+                # Loss Version 4:
+                #L_rec += torch.mean(torch.sum(torch.sum(torch.sum(-log_sigma, 2),2),1),0)\
+                #       -torch.mean(torch.sum(torch.sum(torch.sum(0.5 * (x - mu) ** 2 / torch.exp(log_sigma) ** 2, 2), 2), 1), 0)
+
+                #Loss Version 5: added 1/constant_sigma_estimate to Version 1
+                # sigma_estimate = 1/np.log(0.2) #0.2 - std from all the images
+                # L_rec += torch.mean(torch.sum(torch.sum(torch.sum(-log_sigma, 2), 2), 1), 0) - 0.5 * 1/sigma_estimate*F.mse_loss(x, x_pro,reduction="sum") /z.shape[0]
+
+                #Loss Version 6: added 1/constant_sigma_estimate to Version 3
+                sigma_estimate = 1 / np.log(0.2)**2
+                L_rec += -0.5 *(1/sigma_estimate)*F.mse_loss(x, x_pro, reduction="sum") / z.shape[0]
 
 
-
-                #L_rec = torch.mean(torch.sum(-log_sigma, 1)-torch.sum(0.5 * (x_flatten - mu) / torch.exp(log_sigma), 1),0)
-                #_rec = 10
 
 
             except:
@@ -385,7 +404,7 @@ class ModelVaDECNN(nn.Module):
         # --> this is the -"first line" of eq (12) in the paper with additional averaging over the batch.
 
         # warmUp beta is multiplied here and incresing to 1
-        print('Checkpoint 1 (reconstruction)', Loss)
+        #print('Checkpoint 1 (reconstruction)', Loss)
         Loss += 0.5 * torch.mean(
             torch.sum(
                 probs
@@ -405,14 +424,14 @@ class ModelVaDECNN(nn.Module):
         # the next sum is over d_dim dimensions
         # the mean is over the batch
         # --> overall, this is -"second line of eq. (12)" with additional mean over the batch
-        print('Checkpoint 2', Loss)
+        #print('Checkpoint 2', Loss)
         Loss -= torch.mean(torch.sum(probs * torch.log(pi.unsqueeze(0) / (probs + eps)),
                                      1))  # FIXME: (+eps) is a hack to avoid NaN. Is there a better way?
         # dimensions: [batch_size, d_dim] * log([1, d_dim] / [batch_size, d_dim]), where the sum is over d_dim dimensions --> [batch_size] --> mean over the batch --> a scalar
         # print('chepoint 3', Loss)
         Loss -= 0.5 * torch.mean(torch.sum(1.0 + z_sigma2_log, 1))
-        print('Checkpoint 4', Loss)
-        print('_________________________________')
+        #print('Checkpoint 4', Loss)
+        #print('_________________________________')
 
         # dimensions: mean( sum( [batch_size, zd_dim], 1 ) ) where the sum is over zd_dim dimensions and mean over the batch
         # --> overall, this is -"third line of eq. (12)" with additional mean over the batch

@@ -82,13 +82,13 @@ class TrainerVADE(TrainerClassif):
 
         acc_d, _ = p.epoch_val_acc()
         print(acc_d)
-        #____________ warmup ____________
-        N = 25 # max warmup steps
-        if acc_d > self.thres or self.pretraining_finished:
-            if self.warmup <= N:
-                print(self.LR)
-                self.LR = (self.warmup + 1)*self.LR/N
-                self.warmup += 1
+        #____________ jank warmup ____________
+        # N = 25 # max warmup steps
+        # if acc_d > self.thres or self.pretraining_finished:
+        #     if self.warmup <= N:
+        #         print(self.LR)
+        #         self.LR = (self.warmup + 1)*self.LR/N
+        #         self.warmup += 1
 
 
         for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
@@ -112,7 +112,7 @@ class TrainerVADE(TrainerClassif):
 
                     self.optimizer = optim.Adam(self.model.parameters(), lr=self.LR, betas = (0.5, 0.9), weight_decay = 0.0001)
                     # self.scheduler = torch.optim.lr_scheduler.StepLR(self.optimizer, step_size=15, gamma=0.95)
-
+                    self.LR = self.LR/100
                     print("".join(["#"] * 60))
                     print("Epoch {}: Finished pretraining and starting to use ELBO loss.".format(epoch))
                     print("".join(["#"] * 60))
