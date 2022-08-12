@@ -319,12 +319,12 @@ class ModelVaDECNN(nn.Module):
         preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = (r.cpu().detach() for r in results)
         return preds, z_mu, z, log_sigma2_c, probs, x_pro
 
-    def cal_loss(self, x):
+    def cal_loss(self, x, warmup_beta):
         """Function that is called in trainer_vade to calculate loss
         :param x: tensor with input data
         :return: ELBO loss
         """
-        return self.ELBO_Loss(x)
+        return self.ELBO_Loss(x, warmup_beta)
 
     def pretrain_loss(self, x):
         Loss = nn.HuberLoss()
@@ -341,7 +341,7 @@ class ModelVaDECNN(nn.Module):
 
         return loss
 
-    def ELBO_Loss(self, x):  # warmup_beta - 0-1
+    def ELBO_Loss(self, x, warmup_beta):  # warmup_beta - 0-1
         """ELBO loss function
 
         Using SGVB estimator and the reparametrization trick calculates ELBO loss.
@@ -370,22 +370,32 @@ class ModelVaDECNN(nn.Module):
                 #L_rec += torch.mean(torch.sum(torch.sum(torch.sum(-log_sigma, 2),2),1),0)-0.5*F.mse_loss(x, x_pro, reduction = "sum")/z.shape[0]
 
                 # Loss Version 2:
-                #L_rec += torch.sum(-log_sigma)/z.shape[0] - torch.sum(0.5 * (x - mu) ** 2 / torch.exp(log_sigma) ** 2)/z.shape[0]
+                # L_rec += torch.sum(-log_sigma)/z.shape[0] - torch.sum(0.5 * (x - mu) ** 2 / torch.exp(log_sigma) ** 2)/z.shape[0]
 
                 #Loss Version 3:
                 #L_rec += 0.5*F.mse_loss(x, x_pro, reduction = "sum")/z.shape[0]
 
                 # Loss Version 4:
-                #L_rec += torch.mean(torch.sum(torch.sum(torch.sum(-log_sigma, 2),2),1),0)\
-                #       -torch.mean(torch.sum(torch.sum(torch.sum(0.5 * (x - mu) ** 2 / torch.exp(log_sigma) ** 2, 2), 2), 1), 0)
+                # L_rec += torch.mean(torch.sum(torch.sum(torch.sum(log_sigma, 2),2),1),0)\
+                #       +torch.mean(torch.sum(torch.sum(torch.sum(0.5 * (x - mu) ** 2 / torch.exp(log_sigma) ** 2, 2), 2), 1), 0)
+                # L_rec = L_rec*warmup_beta
 
                 #Loss Version 5: added 1/constant_sigma_estimate to Version 1
                 # sigma_estimate = 1/np.log(0.2) #0.2 - std from all the images
                 # L_rec += torch.mean(torch.sum(torch.sum(torch.sum(-log_sigma, 2), 2), 1), 0) - 0.5 * 1/sigma_estimate*F.mse_loss(x, x_pro,reduction="sum") /z.shape[0]
 
                 #Loss Version 6: added 1/constant_sigma_estimate to Version 3
-                sigma_estimate = 1 / np.log(0.2)**2
-                L_rec += -0.5 *(1/sigma_estimate)*F.mse_loss(x, x_pro, reduction="sum") / z.shape[0]
+                # sigma_estimate = 1 / np.log(0.2)**2
+                #sigma_estimate = (z.shape[0]/torch.sum(log_sigma))
+                sigma_estimate = 1
+                warmup_beta =0.001
+                L_rec += -0.5 *sigma_estimate*warmup_beta*F.mse_loss(x, x_pro, reduction="sum") / z.shape[0]
+
+
+                #Loss Version 7:
+                # sigma = torch.exp(0.5 * log_sigma)
+                # L_rec += (-0.5 * torch.log(2 * np.pi * torch.sum(sigma ** 2)) - (1 / (2 * torch.sum(sigma ** 2))) * torch.sum((x - mu) ** 2))/z.shape[0]
+
 
 
 

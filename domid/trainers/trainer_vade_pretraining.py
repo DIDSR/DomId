@@ -26,7 +26,7 @@ class TrainerVADE(TrainerClassif):
         self.pretrain = pretrain
         self.pretraining_finished = not self.pretrain
         self.LR = aconf.lr
-        self.warmup = 0
+        self.warmup_beta = 0.01
 
         if not self.pretraining_finished:
             self.optimizer = optim.Adam(
@@ -112,13 +112,15 @@ class TrainerVADE(TrainerClassif):
 
                     self.optimizer = optim.Adam(self.model.parameters(), lr=self.LR, betas = (0.5, 0.9), weight_decay = 0.0001)
                     # self.scheduler = torch.optim.lr_scheduler.StepLR(self.optimizer, step_size=15, gamma=0.95)
-                    self.LR = self.LR/100
+                    self.LR = self.LR/500
+                    if self.warmup_beta<1:
+                        self.warmup_beta = self.warmup_beta*5
                     print("".join(["#"] * 60))
                     print("Epoch {}: Finished pretraining and starting to use ELBO loss.".format(epoch))
                     print("".join(["#"] * 60))
 
 
-                loss = self.model.cal_loss(tensor_x)
+                loss = self.model.cal_loss(tensor_x, self.warmup_beta)
 
 
             loss = loss.sum()
