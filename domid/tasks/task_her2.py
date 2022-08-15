@@ -59,7 +59,9 @@ class NodeTaskHER2(NodeTaskDict):
         #mean = [0.4, 0.4, 0.4]
         #mean = [0.5, 0.5, 0.5]
         #confirm mean 0 and std 1 after the normalization
-        trans = transforms.Compose([transforms.Resize((100, 100)), transforms.RandomHorizontalFlip(),transforms.ToTensor()])#, transforms.Normalize(mean, std)])
+        trans = transforms.Compose([transforms.Resize((100, 100)), transforms.RandomHorizontalFlip(),
+                                    transforms.RandomVerticalFlip(),
+                                    transforms.ToTensor()]) #, transforms.Normalize(mean, std)]) transforms.RandomRotation(45),
         dset = DsetHER2(ind_global, args.dpath, transform=trans)
 
         train_set = dset

@@ -198,8 +198,10 @@ class ConvolutionalDecoder(nn.Module):
                 nn.ConvTranspose2d(features_dim[i], features_dim[i + 1], kernel_size=k[i], stride=2, padding=1))
             self.decod.append(nn.BatchNorm2d(features_dim[i + 1]))
             self.decod.append(nn.LeakyReLU())
-        self.decod.append(nn.Sigmoid())
+        #
+
         self.decod.append(nn.ConvTranspose2d(features_dim[-2], input_dim * 2, kernel_size=k[-1], stride=2, padding=1))
+        self.decod.append(nn.Sigmoid())
         # nn.init.xavier_uniform_(self.decod[0].weight.data, gain=np.sqrt(2))
         #
         # self.decod = nn.Sequential(
@@ -228,19 +230,19 @@ class ConvolutionalDecoder(nn.Module):
         # flatten x_pro and    hange the in of linear layer
         #x_flatten = x_decoded.view(x_decoded.shape[0], x_decoded.shape[1] * x_decoded.shape[2] * x_decoded.shape[3])
         #print('here')
-        mu = torch.sigmoid(x_decoded[:, 0:3, :, :])
+        x_pro = torch.sigmoid(x_decoded[:, 0:3, :, :])
         #print('here')
         #log_sigma = self.log_sigma2_layer(x_flatten)
         #print('here')
         log_sigma = x_decoded[:, 3:, :, :]
-        x_pro = mu
+
 
         #x_pro = torch.reshape(mu, (x_decoded.shape[0], x_decoded.shape[1], x_decoded.shape[2], x_decoded.shape[3]))
         # mean value anf mean for each pixel
         # treat mu as reconstruction
         # mu (bs x 30000)
         # x_pro reshaped mu
-        return x_pro, mu, log_sigma
+        return x_pro, log_sigma
 
 
 class ModelVaDECNN(nn.Module):
@@ -356,12 +358,12 @@ class ModelVaDECNN(nn.Module):
         L_rec = 0.0
 
         for l in range(self.L):
-            # xprint(l)
-            x_pro, mu, log_sigma = self.decoder(z)
+            #print(l)
+
             # print('mean mu', torch.mean(mu), 'max mu', torch.max(mu))
             # print('mean log sigma', torch.mean(log_sigma), 'max log sigma', torch.max(log_sigma))
             z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu  # shape [batch_size, self.zd_dim]
-
+            x_pro, log_sigma = self.decoder(z)
             try:
 
                 #breakpoint()
@@ -376,20 +378,24 @@ class ModelVaDECNN(nn.Module):
                 #L_rec += 0.5*F.mse_loss(x, x_pro, reduction = "sum")/z.shape[0]
 
                 # Loss Version 4:
-                # L_rec += torch.mean(torch.sum(torch.sum(torch.sum(log_sigma, 2),2),1),0)\
-                #       +torch.mean(torch.sum(torch.sum(torch.sum(0.5 * (x - mu) ** 2 / torch.exp(log_sigma) ** 2, 2), 2), 1), 0)
+
+                L_rec += torch.mean(torch.sum(torch.sum(torch.sum(log_sigma, 2),2),1),0)\
+                         +torch.mean(torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 / torch.exp(log_sigma) ** 2, 2), 2), 1), 0)
+                #print('built in', 0.5*F.mse_loss(x, x_pro, reduction = "sum"))
+                #L_rec += torch.mean(torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 / torch.exp(log_sigma) ** 2, 2), 2), 1), 0)
                 # L_rec = L_rec*warmup_beta
 
                 #Loss Version 5: added 1/constant_sigma_estimate to Version 1
                 # sigma_estimate = 1/np.log(0.2) #0.2 - std from all the images
-                # L_rec += torch.mean(torch.sum(torch.sum(torch.sum(-log_sigma, 2), 2), 1), 0) - 0.5 * 1/sigma_estimate*F.mse_loss(x, x_pro,reduction="sum") /z.shape[0]
+                #sigma_estimate = 1
+                #L_rec += -torch.mean(torch.sum(torch.sum(torch.sum(log_sigma, 2), 2), 1), 0) - 0.5 * 1/sigma_estimate*F.mse_loss(x, x_pro,reduction="sum") /z.shape[0]
 
                 #Loss Version 6: added 1/constant_sigma_estimate to Version 3
                 # sigma_estimate = 1 / np.log(0.2)**2
                 #sigma_estimate = (z.shape[0]/torch.sum(log_sigma))
-                sigma_estimate = 1
-                warmup_beta =0.001
-                L_rec += -0.5 *sigma_estimate*warmup_beta*F.mse_loss(x, x_pro, reduction="sum") / z.shape[0]
+                # sigma_estimate = 1
+                # #warmup_beta = 1
+                # L_rec += 0.5 *sigma_estimate*F.mse_loss(x, x_pro, reduction="sum") / z.shape[0]
 
 
                 #Loss Version 7:
@@ -403,7 +409,10 @@ class ModelVaDECNN(nn.Module):
             except:
                 print('loss is nan')
                 breakpoint()
-        # print(L_rec)
+
+        if L_rec<0 or torch.isnan(L_rec):
+            breakpoint()
+        #print(L_rec)
         # TODO: this is the reconstruction loss for a binary-valued x (such as MNIST digits); need to implement another version for a real-valued x.
 
         L_rec /= self.L
@@ -415,7 +424,7 @@ class ModelVaDECNN(nn.Module):
 
         # warmUp beta is multiplied here and incresing to 1
         #print('Checkpoint 1 (reconstruction)', Loss)
-        Loss += 0.5 * torch.mean(
+        Loss += 0.5 * warmup_beta * torch.mean(
             torch.sum(
                 probs
                 * torch.sum(
@@ -435,11 +444,11 @@ class ModelVaDECNN(nn.Module):
         # the mean is over the batch
         # --> overall, this is -"second line of eq. (12)" with additional mean over the batch
         #print('Checkpoint 2', Loss)
-        Loss -= torch.mean(torch.sum(probs * torch.log(pi.unsqueeze(0) / (probs + eps)),
+        Loss -= warmup_beta * torch.mean(torch.sum(probs * torch.log(pi.unsqueeze(0) / (probs + eps)),
                                      1))  # FIXME: (+eps) is a hack to avoid NaN. Is there a better way?
         # dimensions: [batch_size, d_dim] * log([1, d_dim] / [batch_size, d_dim]), where the sum is over d_dim dimensions --> [batch_size] --> mean over the batch --> a scalar
         # print('chepoint 3', Loss)
-        Loss -= 0.5 * torch.mean(torch.sum(1.0 + z_sigma2_log, 1))
+        Loss -= 0.5 * warmup_beta * torch.mean(torch.sum(1.0 + z_sigma2_log, 1))
         #print('Checkpoint 4', Loss)
         #print('_________________________________')
 

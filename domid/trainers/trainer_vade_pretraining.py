@@ -45,23 +45,7 @@ class TrainerVADE(TrainerClassif):
         # step_size = 10, gamma = 0.95
         # optimizer Adam
 
-    def plot_loss_epoch(self, mse_loss, elbo_loss):
-        """FIXME: add description of the parameters
-        :param mse_loss:
-        :param elbo_loss:
-        """
-        x_mse = np.arrange(mse_n)
-        x_elbo = np.arrange(elbo_loss)
 
-        plt.figure()
-        plt.subplot(2, 1, 1)
-        plt.plot(x_mse, mse_loss)
-        plt.title("MSE loss")
-
-        plt.subplot(2, 1, 2)
-        plt.plot(x_elbo, elbo_loss)
-        plt.title("ELBO loss")
-        return plt.show()
 
     def tr_epoch(self, epoch):
         """

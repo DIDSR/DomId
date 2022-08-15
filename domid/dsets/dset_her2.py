@@ -34,6 +34,17 @@ class DsetHER2(Dataset):
 
             self.transform = transforms.ToTensor()
         image = self.transform(image)
+        #
+        # mean = [image[0, :, :].mean(), image[1, :, :].mean(), image[2, :, :].mean()]
+        #
+        # m = torch.zeros(image.shape[0], image.shape[1], image.shape[2])
+        # m[0, :, :] = mean[0]
+        # m[1, :, :] = mean[1]
+        # m[2, :, :] = mean[2]
+        #
+        # norm_img = image - m
+        # image = norm_img
+
         label = mk_fun_label2onehot(3)(self.class_num) #FIXME 3
         machine = img_loc[-6:-4]
 
