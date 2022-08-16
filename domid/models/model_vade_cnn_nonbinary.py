@@ -15,62 +15,10 @@ from domainlab.compos.vae.compos.decoder_concat_vec_reshape_conv_gated_conv impo
 from domainlab.compos.vae.compos.encoder import LSEncoderDense
 from domainlab.models.a_model_classif import AModelClassif
 from domainlab.utils.utils_classif import logit2preds_vpic, get_label_na
-# from torch.optim import Adam
-# from sklearn.metrics import accuracy_score
-# from torch.optim.lr_scheduler import StepLR
-# from tensorboardX import SummaryWriter
-# from sklearn.manifold import TSNE
+
 import torch.nn as nn
 from domainlab.utils.utils_classif import logit2preds_vpic, get_label_na
-from domid.compos.nn_net import Net_MNIST
 import torch
-
-from torchvision.datasets import MNIST
-from torchvision.transforms import ToTensor
-from torch.utils.data import DataLoader, TensorDataset
-
-# FIXME another builder: define blocks
-"""
-input_img = Input(shape=(64, 64, 3)) 
-x = Conv2D(32, (3, 3), padding='same', strides = (2,2))(input_img)
-x = BatchNormalization()(x)
-x = LeakyReLU(alpha=0.3)(x)
-
-x = Conv2D(16, (3, 3), padding='same', strides = (2,2))(x)
-x = BatchNormalization()(x)
-x = LeakyReLU(alpha=0.3)(x) 
-
-x = Conv2D(16, (3, 3), padding='same', strides = (2,2))(x)
-x = BatchNormalization()(x)
-x = LeakyReLU(alpha=0.3)(x)
-
-x = Conv2D(16, (3, 3), padding='same', strides = (2,2))(x)
-x = BatchNormalization()(x)
-x = LeakyReLU(alpha=0.3)(x)
-x = Flatten()(x)
-
-z_mean = layers.Dense(latent_dim, name="z_mean")(x)
-z_log_var = layers.Dense(latent_dim, name="z_log_var")(x)
-
-
-
-# DECODER
-direct_input = Input(shape=latentSize)
-x = Dense((16*16*16))(direct_input) ##used to be Dense((16*16*16))(direct_input)
-x = Reshape((16,16,16))(x)
-
-x = UpSampling2D((2, 2))(x)
-x = BatchNormalization()(x)
-x = LeakyReLU(alpha=0.3)(x)
-
-
-x = UpSampling2D((2, 2))(x)
-x = BatchNormalization()(x)
-x = LeakyReLU(alpha=0.3)(x)
-
-
-decoded = Conv2D(3, (3, 3), padding='same', strides = (1,1), activation='sigmoid')(x)
-"""
 
 
 def cluster_acc(Y_pred, Y):
@@ -86,7 +34,6 @@ def cluster_acc(Y_pred, Y):
 
 
 def get_output_shape(model, image_dim):
-    # print('fake img', model(torch.rand(*(image_dim))).data.shape)
     return model(torch.rand(*(image_dim))).data.shape
 
 
@@ -135,9 +82,7 @@ class ConvolutionalEncoder(nn.Module):
         """
         super(ConvolutionalEncoder, self).__init__()
         self.input_dim = np.prod(input_dim)
-        # breakpoint()
         self.encod = nn.Sequential()
-
         features_dim = [input_dim] + features_dim
         k = [3, 3, 3]  # , 3, 3, 3]
         for i in range(len(features_dim) - 1):
@@ -145,19 +90,6 @@ class ConvolutionalEncoder(nn.Module):
             self.encod.append(nn.BatchNorm2d(features_dim[i + 1]))
             self.encod.append(nn.LeakyReLU())
         self.encod.append(nn.Flatten())
-        # nn.init.xavier_uniform_(self.lstm.weight_ih_l0, gain=np.sqrt(2))
-        # nn.init.xavier_uniform_(self.lstm.weight_hh_l0, gain=np.sqrt(2))
-        # breakpoint()
-        # nn.init.xavier_uniform_(self.encod[0].weight.data, gain=np.sqrt(2))
-        # nn.init.orthogonal_(self.encod[0].bias.data, gain=np.sqrt(2))
-        # self.encod = nn.Sequential(
-        #     *cnn_encoding_block(input_dim, features_dim[0]),
-        #     *cnn_encoding_block(features_dim[0], features_dim[1]),
-        #     *cnn_encoding_block(features_dim[1], features_dim[2]),
-        #     nn.Flatten()  # [batch size, filter,3, 3, 3]
-        #
-        # )
-
         self.h_dim = get_output_shape(self.encod, (3, input_dim, i_w, i_h))[1]
         self.mu_layer = nn.Linear(self.h_dim, zd_dim)
         self.log_sigma2_layer = nn.Linear(self.h_dim, zd_dim)
@@ -184,37 +116,17 @@ class ConvolutionalDecoder(nn.Module):
         # e = ConvolutionalEncoder(zd_dim, input_dim=3, features_dim=features_dim)
         self.linear = nn.Linear(zd_dim, h_dim)
         self.sigmoid_layer = nn.Sigmoid()
-        # h_filter = get_output_shape(UnFlatten(), (batch_size, h_dim))#batch size!!!!!!!!!
-        # print(h_filter)
         self.unflat = UnFlatten(features_dim[-1])
         self.decod = nn.Sequential()
         features_dim = [input_dim] + features_dim
         features_dim.reverse()
-        # breakpoint()
         k = [3, 4, 4]
-        # k = [4, 3, 3, 3, 4, 4]
         for i in range(len(features_dim) - 2):
             self.decod.append(
                 nn.ConvTranspose2d(features_dim[i], features_dim[i + 1], kernel_size=k[i], stride=2, padding=1))
             self.decod.append(nn.BatchNorm2d(features_dim[i + 1]))
             self.decod.append(nn.LeakyReLU())
-        #
-
         self.decod.append(nn.ConvTranspose2d(features_dim[-2], input_dim * 2, kernel_size=k[-1], stride=2, padding=1))
-        # self.decod.append(nn.Sigmoid())
-        # nn.init.xavier_uniform_(self.decod[0].weight.data, gain=np.sqrt(2))
-        #
-        # self.decod = nn.Sequential(
-        #
-        #     *cnn_decoding_block(features_dim[-1], features_dim[1], kernel_size=(4, 4)),
-        #     *cnn_decoding_block(features_dim[1], features_dim[0], kernel_size=(5, 5)),
-        #     *cnn_decoding_block(features_dim[0], input_dim, kernel_size=(6, 6)),
-        #     nn.Sigmoid()
-        # )
-
-        # sizee = get_output_shape(self.decod, (3, input_dim, 100, 100))[1]
-        # self.mu_layer = nn.Linear(30000, 100)  # input_dim[0], input_dim[1])#shape of the [ 3, 28, 28] FIXME
-        # self.log_sigma2_layer = nn.Linear(30000, 100)  # input_dim[0], input_dim[1])
 
     def forward(self, z):
         """
@@ -225,23 +137,9 @@ class ConvolutionalDecoder(nn.Module):
         z = self.linear(z)
         z = self.unflat(z)
         x_decoded = self.decod(z)
-        #breakpoint()
-        #print('here')
-        # flatten x_pro and    hange the in of linear layer
-        #x_flatten = x_decoded.view(x_decoded.shape[0], x_decoded.shape[1] * x_decoded.shape[2] * x_decoded.shape[3])
-        #print('here')
         x_pro = self.sigmoid_layer(x_decoded[:, 0:3, :, :])
-        #print('here')
-        #log_sigma = self.log_sigma2_layer(x_flatten)
-        #print('here')
         log_sigma = x_decoded[:, 3:, :, :]
 
-
-        #x_pro = torch.reshape(mu, (x_decoded.shape[0], x_decoded.shape[1], x_decoded.shape[2], x_decoded.shape[3]))
-        # mean value anf mean for each pixel
-        # treat mu as reconstruction
-        # mu (bs x 30000)
-        # x_pro reshaped mu
         return x_pro, log_sigma
 
 
@@ -289,12 +187,9 @@ class ModelVaDECNN(nn.Module):
         """
         z_mu, z_sigma2_log = self.encoder(x)
         z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
-
-        # pi = self.log_pi.exp()
         pi = F.softmax(self.log_pi, dim=0)
         mu_c = self.mu_c
         log_sigma2_c = self.log_sigma2_c
-
         logits = torch.log(pi.unsqueeze(0)) + self.gaussian_pdfs_log(z, mu_c, log_sigma2_c)
         # shape [batch_size, self.d_dim], each column contains the log-probability p(c)p(z|c) for cluster c=0,...,self.d_dim-1.
 
@@ -332,13 +227,10 @@ class ModelVaDECNN(nn.Module):
         Loss = nn.HuberLoss()
         #Loss = nn.MSELoss()
 
-        # provider = LossProvider()
-        # loss_function = provider.get_loss_function('Watson-DFT', colorspace='RGB', pretrained=True, reduction='sum')
         z_mu, z_sigma2_log = self.encoder(x)
         z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
         x_pro, *_ = self.decoder(z)
-        # print('out', x_pro[0, 0, 0:5, 0:3])
-        # print('in', x[0, 0, 0:5, 0:3])
+
         loss = Loss(x, x_pro)
 
         return loss
@@ -358,74 +250,21 @@ class ModelVaDECNN(nn.Module):
         L_rec = 0.0
 
         for l in range(self.L):
-            #print(l)
-
-            # print('mean mu', torch.mean(mu), 'max mu', torch.max(mu))
-            # print('mean log sigma', torch.mean(log_sigma), 'max log sigma', torch.max(log_sigma))
-            z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu  # shape [batch_size, self.zd_dim]
             x_pro, log_sigma = self.decoder(z)
             try:
-
-                #breakpoint()
-
-                #Loss Version 1:
-                #L_rec += torch.mean(torch.sum(torch.sum(torch.sum(-log_sigma, 2),2),1),0)-0.5*F.mse_loss(x, x_pro, reduction = "sum")/z.shape[0]
-
-                # Loss Version 2:
-                # L_rec += torch.sum(-log_sigma)/z.shape[0] - torch.sum(0.5 * (x - mu) ** 2 / torch.exp(log_sigma) ** 2)/z.shape[0]
-
-                #Loss Version 3:
-                #L_rec += 0.5*F.mse_loss(x, x_pro, reduction = "sum")/z.shape[0]
-
-                # Loss Version 4:
-                #print('log sigma sum', torch.mean(torch.sum(torch.sum(torch.sum(log_sigma, 2),2),1),0))
-                #print('sigma squared', torch.mean(torch.sum(torch.sum(torch.sum(log_sigma ** 2, 2), 2), 1), 0))
-                L_rec += torch.mean(torch.sum(torch.sum(torch.sum(0.5 * log_sigma**2, 2),2),1),0)\
+                L_rec += torch.mean(torch.sum(torch.sum(torch.sum(log_sigma, 2),2),1),0)\
                          +torch.mean(torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 / torch.exp(log_sigma) ** 2, 2), 2), 1), 0)
-                #print('built in', 0.5*F.mse_loss(x, x_pro, reduction = "sum"))
-                #L_rec += torch.mean(torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 / torch.exp(log_sigma) ** 2, 2), 2), 1), 0)
-                # L_rec = L_rec*warmup_beta
-
-                #Loss Version 5: added 1/constant_sigma_estimate to Version 1
-                # sigma_estimate = 1/np.log(0.2) #0.2 - std from all the images
-                #sigma_estimate = 1
-                #L_rec += -torch.mean(torch.sum(torch.sum(torch.sum(log_sigma, 2), 2), 1), 0) - 0.5 * 1/sigma_estimate*F.mse_loss(x, x_pro,reduction="sum") /z.shape[0]
-
-                #Loss Version 6: added 1/constant_sigma_estimate to Version 3
-                # sigma_estimate = 1 / np.log(0.2)**2
-                #sigma_estimate = (z.shape[0]/torch.sum(log_sigma))
-                # sigma_estimate = 1
-                # #warmup_beta = 1
-                # L_rec += 0.5 *sigma_estimate*F.mse_loss(x, x_pro, reduction="sum") / z.shape[0]
-
-
-                #Loss Version 7:
-                # sigma = torch.exp(0.5 * log_sigma)
-                # L_rec += (-0.5 * torch.log(2 * np.pi * torch.sum(sigma ** 2)) - (1 / (2 * torch.sum(sigma ** 2))) * torch.sum((x - mu) ** 2))/z.shape[0]
-
-
-
-
 
             except:
                 print('loss is nan')
                 breakpoint()
 
-        if L_rec<0 or torch.isnan(L_rec):
-            breakpoint()
-        print('Reconstuction loss', L_rec)
-        print('_'*10)
-        # TODO: this is the reconstruction loss for a binary-valued x (such as MNIST digits); need to implement another version for a real-valued x.
-
         L_rec /= self.L
-
         Loss = L_rec
 
         # doesn't take the mean over the channels; i.e., the recon loss is taken as an average over (batch size * L * width * height)
         # --> this is the -"first line" of eq (12) in the paper with additional averaging over the batch.
 
-        # warmUp beta is multiplied here and incresing to 1
-        #print('Checkpoint 1 (reconstruction)', Loss)
         Loss += 0.5 * warmup_beta * torch.mean(
             torch.sum(
                 probs
@@ -445,14 +284,13 @@ class ModelVaDECNN(nn.Module):
         # the next sum is over d_dim dimensions
         # the mean is over the batch
         # --> overall, this is -"second line of eq. (12)" with additional mean over the batch
-        #print('Checkpoint 2', Loss)
+
         Loss -= warmup_beta * torch.mean(torch.sum(probs * torch.log(pi.unsqueeze(0) / (probs + eps)),
                                      1))  # FIXME: (+eps) is a hack to avoid NaN. Is there a better way?
         # dimensions: [batch_size, d_dim] * log([1, d_dim] / [batch_size, d_dim]), where the sum is over d_dim dimensions --> [batch_size] --> mean over the batch --> a scalar
-        # print('chepoint 3', Loss)
+
         Loss -= 0.5 * warmup_beta * torch.mean(torch.sum(1.0 + z_sigma2_log, 1))
-        #print('Checkpoint 4', Loss)
-        #print('_________________________________')
+
 
         # dimensions: mean( sum( [batch_size, zd_dim], 1 ) ) where the sum is over zd_dim dimensions and mean over the batch
         # --> overall, this is -"third line of eq. (12)" with additional mean over the batch
