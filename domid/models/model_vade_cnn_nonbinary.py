@@ -183,7 +183,7 @@ class ConvolutionalDecoder(nn.Module):
         super(ConvolutionalDecoder, self).__init__()
         # e = ConvolutionalEncoder(zd_dim, input_dim=3, features_dim=features_dim)
         self.linear = nn.Linear(zd_dim, h_dim)
-
+        self.sigmoid_layer = nn.Sigmoid()
         # h_filter = get_output_shape(UnFlatten(), (batch_size, h_dim))#batch size!!!!!!!!!
         # print(h_filter)
         self.unflat = UnFlatten(features_dim[-1])
@@ -201,7 +201,7 @@ class ConvolutionalDecoder(nn.Module):
         #
 
         self.decod.append(nn.ConvTranspose2d(features_dim[-2], input_dim * 2, kernel_size=k[-1], stride=2, padding=1))
-        self.decod.append(nn.Sigmoid())
+        # self.decod.append(nn.Sigmoid())
         # nn.init.xavier_uniform_(self.decod[0].weight.data, gain=np.sqrt(2))
         #
         # self.decod = nn.Sequential(
@@ -230,7 +230,7 @@ class ConvolutionalDecoder(nn.Module):
         # flatten x_pro and    hange the in of linear layer
         #x_flatten = x_decoded.view(x_decoded.shape[0], x_decoded.shape[1] * x_decoded.shape[2] * x_decoded.shape[3])
         #print('here')
-        x_pro = torch.sigmoid(x_decoded[:, 0:3, :, :])
+        x_pro = self.sigmoid_layer(x_decoded[:, 0:3, :, :])
         #print('here')
         #log_sigma = self.log_sigma2_layer(x_flatten)
         #print('here')
@@ -378,8 +378,9 @@ class ModelVaDECNN(nn.Module):
                 #L_rec += 0.5*F.mse_loss(x, x_pro, reduction = "sum")/z.shape[0]
 
                 # Loss Version 4:
-
-                L_rec += torch.mean(torch.sum(torch.sum(torch.sum(log_sigma, 2),2),1),0)\
+                #print('log sigma sum', torch.mean(torch.sum(torch.sum(torch.sum(log_sigma, 2),2),1),0))
+                #print('sigma squared', torch.mean(torch.sum(torch.sum(torch.sum(log_sigma ** 2, 2), 2), 1), 0))
+                L_rec += torch.mean(torch.sum(torch.sum(torch.sum(0.5 * log_sigma**2, 2),2),1),0)\
                          +torch.mean(torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 / torch.exp(log_sigma) ** 2, 2), 2), 1), 0)
                 #print('built in', 0.5*F.mse_loss(x, x_pro, reduction = "sum"))
                 #L_rec += torch.mean(torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 / torch.exp(log_sigma) ** 2, 2), 2), 1), 0)
@@ -412,7 +413,8 @@ class ModelVaDECNN(nn.Module):
 
         if L_rec<0 or torch.isnan(L_rec):
             breakpoint()
-        #print(L_rec)
+        print('Reconstuction loss', L_rec)
+        print('_'*10)
         # TODO: this is the reconstruction loss for a binary-valued x (such as MNIST digits); need to implement another version for a real-valued x.
 
         L_rec /= self.L
