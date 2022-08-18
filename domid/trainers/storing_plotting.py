@@ -1,13 +1,16 @@
 import pandas as pd
 import os
 import numpy as np
+import torch
 class Storing():
-    def __init__(self, args, epoch, accuracy):
+    def __init__(self, args):
         self.args = args
-        self.epoch = epoch
-        self.accuracy = accuracy
+        self.loss = []
+        self.acc = []
+        #self.epoch = epoch
+        #self.accuracy = accuracy
 
-    def storing_plotting(self, args, epoch, accuracy, loss):
+    def storing(self, args, epoch, accuracy, loss):
 
 
         # Create the pandas DataFrame with column name is provided explicitly
@@ -15,34 +18,59 @@ class Storing():
         # constant L for different lr: L =5
         # Constant L and lr for different zd_dim
 
-        if epoch == 1:
-
-
-            columns = ['L5_lr0.0001_z50','L10_lr0.0001_z50', 'L25_lr0.0001_z50',
-                       'L5_lr0.001_z50', 'L5_lr0.00001_z50','L5_lr0.000001_z50',
-                       'L5_lr0.0001_z10', 'L5_lr0.0001_z50', 'L5_lr0.0001_z100', 'L5_lr0.0001_z500']
-            data = np.zeros((args.epos, len(columns)))
-            acc_df = pd.DataFrame(data, columns = columns)
-            experiment_name = 'L' + str(args.L) + '_lr' + str(args.lr) + '_z' + str(args.zd_dim)
-            acc_df.at[epoch, experiment_name] = accuracy
-            acc_df.to_csv('results.csv')
+        self.loss.append(loss)
+        self.acc.append(accuracy)
+        breakpoint()
 
 
 
-            loss_df = pd.DataFrame(data, columns=columns)
-            experiment_name = 'L' + str(args.L) + '_lr' + str(args.lr) + '_z' + str(args.zd_dim)
-            loss_df.at[epoch, experiment_name] = loss
-            loss_df.to_csv('loss.csv')
+        if epoch%5==0:
+            with open("./notebooks/training_loss_p.txt", 'w') as output:
+                for row in self.loss:
+                    output.write(str(row) + '\n')
 
-        else:
+            with open("./notebooks/accuracy_p.txt", 'w') as output:
+                for row in self.acc:
+                    output.write(str(row) + '\n')
+        # if epoch == 1:
+        #
+        #
+        #     columns = ['L5_lr0.0005_z300']
+        #     data = np.zeros((args.epos, len(columns)))
+        #
+        #     acc_df = pd.DataFrame(data, columns = columns)
+        #     experiment_name = 'L' + str(args.L) + '_lr' + str(args.lr) + '_z' + str(args.zd_dim)
+        #     acc_df.iloc[epoch].at[experiment_name] = accuracy
+        #     acc_df.to_csv('./notebooks/results.csv')
+        #
+        #     loss_df = pd.DataFrame(data, columns=columns)
+        #     experiment_name = 'L' + str(args.L) + '_lr' + str(args.lr) + '_z' + str(args.zd_dim)
+        #     loss_df.iloc[epoch].at[experiment_name] = loss
+        #     loss_df.to_csv('./notebooks/loss.csv')
+        #
+        # else:
+        #
+        #     acc_df = pd.read_csv('./notebooks/results.csv')
+        #     loss_df = pd.read_csv('./notebooks/loss.csv')
+        #     experiment_name = 'L' + str(args.L) + '_lr' + str(args.lr) + '_z' + str(args.zd_dim)
+        #
+        #     acc_df.iloc[epoch].at[experiment_name] = accuracy
+        #     loss_df.iloc[epoch].at[experiment_name] = loss
+        #     loss_df.to_csv('./notebooks/loss.csv')
 
-            acc_df = pd.read_csv('results.csv')
-            loss_df = pd.read_csv('loss.csv')
-            experiment_name = 'L' + str(args.L) + '_lr' + str(args.lr) + '_z' + str(args.zd_dim)
-            acc_df.at[epoch, experiment_name] = accuracy
+    def storing_z_space(self, Z, domain_labels, machine_labels):
 
-            loss_df.at[epoch, experiment_name] = loss
-            loss_df.to_csv('loss.csv')
+        with open('./notebooks/Z_space_p.npy', 'wb') as f:
+            np.save(f, Z)
+
+        with open("./notebooks/domain_labels_p.txt", 'w') as output:
+            for row in domain_labels:
+                output.write(str(row) + '\n')
+
+        with open("./notebooks/machine_labels_p.txt", 'w') as output:
+            for row in machine_labels:
+                output.write(str(row) + '\n')
+
 
 
 

@@ -7,6 +7,8 @@ import itertools
 # import toml
 from sklearn.mixture import GaussianMixture
 import numpy as np
+import datetime
+from tensorboardX import SummaryWriter
 # from sklearn.mixture import GaussianMixture
 # import tqdm
 from domainlab.utils.utils_class import store_args
@@ -162,7 +164,9 @@ class ModelVaDECNN(nn.Module):
         self.zd_dim = zd_dim
         self.d_dim = d_dim
         self.device = device
-
+        self.epoch_loss = 0
+        now = datetime.datetime.now()
+        self.loss_writer = SummaryWriter(logdir="loss_debugger/" + str(now))
         self.L = L
         self.encoder = ConvolutionalEncoder(zd_dim=zd_dim, input_dim=i_c, i_w=i_w, i_h=i_h).to(device)
         self.decoder = ConvolutionalDecoder(zd_dim=zd_dim, h_dim=self.encoder.h_dim, input_dim=i_c).to(device)
@@ -250,10 +254,15 @@ class ModelVaDECNN(nn.Module):
         L_rec = 0.0
 
         for l in range(self.L):
+            z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
             x_pro, log_sigma = self.decoder(z)
+
             try:
-                L_rec += torch.mean(torch.sum(torch.sum(torch.sum(log_sigma, 2),2),1),0)\
-                         +torch.mean(torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 / torch.exp(log_sigma) ** 2, 2), 2), 1), 0)
+                L_rec += torch.mean(torch.sum(torch.sum(torch.sum(0.5*log_sigma**2, 2), 2), 1), 0) \
+                         + torch.mean(torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 / torch.exp(log_sigma) ** 2, 2), 2), 1), 0)
+
+                # L_rec += torch.mean(torch.sum(torch.sum(torch.sum(log_sigma, 2),2),1),0)\
+                #          +torch.mean(torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 / torch.exp(log_sigma) ** 2, 2), 2), 1), 0)
 
             except:
                 print('loss is nan')
@@ -264,7 +273,7 @@ class ModelVaDECNN(nn.Module):
 
         # doesn't take the mean over the channels; i.e., the recon loss is taken as an average over (batch size * L * width * height)
         # --> this is the -"first line" of eq (12) in the paper with additional averaging over the batch.
-
+        self.loss_writer.add_scalar("Reconstruction loss", Loss, self.epoch_loss)
         Loss += 0.5 * warmup_beta * torch.mean(
             torch.sum(
                 probs
@@ -277,6 +286,7 @@ class ModelVaDECNN(nn.Module):
                 1,
             )
         )
+        self.loss_writer.add_scalar("KL divergence checkpoint 1 loss", Loss, self.epoch_loss)
 
         # inner sum dimentions:
         # [1, d_dim, zd_dim] + exp([batch_size, 1, zd_dim] - [1, d_dim, zd_dim]) + ([batch_size, 1, zd_dim] - [1, d_dim, zd_dim])^2 / exp([1, d_dim, zd_dim])
@@ -288,8 +298,11 @@ class ModelVaDECNN(nn.Module):
         Loss -= warmup_beta * torch.mean(torch.sum(probs * torch.log(pi.unsqueeze(0) / (probs + eps)),
                                      1))  # FIXME: (+eps) is a hack to avoid NaN. Is there a better way?
         # dimensions: [batch_size, d_dim] * log([1, d_dim] / [batch_size, d_dim]), where the sum is over d_dim dimensions --> [batch_size] --> mean over the batch --> a scalar
-
+        self.loss_writer.add_scalar("KL divergence checkpoint 2 loss", Loss, self.epoch_loss)
         Loss -= 0.5 * warmup_beta * torch.mean(torch.sum(1.0 + z_sigma2_log, 1))
+        self.loss_writer.add_scalar("KL divergence checkpoint 2 loss", Loss, self.epoch_loss)
+        self.loss_writer.add_scalar("warmup", warmup_beta, self.epoch_loss)
+        self.epoch_loss +=1
 
 
         # dimensions: mean( sum( [batch_size, zd_dim], 1 ) ) where the sum is over zd_dim dimensions and mean over the batch
