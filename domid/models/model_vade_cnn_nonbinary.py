@@ -258,10 +258,11 @@ class ModelVaDECNN(nn.Module):
             x_pro, log_sigma = self.decoder(z)
 
             try:
-                L_rec += torch.mean(torch.sum(torch.sum(torch.sum(0.5*log_sigma**2, 2), 2), 1), 0) \
+                #negative
+                L_rec += torch.mean(torch.sum(torch.sum(torch.sum(log_sigma, 2), 2), 1), 0) \
                          + torch.mean(torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 / torch.exp(log_sigma) ** 2, 2), 2), 1), 0)
-
-                # L_rec += torch.mean(torch.sum(torch.sum(torch.sum(log_sigma, 2),2),1),0)\
+                #positive
+                # L_rec += torch.mean(torch.sum(torch.sum(torch.sum(0.5*log_(torch.exp(log_sigma) **2), 2),2),1),0)\
                 #          +torch.mean(torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 / torch.exp(log_sigma) ** 2, 2), 2), 1), 0)
 
             except:

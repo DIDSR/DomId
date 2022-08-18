@@ -1,12 +1,14 @@
 import pandas as pd
 import os
 import numpy as np
+import datetime
 import torch
 class Storing():
     def __init__(self, args):
         self.args = args
         self.loss = []
         self.acc = []
+        self.experiment_name = datetime.now()
         #self.epoch = epoch
         #self.accuracy = accuracy
 
@@ -20,16 +22,16 @@ class Storing():
 
         self.loss.append(loss)
         self.acc.append(accuracy)
-        breakpoint()
+
 
 
 
         if epoch%5==0:
-            with open("./notebooks/training_loss_p.txt", 'w') as output:
+            with open("./notebooks/"+self.experiment_name+"/training_loss_p.txt", 'w') as output:
                 for row in self.loss:
                     output.write(str(row) + '\n')
 
-            with open("./notebooks/accuracy_p.txt", 'w') as output:
+            with open("./notebooks/"+self.experiment_name+"/accuracy_p.txt", 'w') as output:
                 for row in self.acc:
                     output.write(str(row) + '\n')
         # if epoch == 1:
@@ -60,14 +62,14 @@ class Storing():
 
     def storing_z_space(self, Z, domain_labels, machine_labels):
 
-        with open('./notebooks/Z_space_p.npy', 'wb') as f:
+        with open('./notebooks/'+self.experiment_name+'/Z_space_p.npy', 'wb') as f:
             np.save(f, Z)
 
-        with open("./notebooks/domain_labels_p.txt", 'w') as output:
+        with open("./notebooks/"+self.experiment_name+"/domain_labels_p.txt", 'w') as output:
             for row in domain_labels:
                 output.write(str(row) + '\n')
 
-        with open("./notebooks/machine_labels_p.txt", 'w') as output:
+        with open("./notebooks/"+self.experiment_name+"/machine_labels_p.txt", 'w') as output:
             for row in machine_labels:
                 output.write(str(row) + '\n')
 

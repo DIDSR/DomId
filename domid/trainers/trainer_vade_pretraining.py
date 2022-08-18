@@ -44,7 +44,7 @@ class TrainerVADE(TrainerClassif):
         # self.scheduler = torch.optim.lr_scheduler.StepLR(self.optimizer, step_size=2, gamma=0.95)
         # step_size = 10, gamma = 0.95
         # optimizer Adam
-
+        self.s = Storing(self.args)
 
 
     def tr_epoch(self, epoch):
@@ -54,7 +54,6 @@ class TrainerVADE(TrainerClassif):
         """
 
         print("Epoch {}. ELBO loss".format(epoch)) if self.pretraining_finished else print("Epoch {}. MSE loss".format(epoch))
-
         self.model.train()
         self.epo_loss_tr = 0
         mse_n = 5  # FIXME: maybe have a command line argument to specify mse_n and elbo_n
@@ -66,19 +65,13 @@ class TrainerVADE(TrainerClassif):
 
         acc_d, _ = p.epoch_val_acc()
         print(acc_d)
-        #____________ jank warmup ____________
-        # N = 25 # max warmup steps
-        # if acc_d > self.thres or self.pretraining_finished:
-        #     if self.warmup <= N:
-        #         print(self.LR)
-        #         self.LR = (self.warmup + 1)*self.LR/N
-        #         self.warmup += 1
+        if self.warmup_beta <=1 and self.pretraining_finished:
 
+            self.warmup_beta = self.warmup_beta * 2
+        print('WARM UP', self.warmup_beta)
 
         for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
-            # import matplotlib.pyplot as plt
-            # plt.imshow(tensor_x[1, :, :, :].reshape((100,100,3)))
-            # plt.show()
+
             if len(other_vars) > 0:
                 machine, path = other_vars
             tensor_x, vec_y, vec_d = tensor_x.to(self.device), vec_y.to(self.device), vec_d.to(self.device)
@@ -93,12 +86,10 @@ class TrainerVADE(TrainerClassif):
                 if not self.pretraining_finished:
                     self.pretraining_finished = True
                     # reset the optimizer
-
                     self.optimizer = optim.Adam(self.model.parameters(), lr=self.LR, betas = (0.5, 0.9), weight_decay = 0.0001)
                     # self.scheduler = torch.optim.lr_scheduler.StepLR(self.optimizer, step_size=15, gamma=0.95)
                     self.LR = self.LR/500
-                    if self.warmup_beta<1:
-                        self.warmup_beta = self.warmup_beta*5
+
                     print("".join(["#"] * 60))
                     print("Epoch {}: Finished pretraining and starting to use ELBO loss.".format(epoch))
                     print("".join(["#"] * 60))
@@ -135,6 +126,7 @@ class TrainerVADE(TrainerClassif):
 
 
         # ___________ Tensorboard______________________________
+
         preds, z_mu, z, _, _, x_pro = self.model.infer_d_v_2(tensor_x)
         imgs = torch.cat((tensor_x[0:8, :, :, :], x_pro[0:8, :, :, :],), 0)
         print('mean constructed images', torch.mean((tensor_x[0, :, :, :])),'max reconstructed images', torch.max(x_pro[0, :, :, :]))
@@ -146,7 +138,17 @@ class TrainerVADE(TrainerClassif):
             self.writer.add_scalar("MSE loss", self.epo_loss_tr, epoch)
         else:
             self.writer.add_scalar("ELBO loss", self.epo_loss_tr, epoch)
-        #________________________________________________________---
+
+        if epoch == 25:
+            IMG, Z,  domain_labels, machine_labels = p.prediction()
+            self.writer.add_embedding(Z, metadata=None, label_img=IMG, global_step=None, tag='default', metadata_header=None)
+            self.s.storing_z_space(Z, domain_labels, machine_labels)
+        #______________________STORIN__________________________________
+
+
+        self.s.storing(self.args, epoch, acc_d, self.epo_loss_tr)
+
+
         flag_stop = self.observer.update(epoch)  # notify observer
 
         return flag_stop
