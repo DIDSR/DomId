@@ -256,13 +256,19 @@ class ModelVaDECNN(nn.Module):
         for l in range(self.L):
             z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
             x_pro, log_sigma = self.decoder(z)
+            self.loss_writer.add_scalar('MSE manual', torch.mean(torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 / torch.exp(log_sigma) ** 2, 2), 2), 1), 0), self.epoch_loss)
+            self.loss_writer.add_scalar('MSE non manual', 0.5 * F.mse_loss(x_pro, x), self.epoch_loss)
+            self.loss_writer.add_scalar('log sigma', torch.mean(torch.sum(torch.sum(torch.sum(log_sigma, 2), 2), 1), 0) , self.epoch_loss)
 
             try:
                 #negative
+
+
                 L_rec += torch.mean(torch.sum(torch.sum(torch.sum(log_sigma, 2), 2), 1), 0) \
                          + torch.mean(torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 / torch.exp(log_sigma) ** 2, 2), 2), 1), 0)
+                #L_rec += 1/(0.2**2)*0.5*F.mse(x_pro, x)
                 #positive
-                # L_rec += torch.mean(torch.sum(torch.sum(torch.sum(0.5*log_(torch.exp(log_sigma) **2), 2),2),1),0)\
+                # L_rec += torch.mean(torch.sum(torch.sum(torch.sum(0.5*torch.log_(torch.exp(log_sigma) **2), 2),2),1),0)\
                 #          +torch.mean(torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 / torch.exp(log_sigma) ** 2, 2), 2), 1), 0)
 
             except:

@@ -139,7 +139,7 @@ class TrainerVADE(TrainerClassif):
         else:
             self.writer.add_scalar("ELBO loss", self.epo_loss_tr, epoch)
 
-        if epoch == 25:
+        if epoch == 1:
             IMG, Z,  domain_labels, machine_labels = p.prediction()
             self.writer.add_embedding(Z, metadata=None, label_img=IMG, global_step=None, tag='default', metadata_header=None)
             self.s.storing_z_space(Z, domain_labels, machine_labels)

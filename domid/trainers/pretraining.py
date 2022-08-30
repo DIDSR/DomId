@@ -28,7 +28,7 @@ class Pretraining():
         return loss
             #print("LOOOOSSS", loss)
     def prediction(self):
-        num_img = len(self.loader_tr.dataset)
+        num_img = len(self.loader_tr.dataset)-1
         Z = np.zeros((num_img, self.model.zd_dim))
         IMGS = np.zeros((num_img, 3, self.i_h, self.i_w))
         domain_labels = np.zeros((num_img, 1))
@@ -53,6 +53,7 @@ class Pretraining():
 
 
                 counter += z.shape[0]
+
         return IMGS, Z, domain_labels, machine_labels
 
     def GMM_fit(self):

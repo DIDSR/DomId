@@ -8,7 +8,7 @@ class Storing():
         self.args = args
         self.loss = []
         self.acc = []
-        self.experiment_name = datetime.now()
+        self.experiment_name = str(datetime.datetime.now())
         #self.epoch = epoch
         #self.accuracy = accuracy
 
@@ -23,15 +23,17 @@ class Storing():
         self.loss.append(loss)
         self.acc.append(accuracy)
 
+        if not os.path.exists("./notebooks/"+self.experiment_name):
 
+            os.mkdir("./notebooks/"+self.experiment_name)
 
 
         if epoch%5==0:
-            with open("./notebooks/"+self.experiment_name+"/training_loss_p.txt", 'w') as output:
+            with open("./notebooks/"+self.experiment_name+"/training_loss.txt", 'w') as output:
                 for row in self.loss:
                     output.write(str(row) + '\n')
 
-            with open("./notebooks/"+self.experiment_name+"/accuracy_p.txt", 'w') as output:
+            with open("./notebooks/"+self.experiment_name+"/accuracy.txt", 'w') as output:
                 for row in self.acc:
                     output.write(str(row) + '\n')
         # if epoch == 1:
@@ -62,14 +64,14 @@ class Storing():
 
     def storing_z_space(self, Z, domain_labels, machine_labels):
 
-        with open('./notebooks/'+self.experiment_name+'/Z_space_p.npy', 'wb') as f:
+        with open('./notebooks/'+self.experiment_name+'/Z_space.npy', 'wb') as f:
             np.save(f, Z)
 
-        with open("./notebooks/"+self.experiment_name+"/domain_labels_p.txt", 'w') as output:
+        with open("./notebooks/"+self.experiment_name+"/domain_labels.txt", 'w') as output:
             for row in domain_labels:
                 output.write(str(row) + '\n')
 
-        with open("./notebooks/"+self.experiment_name+"/machine_labels_p.txt", 'w') as output:
+        with open("./notebooks/"+self.experiment_name+"/machine_labels.txt", 'w') as output:
             for row in machine_labels:
                 output.write(str(row) + '\n')
 
