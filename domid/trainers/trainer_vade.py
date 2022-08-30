@@ -35,40 +35,18 @@ class TrainerVADE(TrainerClassif):
             self.epo_loss_tr += loss.detach().item()
 
 
+        if self.writer is not None:
+            self.writer.add_scalar('Trianing Loss', self.epo_loss_tr, epoch)
 
-            # if epoch == 10:
-            #     #self.writer.add_embedding(tsne, metadata = meta, label_img=tensor_x)
-            #     #self.writer.add_embedding(X, label_img=tensor_x)
-            #     prediction, z_mu, z, log_sigma2_c, yita, x_pro = self.model.infer_d_v_2(tensor_x)
-            #     #X = torch.flatten(z_mu, start_dim=1).cpu()
-            #     # num = torch.argmax(vec_y, 1).cpu()
-            #     # color = torch.argmax(vec_d, 1).cpu()
-            #
-            #     self.writer.add_embedding(z_mu, label_img=x_pro)
-            #
+            pred, pi, mu, sigma, yita, x_pro = self.model.infer_d_v_2(tensor_x)
+            if epoch ==1:
+                name = "Input to the encoder" + str(epoch)
+                self.writer.add_images(name, tensor_x, 0)
 
+            name = "Input vs Output of the decoder"+str(epoch)
+            imgs = torch.cat((tensor_x[0:8, :, :, :], x_pro[0:8, :, :, :],), 0)
+            self.writer.add_images(name, imgs, 0)
 
-
-
-        #print(pred.shape, pi.shape, mu.shape, sigma.shape, yita.shape, x_pro.shape)
-        #torch.Size([100, 7]) torch.Size([7]) torch.Size([7, 7]) torch.Size([100, 7])
-        #print(pred[1, :], pi[1], sigma, yita[1, :])
-        #print(sigma)
-
-        #print(epoch, self.epo_loss_tr)
-        self.writer.add_scalar('Trianing Loss', self.epo_loss_tr, epoch)
-
-        pred, pi, mu, sigma, yita, x_pro = self.model.infer_d_v_2(tensor_x)
-        if epoch ==1:
-            name = "Input to the encoder" + str(epoch)
-            self.writer.add_images(name, tensor_x, 0)
-
-        name = "Input vs Output of the decoder"+str(epoch)
-        imgs = torch.cat((tensor_x[0:8, :, :, :], x_pro[0:8, :, :, :],), 0)
-        self.writer.add_images(name, imgs, 0)
-        #self.writer.add_images(name, tensor_x[0:8, :, :, :], 0)
-            # self.writer.add_image('Input epoch = 10 ', x_pro[2, :, :, :], 0)
-            # self.writer.add_image('Input epoch = 10 ', x_pro[3, :, :, :], 0)
 
         return flag_stop
 

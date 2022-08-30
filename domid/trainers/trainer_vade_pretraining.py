@@ -62,11 +62,10 @@ class TrainerVADE(TrainerClassif):
         # if epoch>mse_n-2:
         #      self.LR = 0.001
         p = Pretraining(self.model, self.device, self.loader_tr, self.i_h, self.i_w)
-
         acc_d, _ = p.epoch_val_acc()
+
         print(acc_d)
         if self.warmup_beta <=1 and self.pretraining_finished:
-
             self.warmup_beta = self.warmup_beta * 2
         print('WARM UP', self.warmup_beta)
 
@@ -139,7 +138,7 @@ class TrainerVADE(TrainerClassif):
         else:
             self.writer.add_scalar("ELBO loss", self.epo_loss_tr, epoch)
 
-        if epoch == 1:
+        if epoch == 6:
             IMG, Z,  domain_labels, machine_labels = p.prediction()
             self.writer.add_embedding(Z, metadata=None, label_img=IMG, global_step=None, tag='default', metadata_header=None)
             self.s.storing_z_space(Z, domain_labels, machine_labels)

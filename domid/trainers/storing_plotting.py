@@ -24,8 +24,10 @@ class Storing():
         self.acc.append(accuracy)
 
         if not os.path.exists("./notebooks/"+self.experiment_name):
-
+            print('______Created directory to save result_________')
             os.mkdir("./notebooks/"+self.experiment_name)
+
+
 
 
         if epoch%5==0:
@@ -64,8 +66,8 @@ class Storing():
 
     def storing_z_space(self, Z, domain_labels, machine_labels):
 
-        with open('./notebooks/'+self.experiment_name+'/Z_space.npy', 'wb') as f:
-            np.save(f, Z)
+        path ="./notebooks/"+self.experiment_name+"/Z_space.npy"
+        np.save(path, Z)
 
         with open("./notebooks/"+self.experiment_name+"/domain_labels.txt", 'w') as output:
             for row in domain_labels:
