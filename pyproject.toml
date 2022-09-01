@@ -13,10 +13,10 @@ tensorboardX = "^2.5.1"
 pandas = "^1.4.3"
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.2"
 # this package is included as a git submodule
 domainlab = { path = "./DomainLab", develop = true }
 jupyterlab = "^3.4.3"
+pytest = "^7.1.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
