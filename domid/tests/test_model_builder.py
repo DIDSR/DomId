@@ -17,42 +17,36 @@ from domid.models.model_vade_cnn import ConvolutionalEncoder, ConvolutionalDecod
 from domid.tasks.task_mnist import NodeTaskMNIST
 from domid.models.model_vade import ModelVaDE
 
+def model_compiler(args, model):
+    node = NodeTaskMNIST()
+    dset2 = node.get_dset_by_domain(args, 'digit2')
+    ldr = torch.utils.data.DataLoader(dset2[0])
+
+
+
+    for i, (tensor_x, vec_y, *_) in enumerate(ldr):
+        preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = model_cnn._inference(tensor_x)
+        mu, log_sigma2 = model.encoder(tensor_x)
+        model.decoder(z_mu)
+        loss = model.cal_loss(tensor_x)
+        if i > 5:
+            break
 
 def test_VaDE_CNN():
     parser = mk_parser_main()
     args = parser.parse_args(["--te_d", "7", '--zd_dim', "5", "--d_dim", "1", "--dpath",
                               "zout","--split", "0.8", "--L", "5"])
-    node = NodeTaskMNIST()
-    dset2 = node.get_dset_by_domain(args, 'digit2')
-    ldr = torch.utils.data.DataLoader(dset2[0])
     i_c, i_w, i_h = 3, 28, 28
-    model_cnn = ModelVaDECNN(zd_dim=args.zd_dim, d_dim=args.d_dim,  device=torch.device("cpu"),L = args.L,
-                             i_c= i_c, i_w=i_w, i_h=i_h)
-
-    for i, (tensor_x, vec_y, *_) in enumerate(ldr):
-        preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = model_cnn._inference(tensor_x)
-        mu, log_sigma2 = model_cnn.encoder(tensor_x)
-        model_cnn.decoder(z_mu)
-        loss = model_cnn.cal_loss(tensor_x)
-        if i>5:
-            break
+    model = ModelVaDECNN(zd_dim=args.zd_dim, d_dim=args.d_dim, device=torch.device("cpu"), L=args.L,
+                          i_c=i_c, i_w=i_w, i_h=i_h)
+    model_compiler(args, model)
 
 def test_VaDE_linear():
     parser = mk_parser_main()
     args = parser.parse_args(["--te_d", "7", '--zd_dim', "5", "--d_dim", "1", "--dpath",
                               "zout", "--split", "0.8", "--L", "5"])
-    node = NodeTaskMNIST()
-    dset2 = node.get_dset_by_domain(args, 'digit2')
-    ldr = torch.utils.data.DataLoader(dset2[0])
     i_c, i_w, i_h = 3, 28, 28
-    model_cnn = ModelVaDE(zd_dim=args.zd_dim, d_dim=args.d_dim, device=torch.device("cpu"), L=args.L,
+    model = ModelVaDE(zd_dim=args.zd_dim, d_dim=args.d_dim, device=torch.device("cpu"), L=args.L,
                              i_c=i_c, i_w=i_w, i_h=i_h)
 
-    for i, (tensor_x, vec_y, *_) in enumerate(ldr):
-        preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = model_cnn._inference(tensor_x)
-        mu, log_sigma2 = model_cnn.encoder(tensor_x)
-        model_cnn.decoder(z_mu)
-        loss = model_cnn.cal_loss(tensor_x)
-        if i > 5:
-            break
-
+    model_compiler(args, model)

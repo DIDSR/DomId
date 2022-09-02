@@ -1,3 +1,5 @@
+import os
+
 import torch
 import torch.utils.data
 from domainlab.algos.observers.b_obvisitor import ObVisitor
@@ -21,41 +23,40 @@ from domainlab.algos.msels.c_msel import MSelTrLoss
 from domainlab.algos.msels.c_msel_oracle import MSelOracleVisitor
 from domainlab.algos.observers.c_obvisitor_cleanup import ObVisitorCleanUp
 from domid.compos.exp.exp_main import Exp
+import os
+def experiment_train(args):
+    exp = Exp(args)
+    exp.trainer.before_tr()
+    exp.trainer.tr_epoch(0)
+    #exp.trainer.post_tr()
 
-def test_train():
+def test_MNIST_train():
     parser = mk_parser_main()
-    #args = parser.parse_args(["--te_d", "2", "--task", "mnist", "--debug"])
-    #exp = Exp(args)
-    args = parser.parse_args(["--te_d", "7", '--zd_dim', "5", "--d_dim", "1", "--dpath",
-                              "zout", "--task", "mnist", "--split", "0.8", "--L", "5", "--debug"])
-    #task = exp.task
-    #args = exp.args
-    device = 'cpu'
+    args = parser.parse_args(["--te_d", "7", "--tr_d", "0", "1",  "2",'--zd_dim', "5", "--d_dim", "3", "--dpath",
+                              "zout", "--task", "mnist","--aname", "vade","--apath", "domid/algos/builder_vade.py",
+                              "--bs", "2", "--split", "0.8", "--L", "5", "--debug", "--nocu"])
+    experiment_train(args)
+def test_MNISTcolor_train():
+    parser = mk_parser_main()
+    args = parser.parse_args(["--te_d", "7", "--tr_d", "0", "1", "2", '--zd_dim', "5", "--d_dim", "3", "--dpath",
+                              "zout", "--task", "mnistcolor10", "--aname", "vade", "--apath",
+                              "domid/algos/builder_vade.py",
+                              "--bs", "2", "--split", "0.8", "--L", "5", "--debug", "--nocu"])
+    experiment_train(args)
 
-    zd_dim = args.zd_dim
-    d_dim = args.d_dim
-    L = args.L
-    writer = None
-    i_c, i_w, i_h = 3, 28, 28
+def test_MNIST_train_CNN():
+    parser = mk_parser_main()
+    args = parser.parse_args(["--te_d", "7", "--tr_d", "0", "1",  "2",'--zd_dim', "5", "--d_dim", "3", "--dpath",
+                              "zout", "--task", "mnist","--aname", "vade","--apath", "domid/algos/builder_vade_cnn.py",
+                              "--bs", "2", "--split", "0.8", "--L", "5", "--debug", "--nocu"])
+    experiment_train(args)
+def test_MNISTcolor_train_CNN():
+    parser = mk_parser_main()
+    args = parser.parse_args(["--te_d", "7", "--tr_d", "0", "1", "2", '--zd_dim', "5", "--d_dim", "3", "--dpath",
+                              "zout", "--task", "mnistcolor10", "--aname", "vade", "--apath",
+                              "domid/algos/builder_vade_cnn.py",
+                              "--bs", "2", "--split", "0.8", "--L", "5", "--debug", "--nocu"])
+    experiment_train(args)
 
-    observer = None #ObVisitorClusteringOnly()#MSelOracleVisitor(MSelTrLoss(max_es=args.es)), device))
 
 
-    #parser = mk_parser_main()
-
-    task = NodeTaskMNIST()
-    #dset2 = task.get_dset_by_domain(args, 'digit2')
-    #ldr = torch.utils.data.DataLoader(dset2[0])
-    # device = 'cpu'
-    # exp = Exp(args, task)
-    # exp.execute()
-    # observer = ObVisitorClusteringOnly(exp, MSelOracleVisitor(MSelTrLoss(max_es=args.es)), device)
-
-    model= ModelVaDECNN(zd_dim=args.zd_dim, d_dim=args.d_dim, device=torch.device("cpu"), L=args.L,
-                             i_c=i_c, i_w=i_w, i_h=i_h)
-    try:
-       TrainerVADE(model, task, observer, device, writer, aconf=args)
-    except:
-       pass
-
-    TrainerVADE.tr_epoch(0)
