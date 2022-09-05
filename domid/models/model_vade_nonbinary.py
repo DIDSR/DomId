@@ -143,12 +143,12 @@ class ModelVaDE(nn.Module):
         preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = (r.cpu().detach() for r in results)
         return preds, z_mu, z, log_sigma2_c, probs, x_pro
 
-    def cal_loss(self, x):
+    def cal_loss(self, x, warmup_beta):
         """Function that is called in trainer_vade to calculate loss
         :param x: tensor with input data
         :return: ELBO loss
         """
-        return self.ELBO_Loss(x)
+        return self.ELBO_Loss(x, warmup_beta)
 
     def pretrain_loss(self, x):
         Loss = nn.MSELoss()
@@ -158,7 +158,7 @@ class ModelVaDE(nn.Module):
         loss = Loss(x, x_pro)
         return loss
 
-    def ELBO_Loss(self, x):
+    def ELBO_Loss(self, x, warmup_beta):
         """ELBO loss function
         Using SGVB estimator and the reparametrization trick calculates ELBO loss.
         Calculates loss between encoded input and input using ELBO equation (12) in the papaer.
@@ -169,16 +169,30 @@ class ModelVaDE(nn.Module):
         eps = 1e-10
 
         L_rec = 0.0
-        for l in range(self.L):
-            z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu # shape [batch_size, self.zd_dim]
-            x_pro = self.decoder(z)
-            # L_rec += F.binary_cross_entropy(
-            #     x_pro, x
-            # )  # TODO: this is the reconstruction loss for a binary-valued x (such as MNIST digits); need to implement another version for a real-valued x.
-            #breakpoint()
-            L_rec+=F.binary_cross_entropy(x_pro, x)
+        try:
+            x_pro = mu_c #FIXME URGENT!
+            L_rec += 1/(0.2**2)*0.5*F.mse(x_pro, x)
+            #positive
+            # L_rec += torch.mean(torch.sum(torch.sum(torch.sum(0.5*torch.log_(torch.exp(log_sigma) **2), 2),2),1),0)\
+            #          +torch.mean(torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 / torch.exp(log_sigma) ** 2, 2), 2), 1), 0)
+
+        except:
+            print('loss is nan')
+            breakpoint()
+
         L_rec /= self.L
-        Loss = L_rec * x.size(1)
+        Loss = L_rec
+
+        # for l in range(self.L):
+        #     z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu # shape [batch_size, self.zd_dim]
+        #     x_pro = self.decoder(z)
+        #     # L_rec += F.binary_cross_entropy(
+        #     #     x_pro, x
+        #     # )  # TODO: this is the reconstruction loss for a binary-valued x (such as MNIST digits); need to implement another version for a real-valued x.
+        #     #breakpoint()
+        #     L_rec+=F.binary_cross_entropy(x_pro, x)
+        # L_rec /= self.L
+        # Loss = L_rec * x.size(1)
         #print('checkpoint 1', Loss)
         # doesn't take the mean over the channels; i.e., the recon loss is taken as an average over (batch size * L * width * height)
         # --> this is the -"first line" of eq (12) in the paper with additional averaging over the batch.

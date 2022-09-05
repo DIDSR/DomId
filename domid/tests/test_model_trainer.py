@@ -10,7 +10,7 @@ from domainlab.utils.utils_classif import mk_dummy_label_list_str
 from domainlab.dsets.dset_poly_domains_mnist_color_default import DsetMNISTColorMix
 from domainlab.algos.trainers.train_visitor import TrainerVisitor
 from domainlab.compos.exp.exp_main import Exp
-from domid.arg_parser import mk_parser_main
+
 from domainlab.utils.test_img import mk_rand_xyd
 from domainlab.utils.utils_classif import mk_dummy_label_list_str
 from domid.algos.builder_vade_cnn import NodeAlgoBuilderVaDE
@@ -23,6 +23,7 @@ from domainlab.algos.msels.c_msel import MSelTrLoss
 from domainlab.algos.msels.c_msel_oracle import MSelOracleVisitor
 from domainlab.algos.observers.c_obvisitor_cleanup import ObVisitorCleanUp
 from domid.compos.exp.exp_main import Exp
+from domid.arg_parser import mk_parser_main
 import os
 def experiment_train(args):
     exp = Exp(args)
@@ -57,6 +58,7 @@ def test_MNISTcolor_train_CNN():
                               "domid/algos/builder_vade_cnn.py",
                               "--bs", "2", "--split", "0.8", "--L", "5", "--debug", "--nocu"])
     experiment_train(args)
+
 
 
 

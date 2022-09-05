@@ -281,12 +281,12 @@ class ModelVaDECNN(nn.Module):
         preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = (r.cpu().detach() for r in results)
         return preds, z_mu, z, log_sigma2_c, probs, x_pro
 
-    def cal_loss(self, x):
+    def cal_loss(self, x, warmup_beta):
         """Function that is called in trainer_vade to calculate loss
         :param x: tensor with input data
         :return: ELBO loss
         """
-        return self.ELBO_Loss(x)
+        return self.ELBO_Loss(x, warmup_beta)
 
     def pretrain_loss(self, x):
         Loss = nn.MSELoss()
@@ -296,7 +296,7 @@ class ModelVaDECNN(nn.Module):
         loss = Loss(x, x_pro)
         return loss
 
-    def ELBO_Loss(self, x):
+    def ELBO_Loss(self, x, warmup_beta):
         """ELBO loss function
 
         Using SGVB estimator and the reparametrization trick calculates ELBO loss.
@@ -308,7 +308,7 @@ class ModelVaDECNN(nn.Module):
         preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = self._inference(x)
         eps = 1e-10
         L_rec = 0.0
-
+        #print('______________BINARY________')
         for l in range(self.L):
             z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu  # shape [batch_size, self.zd_dim]
             x_pro = self.decoder(z)
@@ -325,7 +325,7 @@ class ModelVaDECNN(nn.Module):
         # doesn't take the mean over the channels; i.e., the recon loss is taken as an average over (batch size * L * width * height)
         # --> this is the -"first line" of eq (12) in the paper with additional averaging over the batch.
         #print('chepoint 1', Loss)
-        Loss += 0.5 * torch.mean(
+        Loss += 0.5 * warmup_beta*torch.mean(
             torch.sum(
                 probs
                 * torch.sum(
@@ -346,10 +346,10 @@ class ModelVaDECNN(nn.Module):
         # the mean is over the batch
         # --> overall, this is -"second line of eq. (12)" with additional mean over the batch
         #print('Checkpoint 2' , Loss)
-        Loss -= torch.mean(torch.sum(probs * torch.log(pi.unsqueeze(0) / (probs + eps)), 1))  # FIXME: (+eps) is a hack to avoid NaN. Is there a better way?
+        Loss -= warmup_beta*torch.mean(torch.sum(probs * torch.log(pi.unsqueeze(0) / (probs + eps)), 1))  # FIXME: (+eps) is a hack to avoid NaN. Is there a better way?
         # dimensions: [batch_size, d_dim] * log([1, d_dim] / [batch_size, d_dim]), where the sum is over d_dim dimensions --> [batch_size] --> mean over the batch --> a scalar
         #print('chepoint 3', Loss)
-        Loss -= 0.5 * torch.mean(torch.sum(1.0 + z_sigma2_log, 1))
+        Loss -= 0.5 *warmup_beta* torch.mean(torch.sum(1.0 + z_sigma2_log, 1))
         #print('chepoint 4', Loss)
         #print('_________________________________')
 

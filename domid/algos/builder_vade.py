@@ -7,7 +7,7 @@ from domainlab.algos.observers.c_obvisitor_cleanup import ObVisitorCleanUp
 from domainlab.utils.utils_cuda import get_device
 from tensorboardX import SummaryWriter
 from domid.algos.observers.b_obvisitor_clustering_only import ObVisitorClusteringOnly
-from domid.models.model_vade_nonbinary import ModelVaDE
+#from domid.models.model_vade_nonbinary import ModelVaDE
 
 class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
     def init_business(self, exp):
@@ -22,6 +22,12 @@ class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
         zd_dim = args.zd_dim
         d_dim = args.d_dim
         L = args.L
+
+        if args.nonbinary:
+            from domid.models.model_vade_nonbinary import ModelVaDE
+        else:
+            from domid.models.model_vade import ModelVaDE
+
         model = ModelVaDE(zd_dim=zd_dim, d_dim=d_dim, device=device, L = L,  i_c = task.isize.c,
                           i_h = task.isize.h, i_w = task.isize.w)
         observer = ObVisitorCleanUp(

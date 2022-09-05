@@ -16,6 +16,7 @@ def mk_parser_main():
                         help='number of domains (or clusters)')
     parser.add_argument('--pre_tr', type=float, default=0.5, help="threshold for pretraining")
     parser.add_argument('--L', type=int, default=3, help="number of MC runs")
+    parser.add_argument('--nonbinary', action='store_true', default=False, help='assumes nonbinary distribution for the data' )
     return parser
 
 

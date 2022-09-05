@@ -8,7 +8,6 @@ from domainlab.algos.observers.c_obvisitor_cleanup import ObVisitorCleanUp
 from domainlab.utils.utils_cuda import get_device
 
 from domid.algos.observers.b_obvisitor_clustering_only import ObVisitorClusteringOnly
-from domid.models.model_vade_cnn_nonbinary import ModelVaDECNN
 from domid.trainers.trainer_vade_pretraining import TrainerVADE  # CHANGE HERE
 
 
@@ -26,6 +25,12 @@ class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
         lr = args.lr
         now = datetime.datetime.now()
         L = args.L
+
+        if args.nonbinary:
+            from domid.models.model_vade_cnn_nonbinary import ModelVaDECNN
+        else:
+            from domid.models.model_vade_cnn import ModelVaDECNN
+
         model = ModelVaDECNN(
             zd_dim=zd_dim, d_dim=d_dim, device=device, L=L, i_c=task.isize.c, i_h=task.isize.h, i_w=task.isize.w
         )

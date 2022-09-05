@@ -252,7 +252,7 @@ class ModelVaDECNN(nn.Module):
 
         eps = 1e-10
         L_rec = 0.0
-
+        #print('_______________NONBINARY__________')
         for l in range(self.L):
             z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
             x_pro, log_sigma = self.decoder(z)

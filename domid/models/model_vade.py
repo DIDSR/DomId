@@ -166,12 +166,12 @@ class ModelVaDE(nn.Module):
         preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = (r.cpu().detach() for r in results)
         return preds, z_mu, z, log_sigma2_c, probs, x_pro
 
-    def cal_loss(self, x):
+    def cal_loss(self, x, warmup_beta):
         """Function that is called in trainer_vade to calculate loss
         :param x: tensor with input data
         :return: ELBO loss
         """
-        return self.ELBO_Loss(x)
+        return self.ELBO_Loss(x, warmup_beta)
 
     def pretrain_loss(self, x):
         Loss = nn.MSELoss()
@@ -181,7 +181,7 @@ class ModelVaDE(nn.Module):
         loss = Loss(x, x_pro)
         return loss
 
-    def ELBO_Loss(self, x):
+    def ELBO_Loss(self, x, warmup_beta):
         """ELBO loss function
         Using SGVB estimator and the reparametrization trick calculates ELBO loss.
         Calculates loss between encoded input and input using ELBO equation (12) in the papaer.
@@ -191,7 +191,7 @@ class ModelVaDE(nn.Module):
         preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = self._inference(x)
         #mu, sigma from the decoder
         eps = 1e-10
-        print('here')
+
 
         L_rec = 0.0
         for l in range(self.L):
@@ -199,27 +199,11 @@ class ModelVaDE(nn.Module):
             z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu # shape [batch_size, self.zd_dim]
 
             x_pro, x_pro2, mu, sigma = self.decoder(z) #x_pro, mu, sigma
-            # L_rec += F.binary_cross_entropy(
-            #     x_pro, x
-            # )  # TODO: this is the reconstruction loss for a binary-valued x (such as MNIST digits); need to implement another version for a real-valued x.
+            L_rec += F.binary_cross_entropy(
+                x_pro, x
+            )  # TODO: this is the reconstruction loss for a binary-valued x (such as MNIST digits); need to implement another version for a real-valued x.
 
-            #breakpoint()
-            #log_sigma2_c, mu_c - [d_dim, z_dim] - 6 x 200
-            # for img in range(0, x_pro2.shape[0]):
-            #     for channel in range(0,x_pro2.shape[1]):
-            #         for i in range(0, x_pro2.shape[1]): #dimentionality of
-            #            for j in range(0, x_pro2.shape[0]): #number of clusters
-            #                 L_rec += - sigma[j, i] - 0.5 * (x_pro2[img, channel, j, i] - mu[j, i]) ** 2 / torch.exp(sigma[j, i])
-                            #L_rec += - torch.log_(sigma[j, i]) - 0.5 * (x_pro2[img,channel,j, i] - mu[j, i])**2/torch.exp(torch.log_(sigma[j, i]))
-            #L_rec+=F.binary_cross_entropy(x_pro, x)
-            L_rec_= torch.sum(-sigma - 0.5 * (x-mu**2)/(torch.exp(sigma)))
-            L_rec+=L_rec_/z.shape[0]
-            print(L_rec)
-            #FIXME call log sigma, seperate into two different sums
-            # FIXME take the mean over batches
-            # sum of one dimention and then mean
-            # vectorize mu and sum over the columns 4
-            # devive by the batch size
+
 
 
         #breakpoint()
