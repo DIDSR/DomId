@@ -58,6 +58,7 @@ class ModelXY2D(AModelClassif):
         # FIXME: shall we share parameters between infer_y_from_x and self.feat_x2concat_y?
         self.infer_domain = LSEncoderDense(z_dim=self.zd_dim,
                                            dim_input=self.dim_feat_x+self.y_dim)
+        self.gamma_y = gamma_y
         # LN: location scale encoder
         self.decoder = DecoderConcatLatentFCReshapeConvGatedConv(
             z_dim=zd_dim+y_dim,

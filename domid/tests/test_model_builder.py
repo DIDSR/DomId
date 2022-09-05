@@ -16,7 +16,7 @@ from domid.algos.builder_vade_cnn import NodeAlgoBuilderVaDE
 from domid.models.model_vade_cnn import ConvolutionalEncoder, ConvolutionalDecoder, ConvolutionalDecoder, ModelVaDECNN
 from domid.tasks.task_mnist import NodeTaskMNIST
 from domid.models.model_vade import ModelVaDE
-
+from domid.models.model_m2yd import ModelXY2D
 def model_compiler(args, model):
     node = NodeTaskMNIST()
     dset2 = node.get_dset_by_domain(args, 'digit2')
@@ -25,10 +25,19 @@ def model_compiler(args, model):
 
 
     for i, (tensor_x, vec_y, *_) in enumerate(ldr):
-        preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = model_cnn._inference(tensor_x)
-        mu, log_sigma2 = model.encoder(tensor_x)
-        model.decoder(z_mu)
-        loss = model.cal_loss(tensor_x)
+        try:
+            preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = model._inference(tensor_x)
+            mu, log_sigma2 = model.encoder(tensor_x)
+            model.decoder(z_mu)
+            loss = model.cal_loss(tensor_x)
+        except:
+            preds_c = model.infer_d_v(tensor_x)
+            q_zd, zd_q, y_hat_logit = model.forward(tensor_x, vec_y)
+
+            loss = model.cal_loss(tensor_x, y_hat_logit)
+
+
+
         if i > 5:
             break
 
@@ -50,3 +59,17 @@ def test_VaDE_linear():
                              i_c=i_c, i_w=i_w, i_h=i_h)
 
     model_compiler(args, model)
+
+def test_m2yd():
+    parser = mk_parser_main()
+    args = parser.parse_args(["--te_d", "0",  "1", "--tr_d", "3", "4",
+                              "--task","mnistcolor10",
+                              "--aname", "m2yd","--d_dim", "2","--apath=domid/algos/builder_m2yd.py", "--nocu" ,"--gamma_y", "3500"])
+    y_dim = args.d_dim
+
+    ModelXY2D(list_str_y= args.tr_d,y_dim = 10, zd_dim=8, gamma_y=3500, device=torch.device("cpu"), i_c=3, i_h=28, i_w=28)
+    print('pass')
+    model = ModelXY2D(list_str_y= args.tr_d, y_dim=y_dim, zd_dim=args.zd_dim, gamma_y=args.gamma_y, device=torch.device("cpu"), i_c=3, i_h=28, i_w=28)
+    model_compiler(args, model)
+
+
