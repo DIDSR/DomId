@@ -23,14 +23,13 @@ def model_compiler(args, model):
     ldr = torch.utils.data.DataLoader(dset2[0])
 
 
-
     for i, (tensor_x, vec_y, *_) in enumerate(ldr):
-        if args.prior == "Gaus":
+        if model.__class__.__name__ == "ModelVADECNN" or model.__class__.__name__ == "ModelVaDE":
             preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = model._inference(tensor_x)
             mu, log_sigma2 = model.encoder(tensor_x)
             model.decoder(z_mu)
-            loss = model.cal_loss(tensor_x)
-        elif args.prior =="Bern":
+            loss = model.cal_loss(tensor_x, 1)
+        else:
             preds_c = model.infer_d_v(tensor_x)
             q_zd, zd_q, y_hat_logit = model.forward(tensor_x, vec_y)
 
@@ -46,6 +45,7 @@ def test_VaDE_CNN():
     args = parser.parse_args(["--te_d", "7", '--zd_dim', "5", "--d_dim", "1", "--dpath",
                               "zout","--split", "0.8", "--L", "5"])
     i_c, i_w, i_h = 3, 28, 28
+    #breakpoint()
     model = ModelVaDECNN(zd_dim=args.zd_dim, d_dim=args.d_dim, device=torch.device("cpu"), L=args.L,
                           i_c=i_c, i_w=i_w, i_h=i_h)
     model_compiler(args, model)
