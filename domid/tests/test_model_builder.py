@@ -24,7 +24,7 @@ def model_compiler(args, model):
 
 
     for i, (tensor_x, vec_y, *_) in enumerate(ldr):
-        if model.__class__.__name__ == "ModelVADECNN" or model.__class__.__name__ == "ModelVaDE":
+        if model.__class__.__name__ == "ModelVaDECNN" or model.__class__.__name__ == "ModelVaDE":
             preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = model._inference(tensor_x)
             mu, log_sigma2 = model.encoder(tensor_x)
             model.decoder(z_mu)
