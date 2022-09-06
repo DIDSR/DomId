@@ -23,7 +23,7 @@ class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
         d_dim = args.d_dim
         L = args.L
 
-        if args.nonbinary:
+        if args.prior == "Gaus":
             from domid.models.model_vade_nonbinary import ModelVaDE
         else:
             from domid.models.model_vade import ModelVaDE

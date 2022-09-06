@@ -26,7 +26,7 @@ class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
         now = datetime.datetime.now()
         L = args.L
 
-        if args.nonbinary:
+        if args.prior == "Gaus":
             from domid.models.model_vade_cnn_nonbinary import ModelVaDECNN
         else:
             from domid.models.model_vade_cnn import ModelVaDECNN

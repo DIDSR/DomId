@@ -58,6 +58,14 @@ def test_MNISTcolor_train_CNN():
                               "domid/algos/builder_vade_cnn.py",
                               "--bs", "2", "--split", "0.8", "--L", "5", "--debug", "--nocu"])
     experiment_train(args)
+def test_M2YD_train_MNISTcolor():
+    parser = mk_parser_main()
+    args = parser.parse_args(["--te_d", "7", "--tr_d", "0", "1",
+                              '--zd_dim', "5", "--d_dim", "3", "--dpath",
+                              "zout", "--task", "mnistcolor10", "--aname", "m2yd", "--apath",
+                              "domid/algos/builder_m2yd.py",
+                              "--bs", "2", "--split", "0.8", "--debug", "--nocu", "--gamma_y", "3500"])
+    experiment_train(args)
 
 
 

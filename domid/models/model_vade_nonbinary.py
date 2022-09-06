@@ -58,6 +58,7 @@ class LinearDecoder(nn.Module):
             nn.Linear(features_dim[0], np.prod(input_dim)),
             nn.Sigmoid()
         )
+        self.log_sigma_layer = nn.Linear(np.prod(input_dim),np.prod(input_dim) )
 
     def forward(self, z):
         """
@@ -65,9 +66,15 @@ class LinearDecoder(nn.Module):
         :return x_pro: reconstructed data, which is assumed to have 3 channels, but the channels are assumed to be equal to each other.
         """
         x_pro = self.decod(z)
+
+
+        log_sigma = self.log_sigma_layer(x_pro)
+        log_sigma = torch.reshape(log_sigma, (log_sigma.shape[0], 1, *self.input_dim))
+        log_sigma = torch.cat((log_sigma, log_sigma, log_sigma), 1)
+
         x_pro = torch.reshape(x_pro, (x_pro.shape[0], 1, *self.input_dim))
         x_pro = torch.cat((x_pro, x_pro, x_pro), 1)
-        return x_pro
+        return x_pro, log_sigma
 
 
 class ModelVaDE(nn.Module):
@@ -87,7 +94,7 @@ class ModelVaDE(nn.Module):
         self.zd_dim = zd_dim
         self.d_dim = d_dim
         self.device = device
-
+        self.L = L
         self.encoder = LinearEncoder(zd_dim=zd_dim, input_dim=(i_h, i_w)).to(device)
         self.decoder = LinearDecoder(zd_dim=zd_dim, input_dim=(i_h, i_w)).to(device)
 
@@ -139,7 +146,7 @@ class ModelVaDE(nn.Module):
         Used for tensorboard visualizations only.
         """
         results = self._inference(x)
-        x_pro = self.decoder(results[2])
+        x_pro, log_sigma = self.decoder(results[2])
         preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = (r.cpu().detach() for r in results)
         return preds, z_mu, z, log_sigma2_c, probs, x_pro
 
@@ -154,7 +161,7 @@ class ModelVaDE(nn.Module):
         Loss = nn.MSELoss()
         z_mu, z_sigma2_log = self.encoder(x)
         z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
-        x_pro = self.decoder(z)
+        x_pro, log_sigma = self.decoder(z)
         loss = Loss(x, x_pro)
         return loss
 
@@ -169,16 +176,19 @@ class ModelVaDE(nn.Module):
         eps = 1e-10
 
         L_rec = 0.0
-        try:
-            x_pro = mu_c #FIXME URGENT!
-            L_rec += 1/(0.2**2)*0.5*F.mse(x_pro, x)
-            #positive
-            # L_rec += torch.mean(torch.sum(torch.sum(torch.sum(0.5*torch.log_(torch.exp(log_sigma) **2), 2),2),1),0)\
-            #          +torch.mean(torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 / torch.exp(log_sigma) ** 2, 2), 2), 1), 0)
+        for l in range(self.L):
+            try:
 
-        except:
-            print('loss is nan')
-            breakpoint()
+                z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
+                x_pro, log_sigma = self.decoder(z)
+                L_rec += 1/(0.2**2)*0.5*F.mse_loss(x_pro, x)
+                #positive
+                # L_rec += torch.mean(torch.sum(torch.sum(torch.sum(0.5*torch.log_(torch.exp(log_sigma) **2), 2),2),1),0)\
+                #          +torch.mean(torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 / torch.exp(log_sigma) ** 2, 2), 2), 1), 0)
+
+            except:
+                print('loss is nan')
+                breakpoint()
 
         L_rec /= self.L
         Loss = L_rec

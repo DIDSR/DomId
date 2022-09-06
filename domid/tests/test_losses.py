@@ -11,19 +11,34 @@ def experiment_train(args):
     exp.trainer.tr_epoch(0)
     # exp.trainer.post_tr()
 
-def test_CNN_nonbinary():
+def test_VADE_CNN_nonbinary():
     parser = mk_parser_main()
     args = parser.parse_args(["--te_d", "7", "--tr_d", "0", "1", "2", '--zd_dim', "5", "--d_dim", "3", "--dpath",
                               "zout", "--task", "mnistcolor10", "--aname", "vade", "--apath",
-                              "domid/algos/builder_vade.py",
-                              "--bs", "2", "--split", "0.8", "--L", "5", "--debug", "--nocu", "--nonbinary"])
+                              "domid/algos/builder_vade_cnn.py", "--epos", "2",
+                              "--bs", "2", "--split", "0.8", "--L", "5", "--debug", "--nocu", "--prior", "Gaus"])
     experiment_train(args)
 
-def test_CNN():
+def test_VADE_CNN():
     parser = mk_parser_main()
     args = parser.parse_args(["--te_d", "7", "--tr_d", "0", "1", "2", '--zd_dim', "5", "--d_dim", "3", "--dpath",
                               "zout", "--task", "mnistcolor10", "--aname", "vade", "--apath",
-                              "domid/algos/builder_vade.py",
+                              "domid/algos/builder_vade_cnn.py", "--epos", "2",
+                              "--bs", "2", "--split", "0.8", "--L", "5", "--debug", "--nocu"])
+    experiment_train(args)
+def test_VADE_nonbinary():
+    parser = mk_parser_main()
+    args = parser.parse_args(["--te_d", "7", "--tr_d", "0", "1", "2", '--zd_dim', "5", "--d_dim", "3", "--dpath",
+                              "zout", "--task", "mnistcolor10", "--aname", "vade", "--apath",
+                              "domid/algos/builder_vade.py",  "--epos", "2",
+                              "--bs", "2", "--split", "0.8", "--L", "5", "--debug", "--nocu", "--prior", "Gaus"])
+    experiment_train(args)
+
+def test_VADE():
+    parser = mk_parser_main()
+    args = parser.parse_args(["--te_d", "7", "--tr_d", "0", "1", "2", '--zd_dim', "5", "--d_dim", "3", "--dpath",
+                              "zout", "--task", "mnistcolor10", "--aname", "vade", "--apath",
+                              "domid/algos/builder_vade.py", "--epos", "2",
                               "--bs", "2", "--split", "0.8", "--L", "5", "--debug", "--nocu"])
     experiment_train(args)
 

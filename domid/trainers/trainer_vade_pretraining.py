@@ -126,22 +126,22 @@ class TrainerVADE(TrainerClassif):
 
         # ___________ Tensorboard______________________________
 
-        preds, z_mu, z, _, _, x_pro = self.model.infer_d_v_2(tensor_x)
-        imgs = torch.cat((tensor_x[0:8, :, :, :], x_pro[0:8, :, :, :],), 0)
-        print('mean constructed images', torch.mean((tensor_x[0, :, :, :])),'max reconstructed images', torch.max(x_pro[0, :, :, :]))
-        name = "Decoder images epoch # " + str(epoch)
-        self.writer.add_images(name, imgs, epoch)
-        self.writer.add_scalar("Training acc", acc_d, epoch)
-
-        if not self.pretraining_finished:
-            self.writer.add_scalar("MSE loss", self.epo_loss_tr, epoch)
-        else:
-            self.writer.add_scalar("ELBO loss", self.epo_loss_tr, epoch)
-
-        if epoch == 6:
-            IMG, Z,  domain_labels, machine_labels = p.prediction()
-            self.writer.add_embedding(Z, metadata=None, label_img=IMG, global_step=None, tag='default', metadata_header=None)
-            self.s.storing_z_space(Z, domain_labels, machine_labels)
+        # preds, z_mu, z, _, _, x_pro = self.model.infer_d_v_2(tensor_x)
+        # imgs = torch.cat((tensor_x[:, :, :, :], x_pro[:, :, :, :],), 0)
+        # print('mean constructed images', torch.mean((tensor_x[0, :, :, :])),'max reconstructed images', torch.max(x_pro[0, :, :, :]))
+        # name = "Decoder images epoch # " + str(epoch)
+        # self.writer.add_images(name, imgs, epoch)
+        # self.writer.add_scalar("Training acc", acc_d, epoch)
+        #
+        # if not self.pretraining_finished:
+        #     self.writer.add_scalar("MSE loss", self.epo_loss_tr, epoch)
+        # else:
+        #     self.writer.add_scalar("ELBO loss", self.epo_loss_tr, epoch)
+        #
+        # if epoch == 6:
+        #     IMG, Z,  domain_labels, machine_labels = p.prediction()
+        #     self.writer.add_embedding(Z, metadata=None, label_img=IMG, global_step=None, tag='default', metadata_header=None)
+        #     self.s.storing_z_space(Z, domain_labels, machine_labels)
         #______________________STORIN__________________________________
 
 
