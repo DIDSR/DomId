@@ -4,96 +4,12 @@ import torch.nn as nn
 import torch.nn.functional as F
 from tensorboardX import SummaryWriter
 from domainlab.utils.utils_classif import logit2preds_vpic
-
-
-def linear_block(in_c, out_c):
-    layers = [nn.Linear(in_c, out_c), nn.ReLU(True)]
-    return layers
-
-
-class LinearEncoder(nn.Module):
-    def __init__(self, zd_dim, input_dim=(28, 28), features_dim=[500, 500, 2000]):
-        """
-        VAE Encoder
-        :param zd_dim: dimension of the latent space
-        :param input_dim: dimensions of the input, e.g., (28, 28) for MNIST
-        :param features_dim: list of dimensions of the hidden layers
-        """
-        super(LinearEncoder, self).__init__()
-        self.input_dim = np.prod(input_dim)
-        self.encod = nn.Sequential(
-            *linear_block(self.input_dim, features_dim[0]),
-            *linear_block(features_dim[0], features_dim[1]),
-            *linear_block(features_dim[1], features_dim[2])
-        )
-        self.mu_layer = nn.Linear(features_dim[2], zd_dim)
-        self.log_sigma2_layer = nn.Linear(features_dim[2], zd_dim)
-
-    def forward(self, x):
-        """
-        :param x: input data, assumed to have 3 channels, but only the first one is passed through the network.
-        """
-        x = torch.reshape(x, (x.shape[0], 3, self.input_dim))
-        x = x[:, 0, :]  # use only the first channel
-        z = self.encod(x)
-        mu = self.mu_layer(z)
-        log_sigma2 = self.log_sigma2_layer(z)
-        return mu, log_sigma2
-
-
-class LinearDecoder(nn.Module):
-    def __init__(self, zd_dim, input_dim=(28, 28), features_dim=[500, 500, 2000]):
-        """
-        VAE Decoder
-        :param zd_dim: dimension of the latent space
-        :param input_dim: dimension of the oritinal input / output reconstruction, e.g., (28, 28) for MNIST
-        :param features_dim: list of dimensions of the hidden layers
-        """
-        super(LinearDecoder, self).__init__()
-        self.input_dim = input_dim
-        self.decod = nn.Sequential(
-            *linear_block(zd_dim, features_dim[2]),
-            *linear_block(features_dim[2], features_dim[1]),
-            *linear_block(features_dim[1], features_dim[0]),
-            nn.Linear(features_dim[0], np.prod(input_dim)),
-            nn.Sigmoid()
-        )
-        self.decod_2 = nn.Sequential(
-            *linear_block(zd_dim, features_dim[2]),
-            *linear_block(features_dim[2], features_dim[1]),
-            *linear_block(features_dim[1], np.prod(input_dim))
-        )
-
-        self.mu_layer = nn.Linear(np.prod(input_dim), input_dim[0])#input_dim[0], input_dim[1])#shape of the [ 3, 28, 28] FIXME
-        self.log_sigma2_layer = nn.Linear(np.prod(input_dim),input_dim[0])#input_dim[0], input_dim[1])
-
-
-    def forward(self, z):
-        """
-        :param z: latent space representation
-        :return x_pro: reconstructed data, which is assumed to have 3 channels, but the channels are assumed to be equal to each other.
-        """
-        #print('here1')
-        x_pro = self.decod(z)
-        #print(x_pro.shape)
-
-        x_pro2 = self.decod_2(z)
-
-        mu = self.mu_layer(x_pro2)
-        sigma = self.log_sigma2_layer(x_pro2)
-
-        #FIXME
-        x_pro = torch.reshape(x_pro, (x_pro.shape[0], 1, *self.input_dim))
-        x_pro = torch.cat((x_pro, x_pro, x_pro), 1)
-
-        x_pro2 = torch.reshape(x_pro2, (x_pro2.shape[0], 1, *self.input_dim)) #FIXME reshape instead of concat
-        x_pro2 = torch.cat((x_pro2, x_pro2, x_pro2), 1)
-
-        return x_pro, x_pro2, mu, sigma
+from domid.compos.linear_VAE import LinearDecoder, LinearEncoder
+from domid.compos.cnn_VAE import ConvolutionalEncoder, ConvolutionalDecoder
 
 
 class ModelVaDE(nn.Module):
-    def __init__(self, zd_dim, d_dim, device, L, i_c, i_h, i_w):
+    def __init__(self, zd_dim, d_dim, device, L, i_c, i_h, i_w, args):
         """
         VaDE model (Jiang et al. 2017 "Variational Deep Embedding:
         An Unsupervised and Generative Approach to Clustering") with
@@ -110,15 +26,19 @@ class ModelVaDE(nn.Module):
         self.d_dim = d_dim
         self.device = device
         self.L = L
-
-        self.encoder = LinearEncoder(zd_dim=zd_dim, input_dim=(i_h, i_w)).to(device)
-        self.decoder = LinearDecoder(zd_dim=zd_dim, input_dim=(i_h, i_w)).to(device)
+        self.args = args
+        if self.args.model =='linear':
+            self.encoder = LinearEncoder(zd_dim=zd_dim, input_dim=(i_h, i_w)).to(device)
+            self.decoder = LinearDecoder(zd_dim=zd_dim, input_dim=(i_h, i_w)).to(device)
+        else:
+            self.encoder = ConvolutionalEncoder(zd_dim=zd_dim, input_dim=i_c, i_w=i_w, i_h=i_h).to(device)
+            self.decoder = ConvolutionalDecoder(zd_dim=zd_dim, h_dim=self.encoder.h_dim, input_dim=i_c).to(device)
 
         self.log_pi = nn.Parameter(torch.FloatTensor(self.d_dim,).fill_(1.0/self.d_dim).log(),
                                    requires_grad=True)
         self.mu_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
         self.log_sigma2_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
-        self.wr =  SummaryWriter(logdir="inference_fun/")
+
 
     def _inference(self, x):
         """Auxiliary function for inference
@@ -180,6 +100,15 @@ class ModelVaDE(nn.Module):
         x_pro,*_ = self.decoder(z)
         loss = Loss(x, x_pro)
         return loss
+    def reconstruction_loss(self, x, x_pro, log_sigma):
+        print('i was in reconstruction ')
+        if self.args.prior == "Bern":
+            L_rec = F.binary_cross_entropy(x_pro, x)
+        else:
+            L_rec = torch.mean(torch.sum(torch.sum(torch.sum(log_sigma, 2), 2), 1), 0) \
+                    + torch.mean(
+                torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 / torch.exp(log_sigma) ** 2, 2), 2), 1), 0)
+        return L_rec
 
     def ELBO_Loss(self, x, warmup_beta):
         """ELBO loss function
@@ -197,13 +126,9 @@ class ModelVaDE(nn.Module):
         for l in range(self.L):
 
             z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu # shape [batch_size, self.zd_dim]
+            x_pro, log_sigma = self.decoder(z) #x_pro, mu, sigma
 
-            x_pro, x_pro2, mu, sigma = self.decoder(z) #x_pro, mu, sigma
-            L_rec += F.binary_cross_entropy(
-                x_pro, x
-            )  # TODO: this is the reconstruction loss for a binary-valued x (such as MNIST digits); need to implement another version for a real-valued x.
-
-
+            L_rec += self.reconstruction_loss(x, x_pro, log_sigma)
 
 
         #breakpoint()

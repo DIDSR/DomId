@@ -16,7 +16,11 @@ def mk_parser_main():
                         help='number of domains (or clusters)')
     parser.add_argument('--pre_tr', type=float, default=0.5, help="threshold for pretraining")
     parser.add_argument('--L', type=int, default=3, help="number of MC runs")
-    parser.add_argument('--prior', type = str, default="Bern", help='assumes binary/nonbinary prior distribution for the data' )
+    parser.add_argument('--prior', type = str, default="Bern", help='assumes binary/nonbinary prior'
+                                                                    ' distribution for the data. Input either "Bern" for'
+                                                                    ' Bernoulli distribution, or "Gaus" for Gaussian' )
+    parser.add_argument('--model', type = str, default="linear", help = "'linear' or 'cnn' models" )
+    parser.add_argument('--pretrain', type = str, default = "False", help = "turn on/off pretraining (boolian log)")
     return parser
 
 
