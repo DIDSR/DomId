@@ -30,8 +30,8 @@ class ModelVaDE(nn.Module):
         self.args = args
         self.loss_epoch = 0
         if self.args.model =='linear':
-            self.encoder = LinearEncoder(zd_dim=zd_dim, input_dim=(i_h, i_w)).to(device)
-            self.decoder = LinearDecoder(zd_dim=zd_dim, input_dim=(i_h, i_w)).to(device)
+            self.encoder = LinearEncoder(zd_dim=zd_dim, input_dim=(i_c, i_h, i_w)).to(device)
+            self.decoder = LinearDecoder(zd_dim=zd_dim, input_dim=(i_c, i_h, i_w)).to(device)
         else:
             self.encoder = ConvolutionalEncoder(zd_dim=zd_dim, input_dim=i_c, i_w=i_w, i_h=i_h).to(device)
             self.decoder = ConvolutionalDecoder(zd_dim=zd_dim, h_dim=self.encoder.h_dim, input_dim=i_c).to(device)

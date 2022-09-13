@@ -4,7 +4,7 @@ import torch.nn as nn
 import numpy as np
 
 class LinearEncoder(nn.Module):
-    def __init__(self, zd_dim, input_dim=(28, 28), features_dim=[500, 500, 2000]):
+    def __init__(self, zd_dim, input_dim=(1, 28, 28), features_dim=[500, 500, 2000]):
         """
         VAE Encoder
         :param zd_dim: dimension of the latent space
@@ -25,8 +25,15 @@ class LinearEncoder(nn.Module):
         """
         :param x: input data, assumed to have 3 channels, but only the first one is passed through the network.
         """
-        x = torch.reshape(x, (x.shape[0], 3, self.input_dim))
-        x = x[:, 0, :]  # use only the first channel
+
+        if x.shape[1]==3:
+            x = torch.reshape(x, (x.shape[0], 3*x.shape[2]*x.shape[3]))
+
+
+        else:
+            x = torch.reshape(x, (x.shape[0], 3, x.shape[2]*x.shape[3]))
+            x = x[:, 0, :]  # use only the first channel
+
         z = self.encod(x)
         mu = self.mu_layer(z)
         log_sigma2 = self.log_sigma2_layer(z)
@@ -82,7 +89,7 @@ class LinearEncoder(nn.Module):
 #         return x_pro, x_pro2, mu, sigma
 
 class LinearDecoder(nn.Module):
-    def __init__(self, zd_dim, input_dim=(28, 28), features_dim=[500, 500, 2000]):
+    def __init__(self, zd_dim, input_dim=(1, 28, 28), features_dim=[500, 500, 2000]):
         """
         VAE Decoder
         :param zd_dim: dimension of the latent space
@@ -105,13 +112,14 @@ class LinearDecoder(nn.Module):
         :param z: latent space representation
         :return x_pro: reconstructed data, which is assumed to have 3 channels, but the channels are assumed to be equal to each other.
         """
+
         x_pro = self.decod(z)
 
         log_sigma = self.log_sigma_layer(x_pro)
-        log_sigma = torch.reshape(log_sigma, (log_sigma.shape[0], 1, *self.input_dim))
-        log_sigma = torch.cat((log_sigma, log_sigma, log_sigma), 1)
+        log_sigma = torch.reshape(log_sigma, (log_sigma.shape[0], *self.input_dim))
+        #log_sigma = torch.cat((log_sigma, log_sigma, log_sigma), 1)
 
-        x_pro = torch.reshape(x_pro, (x_pro.shape[0], 1, *self.input_dim))
-        x_pro = torch.cat((x_pro, x_pro, x_pro), 1)
+        x_pro = torch.reshape(x_pro, (x_pro.shape[0], *self.input_dim))
+        #x_pro = torch.cat((x_pro, x_pro, x_pro), 1)
         return x_pro, log_sigma
 
