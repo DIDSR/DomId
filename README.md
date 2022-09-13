@@ -34,3 +34,8 @@ poetry run python main_out.py --te_d 0 1 2 --tr_d 3 4 5 6 7 8 9 --task=mnistcolo
 ```
 poetry run python main_out.py --te_d 0 1 2 3 --tr_d 4 5 6 7 8 9 --task=mnist --debug --epos=10 --aname=vade --zd_dim=200 --d_dim=6 --apath=domid/algos/builder_vade.py
 ```
+
+- Example of applying VaDE model to cluster HER2 dataset (make sure to insert dpath)
+```
+poetry run python main_out.py --te_d 0 --tr_d 1 2 --task=her2 --debug --epos=30 --aname=vade --zd_dim=50 --d_dim=2 --apath=domid/algos/builder_vade.py --L=25 --pre_tr=0.80 --nocu --dpath "HER2/combined_train" --split 0.8 --bs 4 --lr 0.0005
+```

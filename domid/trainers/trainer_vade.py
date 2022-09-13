@@ -93,10 +93,21 @@ class TrainerVADE(TrainerClassif):
 
                 loss = self.model.cal_loss(tensor_x, self.warmup_beta)
 
+
             loss = loss.sum()
             loss.backward()
+
+
+
+            self.writer.add_scalar('Loss', loss, epoch)
+
             self.optimizer.step()
             self.epo_loss_tr += loss.cpu().detach().item()
+
+        preds, z_mu, z, _, _, x_pro = self.model.infer_d_v_2(tensor_x)
+        name = "Output of the decoder" + str(epoch)
+        imgs = torch.cat((tensor_x[0:8, :, :, :], x_pro[0:8, :, :, :],), 0)
+        self.writer.add_images(name, imgs, epoch)
 
         if not self.pretraining_finished:
             gmm = p.GMM_fit()

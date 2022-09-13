@@ -1,4 +1,5 @@
 import numpy as np
+import tensorboardX
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -27,6 +28,7 @@ class ModelVaDE(nn.Module):
         self.device = device
         self.L = L
         self.args = args
+        self.loss_epoch = 0
         if self.args.model =='linear':
             self.encoder = LinearEncoder(zd_dim=zd_dim, input_dim=(i_h, i_w)).to(device)
             self.decoder = LinearDecoder(zd_dim=zd_dim, input_dim=(i_h, i_w)).to(device)
@@ -36,6 +38,7 @@ class ModelVaDE(nn.Module):
 
         self.log_pi = nn.Parameter(torch.FloatTensor(self.d_dim,).fill_(1.0/self.d_dim).log(),
                                    requires_grad=True)
+        self.loss_writter = tensorboardX.SummaryWriter()
         self.mu_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
         self.log_sigma2_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
 
@@ -101,13 +104,20 @@ class ModelVaDE(nn.Module):
         loss = Loss(x, x_pro)
         return loss
     def reconstruction_loss(self, x, x_pro, log_sigma):
-        print('i was in reconstruction ')
+        BS = x_pro.shape[0]
+
+        self.loss_writter.add_scalar('mean sigma (torch mean)', torch.mean(torch.exp(log_sigma))/BS, self.loss_epoch)
+        self.loss_writter.add_scalar('log sigma', torch.mean(torch.sum(torch.sum(torch.sum(log_sigma, 2), 2), 1), 0) / BS,self.loss_epoch)
         if self.args.prior == "Bern":
             L_rec = F.binary_cross_entropy(x_pro, x)
         else:
             L_rec = torch.mean(torch.sum(torch.sum(torch.sum(log_sigma, 2), 2), 1), 0) \
                     + torch.mean(
                 torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 / torch.exp(log_sigma) ** 2, 2), 2), 1), 0)
+
+        self.loss_writter.add_scalar('Reconstruction loss', L_rec, self.loss_epoch)
+        self.loss_writter.add_scalar('Build-in weighted mse loss', 0.5 * F.mse_loss(x_pro, x), self.loss_epoch)
+        self.loss_epoch+=1
         return L_rec
 
     def ELBO_Loss(self, x, warmup_beta):
@@ -174,6 +184,7 @@ class ModelVaDE(nn.Module):
         # --> overall, this is -"third line of eq. (12)" with additional mean over the batch
         #print('loss', Loss)
         #print(Loss)
+
         return Loss
 
     def gaussian_pdfs_log(self, x, mus, log_sigma2s):
