@@ -4,24 +4,22 @@ import numpy as np
 
 
 class ConvolutionalEncoder(nn.Module):
-    def __init__(self, zd_dim, input_dim=3, features_dim=[32, 64, 128], i_w=28, i_h=28):
+    def __init__(self, zd_dim, num_channels=3, num_filters=[32, 64, 128], i_w=28, i_h=28, k = [3, 3, 3]):
         """
         VAE Encoder
         :param zd_dim: dimension of the latent space
         :param input_dim: dimensions of the input, e.g., (28, 28) for MNIST
-        :param features_dim: list of dimensions of the hidden layers
+        :param num_filters: list of dimensions of the hidden layers
         """
         super(ConvolutionalEncoder, self).__init__()
-        self.input_dim = np.prod(input_dim)
         self.encod = nn.Sequential()
-        features_dim = [input_dim] + features_dim
-        k = [3, 3, 3]  # , 3, 3, 3]
-        for i in range(len(features_dim) - 1):
-            self.encod.append(nn.Conv2d(features_dim[i], features_dim[i + 1], kernel_size=k[i], stride=2, padding=1))
-            self.encod.append(nn.BatchNorm2d(features_dim[i + 1]))
+        num_filters = [num_channels] + num_filters
+        for i in range(len(num_filters) - 1):
+            self.encod.append(nn.Conv2d(num_filters[i], num_filters[i + 1], kernel_size=k[i], stride=2, padding=1))
+            self.encod.append(nn.BatchNorm2d(num_filters[i + 1]))
             self.encod.append(nn.LeakyReLU())
         self.encod.append(nn.Flatten())
-        self.h_dim = get_output_shape(self.encod, (3, input_dim, i_w, i_h))[1]
+        self.h_dim = get_output_shape(self.encod, (1, num_channels, i_w, i_h))[1]
         self.mu_layer = nn.Linear(self.h_dim, zd_dim)
         self.log_sigma2_layer = nn.Linear(self.h_dim, zd_dim)
 
@@ -36,28 +34,27 @@ class ConvolutionalEncoder(nn.Module):
 
 
 class ConvolutionalDecoder(nn.Module):
-    def __init__(self, zd_dim, h_dim, input_dim=3, features_dim=[32, 64, 128]):  # , 256, 512, 1024]):
+    def __init__(self, zd_dim, h_dim, num_channels=3, num_filters=[32, 64, 128], k = [3, 4, 4]):  # , 256, 512, 1024]):
         """
         VAE Decoder
         :param zd_dim: dimension of the latent space
         :param input_dim: dimension of the oritinal input / output reconstruction, e.g., (28, 28) for MNIST
-        :param features_dim: list of dimensions of the hidden layers
+        :param num_filters: list of dimensions of the hidden layers
         """
         super(ConvolutionalDecoder, self).__init__()
         # e = ConvolutionalEncoder(zd_dim, input_dim=3, features_dim=features_dim)
         self.linear = nn.Linear(zd_dim, h_dim)
         self.sigmoid_layer = nn.Sigmoid()
-        self.unflat = UnFlatten(features_dim[-1])
+        self.unflat = UnFlatten(num_filters[-1])
         self.decod = nn.Sequential()
-        features_dim = [input_dim] + features_dim
-        features_dim.reverse()
-        k = [3, 4, 4]
-        for i in range(len(features_dim) - 2):
+        num_filters = [num_channels] + num_filters
+        num_filters.reverse()
+        for i in range(len(num_filters) - 2):
             self.decod.append(
-                nn.ConvTranspose2d(features_dim[i], features_dim[i + 1], kernel_size=k[i], stride=2, padding=1))
-            self.decod.append(nn.BatchNorm2d(features_dim[i + 1]))
+                nn.ConvTranspose2d(num_filters[i], num_filters[i + 1], kernel_size=k[i], stride=2, padding=1))
+            self.decod.append(nn.BatchNorm2d(num_filters[i + 1]))
             self.decod.append(nn.LeakyReLU())
-        self.decod.append(nn.ConvTranspose2d(features_dim[-2], input_dim * 2, kernel_size=k[-1], stride=2, padding=1))
+        self.decod.append(nn.ConvTranspose2d(num_filters[-2], num_channels * 2, kernel_size=k[-1], stride=2, padding=1))
 
     def forward(self, z):
         """

@@ -1,7 +1,5 @@
 import datetime
-
 from domainlab.algos.a_algo_builder import NodeAlgoBuilder
-#from domainlab.algos.trainers.train_basic import TrainerBasic
 from domid.trainers.trainer_vade import TrainerVADE
 from domainlab.algos.msels.c_msel import MSelTrLoss
 from domainlab.algos.msels.c_msel_oracle import MSelOracleVisitor
@@ -14,9 +12,8 @@ from domid.models.model_vade import ModelVaDE
 class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
     def init_business(self, exp):
         """
-        return trainer, model, observer
+        Initialize model, observer, trainer. Return trainer.
         """
-        #breakpoint()
         task = exp.task
         args = exp.args
         device = get_device(args.nocu)
@@ -26,12 +23,6 @@ class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
         L = args.L
         pretrain = args.pretrain
         now = str(datetime.datetime.now())
-
-        # if args.prior == "Gaus":
-        #     from domid.models.model_vade_nonbinary import ModelVaDE
-        # else:
-        #     from domid.models.model_vade import ModelVaDE
-
         model = ModelVaDE(zd_dim=zd_dim, d_dim=d_dim, device=device, L = L,  i_c = task.isize.c,
                           i_h = task.isize.h, i_w = task.isize.w, args=args)
         observer = ObVisitorCleanUp(

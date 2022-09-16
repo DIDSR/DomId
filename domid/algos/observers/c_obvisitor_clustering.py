@@ -1,9 +1,7 @@
 import os
 import abc
 import torch
-
 import numpy as np
-
 from domainlab.algos.observers.a_observer import AObVisitor
 from domainlab.utils.utils_class import store_args
 from domainlab.utils.perf import PerfClassif
@@ -11,12 +9,14 @@ from domainlab.compos.exp.exp_utils import ExpModelPersistVisitor
 from domainlab.tasks.task_folder_mk import NodeTaskFolderClassNaMismatch
 
 def pred2file(loader_te, model, device, fa='path_prediction.txt', flag_pred_scalar=False):
+    """
+    stores prediction to txt file
+    """
     model.eval()
     model_local = model.to(device)
     for i, (x_s, y_s, *_, path) in enumerate(loader_te):
         x_s, y_s = x_s.to(device), y_s.to(device)
         pred, *_ = model_local.infer_y_vpicn(x_s)
-        # print(path)
         list_pred_list = pred.tolist()
         list_label_list = y_s.tolist()
         if flag_pred_scalar:
@@ -38,7 +38,6 @@ class ObVisitor(AObVisitor):
         """
         observer trainer
         """
-        #breakpoint()
         self.host_trainer = None
         self.task = self.exp.task
         self.loader_te = self.exp.task.loader_te
@@ -77,17 +76,14 @@ class ObVisitor(AObVisitor):
         """
         After training is done
         """
-        #breakpoint()
-        self.exp.visitor.save(self.host_trainer.model)
-        #model_ld = self.exp.visitor.load()
-        #model_ld = model_ld.to(self.device)
+        super().after_all()
+        model_ld = self.exp.visitor.load()
+        model_ld = model_ld.to(self.device)
+        model_ld.eval()
+        acc_te = PerfClassif.cal_acc(model_ld, self.loader_te, self.device)
 
-        #model_ld = self.host_trainer.model
-        #model_ld.eval()
-        #acc_te = PerfClassif.cal_acc(model_ld, self.loader_te, self.device)
-
-        #print("persisted model acc: ", acc_te)
-        #self.exp.visitor(acc_te)
+        print("persisted model acc: ", acc_te)
+        self.exp.visitor(acc_te)
         if isinstance(self.exp.task, NodeTaskFolderClassNaMismatch):
            pred2file(self.loader_te, self.host_trainer.model, self.device)
 
@@ -95,10 +91,11 @@ class ObVisitor(AObVisitor):
         """
         to be called by a decorator
         """
+
         print('was in clean up in c obvisitor, but did not clean anything')
-        # if not self.keep_model:
-        #     self.exp.visitor.remove("epoch")    # the last epoch
-        #     # epoch exist to still have a model to evaluate if the training stops in between
-        #     self.exp.visitor.remove("final")
-        #     self.exp.visitor.remove()
-        #     self.exp.visitor.remove("oracle")   # oracle means use out-of-domain test accuracy to select the model
+        if not self.keep_model:
+            self.exp.visitor.remove("epoch")    # the last epoch
+            # epoch exist to still have a model to evaluate if the training stops in between
+            self.exp.visitor.remove("final")
+            self.exp.visitor.remove()
+            self.exp.visitor.remove("oracle")   # oracle means use out-of-domain test accuracy to select the model

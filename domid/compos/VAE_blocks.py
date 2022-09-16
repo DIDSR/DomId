@@ -3,7 +3,6 @@ import torch
 import numpy as np
 
 def get_output_shape(model, image_dim):
-    #print('fake img', model(torch.rand(*(image_dim))).data.shape)
     return model(torch.rand(*(image_dim))).data.shape
 
 def cnn_encoding_block(in_c, out_c, kernel_size=(4,4), stride=2, padding=1):
@@ -23,12 +22,12 @@ def cnn_decoding_block(in_c, out_c, kernel_size=(3,3), stride=2, padding=1):
     return layers
 
 class UnFlatten(nn.Module):
-    def __init__(self, filter3):
+    def __init__(self, num_channels):
         super(UnFlatten, self).__init__()
-        self.filter3 = filter3
+        self.num_channels = num_channels
 
     def forward(self, input):
-        filter_size = self.filter3
+        filter_size = self.num_channels
         N = int(np.sqrt(input.shape[1]/filter_size))
         return input.view(input.size(0), filter_size, N, N)
 

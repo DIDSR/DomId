@@ -33,8 +33,8 @@ class ModelVaDE(nn.Module):
             self.encoder = LinearEncoder(zd_dim=zd_dim, input_dim=(i_c, i_h, i_w)).to(device)
             self.decoder = LinearDecoder(zd_dim=zd_dim, input_dim=(i_c, i_h, i_w)).to(device)
         else:
-            self.encoder = ConvolutionalEncoder(zd_dim=zd_dim, input_dim=i_c, i_w=i_w, i_h=i_h).to(device)
-            self.decoder = ConvolutionalDecoder(zd_dim=zd_dim, h_dim=self.encoder.h_dim, input_dim=i_c).to(device)
+            self.encoder = ConvolutionalEncoder(zd_dim=zd_dim, num_channels=i_c, i_w=i_w, i_h=i_h).to(device)
+            self.decoder = ConvolutionalDecoder(zd_dim=zd_dim, h_dim=self.encoder.h_dim, num_channels=i_c).to(device)
 
         self.log_pi = nn.Parameter(torch.FloatTensor(self.d_dim,).fill_(1.0/self.d_dim).log(),
                                    requires_grad=True)
