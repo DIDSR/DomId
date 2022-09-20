@@ -5,18 +5,18 @@ description = "Deep unsupervised clustering algorithms for domain identification
 authors = ["agisga <11449372+agisga@users.noreply.github.com>"]
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.11"
-scipy = "^1.8.0"
+python = "3.6.0"
+scipy = "1.4.1"
 sklearn = "^0.0"
 tensorboard =  "^2.6"
 tensorboardX = "^2.5.1"
-pandas = "^1.4.3"
+pandas = "^0.25.3"
 
 [tool.poetry.dev-dependencies]
 # this package is included as a git submodule
 domainlab = { path = "./DomainLab", develop = true }
-jupyterlab = "^3.4.3"
-pytest = "^7.1.2"
+jupyterlab = "^2.2.8"
+#pytest = "<7.1.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
