@@ -8,7 +8,7 @@ class LinearEncoder(nn.Module):
         """
         VAE Encoder
         :param zd_dim: dimension of the latent space
-        :param input_dim: dimensions of the input, e.g., (28, 28) for MNIST
+        :param input_dim: dimensions of the input, e.g., (3, 28, 28) for MNIST in RGB format
         :param features_dim: list of dimensions of the hidden layers
         """
         super(LinearEncoder, self).__init__()
@@ -23,14 +23,11 @@ class LinearEncoder(nn.Module):
 
     def forward(self, x):
         """
-        :param x: input data, assumed to have 3 channels, but only the first one is passed through the network.
+        :param x: input data, assumed to have 3 channels
         """
 
-        assert x.shape[1]==3
+        assert x.shape[1] == 3
         x = torch.reshape(x, (x.shape[0], 3*x.shape[2]*x.shape[3]))
-
-
-
         z = self.encod(x)
         mu = self.mu_layer(z)
         log_sigma2 = self.log_sigma2_layer(z)
@@ -41,8 +38,8 @@ class LinearDecoder(nn.Module):
         """
         VAE Decoder
         :param zd_dim: dimension of the latent space
-        :param input_dim: dimension of the oritinal input / output reconstruction, e.g., (28, 28) for MNIST
-        :param features_dim: list of dimensions of the hidden layers
+        :param input_dim: dimension of the original input / output reconstruction, e.g., (3, 28, 28) for MNIST in RGB format
+        :param features_dim: list of dimensions of the hidden layers, given in reverse order
         """
         super(LinearDecoder, self).__init__()
         self.input_dim = input_dim
@@ -50,10 +47,10 @@ class LinearDecoder(nn.Module):
             *linear_block(zd_dim, features_dim[2]),
             *linear_block(features_dim[2], features_dim[1]),
             *linear_block(features_dim[1], features_dim[0]),
-            nn.Linear(features_dim[0], np.prod(input_dim)),
-            nn.Sigmoid()
         )
-        self.log_sigma_layer = nn.Linear(np.prod(input_dim), np.prod(input_dim))
+        self.mu_layer = nn.Linear(features_dim[0], np.prod(input_dim))
+        self.log_sigma_layer = nn.Linear(features_dim[0], np.prod(input_dim))
+        self.activation = nn.Sigmoid()
 
     def forward(self, z):
         """
@@ -61,9 +58,10 @@ class LinearDecoder(nn.Module):
         :return x_pro: reconstructed data, which is assumed to have 3 channels, but the channels are assumed to be equal to each other.
         """
 
-        x_pro = self.decod(z)
+        decod_out = self.decod(z)
+        x_pro = self.activation(self.mu_layer(decod_out))
+        log_sigma = self.log_sigma_layer(decod_out)
 
-        log_sigma = self.log_sigma_layer(x_pro)
         log_sigma = torch.reshape(log_sigma, (log_sigma.shape[0], *self.input_dim))
         x_pro = torch.reshape(x_pro, (x_pro.shape[0], *self.input_dim))
         return x_pro, log_sigma

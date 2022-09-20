@@ -8,8 +8,11 @@ class ConvolutionalEncoder(nn.Module):
         """
         VAE Encoder
         :param zd_dim: dimension of the latent space
-        :param input_dim: dimensions of the input, e.g., (28, 28) for MNIST
-        :param num_filters: list of dimensions of the hidden layers
+        :param num_channels: number of channels of the input
+        :param num_filters: list of number of filters for each convolutional layer
+        :param i_w: width of the input
+        :param i_h: height of the input
+        :param k: list of kernel sizes for each convolutional layer
         """
         super(ConvolutionalEncoder, self).__init__()
         self.encod = nn.Sequential()
@@ -25,7 +28,7 @@ class ConvolutionalEncoder(nn.Module):
 
     def forward(self, x):
         """
-        :param x: input data, assumed to have 3 channels, but only the first one is passed through the network.
+        :param x: input data
         """
         z = self.encod(x)
         mu = self.mu_layer(z)
@@ -37,12 +40,14 @@ class ConvolutionalDecoder(nn.Module):
     def __init__(self, zd_dim, h_dim, num_channels=3, num_filters=[32, 64, 128], k = [3, 4, 4]):  # , 256, 512, 1024]):
         """
         VAE Decoder
-        :param zd_dim: dimension of the latent space
-        :param input_dim: dimension of the oritinal input / output reconstruction, e.g., (28, 28) for MNIST
-        :param num_filters: list of dimensions of the hidden layers
+        :param zd_dim: dimension of the latent space, which is the input space of the decoder
+        :param h_dim: dimension of the first hidden layer, which is a linear layer
+        :param num_channels: number of channels of the output; the output will have twice as many channels, e.g., 3 channels for the mean and 3 channels for log-sigma if num_channels is 3
+        :param num_filters: list of number of filters for each convolutional layer, given in *reverse* order
+        :param k: list of kernel sizes for each convolutional layer
         """
         super(ConvolutionalDecoder, self).__init__()
-        # e = ConvolutionalEncoder(zd_dim, input_dim=3, features_dim=features_dim)
+        self.num_channels = num_channels
         self.linear = nn.Linear(zd_dim, h_dim)
         self.sigmoid_layer = nn.Sigmoid()
         self.unflat = UnFlatten(num_filters[-1])
@@ -60,12 +65,13 @@ class ConvolutionalDecoder(nn.Module):
         """
         :param z: latent space representation
         :return x_pro: reconstructed data, which is assumed to have 3 channels, but the channels are assumed to be equal to each other.
+        :return x_log_sigma2: log-variance of the reconstructed data
         """
 
         z = self.linear(z)
         z = self.unflat(z)
         x_decoded = self.decod(z)
-        x_pro = self.sigmoid_layer(x_decoded[:, 0:3, :, :])
-        log_sigma = x_decoded[:, 3:, :, :]
+        x_pro = self.sigmoid_layer(x_decoded[:, 0:self.num_channels, :, :])
+        log_sigma = x_decoded[:, self.num_channels:, :, :]
 
         return x_pro, log_sigma
