@@ -37,7 +37,7 @@ class Pretraining():
                 Z[counter:counter + z.shape[0], :] = z
                 domain_labels[counter:counter + z.shape[0], 0] = torch.argmax(preds, 1)+1
 
-
+                breakpoint()
                 counter += z.shape[0]
                 if counter==num_img-2:
                     breakpoint()

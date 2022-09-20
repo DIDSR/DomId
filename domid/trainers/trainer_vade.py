@@ -125,8 +125,14 @@ class TrainerVADE(TrainerClassif):
         print("pi:")
         print(pi.cpu().detach().numpy())
 
-        # self.s.storing(self.args, epoch, acc_d, self.epo_loss_tr)
+        self.s.storing(self.args, epoch, acc_d, self.epo_loss_tr)
+        if epoch%5==0:
+            _, Z, domain_labels, machine_labels = p.prediction()
+            self.s.storing_z_space(Z, domain_labels, machine_labels)
+
         flag_stop = self.observer.update(epoch)  # notify observer
+
+
 
         return flag_stop
 
@@ -137,3 +143,7 @@ class TrainerVADE(TrainerClassif):
 
         acc = PerfCluster.cal_acc(self.model, self.loader_tr, self.device)  # FIXME change tr to te
         print("before training, model accuracy:", acc)
+
+    def post_tr(self):
+        print('training is done')
+        self.observer.after_all()

@@ -15,20 +15,12 @@ class Storing():
     def storing(self, args, epoch, accuracy, loss):
 
 
-        # Create the pandas DataFrame with column name is provided explicitly
-        # constant lr for different L: 0.0001
-        # constant L for different lr: L =5
-        # Constant L and lr for different zd_dim
-
         self.loss.append(loss)
         self.acc.append(accuracy)
 
         if not os.path.exists("./notebooks/"+self.experiment_name):
             print('______Created directory to save result_________')
             os.mkdir("./notebooks/"+self.experiment_name)
-
-
-
 
         if epoch%5==0:
             with open("./notebooks/"+self.experiment_name+"/training_loss.txt", 'w') as output:
@@ -38,31 +30,7 @@ class Storing():
             with open("./notebooks/"+self.experiment_name+"/accuracy.txt", 'w') as output:
                 for row in self.acc:
                     output.write(str(row) + '\n')
-        # if epoch == 1:
-        #
-        #
-        #     columns = ['L5_lr0.0005_z300']
-        #     data = np.zeros((args.epos, len(columns)))
-        #
-        #     acc_df = pd.DataFrame(data, columns = columns)
-        #     experiment_name = 'L' + str(args.L) + '_lr' + str(args.lr) + '_z' + str(args.zd_dim)
-        #     acc_df.iloc[epoch].at[experiment_name] = accuracy
-        #     acc_df.to_csv('./notebooks/results.csv')
-        #
-        #     loss_df = pd.DataFrame(data, columns=columns)
-        #     experiment_name = 'L' + str(args.L) + '_lr' + str(args.lr) + '_z' + str(args.zd_dim)
-        #     loss_df.iloc[epoch].at[experiment_name] = loss
-        #     loss_df.to_csv('./notebooks/loss.csv')
-        #
-        # else:
-        #
-        #     acc_df = pd.read_csv('./notebooks/results.csv')
-        #     loss_df = pd.read_csv('./notebooks/loss.csv')
-        #     experiment_name = 'L' + str(args.L) + '_lr' + str(args.lr) + '_z' + str(args.zd_dim)
-        #
-        #     acc_df.iloc[epoch].at[experiment_name] = accuracy
-        #     loss_df.iloc[epoch].at[experiment_name] = loss
-        #     loss_df.to_csv('./notebooks/loss.csv')
+
 
     def storing_z_space(self, Z, domain_labels, machine_labels):
 
