@@ -44,8 +44,9 @@ class Pretraining():
                 tensor_x = tensor_x.to(self.device)
                 preds, z_mu, z, *_ = self.model.infer_d_v_2(tensor_x)
                 z = z.detach().cpu().numpy()  # [batch_size, zd_dim]
-                IMGS[counter:counter+z.shape[0], :, :, :] = tensor_x
+                IMGS[counter:counter+z.shape[0], :, :, :] = tensor_x.cpu().detach().numpy()
                 Z[counter:counter + z.shape[0], :] = z
+                preds = preds.detach().cpu()
                 domain_labels[counter:counter + z.shape[0], 0] = torch.argmax(preds, 1)+1
 
                 # FIXME: do we still need the breakpoints below?
