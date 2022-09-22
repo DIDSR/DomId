@@ -14,7 +14,7 @@ git checkout Mariia-DomID
 3. Initialize the DomainLab submodule:
     - Enter the DomainLab subfolder: `cd DomainLab`
     - `git submodule init`
-    - `git submodule update --remote`
+    - `git submodule update` to fetch all the data from DomainLab and check out the appropriate commit listed in DomId configuration. Alternatively, to check out the latest commit of DomainLab use `git submodule update --remote`.
     - Go back to the DomId directory: `cd ..`
 4. Install `DomId` and `DomainLab` packages with:
 ```

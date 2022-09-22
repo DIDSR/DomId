@@ -58,25 +58,19 @@ class LinearDecoder(nn.Module):
         :param z: latent space representation
         :return x_pro: reconstructed data, which is assumed to have 3 channels, but the channels are assumed to be equal to each other.
         """
-
-
         x_decoded = self.decod(z)
 
-
         if self.prior == 'Bern':
-        # if Bernoulli distribution sigmoid activation to mu is applied
+            # if Bernoulli distribution sigmoid activation to mu is applied
             x_pro = self.mu_layer(x_decoded)
             x_pro = self.activation(x_pro)
         else:
             x_pro = self.mu_layer(x_decoded)
 
-
-
         log_sigma = self.log_sigma_layer(x_decoded)
 
         x_pro = torch.reshape(x_pro, (x_pro.shape[0], *self.input_dim))
         log_sigma = torch.reshape(log_sigma, (log_sigma.shape[0], *self.input_dim))
-
 
         return x_pro, log_sigma
 
