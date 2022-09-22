@@ -34,13 +34,14 @@ class LinearEncoder(nn.Module):
         return mu, log_sigma2
 
 class LinearDecoder(nn.Module):
-    def __init__(self, zd_dim, input_dim=(3, 28, 28), features_dim=[500, 500, 2000]):
+    def __init__(self, prior, zd_dim, input_dim=(3, 28, 28), features_dim=[500, 500, 2000]):
         """
         VAE Decoder
         :param zd_dim: dimension of the latent space
         :param input_dim: dimension of the original input / output reconstruction, e.g., (3, 28, 28) for MNIST in RGB format
         :param features_dim: list of dimensions of the hidden layers, given in reverse order
         """
+        self.prior = prior
         super(LinearDecoder, self).__init__()
         self.input_dim = input_dim
         self.decod = nn.Sequential(
@@ -58,11 +59,14 @@ class LinearDecoder(nn.Module):
         :return x_pro: reconstructed data, which is assumed to have 3 channels, but the channels are assumed to be equal to each other.
         """
 
-        decod_out = self.decod(z)
-        x_pro = self.activation(self.mu_layer(decod_out))
-        log_sigma = self.log_sigma_layer(decod_out)
+        x_decoded = self.decod(z)
+        x_pro = self.activation(self.mu_layer(x_decoded))
+        log_sigma = self.log_sigma_layer(x_decoded)
 
         log_sigma = torch.reshape(log_sigma, (log_sigma.shape[0], *self.input_dim))
-        x_pro = torch.reshape(x_pro, (x_pro.shape[0], *self.input_dim))
+        if self.prior=='Bern':
+            x_pro = torch.reshape(x_pro, (x_pro.shape[0], *self.input_dim))
+        else:
+            x_pro = x_decoded[:, 0:self.num_channels, :, :]
         return x_pro, log_sigma
 

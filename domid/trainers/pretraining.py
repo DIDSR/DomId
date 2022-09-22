@@ -29,6 +29,15 @@ class Pretraining():
         return loss
 
     def prediction(self):
+        """
+        This function is used for ease of storing the results. From training
+        dataloader u=images, the prediction using currect state of the model
+        are made.
+        :return: tensor of dateset images
+        :return: Z space of the current model
+        :return: domain labels corresponding to Z space
+        :return: machine (class labels) labels corresponding to Z space
+        """
         num_img = len(self.loader_tr.dataset)
         Z = np.zeros((num_img, self.model.zd_dim))
         IMGS = np.zeros((num_img, 3, self.i_h, self.i_w))
@@ -49,11 +58,7 @@ class Pretraining():
                 preds = preds.detach().cpu()
                 domain_labels[counter:counter + z.shape[0], 0] = torch.argmax(preds, 1)+1
 
-                # FIXME: do we still need the breakpoints below?
-                breakpoint()
-                counter += z.shape[0]
-                if counter == num_img-2:
-                    breakpoint()
+
         return IMGS, Z, domain_labels, machine_labels
 
     def GMM_fit(self):

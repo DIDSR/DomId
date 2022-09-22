@@ -6,10 +6,10 @@ from torch.optim import lr_scheduler
 import numpy as np
 import torchvision
 from torchvision import datasets, models, transforms
+from domid.arg_parser import parse_cmd_args
 
-
-def run():
-    data_dir = './HER2/combined_train/'
+def run(path):
+    data_dir = path
     calculate = True
 
     if calculate:
@@ -30,8 +30,8 @@ def run():
         print(STD)
 
 
-def run2():
-    data_dir = './HER2/combined_train/'
+def run2(path):
+    data_dir = path
     data_transforms = transforms.Compose([transforms.ToTensor()])
     image_datasets = datasets.ImageFolder(os.path.join(data_dir), data_transforms)
     dataloader = torch.utils.data.DataLoader(image_datasets, batch_size=1, shuffle=True, num_workers=8)
@@ -39,8 +39,8 @@ def run2():
     channels_sum = torch.zeros(3)
     channels_squared_sum = torch.zeros(3)
     num_batches = 0
-    for inputs, targets in dataloader:
-        imgs = inputs
+    for imgs, targets in dataloader:
+
 
         channels_sum += imgs.mean((0, 2, 3))
         channels_squared_sum += (imgs ** 2).mean((0, 2, 3))
@@ -54,4 +54,6 @@ def run2():
 
 
 if __name__ == '__main__':
-    run2()
+    args = parse_cmd_args()
+    args.dpath
+    run2(args.dpath)

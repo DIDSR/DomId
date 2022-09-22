@@ -58,7 +58,7 @@ class TrainerVADE(TrainerClassif):
         p = Pretraining(self.model, self.device, self.loader_tr, self.i_h, self.i_w)
         acc_d, _ = p.epoch_val_acc()
 
-        if self.warmup_beta <= 0.9 and self.pretraining_finished:
+        if self.warmup_beta < 0.9 and self.pretraining_finished:
             self.warmup_beta = self.warmup_beta + 0.02
 
         for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
@@ -83,9 +83,6 @@ class TrainerVADE(TrainerClassif):
                         betas=(0.5, 0.9),
                         weight_decay=0.0001,
                     )
-                    # self.scheduler = torch.optim.lr_scheduler.StepLR(self.optimizer, step_size=15, gamma=0.95)
-                    # FIXME: the following line has no effect on anything; self.LR is not used after this;
-                    self.LR = self.LR / 500
 
                     print("".join(["#"] * 60))
                     print("Epoch {}: Finished pretraining and starting to use ELBO loss.".format(epoch))

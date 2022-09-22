@@ -51,17 +51,18 @@ class NodeTaskHER2(NodeTaskDict):
         # set will be created. Otherwise, this argument is
         # the split ratio
         ind_global = self.get_list_domains().index(na_domain)
-        # TODO: add a comment about where these numbers come from
-        mean = [0.6399, 0.5951, 0.6179]
-        std = [0.1800, 0.1980, 0.2070] #[0.1582, 0.1728, 0.1728]
-        #mean = [0.4, 0.4, 0.4]
-        #mean = [0.5, 0.5, 0.5]
-        # TODO: confirm mean 0 and std 1 after the normalization
+        # Calculated std amd mean values are computed using the code
+        # in utils/mean_std.py. Those are the average mean and std values
+        # for HER2 training images by channel.
+        # mean = [0.6399, 0.5951, 0.6179]
+        # std = [0.1800, 0.1980, 0.2070]
+
+
         trans = transforms.Compose([transforms.Resize((100, 100)),
                                     transforms.RandomHorizontalFlip(),
                                     transforms.RandomVerticalFlip(),
-                                    transforms.ToTensor()]) #, transforms.Normalize(mean, std)]) transforms.RandomRotation(45),
-        # TODO: do or don't do normalization?
+                                    transforms.ToTensor()])
+
         dset = DsetHER2(ind_global, args.dpath, transform=trans)
         train_set = dset
         val_set = dset
