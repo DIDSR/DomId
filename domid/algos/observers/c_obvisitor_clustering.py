@@ -2,11 +2,13 @@ import os
 import abc
 import torch
 import numpy as np
+import warnings
 from domainlab.algos.observers.a_observer import AObVisitor
 from domainlab.utils.utils_class import store_args
 from domainlab.utils.perf import PerfClassif
 from domainlab.compos.exp.exp_utils import ExpModelPersistVisitor
 from domainlab.tasks.task_folder_mk import NodeTaskFolderClassNaMismatch
+
 
 def pred2file(loader_te, model, device, fa='path_prediction.txt', flag_pred_scalar=False):
     """
@@ -77,13 +79,16 @@ class ObVisitor(AObVisitor):
         After training is done
         """
         super().after_all()
-        model_ld = self.exp.visitor.load()
-        model_ld = model_ld.to(self.device)
-        model_ld.eval()
-        acc_te = PerfClassif.cal_acc(model_ld, self.loader_te, self.device)
+        try:
+            model_ld = self.exp.visitor.load()
+            model_ld = model_ld.to(self.device)
+            model_ld.eval()
+            acc_te = PerfClassif.cal_acc(model_ld, self.loader_te, self.device)
+            print("persisted model acc: ", acc_te)
+            self.exp.visitor(acc_te)
+        except Exception as e:
+            warnings.warn("failed to load pesistent model")
 
-        print("persisted model acc: ", acc_te)
-        self.exp.visitor(acc_te)
         if isinstance(self.exp.task, NodeTaskFolderClassNaMismatch):
            pred2file(self.loader_te, self.host_trainer.model, self.device)
 
