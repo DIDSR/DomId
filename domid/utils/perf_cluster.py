@@ -83,10 +83,9 @@ FIXME: clean up the following discussion...
 
 import numpy as np
 import torch
+from domainlab.utils.perf import PerfClassif
 from scipy.optimize import linear_sum_assignment
 from sklearn.metrics import confusion_matrix
-
-from libdg.utils.perf import PerfClassif
 
 
 class PerfCluster(PerfClassif):
@@ -107,20 +106,20 @@ class PerfCluster(PerfClassif):
         model_local = model.to(device)
         if max_batches is None:
             max_batches = len(loader_te)
-            fun_acc = cls.gen_fun_acc(model_local.dim_y)
         list_vec_preds, list_vec_labels = [], []
-        cost = np.zeros((model_local.zd_dim, model_local.zd_dim), dtype="int")
+        cost = np.zeros((model_local.d_dim, model_local.d_dim), dtype="int")
         with torch.no_grad():
             for i, (x_s, _, d_s, *_) in enumerate(loader_te):
                 x_s, d_s = x_s.to(device), d_s.to(device)
                 pred = model_local.infer_d_v(x_s)
                 # asserts added mainly for debugging
                 assert pred.shape == d_s.shape
-                assert pred.shape[1] == model_local.zd_dim
+                assert pred.shape[1] == model_local.d_dim
 
                 cluster_pred_scalar = pred.cpu().numpy().argmax(axis=1)
                 cluster_true_scalar = d_s.cpu().numpy().argmax(axis=1)
-                cost = cost - confusion_matrix(cluster_pred_scalar, cluster_true_scalar)
+                cost = cost - confusion_matrix(cluster_pred_scalar, cluster_true_scalar,
+                                               labels=list(range(model_local.d_dim)))
 
                 list_vec_preds.append(pred)
                 list_vec_labels.append(d_s)

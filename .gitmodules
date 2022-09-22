@@ -1,4 +1,4 @@
-[submodule "libDG"]
-	path = libDG
-	url = https://github.com/smilesun/libDG.git
+[submodule "DomainLab"]
+	path = DomainLab
+	url = https://github.com/smilesun/DomainLab.git
 	branch = python-3-10

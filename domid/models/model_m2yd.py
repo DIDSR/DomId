@@ -1,14 +1,13 @@
 import torch
-import torch.nn as nn
 import torch.distributions as dist
+import torch.nn as nn
 import torch.nn.functional as F
-
-from libdg.utils.utils_class import store_args
-from libdg.compos.vae.compos.decoder_concat_vec_reshape_conv_gated_conv \
-    import DecoderConcatLatentFCReshapeConvGatedConv
-from libdg.compos.vae.compos.encoder import LSEncoderDense
-from libdg.models.a_model_classif import AModelClassif
-from libdg.utils.utils_classif import logit2preds_vpic, get_label_na
+from domainlab.compos.vae.compos.decoder_concat_vec_reshape_conv_gated_conv import \
+    DecoderConcatLatentFCReshapeConvGatedConv
+from domainlab.compos.vae.compos.encoder import LSEncoderDense
+from domainlab.models.a_model_classif import AModelClassif
+from domainlab.utils.utils_class import store_args
+from domainlab.utils.utils_classif import get_label_na, logit2preds_vpic
 
 from domid.compos.nn_net import Net_MNIST
 
@@ -52,11 +51,13 @@ class ModelXY2D(AModelClassif):
         :param aux_y:
         """
         super().__init__(list_str_y, list_str_d)
+        self.d_dim = zd_dim  # number of domains
         self.infer_y_from_x = Net_MNIST(y_dim, self.i_h)
         self.feat_x2concat_y = Net_MNIST(self.dim_feat_x, self.i_h)
         # FIXME: shall we share parameters between infer_y_from_x and self.feat_x2concat_y?
         self.infer_domain = LSEncoderDense(z_dim=self.zd_dim,
                                            dim_input=self.dim_feat_x+self.y_dim)
+        self.gamma_y = gamma_y
         # LN: location scale encoder
         self.decoder = DecoderConcatLatentFCReshapeConvGatedConv(
             z_dim=zd_dim+y_dim,

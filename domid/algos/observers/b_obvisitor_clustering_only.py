@@ -1,9 +1,9 @@
-from domainlab.algos.observers.b_obvisitor import ObVisitor
-
+from domid.algos.observers.c_obvisitor_clustering import ObVisitor
+#from domainlab.algos.observers.b_obvisitor import ObVisitor
 from domid.utils.perf_cluster import PerfCluster
 
 
-class ObVisitorClustering(ObVisitor):
+class ObVisitorClusteringOnly(ObVisitor):
     """
     Observer + Visitor pattern for clustering algorithms
     """
@@ -20,7 +20,9 @@ class ObVisitorClustering(ObVisitor):
             self.acc_val = acc_val
             print("clustering validation acc: ", acc_val)
             print(conf_mat_val)
-        return super().update(epoch)
+
+        return self.model_sel.if_stop()
+
 
     def after_all(self):
         """
