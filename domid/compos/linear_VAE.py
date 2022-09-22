@@ -68,7 +68,6 @@ class LinearDecoder(nn.Module):
             x_pro = self.mu_layer(x_decoded)
             x_pro = self.activation(x_pro)
         else:
-
             x_pro = self.mu_layer(x_decoded)
 
 
