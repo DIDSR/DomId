@@ -83,10 +83,9 @@ FIXME: clean up the following discussion...
 
 import numpy as np
 import torch
+from domainlab.utils.perf import PerfClassif
 from scipy.optimize import linear_sum_assignment
 from sklearn.metrics import confusion_matrix
-
-from domainlab.utils.perf import PerfClassif
 
 
 class PerfCluster(PerfClassif):

@@ -1,7 +1,8 @@
 import numpy as np
-from sklearn.mixture import GaussianMixture
 import torch
 import torch.optim as optim
+from sklearn.mixture import GaussianMixture
+
 from domid.utils.perf_cluster import PerfCluster
 
 

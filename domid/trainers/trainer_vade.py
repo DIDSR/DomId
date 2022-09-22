@@ -1,14 +1,14 @@
 import itertools
+
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
 import torch.optim as optim
-
 from domainlab.algos.trainers.a_trainer import TrainerClassif
 
-from domid.utils.perf_cluster import PerfCluster
 from domid.trainers.pretraining import Pretraining
 from domid.trainers.storing_plotting import Storing
+from domid.utils.perf_cluster import PerfCluster
 
 
 class TrainerVADE(TrainerClassif):

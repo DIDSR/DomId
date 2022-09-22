@@ -1,7 +1,9 @@
-import torch
-from domid.compos.VAE_blocks import linear_block
-import torch.nn as nn
 import numpy as np
+import torch
+import torch.nn as nn
+
+from domid.compos.VAE_blocks import linear_block
+
 
 class LinearEncoder(nn.Module):
     def __init__(self, zd_dim, input_dim=(3, 28, 28), features_dim=[500, 500, 2000]):

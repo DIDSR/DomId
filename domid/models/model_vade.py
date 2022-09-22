@@ -3,10 +3,11 @@ import tensorboardX
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from tensorboardX import SummaryWriter
 from domainlab.utils.utils_classif import logit2preds_vpic
+from tensorboardX import SummaryWriter
+
+from domid.compos.cnn_VAE import ConvolutionalDecoder, ConvolutionalEncoder
 from domid.compos.linear_VAE import LinearDecoder, LinearEncoder
-from domid.compos.cnn_VAE import ConvolutionalEncoder, ConvolutionalDecoder
 
 
 class ModelVaDE(nn.Module):

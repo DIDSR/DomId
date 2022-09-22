@@ -1,5 +1,6 @@
 import torch
 import torch.utils.data
+
 # from domainlab.algos.observers.b_obvisitor import ObVisitor
 # from domainlab.models.model_diva import ModelDIVA
 # from domainlab.utils.utils_classif import mk_dummy_label_list_str
@@ -10,14 +11,14 @@ import torch.utils.data
 # from domainlab.algos.trainers.train_visitor import TrainerVisitor
 # from domainlab.compos.exp.exp_main import Exp
 from domid.arg_parser import mk_parser_main
+from domid.models.model_m2yd import ModelXY2D
+from domid.models.model_vade import ModelVaDE
 # from domainlab.utils.test_img import mk_rand_xyd
 # from domainlab.utils.utils_classif import mk_dummy_label_list_str
 #
 # # from domid.algos.builder_vade_cnn import NodeAlgoBuilderVaDE
 # # from domid.models.model_vade_cnn import ConvolutionalEncoder, ConvolutionalDecoder, ConvolutionalDecoder, ModelVaDECNN
 from domid.tasks.task_mnist import NodeTaskMNIST
-from domid.models.model_vade import ModelVaDE
-from domid.models.model_m2yd import ModelXY2D
 
 
 def model_compiler(args, model):

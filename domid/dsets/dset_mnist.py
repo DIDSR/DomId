@@ -5,14 +5,12 @@ MNIST
 import os
 
 import numpy as np
-from PIL import Image
-
 import torch
-from torch.utils.data import Dataset
-from torchvision import datasets, transforms
-
 from domainlab.dsets.utils_data import mk_fun_label2onehot
 from domainlab.utils.utils_class import store_args
+from PIL import Image
+from torch.utils.data import Dataset
+from torchvision import datasets, transforms
 
 
 class DsetMNIST(Dataset):

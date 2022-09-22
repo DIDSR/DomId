@@ -2,31 +2,29 @@ import os
 
 import torch
 import torch.utils.data
+from domainlab.algos.msels.c_msel import MSelTrLoss
+from domainlab.algos.msels.c_msel_oracle import MSelOracleVisitor
 from domainlab.algos.observers.b_obvisitor import ObVisitor
-from domainlab.models.model_diva import ModelDIVA
-from domainlab.utils.utils_classif import mk_dummy_label_list_str
-
-# from domainlab.compos.vae.utils_request_chain_builder import VAEChainNodeGetter
-# from domainlab.compos.pcr.request import RequestVAEBuilderCHW
-from domainlab.dsets.dset_poly_domains_mnist_color_default import DsetMNISTColorMix
+from domainlab.algos.observers.c_obvisitor_cleanup import ObVisitorCleanUp
 from domainlab.algos.trainers.train_visitor import TrainerVisitor
 from domainlab.compos.exp.exp_main import Exp
-
+# from domainlab.compos.vae.utils_request_chain_builder import VAEChainNodeGetter
+# from domainlab.compos.pcr.request import RequestVAEBuilderCHW
+from domainlab.dsets.dset_poly_domains_mnist_color_default import \
+    DsetMNISTColorMix
+from domainlab.models.model_diva import ModelDIVA
 from domainlab.utils.test_img import mk_rand_xyd
 from domainlab.utils.utils_classif import mk_dummy_label_list_str
 
+from domid.algos.observers.b_obvisitor_clustering_only import \
+    ObVisitorClusteringOnly
+from domid.arg_parser import mk_parser_main
+from domid.compos.exp.exp_main import Exp
+from domid.models.model_vade import ModelVaDE
 # from domid.algos.builder_vade_cnn import NodeAlgoBuilderVaDE
 # from domid.models.model_vade_cnn import ConvolutionalEncoder, ConvolutionalDecoder, ConvolutionalDecoder, ModelVaDECNN
 from domid.tasks.task_mnist import NodeTaskMNIST
-from domid.models.model_vade import ModelVaDE
 from domid.trainers.trainer_vade import TrainerVADE
-from domid.algos.observers.b_obvisitor_clustering_only import ObVisitorClusteringOnly
-from domainlab.algos.msels.c_msel import MSelTrLoss
-from domainlab.algos.msels.c_msel_oracle import MSelOracleVisitor
-from domainlab.algos.observers.c_obvisitor_cleanup import ObVisitorCleanUp
-from domid.compos.exp.exp_main import Exp
-from domid.arg_parser import mk_parser_main
-import os
 
 
 def experiment_train(args):
