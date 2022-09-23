@@ -1,6 +1,9 @@
 import sys
 import torch
 
+sys.path.insert(0,'/home/mariia.sidulova/DomId')
+sys.path.insert(0, '/home/mariia.sidulova/DomId/DomainLab')
+print('I changed the path') 
 from domainlab.compos.exp.exp_cuda_seed import set_seed  # reproducibility
 
 from domid.compos.exp.exp_main import Exp
