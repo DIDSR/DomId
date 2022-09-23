@@ -1,26 +1,26 @@
 import itertools
+
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
 import torch.optim as optim
-
 from domainlab.algos.trainers.a_trainer import TrainerClassif
 
-from domid.utils.perf_cluster import PerfCluster
 from domid.trainers.pretraining import Pretraining
 from domid.trainers.storing_plotting import Storing
+from domid.utils.perf_cluster import PerfCluster
 
 
 class TrainerVADE(TrainerClassif):
     def __init__(self, model, task, observer, device, writer, pretrain=True, aconf=None):
         """FIXME: add description of the parameters
-        :param model:
-        :param task:
-        :param observer:
-        :param device:
-        :param writer:
-        :param pretrain:
-        :param aconf:
+        :param model: model to train
+        :param task: task to train on
+        :param observer: observer to notify
+        :param device: device to use
+        :param writer: tensorboard writer
+        :param pretrain: whether to pretrain the model with MSE loss
+        :param aconf: configuration parameters, including learning rate and pretrain threshold
         """
         super().__init__(model, task, observer, device, aconf)
 
@@ -54,12 +54,11 @@ class TrainerVADE(TrainerClassif):
         print("Epoch {}. ELBO loss".format(epoch)) if self.pretraining_finished else print("Epoch {}. MSE loss".format(epoch))
         self.model.train()
         self.epo_loss_tr = 0
-        mse_n = 5  # FIXME: maybe have a command line argument to specify mse_n and elbo_n
 
         p = Pretraining(self.model, self.device, self.loader_tr, self.i_h, self.i_w)
         acc_d, _ = p.epoch_val_acc()
 
-        if self.warmup_beta <= 0.9 and self.pretraining_finished:
+        if self.warmup_beta < 0.9 and self.pretraining_finished:
             self.warmup_beta = self.warmup_beta + 0.02
 
         for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
@@ -73,7 +72,7 @@ class TrainerVADE(TrainerClassif):
             self.optimizer.zero_grad()
 
             if acc_d < self.thres and not self.pretraining_finished:
-                loss = p.pretrain_loss(tensor_x, mse_n, epoch)
+                loss = p.pretrain_loss(tensor_x)
             else:
                 if not self.pretraining_finished:
                     self.pretraining_finished = True
@@ -84,8 +83,6 @@ class TrainerVADE(TrainerClassif):
                         betas=(0.5, 0.9),
                         weight_decay=0.0001,
                     )
-                    # self.scheduler = torch.optim.lr_scheduler.StepLR(self.optimizer, step_size=15, gamma=0.95)
-                    self.LR = self.LR / 500
 
                     print("".join(["#"] * 60))
                     print("Epoch {}: Finished pretraining and starting to use ELBO loss.".format(epoch))
@@ -93,16 +90,11 @@ class TrainerVADE(TrainerClassif):
 
                 loss = self.model.cal_loss(tensor_x, self.warmup_beta)
 
-
             loss = loss.sum()
             loss.backward()
-
-
-
-            self.writer.add_scalar('Loss', loss, epoch)
-
             self.optimizer.step()
             self.epo_loss_tr += loss.cpu().detach().item()
+            self.writer.add_scalar('Loss', loss, epoch)
 
         preds, z_mu, z, _, _, x_pro = self.model.infer_d_v_2(tensor_x)
         name = "Output of the decoder" + str(epoch)
@@ -126,21 +118,17 @@ class TrainerVADE(TrainerClassif):
         print(pi.cpu().detach().numpy())
 
         self.s.storing(self.args, epoch, acc_d, self.epo_loss_tr)
-        if epoch%5==0:
+        if epoch % 5 == 0:
             _, Z, domain_labels, machine_labels = p.prediction()
             self.s.storing_z_space(Z, domain_labels, machine_labels)
 
         flag_stop = self.observer.update(epoch)  # notify observer
-
-
-
         return flag_stop
 
     def before_tr(self):
         """
         check the performance of randomly initialized weight
         """
-
         acc = PerfCluster.cal_acc(self.model, self.loader_tr, self.device)  # FIXME change tr to te
         print("before training, model accuracy:", acc)
 

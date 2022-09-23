@@ -1,6 +1,7 @@
-import torch.nn as nn
-from domid.compos.VAE_blocks import get_output_shape, UnFlatten
 import numpy as np
+import torch.nn as nn
+
+from domid.compos.VAE_blocks import UnFlatten, get_output_shape
 
 
 class ConvolutionalEncoder(nn.Module):
@@ -37,7 +38,7 @@ class ConvolutionalEncoder(nn.Module):
 
 
 class ConvolutionalDecoder(nn.Module):
-    def __init__(self, zd_dim, h_dim, num_channels=3, num_filters=[32, 64, 128], k = [3, 4, 4]):  # , 256, 512, 1024]):
+    def __init__(self, prior, zd_dim, h_dim, num_channels=3, num_filters=[32, 64, 128], k = [3, 4, 4]):  # , 256, 512, 1024]):
         """
         VAE Decoder
         :param zd_dim: dimension of the latent space, which is the input space of the decoder
@@ -47,6 +48,7 @@ class ConvolutionalDecoder(nn.Module):
         :param k: list of kernel sizes for each convolutional layer
         """
         super(ConvolutionalDecoder, self).__init__()
+        self.prior = prior
         self.num_channels = num_channels
         self.linear = nn.Linear(zd_dim, h_dim)
         self.sigmoid_layer = nn.Sigmoid()
@@ -71,7 +73,12 @@ class ConvolutionalDecoder(nn.Module):
         z = self.linear(z)
         z = self.unflat(z)
         x_decoded = self.decod(z)
-        x_pro = self.sigmoid_layer(x_decoded[:, 0:self.num_channels, :, :])
+
+        if self.prior =='Bern':
+            x_pro = self.sigmoid_layer(x_decoded[:, 0:self.num_channels, :, :])
+        else:
+            x_pro = x_decoded[:, 0:self.num_channels, :, :]
+
         log_sigma = x_decoded[:, self.num_channels:, :, :]
 
         return x_pro, log_sigma

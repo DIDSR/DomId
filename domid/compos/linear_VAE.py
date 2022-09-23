@@ -1,7 +1,9 @@
-import torch
-from domid.compos.VAE_blocks import linear_block
-import torch.nn as nn
 import numpy as np
+import torch
+import torch.nn as nn
+
+from domid.compos.VAE_blocks import linear_block
+
 
 class LinearEncoder(nn.Module):
     def __init__(self, zd_dim, input_dim=(3, 28, 28), features_dim=[500, 500, 2000]):
@@ -34,13 +36,14 @@ class LinearEncoder(nn.Module):
         return mu, log_sigma2
 
 class LinearDecoder(nn.Module):
-    def __init__(self, zd_dim, input_dim=(3, 28, 28), features_dim=[500, 500, 2000]):
+    def __init__(self, prior, zd_dim, input_dim=(3, 28, 28), features_dim=[500, 500, 2000]):
         """
         VAE Decoder
         :param zd_dim: dimension of the latent space
         :param input_dim: dimension of the original input / output reconstruction, e.g., (3, 28, 28) for MNIST in RGB format
         :param features_dim: list of dimensions of the hidden layers, given in reverse order
         """
+        self.prior = prior
         super(LinearDecoder, self).__init__()
         self.input_dim = input_dim
         self.decod = nn.Sequential(
@@ -57,12 +60,19 @@ class LinearDecoder(nn.Module):
         :param z: latent space representation
         :return x_pro: reconstructed data, which is assumed to have 3 channels, but the channels are assumed to be equal to each other.
         """
+        x_decoded = self.decod(z)
 
-        decod_out = self.decod(z)
-        x_pro = self.activation(self.mu_layer(decod_out))
-        log_sigma = self.log_sigma_layer(decod_out)
+        if self.prior == 'Bern':
+            # if Bernoulli distribution sigmoid activation to mu is applied
+            x_pro = self.mu_layer(x_decoded)
+            x_pro = self.activation(x_pro)
+        else:
+            x_pro = self.mu_layer(x_decoded)
 
-        log_sigma = torch.reshape(log_sigma, (log_sigma.shape[0], *self.input_dim))
+        log_sigma = self.log_sigma_layer(x_decoded)
+
         x_pro = torch.reshape(x_pro, (x_pro.shape[0], *self.input_dim))
+        log_sigma = torch.reshape(log_sigma, (log_sigma.shape[0], *self.input_dim))
+
         return x_pro, log_sigma
 

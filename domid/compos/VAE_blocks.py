@@ -1,6 +1,7 @@
-import torch.nn as nn
-import torch
 import numpy as np
+import torch
+import torch.nn as nn
+
 
 def get_output_shape(model, image_dim):
     return model(torch.rand(*(image_dim))).data.shape

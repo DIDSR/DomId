@@ -1,16 +1,15 @@
-"""
-Basic MNIST task where the digits are considered "domains"
-"""
-
-from torch.utils.data import random_split
-from domainlab.tasks.utils_task import DsetDomainVecDecorator, mk_onehot, mk_loader, ImSize
-from domainlab.utils.utils_classif import mk_dummy_label_list_str
 from domainlab.tasks.task_mnist_color import NodeTaskMNISTColor10
+from domainlab.tasks.utils_task import (DsetDomainVecDecorator, ImSize,
+                                        mk_loader, mk_onehot)
+from domainlab.utils.utils_classif import mk_dummy_label_list_str
+from torch.utils.data import random_split
+
 from domid.dsets.dset_mnist import DsetMNIST
 
 
 class NodeTaskMNIST(NodeTaskMNISTColor10):
     """
+    Basic MNIST task where the digits are considered "domains"
     Based on NodeTaskMNISTColor10 from DomainLab.
     The digits (0, 1, ..., 9) are regarded as domains (to be separated by unsupervised clustering).
     """
@@ -23,23 +22,30 @@ class NodeTaskMNIST(NodeTaskMNISTColor10):
 
     @property
     def isize(self):
-        """image channel, height, width"""
+        """
+        :return: image size object storing image channels, height, width.
+        """
         return ImSize(3, 28, 28)
 
     def get_list_domains(self):
         """
         Get list of domain names
+        :return: list of domain names
         """
         return mk_dummy_label_list_str("digit", 10)
 
     def get_dset_by_domain(self, args, na_domain, split=True):
-        """get_dset_by_domain.
-        :param args:
-        :param na_domain:
-        :param split: for test set, no need to split
-        args.split: by default, split is set to be zero which in python can
-        be evaluated in if statement, in which case, no validation set will be
-        created. Otherwise, this argument is the split ratio
+        """Get a dataset by digit
+        :param args: command line arguments
+        :param na_domain: domain name
+        :param split: whether a training/validation split is performed (the
+        training split portion will be determined by args.split); for test
+        set, no need to split; args.split: by default, split is set to be
+        zero which in python can be evaluated in if statement, in which case,
+        no separate validation set will be created. Otherwise, this argument
+        is the percentage of the data to be used as training set, while the 
+        rest will be used as validation set.
+        :return: training dataset, validation dataset
         """
         ratio_split = float(args.split) if split else False
         # by default, split is set to be zero which in python can
