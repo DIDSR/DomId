@@ -44,6 +44,7 @@ class TrainerVADE(TrainerClassif):
         self.i_h, self.i_w = task.isize.h, task.isize.w
         self.args = aconf
         self.s = Storing(self.args)
+        self.loader_val = task.loader_val
 
     def tr_epoch(self, epoch):
         """
@@ -55,8 +56,13 @@ class TrainerVADE(TrainerClassif):
         self.model.train()
         self.epo_loss_tr = 0
 
-        p = Pretraining(self.model, self.device, self.loader_tr, self.i_h, self.i_w)
-        acc_d, _ = p.epoch_val_acc()
+        
+
+        p = Pretraining(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w)
+        acc_tr, _ = p.epoch_tr_acc()
+        acc_val, _ = p.epoch_val_acc()
+
+
 
         if self.warmup_beta < 0.9 and self.pretraining_finished:
             self.warmup_beta = self.warmup_beta + 0.02
@@ -71,7 +77,7 @@ class TrainerVADE(TrainerClassif):
             )
             self.optimizer.zero_grad()
 
-            if acc_d < self.thres and not self.pretraining_finished:
+            if acc_val < self.thres and not self.pretraining_finished:
                 loss = p.pretrain_loss(tensor_x)
             else:
                 if not self.pretraining_finished:
@@ -99,7 +105,26 @@ class TrainerVADE(TrainerClassif):
         preds, z_mu, z, _, _, x_pro = self.model.infer_d_v_2(tensor_x)
         name = "Output of the decoder" + str(epoch)
         imgs = torch.cat((tensor_x[0:8, :, :, :], x_pro[0:8, :, :, :],), 0)
-        self.writer.add_images(name, imgs, epoch)
+        #input_img = torch.reshape(tensor_x, (tensor_x.shape[0], 512, 512, 3))
+        #reconstruct = torch.reshape(x_pro, (x_pro.shape[0], 512, 512, 3))
+        
+        # self.writer.add_images(name, imgs, epoch)
+        # plt.figure()
+        # plt.subplot(2, 2, 1)
+        # plt.imshow(input_img[0, :, :, :].detach().cpu().numpy())
+        # plt.title('in 1')
+        # plt.subplot(2, 2, 2)
+        # plt.imshow(input_img[1, :, :, :].detach().cpu().numpy())
+        # plt.title('in 2')
+        # plt.subplot(2, 2, 3)
+        # plt.imshow(reconstruct[0, :, :, :].detach().cpu().numpy())
+        # plt.title('out 1')
+        # plt.subplot(2, 2, 4)
+        # plt.imshow(reconstruct[1, :, :, :].detach().cpu().numpy())
+        # plt.title('out 2')
+        # plt.show()
+        # plt.savefig(str(epoch)+'.png', aspect = 'auto')
+        # plt.close()
 
         if not self.pretraining_finished:
             gmm = p.GMM_fit()
@@ -116,9 +141,22 @@ class TrainerVADE(TrainerClassif):
         ) = self.model._inference(tensor_x)
         print("pi:")
         print(pi.cpu().detach().numpy())
+        
+        for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_val):
+            if len(other_vars) > 0:
+                machine, path = other_vars
+            tensor_x, vec_y, vec_d = (
+                tensor_x.to(self.device),
+                vec_y.to(self.device),
+                vec_d.to(self.device),
+            )
+            if acc_val < self.thres and not self.pretraining_finished:
+                loss_val = p.pretrain_loss(tensor_x)
+            else:
+                loss_val = self.model.cal_loss(tensor_x, self.warmup_beta)
 
-        self.s.storing(self.args, epoch, acc_d, self.epo_loss_tr)
-        if epoch % 5 == 0:
+        self.s.storing(self.args, epoch, acc_tr, self.epo_loss_tr, acc_val, loss_val.sum())
+        if epoch % 10 == 0:
             _, Z, domain_labels, machine_labels = p.prediction()
             self.s.storing_z_space(Z, domain_labels, machine_labels)
 

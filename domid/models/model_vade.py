@@ -32,6 +32,7 @@ class ModelVaDE(nn.Module):
         self.args = args
         self.loss_epoch = 0
 
+
         if self.args.model == "linear":
             self.encoder = LinearEncoder(zd_dim=zd_dim, input_dim=(i_c, i_h, i_w)).to(device)
             self.decoder = LinearDecoder(prior=args.prior, zd_dim=zd_dim, input_dim=(i_c, i_h, i_w)).to(device)
@@ -40,7 +41,8 @@ class ModelVaDE(nn.Module):
             self.decoder = ConvolutionalDecoder(
                 prior=args.prior, zd_dim=zd_dim, h_dim=self.encoder.h_dim, num_channels=i_c
             ).to(device)
-
+        print(self.encoder)
+        print(self.decoder)
         self.log_pi = nn.Parameter(
             torch.FloatTensor(
                 self.d_dim,
@@ -116,12 +118,7 @@ class ModelVaDE(nn.Module):
         return loss
 
     def reconstruction_loss(self, x, x_pro, log_sigma):
-        BS = x_pro.shape[0]
 
-        self.loss_writter.add_scalar("mean sigma (torch mean)", torch.mean(torch.exp(log_sigma)) / BS, self.loss_epoch)
-        self.loss_writter.add_scalar(
-            "log sigma", torch.mean(torch.sum(torch.sum(torch.sum(log_sigma, 2), 2), 1), 0) / BS, self.loss_epoch
-        )
         if self.args.prior == "Bern":
             L_rec = F.binary_cross_entropy(x_pro, x)
         else:
@@ -130,10 +127,8 @@ class ModelVaDE(nn.Module):
             )
         # Note that the mean is taken over the batch dimension, and the sum over the spatial dimensions and the channels.
         # Thir is consistent with the computation of other terms of the ELBO loss below.
+        
 
-        self.loss_writter.add_scalar("Reconstruction loss", L_rec, self.loss_epoch)
-        self.loss_writter.add_scalar("Built-in weighted mse loss", 0.5 * F.mse_loss(x_pro, x), self.loss_epoch)
-        self.loss_epoch += 1
         return L_rec
 
     def ELBO_Loss(self, x, warmup_beta):

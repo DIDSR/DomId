@@ -1,5 +1,7 @@
 import sys
 import torch
+import torch
+torch.cuda.empty_cache()
 
 sys.path.insert(0,'/home/mariia.sidulova/DomId')
 sys.path.insert(0, '/home/mariia.sidulova/DomId/DomainLab')

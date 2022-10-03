@@ -87,7 +87,7 @@ class ObVisitor(AObVisitor):
         print("persisted model acc: ", acc_te)
         self.exp.visitor(acc_te)
         if isinstance(self.exp.task, NodeTaskFolderClassNaMismatch):
-           pred2file(self.loader_te, self.host_trainer.model, self.device)
+            pred2file(self.loader_te, self.host_trainer.model, self.device)
 
     def clean_up(self):
         """
@@ -95,9 +95,9 @@ class ObVisitor(AObVisitor):
         """
 
         print('was in clean up in c obvisitor, but did not clean anything')
-        if not self.keep_model:
-            self.exp.visitor.remove("epoch")    # the last epoch
-            # epoch exist to still have a model to evaluate if the training stops in between
-            self.exp.visitor.remove("final")
-            self.exp.visitor.remove()
-            self.exp.visitor.remove("oracle")   # oracle means use out-of-domain test accuracy to select the model
+        # if not self.keep_model:
+        #     self.exp.visitor.remove("epoch")    # the last epoch
+        #     # epoch exist to still have a model to evaluate if the training stops in between
+        #     self.exp.visitor.remove("final")
+        #     self.exp.visitor.remove()
+        #     self.exp.visitor.remove("oracle")   # oracle means use out-of-domain test accuracy to select the model
