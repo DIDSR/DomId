@@ -1,7 +1,9 @@
-from torch.utils.data import random_split
-from domainlab.tasks.utils_task import DsetDomainVecDecorator, mk_onehot, mk_loader, ImSize
-from domainlab.utils.utils_classif import mk_dummy_label_list_str
 from domainlab.tasks.task_mnist_color import NodeTaskMNISTColor10
+from domainlab.tasks.utils_task import (DsetDomainVecDecorator, ImSize,
+                                        mk_loader, mk_onehot)
+from domainlab.utils.utils_classif import mk_dummy_label_list_str
+from torch.utils.data import random_split
+
 from domid.dsets.dset_mnist import DsetMNIST
 
 

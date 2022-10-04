@@ -1,7 +1,9 @@
-import torch
-from domid.compos.VAE_blocks import linear_block
-import torch.nn as nn
 import numpy as np
+import torch
+import torch.nn as nn
+
+from domid.compos.VAE_blocks import linear_block
+
 
 class LinearEncoder(nn.Module):
     def __init__(self, zd_dim, input_dim=(3, 28, 28), features_dim=[500, 500, 2000]):
@@ -58,15 +60,19 @@ class LinearDecoder(nn.Module):
         :param z: latent space representation
         :return x_pro: reconstructed data, which is assumed to have 3 channels, but the channels are assumed to be equal to each other.
         """
-
         x_decoded = self.decod(z)
-        x_pro = self.activation(self.mu_layer(x_decoded))
+
+        if self.prior == 'Bern':
+            # if Bernoulli distribution sigmoid activation to mu is applied
+            x_pro = self.mu_layer(x_decoded)
+            x_pro = self.activation(x_pro)
+        else:
+            x_pro = self.mu_layer(x_decoded)
+
         log_sigma = self.log_sigma_layer(x_decoded)
 
+        x_pro = torch.reshape(x_pro, (x_pro.shape[0], *self.input_dim))
         log_sigma = torch.reshape(log_sigma, (log_sigma.shape[0], *self.input_dim))
-        if self.prior=='Bern':
-            x_pro = torch.reshape(x_pro, (x_pro.shape[0], *self.input_dim))
-        else:
-            x_pro = x_decoded[:, 0:self.num_channels, :, :]
+
         return x_pro, log_sigma
 

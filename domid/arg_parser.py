@@ -7,7 +7,7 @@ import warnings
 from domainlab import arg_parser
 
 
-def parse_cmd_args():
+def mk_parser_main():
     """
     Args for command line definition
     """
@@ -24,7 +24,12 @@ def parse_cmd_args():
     parser.add_argument('--model', type = str, default="linear", help = "specify 'linear' for a fully-connected or "
                                                                         "'cnn' for a convolutional model architecture" )
     parser.add_argument('--pretrain', type = str, default = "False", help = "turn on/off pretraining (boolean flag)")
+    return parser
 
+def parse_cmd_args():
+    """
+    Parse given command line arguments
+    """
+    parser = mk_parser_main()
     args = parser.parse_args()
-
     return args

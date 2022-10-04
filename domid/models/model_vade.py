@@ -3,10 +3,11 @@ import tensorboardX
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from tensorboardX import SummaryWriter
 from domainlab.utils.utils_classif import logit2preds_vpic
+from tensorboardX import SummaryWriter
+
+from domid.compos.cnn_VAE import ConvolutionalDecoder, ConvolutionalEncoder
 from domid.compos.linear_VAE import LinearDecoder, LinearEncoder
-from domid.compos.cnn_VAE import ConvolutionalEncoder, ConvolutionalDecoder
 
 
 class ModelVaDE(nn.Module):
@@ -21,6 +22,7 @@ class ModelVaDE(nn.Module):
         :param i_c: number of channels of the input image
         :param i_h: height of the input image
         :param i_w: width of the input image
+        :args: command line arguments
         """
         super(ModelVaDE, self).__init__()
         self.zd_dim = zd_dim
@@ -29,19 +31,28 @@ class ModelVaDE(nn.Module):
         self.L = L
         self.args = args
         self.loss_epoch = 0
-        if self.args.model =='linear':
+
+        if self.args.model == "linear":
             self.encoder = LinearEncoder(zd_dim=zd_dim, input_dim=(i_c, i_h, i_w)).to(device)
-            self.decoder = LinearDecoder(prior = args.prior, zd_dim=zd_dim, input_dim=(i_c, i_h, i_w)).to(device)
+            self.decoder = LinearDecoder(prior=args.prior, zd_dim=zd_dim, input_dim=(i_c, i_h, i_w)).to(device)
         else:
             self.encoder = ConvolutionalEncoder(zd_dim=zd_dim, num_channels=i_c, i_w=i_w, i_h=i_h).to(device)
-            self.decoder = ConvolutionalDecoder(prior = args.prior, zd_dim=zd_dim, h_dim=self.encoder.h_dim, num_channels=i_c).to(device)
+            self.decoder = ConvolutionalDecoder(
+                prior=args.prior, zd_dim=zd_dim, h_dim=self.encoder.h_dim, num_channels=i_c
+            ).to(device)
 
-        self.log_pi = nn.Parameter(torch.FloatTensor(self.d_dim,).fill_(1.0/self.d_dim).log(),
-                                   requires_grad=True)
-        self.loss_writter = tensorboardX.SummaryWriter()
+        self.log_pi = nn.Parameter(
+            torch.FloatTensor(
+                self.d_dim,
+            )
+            .fill_(1.0 / self.d_dim)
+            .log(),
+            requires_grad=True,
+        )
         self.mu_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
         self.log_sigma2_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
 
+        self.loss_writter = tensorboardX.SummaryWriter()
 
     def _inference(self, x):
         """Auxiliary function for inference
@@ -100,24 +111,29 @@ class ModelVaDE(nn.Module):
         Loss = nn.MSELoss()
         z_mu, z_sigma2_log = self.encoder(x)
         z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
-        x_pro,*_ = self.decoder(z)
+        x_pro, *_ = self.decoder(z)
         loss = Loss(x, x_pro)
         return loss
+
     def reconstruction_loss(self, x, x_pro, log_sigma):
         BS = x_pro.shape[0]
 
-        self.loss_writter.add_scalar('mean sigma (torch mean)', torch.mean(torch.exp(log_sigma))/BS, self.loss_epoch)
-        self.loss_writter.add_scalar('log sigma', torch.mean(torch.sum(torch.sum(torch.sum(log_sigma, 2), 2), 1), 0) / BS,self.loss_epoch)
+        self.loss_writter.add_scalar("mean sigma (torch mean)", torch.mean(torch.exp(log_sigma)) / BS, self.loss_epoch)
+        self.loss_writter.add_scalar(
+            "log sigma", torch.mean(torch.sum(torch.sum(torch.sum(log_sigma, 2), 2), 1), 0) / BS, self.loss_epoch
+        )
         if self.args.prior == "Bern":
             L_rec = F.binary_cross_entropy(x_pro, x)
         else:
-            L_rec = torch.mean(torch.sum(torch.sum(torch.sum(log_sigma, 2), 2), 1), 0) \
-                    + torch.mean(
-                torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 / torch.exp(log_sigma) ** 2, 2), 2), 1), 0)
+            L_rec = torch.mean(torch.sum(torch.sum(torch.sum(log_sigma, 2), 2), 1), 0) + torch.mean(
+                torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 / torch.exp(log_sigma) ** 2, 2), 2), 1), 0
+            )
+        # Note that the mean is taken over the batch dimension, and the sum over the spatial dimensions and the channels.
+        # Thir is consistent with the computation of other terms of the ELBO loss below.
 
-        self.loss_writter.add_scalar('Reconstruction loss', L_rec, self.loss_epoch)
-        self.loss_writter.add_scalar('Build-in weighted mse loss', 0.5 * F.mse_loss(x_pro, x), self.loss_epoch)
-        self.loss_epoch+=1
+        self.loss_writter.add_scalar("Reconstruction loss", L_rec, self.loss_epoch)
+        self.loss_writter.add_scalar("Built-in weighted mse loss", 0.5 * F.mse_loss(x_pro, x), self.loss_epoch)
+        self.loss_epoch += 1
         return L_rec
 
     def ELBO_Loss(self, x, warmup_beta):
@@ -125,29 +141,20 @@ class ModelVaDE(nn.Module):
         Using SGVB estimator and the reparametrization trick calculates ELBO loss.
         Calculates loss between encoded input and input using ELBO equation (12) in the papaer.
         :param tensor x: Input tensor of a shape [batchsize, 3, horzintal dim, vertical dim].
-        :param int L: Number of Monte Carlo samples in the SOVB
+        :param int L: Number of Monte Carlo samples in the SGVB
         """
         preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = self._inference(x)
-        #mu, sigma from the decoder
+        # mu, sigma from the decoder
         eps = 1e-10
-
 
         L_rec = 0.0
         for l in range(self.L):
-
-            z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu # shape [batch_size, self.zd_dim]
-            x_pro, log_sigma = self.decoder(z) #x_pro, mu, sigma
-
+            z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu  # shape [batch_size, self.zd_dim]
+            x_pro, log_sigma = self.decoder(z)  # x_pro, mu, sigma
             L_rec += self.reconstruction_loss(x, x_pro, log_sigma)
 
-
-        #breakpoint()
         L_rec /= self.L
-        #print(L_rec)
-        #breakpoint()
         Loss = L_rec * x.size(1)
-        #print('checkpoint 1', Loss)
-        # doesn't take the mean over the channels; i.e., the recon loss is taken as an average over (batch size * L * width * height)
         # --> this is the -"first line" of eq (12) in the paper with additional averaging over the batch.
 
         Loss += 0.5 * torch.mean(
@@ -162,11 +169,6 @@ class ModelVaDE(nn.Module):
                 1,
             )
         )
-       # Loss += 0.5 * torch.mean(torch.sum(probs * torch.sum(log_sigma2_c.unsqueeze(0) + torch.exp(z_sigma2_log.unsqueeze(1) - log_sigma2_c.unsqueeze(0)) + (z_mu.unsqueeze(1) - mu_c.unsqueeze(0)).pow(2) / torch.exp(log_sigma2_c.unsqueeze(0)), 2, ),))
-        #print('checkpoint 2', Loss)
-
-        if torch.isnan(Loss):
-            breakpoint()
         # inner sum dimentions:
         # [1, d_dim, zd_dim] + exp([batch_size, 1, zd_dim] - [1, d_dim, zd_dim]) + ([batch_size, 1, zd_dim] - [1, d_dim, zd_dim])^2 / exp([1, d_dim, zd_dim])
         # = [batch_size, d_dim, zd_dim] -> sum of zd_dim dimensions
@@ -174,22 +176,19 @@ class ModelVaDE(nn.Module):
         # the mean is over the batch
         # --> overall, this is -"second line of eq. (12)" with additional mean over the batch
 
-        Loss -= torch.mean(torch.sum(probs * torch.log(pi.unsqueeze(0) / (probs + eps)), 1))  # FIXME: (+eps) is a hack to avoid NaN. Is there a better way?
+        Loss -= torch.mean(
+            torch.sum(probs * torch.log(pi.unsqueeze(0) / (probs + eps)), 1)
+        )  # FIXME: (+eps) is a hack to avoid NaN. Is there a better way?
         # dimensions: [batch_size, d_dim] * log([1, d_dim] / [batch_size, d_dim]), where the sum is over d_dim dimensions --> [batch_size] --> mean over the batch --> a scalar
-        #print('checkpoint 3', Loss)
 
         Loss -= 0.5 * torch.mean(torch.sum(1.0 + z_sigma2_log, 1))
-        #print('checkpoint 4', Loss)
         # dimensions: mean( sum( [batch_size, zd_dim], 1 ) ) where the sum is over zd_dim dimensions and mean over the batch
         # --> overall, this is -"third line of eq. (12)" with additional mean over the batch
-        #print('loss', Loss)
-        #print(Loss)
 
         return Loss
 
     def gaussian_pdfs_log(self, x, mus, log_sigma2s):
-        """helper function
-        """
+        """helper function"""
         loglik = []
         for c in range(self.d_dim):
             loglik.append(self.gaussian_pdf_log(x, mus[c, :], log_sigma2s[c, :]).view(-1, 1))

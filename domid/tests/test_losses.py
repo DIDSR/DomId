@@ -1,7 +1,7 @@
 
 #from domid.models.model_vade import ModelVaDE
-from domid.compos.exp.exp_main import Exp
 from domid.arg_parser import mk_parser_main
+from domid.compos.exp.exp_main import Exp
 
 
 def experiment_train(args):

@@ -1,7 +1,9 @@
-import os
 import datetime
-from domainlab.compos.exp.exp_utils import AggWriter
+import os
+
 from domainlab.algos.zoo_algos import AlgoBuilderChainNodeGetter
+from domainlab.compos.exp.exp_utils import AggWriter
+
 from domid.tasks.zoo_tasks import TaskChainNodeGetter
 
 

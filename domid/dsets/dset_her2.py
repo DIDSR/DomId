@@ -1,13 +1,20 @@
 import os
 
-from PIL import Image
 import torch
-from torch.utils.data import Dataset
-from domainlab.utils.utils_class import store_args
 from domainlab.dsets.utils_data import mk_fun_label2onehot
+from domainlab.utils.utils_class import store_args
+from PIL import Image
+from torch.utils.data import Dataset
 from torchvision import transforms
 
+
 class DsetHER2(Dataset):
+    """
+    Dataset of HER2 stained digital microscopy images.
+    As currently implemented, the subdomains are the HER2 diagnostic classes 1, 2, and 3.
+    There are also 4 data collection site/machine combinations.
+    """
+
     @store_args
     def __init__(self, class_num, path, transform=None):
         self.dpath = os.path.normpath(path)
@@ -29,12 +36,10 @@ class DsetHER2(Dataset):
         # im = torch.flip(torch.from_numpy(image.copy()), dims=(2,))
 
         image = Image.open(img_loc)
-        # image = torch.Tensor(image)
         if self.transform is None:
-
             self.transform = transforms.ToTensor()
         image = self.transform(image)
-        #
+
         # mean = [image[0, :, :].mean(), image[1, :, :].mean(), image[2, :, :].mean()]
         #
         # m = torch.zeros(image.shape[0], image.shape[1], image.shape[2])
@@ -45,15 +50,9 @@ class DsetHER2(Dataset):
         # norm_img = image - m
         # image = norm_img
 
+        # return the one-hot encoded label
         label = mk_fun_label2onehot(3)(self.class_num) #FIXME 3
-        machine = img_loc[-6:-4]
-
-        #domain = mk_fun_label2onehot(2)(self.class_num+1) #FIXME 2
         #A_FDA, A_NIH, H1, H2
-
-        # if 'class2' in img_loc:
-        #     domain = torch.Tensor([0, 1])
-        # else:
-        #     domain = torch.Tensor([1, 0])
+        machine = img_loc[-6:-4]
 
         return image, label, machine, img_loc

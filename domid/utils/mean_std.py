@@ -1,12 +1,15 @@
 import os
+
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch.optim import lr_scheduler
-import numpy as np
 import torchvision
+from torch.optim import lr_scheduler
 from torchvision import datasets, models, transforms
+
 from domid.arg_parser import parse_cmd_args
+
 
 def run(path):
     data_dir = path
