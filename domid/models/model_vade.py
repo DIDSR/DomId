@@ -122,9 +122,23 @@ class ModelVaDE(nn.Module):
         if self.args.prior == "Bern":
             L_rec = F.binary_cross_entropy(x_pro, x)
         else:
+           #  print('first part',torch.mean(torch.sum(torch.sum(torch.sum(log_sigma, 2), 2), 1), 0))
+           # #torch.sum(log_sigma)*1/log_sigma.shape[0])
+           #  print('second part',  torch.mean(
+           #       torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 / torch.exp(log_sigma) ** 2, 2),2),1), 0))
+           #  print('MSE', F.mse_loss(x, x_pro))
+           #  print('constant infront of MSE',  torch.sum(torch.exp(log_sigma)**2))
+           #  print('x pro min/max/mean', torch.min(x_pro), torch.max(x_pro), torch.mean(x_pro))
+           #  print('log_sigma min/max/mean',torch.min(log_sigma), 'max',torch.max(log_sigma), 'mean', torch.mean(log_sigma))
             L_rec = torch.mean(torch.sum(torch.sum(torch.sum(log_sigma, 2), 2), 1), 0) + torch.mean(
                 torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 / torch.exp(log_sigma) ** 2, 2), 2), 1), 0
             )
+            # print('L rec', L_rec)
+            # print("#"*10)
+            # L_rec = torch.sum(log_sigma)*1/log_sigma.shape[0]+F.mse_loss(x, x_pro)*(log_sigma.shape[0]/torch.sum(torch.exp(log_sigma)**2))
+            
+            #L_rec = F.mse_loss(x, x_pro)#*(log_sigma.shape[0]/torch.sum(torch.exp(log_sigma)**2))
+            
         # Note that the mean is taken over the batch dimension, and the sum over the spatial dimensions and the channels.
         # Thir is consistent with the computation of other terms of the ELBO loss below.
         
