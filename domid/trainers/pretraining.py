@@ -51,6 +51,7 @@ class Pretraining():
                 if len(other_vars) > 0:
                     machine, image_loc = other_vars
                     for i in range(len(machine)):
+                        
                         machine_labels.append(machine[i])
                 tensor_x = tensor_x.to(self.device)
                 preds, z_mu, z, *_ = self.model.infer_d_v_2(tensor_x)
@@ -59,7 +60,7 @@ class Pretraining():
                 Z[counter:counter + z.shape[0], :] = z
                 preds = preds.detach().cpu()
                 domain_labels[counter:counter + z.shape[0], 0] = torch.argmax(preds, 1)+1
-
+                
 
         return IMGS, Z, domain_labels, machine_labels
     
@@ -83,8 +84,8 @@ class Pretraining():
             for tensor_x, vec_y, vec_d, *other_vars in self.loader_val:
                 if len(other_vars) > 0:
                     machine, image_loc = other_vars
-                    for i in range(len(machine)):
-                        machine_labels.append(machine[i])
+                    for i in range(len(machine)): 
+                        machine_labels.append(machine[i][0])
                 tensor_x = tensor_x.to(self.device)
                 preds, z_mu, z, *_ = self.model.infer_d_v_2(tensor_x)
                 z = z.detach().cpu().numpy()  # [batch_size, zd_dim]

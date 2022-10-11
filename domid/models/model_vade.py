@@ -130,9 +130,18 @@ class ModelVaDE(nn.Module):
            #  print('constant infront of MSE',  torch.sum(torch.exp(log_sigma)**2))
            #  print('x pro min/max/mean', torch.min(x_pro), torch.max(x_pro), torch.mean(x_pro))
            #  print('log_sigma min/max/mean',torch.min(log_sigma), 'max',torch.max(log_sigma), 'mean', torch.mean(log_sigma))
-            L_rec = torch.mean(torch.sum(torch.sum(torch.sum(log_sigma, 2), 2), 1), 0) + torch.mean(
-                torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 / torch.exp(log_sigma) ** 2, 2), 2), 1), 0
-            )
+            
+            # L_rec = torch.mean(torch.sum(torch.sum(torch.sum(log_sigma, 2), 2), 1), 0) + torch.mean(
+            #     torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 / torch.exp(log_sigma) ** 2, 2), 2), 1), 0
+            # )
+             
+            sigma = torch.Tensor([0.19]) #mean sigma of all images
+            log_sigma_est = torch.log(sigma).to(self.device)
+            L_rec = torch.mean(
+                torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 , 2), 2), 1), 0
+            )/log_sigma_est**2
+            
+            
             # print('L rec', L_rec)
             # print("#"*10)
             # L_rec = torch.sum(log_sigma)*1/log_sigma.shape[0]+F.mse_loss(x, x_pro)*(log_sigma.shape[0]/torch.sum(torch.exp(log_sigma)**2))

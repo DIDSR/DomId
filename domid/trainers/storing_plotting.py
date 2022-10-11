@@ -55,13 +55,14 @@ class Storing():
 
 
     def storing_z_space(self, Z, domain_labels, machine_labels):
-
+        
+        
         path ="./notebooks/"+self.experiment_name+"/Z_space.npy"
         np.save(path, Z)
 
         with open("./notebooks/"+self.experiment_name+"/domain_labels.txt", 'w') as output:
             for row in domain_labels:
-                output.write(str(row) + '\n')
+                output.write(str(row[0]) + '\n')
 
         with open("./notebooks/"+self.experiment_name+"/machine_labels.txt", 'w') as output:
             for row in machine_labels:
