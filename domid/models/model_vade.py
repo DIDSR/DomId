@@ -139,7 +139,7 @@ class ModelVaDE(nn.Module):
             log_sigma_est = torch.log(sigma).to(self.device)
             L_rec = torch.mean(
                 torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 , 2), 2), 1), 0
-            )/log_sigma_est**2
+            )/sigma**2
             
             
             # print('L rec', L_rec)
@@ -175,7 +175,7 @@ class ModelVaDE(nn.Module):
         Loss = L_rec * x.size(1)
         # --> this is the -"first line" of eq (12) in the paper with additional averaging over the batch.
 
-        Loss += 0.5 * torch.mean(
+        Loss += 0.5 *warmup_beta* torch.mean(
             torch.sum(
                 probs
                 * torch.sum(
@@ -194,15 +194,16 @@ class ModelVaDE(nn.Module):
         # the mean is over the batch
         # --> overall, this is -"second line of eq. (12)" with additional mean over the batch
 
-        Loss -= torch.mean(
+        Loss -= warmup_beta*torch.mean(
             torch.sum(probs * torch.log(pi.unsqueeze(0) / (probs + eps)), 1)
         )  # FIXME: (+eps) is a hack to avoid NaN. Is there a better way?
         # dimensions: [batch_size, d_dim] * log([1, d_dim] / [batch_size, d_dim]), where the sum is over d_dim dimensions --> [batch_size] --> mean over the batch --> a scalar
 
-        Loss -= 0.5 * torch.mean(torch.sum(1.0 + z_sigma2_log, 1))
+        Loss -= 0.5 * warmup_beta*torch.mean(torch.sum(1.0 + z_sigma2_log, 1))
         # dimensions: mean( sum( [batch_size, zd_dim], 1 ) ) where the sum is over zd_dim dimensions and mean over the batch
         # --> overall, this is -"third line of eq. (12)" with additional mean over the batch
-
+        
+        
         return Loss
 
     def gaussian_pdfs_log(self, x, mus, log_sigma2s):

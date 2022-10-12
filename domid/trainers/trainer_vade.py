@@ -65,7 +65,7 @@ class TrainerVADE(TrainerClassif):
 
 
         if self.warmup_beta < 0.9 and self.pretraining_finished:
-            self.warmup_beta = self.warmup_beta + 0.02
+            self.warmup_beta = self.warmup_beta + 0.01
 
         for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
             if len(other_vars) > 0:
@@ -83,24 +83,26 @@ class TrainerVADE(TrainerClassif):
                 if not self.pretraining_finished:
                     self.pretraining_finished = True
                     # reset the optimizer
+                    self.LR = self.LR/100
                     self.optimizer = optim.Adam(
                         self.model.parameters(),
                         lr=self.LR,
                         betas=(0.5, 0.9),
                         weight_decay=0.000001,
                     )
-
+                    
                     print("".join(["#"] * 60))
                     print("Epoch {}: Finished pretraining and starting to use ELBO loss.".format(epoch))
                     print("".join(["#"] * 60))
 
                 loss = self.model.cal_loss(tensor_x, self.warmup_beta)
-
+            
             loss = loss.sum()
             loss.backward()
             self.optimizer.step()
             self.epo_loss_tr += loss.cpu().detach().item() #FIXME devide #  number of samples in the HER notebook 
-    
+            self.writer.add_scalar('learning rate', self.LR, epoch)
+            self.writer.add_scalar('warmup', self.warmup_beta, epoch)
             if not self.pretraining_finished:
                 self.writer.add_scalar('Pretraining', acc_tr, epoch)
                 self.writer.add_scalar('Pretraining Loss', loss, epoch)
@@ -115,17 +117,7 @@ class TrainerVADE(TrainerClassif):
 
         if not self.pretraining_finished:
             gmm = p.GMM_fit()
-        (
-            preds_c,
-            probs_c,
-            z,
-            z_mu,
-            z_sigma2_log,
-            mu_c,
-            log_sigma2_c,
-            pi,
-            logits,
-        ) = self.model._inference(tensor_x)
+        (preds_c,probs_c,z,z_mu,z_sigma2_log,mu_c,log_sigma2_c,pi,logits,) = self.model._inference(tensor_x)
         print("pi:")
         print(pi.cpu().detach().numpy())
         
