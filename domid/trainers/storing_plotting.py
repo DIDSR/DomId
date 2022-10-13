@@ -52,9 +52,13 @@ class Storing():
                 for row in arguments:
                     output.write(row+'\n')
         
+    def saving_model(self, model):
+        path_dict ="./notebooks/"+self.experiment_name+'/model_dict.pth'
+        path ="./notebooks/"+self.experiment_name+'/model.pth'
+        torch.save(model.state_dict(), path_dict)
+        #torch.save(model, path)
 
-
-    def storing_z_space(self, Z, domain_labels, machine_labels):
+    def storing_z_space(self, Z, domain_labels, machine_labels, image_locs):
         
         
         path ="./notebooks/"+self.experiment_name+"/Z_space.npy"
@@ -71,6 +75,10 @@ class Storing():
             times = [self.experiment_name, str(datetime.datetime.now())]
             for row in times:
                 output.write(str(row)+'\n')
+                
+        with open("./notebooks/"+self.experiment_name+"/image_locs.txt", 'w') as output:
+            for row in image_locs:
+                output.write(str(row) + '\n')
 
 
 

@@ -64,8 +64,10 @@ class TrainerVADE(TrainerClassif):
 
 
 
-        if self.warmup_beta < 0.9 and self.pretraining_finished:
+        if self.warmup_beta<1 and self.pretraining_finished:
             self.warmup_beta = self.warmup_beta + 0.01
+        # if self.LR>0.000001 and self.pretraining_finished:
+        #     self.LR-=0.0002
 
         for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
             if len(other_vars) > 0:
@@ -135,10 +137,12 @@ class TrainerVADE(TrainerClassif):
                 loss_val = self.model.cal_loss(tensor_x, self.warmup_beta)
 
         self.s.storing(self.args, epoch, acc_tr, self.epo_loss_tr, acc_val, loss_val.sum())
-        if epoch % 1 == 0:
-            _, Z, domain_labels, machine_labels = p.prediction()
-            self.s.storing_z_space(Z, domain_labels, machine_labels)
-
+        if epoch % 2 == 0:
+            _, Z, domain_labels, machine_labels, image_locs = p.prediction()
+            self.s.storing_z_space(Z, domain_labels, machine_labels, image_locs)
+        if epoch%10==0:
+            self.s.saving_model(self.model)
+            
         flag_stop = self.observer.update(epoch)  # notify observer
         return flag_stop
 

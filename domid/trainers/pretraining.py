@@ -45,6 +45,7 @@ class Pretraining():
         IMGS = np.zeros((num_img, 3, self.i_h, self.i_w))
         domain_labels = np.zeros((num_img, 1))
         machine_labels = []
+        image_path = []
         counter = 0
         with torch.no_grad():
             for tensor_x, vec_y, vec_d, *other_vars in self.loader_tr:
@@ -53,16 +54,21 @@ class Pretraining():
                     for i in range(len(machine)):
                         
                         machine_labels.append(machine[i])
+                        image_path.append(image_loc[i])
                 tensor_x = tensor_x.to(self.device)
                 preds, z_mu, z, *_ = self.model.infer_d_v_2(tensor_x)
                 z = z.detach().cpu().numpy()  # [batch_size, zd_dim]
                 IMGS[counter:counter+z.shape[0], :, :, :] = tensor_x.cpu().detach().numpy()
                 Z[counter:counter + z.shape[0], :] = z
+                
+                # print(counter, counter+z.shape[0])
+                # print(domain_labels[0:50, 0])
+                
                 preds = preds.detach().cpu()
                 domain_labels[counter:counter + z.shape[0], 0] = torch.argmax(preds, 1)+1
-                
+                counter+=z.shape[0]
 
-        return IMGS, Z, domain_labels, machine_labels
+        return IMGS, Z, domain_labels, machine_labels, image_path
     
     def prediction_te(self):
         """
@@ -89,6 +95,7 @@ class Pretraining():
                 tensor_x = tensor_x.to(self.device)
                 preds, z_mu, z, *_ = self.model.infer_d_v_2(tensor_x)
                 z = z.detach().cpu().numpy()  # [batch_size, zd_dim]
+                
                 IMGS[counter:counter+z.shape[0], :, :, :] = tensor_x.cpu().detach().numpy()
                 Z[counter:counter + z.shape[0], :] = z
                 preds = preds.detach().cpu()
