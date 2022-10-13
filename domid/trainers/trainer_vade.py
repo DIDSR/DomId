@@ -83,7 +83,7 @@ class TrainerVADE(TrainerClassif):
                 if not self.pretraining_finished:
                     self.pretraining_finished = True
                     # reset the optimizer
-                    self.LR = self.LR/100
+                    
                     self.optimizer = optim.Adam(
                         self.model.parameters(),
                         lr=self.LR,

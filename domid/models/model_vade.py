@@ -135,7 +135,7 @@ class ModelVaDE(nn.Module):
             #     torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 / torch.exp(log_sigma) ** 2, 2), 2), 1), 0
             # )
              
-            sigma = torch.Tensor([0.19]) #mean sigma of all images
+            sigma = torch.Tensor([0.19]).to(self.device) #mean sigma of all images
             log_sigma_est = torch.log(sigma).to(self.device)
             L_rec = torch.mean(
                 torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 , 2), 2), 1), 0
