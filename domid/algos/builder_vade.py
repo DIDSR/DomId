@@ -26,7 +26,7 @@ class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
         d_dim = args.d_dim
         L = args.L
         pretrain = args.pretrain
-        now = str(datetime.datetime.now())
+        now = 'zd_dim_'+str(zd_dim)+'_lr_'+str(args.lr)+'_'+str(datetime.datetime.now())
         model = ModelVaDE( zd_dim=zd_dim, d_dim=d_dim, device=device, L = L,  i_c = task.isize.c,
                           i_h = task.isize.h, i_w = task.isize.w, args=args)
         observer = ObVisitorCleanUp(

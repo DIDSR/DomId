@@ -27,7 +27,7 @@ class TrainerVADE(TrainerClassif):
         self.pretrain = pretrain
         self.pretraining_finished = not self.pretrain
         self.LR = aconf.lr
-        self.warmup_beta = 0.01
+        self.warmup_beta = 0.1
 
         if not self.pretraining_finished:
             self.optimizer = optim.Adam(
@@ -65,9 +65,9 @@ class TrainerVADE(TrainerClassif):
 
 
         if self.warmup_beta<1 and self.pretraining_finished:
-            self.warmup_beta = self.warmup_beta + 0.01
-        # if self.LR>0.000001 and self.pretraining_finished:
-        #     self.LR-=0.0002
+            self.warmup_beta = self.warmup_beta + 0.1
+        # if self.LR<0.00005 and self.pretraining_finished:
+        #     self.LR=0.0009
 
         for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
             if len(other_vars) > 0:
@@ -79,7 +79,7 @@ class TrainerVADE(TrainerClassif):
             )
             self.optimizer.zero_grad()
 
-            if acc_val < self.thres and not self.pretraining_finished:
+            if epoch < self.thres and not self.pretraining_finished:
                 loss = p.pretrain_loss(tensor_x)
             else:
                 if not self.pretraining_finished:
@@ -89,8 +89,8 @@ class TrainerVADE(TrainerClassif):
                     self.optimizer = optim.Adam(
                         self.model.parameters(),
                         lr=self.LR,
-                        betas=(0.5, 0.9),
-                        weight_decay=0.000001,
+                        # betas=(0.5, 0.9),
+                        # weight_decay=0.0001,
                     )
                     
                     print("".join(["#"] * 60))

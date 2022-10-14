@@ -135,11 +135,13 @@ class ModelVaDE(nn.Module):
             #     torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 / torch.exp(log_sigma) ** 2, 2), 2), 1), 0
             # )
              
-            sigma = torch.Tensor([0.19]).to(self.device) #mean sigma of all images
+            sigma = torch.Tensor([0.9]).to(self.device) #mean sigma of all images
             log_sigma_est = torch.log(sigma).to(self.device)
             L_rec = torch.mean(
                 torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 , 2), 2), 1), 0
             )/sigma**2
+            #L_rec = F.mse_loss(x_pro, x)
+            # print(L_rec, L_rec0)
             
             
             # print('L rec', L_rec)
@@ -170,6 +172,7 @@ class ModelVaDE(nn.Module):
             z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu  # shape [batch_size, self.zd_dim]
             x_pro, log_sigma = self.decoder(z)  # x_pro, mu, sigma
             L_rec += self.reconstruction_loss(x, x_pro, log_sigma)
+            
 
         L_rec /= self.L
         Loss = L_rec * x.size(1)
