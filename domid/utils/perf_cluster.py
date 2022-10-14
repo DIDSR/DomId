@@ -112,8 +112,9 @@ class PerfCluster(PerfClassif):
             for i, (x_s, _, d_s, *_) in enumerate(loader_te):
                 x_s, d_s = x_s.to(device), d_s.to(device)
                 pred = model_local.infer_d_v(x_s)
-                # asserts added mainly for debugging
-                assert pred.shape == d_s.shape
+                # number of predicted clusters can be larger than the number of ground truth clusters
+                assert pred.shape >= d_s.shape
+                # there are d_dim possible predicted clusters
                 assert pred.shape[1] == model_local.d_dim
 
                 cluster_pred_scalar = pred.cpu().numpy().argmax(axis=1)
