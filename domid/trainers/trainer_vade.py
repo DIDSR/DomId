@@ -32,7 +32,7 @@ class TrainerVADE(TrainerClassif):
         if not self.pretraining_finished:
             self.optimizer = optim.Adam(
                 itertools.chain(self.model.encoder.parameters(), self.model.decoder.parameters()),
-                lr=self.LR,
+                lr=self.LR
             )
             print("".join(["#"] * 60) + "\nPretraining initialized.\n" + "".join(["#"] * 60))
         else:

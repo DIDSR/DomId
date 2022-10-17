@@ -111,6 +111,8 @@ class ModelVaDE(nn.Module):
 
     def pretrain_loss(self, x):
         Loss = nn.MSELoss()
+        #Loss = nn.MSELoss(reduction='sum')
+        #Loss = nn.HuberLoss()
         z_mu, z_sigma2_log = self.encoder(x)
         z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
         x_pro, *_ = self.decoder(z)
