@@ -1,0 +1,40 @@
+import numpy as np
+import tensorboardX
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from domainlab.utils.utils_classif import logit2preds_vpic
+from tensorboardX import SummaryWriter
+
+from domid.compos.cnn_VAE import ConvolutionalDecoder, ConvolutionalEncoder
+from domid.compos.linear_VAE import LinearDecoder, LinearEncoder
+
+
+class ModelVaDEForceY(ModelVADE):
+    def __init__(self, zd_dim, d_dim, device, L, i_c, i_h, i_w, args):
+        """
+        VaDE model (Jiang et al. 2017 "Variational Deep Embedding:
+        An Unsupervised and Generative Approach to Clustering") with
+        fully connected encoder and decoder.
+        :param zd_dim: dimension of the latent space
+        :param d_dim: number of clusters for the clustering task
+        :param device: device to use, e.g., "cuda" or "cpu"
+        :param i_c: number of channels of the input image
+        :param i_h: height of the input image
+        :param i_w: width of the input image
+        :args: command line arguments
+        """
+        super(ModelVaDEForceY, self).__init__(zd_dim, d_dim, device, L, i_c, i_h, i_w, args)
+
+    def cal_loss(self, x, warmup_beta):
+        """Function that is called in trainer_vade to calculate loss
+        :param x: tensor with input data
+        :return: ELBO loss
+        """
+        return self.ELBO_Loss(x, warmup_beta)
+
+    def reconstruction_loss(self, x, y, x_pro, log_sigma):
+        return super().reconstruction_loss(x, x_pro, log_sigma)
+
+    def ELBO_Loss(self, x, y, warmup_beta):
+        return super().ELBO_Loss(x, warmup_beta)
