@@ -80,7 +80,7 @@ class TrainerVADE(TrainerClassif):
             self.optimizer.zero_grad()
 
             if epoch < self.thres and not self.pretraining_finished:
-                loss = p.pretrain_loss(tensor_x)
+                loss = p.pretrain_loss(tensor_x, vec_y)
             else:
                 if not self.pretraining_finished:
                     self.pretraining_finished = True
@@ -97,7 +97,7 @@ class TrainerVADE(TrainerClassif):
                     print("Epoch {}: Finished pretraining and starting to use ELBO loss.".format(epoch))
                     print("".join(["#"] * 60))
 
-                loss = self.model.cal_loss(tensor_x, self.warmup_beta)
+                loss = self.model.cal_loss(tensor_x, vec_y, self.warmup_beta)
             
             loss = loss.sum()
             loss.backward()
@@ -112,7 +112,7 @@ class TrainerVADE(TrainerClassif):
                 self.writer.add_scalar('Training acc', acc_tr, epoch)
                 self.writer.add_scalar('Loss', loss, epoch)
 
-        preds, z_mu, z, _, _, x_pro = self.model.infer_d_v_2(tensor_x)
+        preds, z_mu, z, _, _, x_pro = self.model.infer_d_v_2(tensor_x, vec_y)
         name = "Output of the decoder" + str(epoch)
         imgs = torch.cat((tensor_x[0:8, :, :, :], x_pro[0:8, :, :, :],), 0)
         self.writer.add_images(name, imgs, epoch)
@@ -132,9 +132,9 @@ class TrainerVADE(TrainerClassif):
                 vec_d.to(self.device),
             )
             if acc_val < self.thres and not self.pretraining_finished:
-                loss_val = p.pretrain_loss(tensor_x)
+                loss_val = p.pretrain_loss(tensor_x, vec_y)
             else:
-                loss_val = self.model.cal_loss(tensor_x, self.warmup_beta)
+                loss_val = self.model.cal_loss(tensor_x, vec_y, self.warmup_beta)
 
         self.s.storing(self.args, epoch, acc_tr, self.epo_loss_tr, acc_val, loss_val.sum())
         if epoch % 2 == 0:

@@ -21,13 +21,13 @@ class Pretraining():
         self.loader_val = loader_val
         self.i_h, self.i_w = i_h, i_w
 
-    def pretrain_loss(self, tensor_x):
+    def pretrain_loss(self, tensor_x, vec_y):
         """
         :param tensor_x: the input image
         :return: the loss
         """
         tensor_x = tensor_x.to(self.device)
-        loss = self.model.pretrain_loss(tensor_x)
+        loss = self.model.pretrain_loss(tensor_x, vec_y)
         return loss
 
     def prediction(self):
@@ -56,7 +56,7 @@ class Pretraining():
                         machine_labels.append(machine[i])
                         image_path.append(image_loc[i])
                 tensor_x = tensor_x.to(self.device)
-                preds, z_mu, z, *_ = self.model.infer_d_v_2(tensor_x)
+                preds, z_mu, z, *_ = self.model.infer_d_v_2(tensor_x, vec_y)
                 z = z.detach().cpu().numpy()  # [batch_size, zd_dim]
                 if z.shape[0]!=2:
                     IMGS[counter, :, :, :] = tensor_x.cpu().detach().numpy()
