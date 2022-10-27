@@ -24,6 +24,7 @@ def mk_parser_main():
     parser.add_argument('--model', type = str, default="linear", help = "specify 'linear' for a fully-connected or "
                                                                         "'cnn' for a convolutional model architecture" )
     parser.add_argument('--pretrain', type = str, default = "False", help = "turn on/off pretraining (boolean flag)")
+    parser.add_argument('--path_to_domain', type = str, default = None, help = "path to existing domain labels")
     return parser
 
 def parse_cmd_args():

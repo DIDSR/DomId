@@ -64,7 +64,7 @@ class NodeTaskHER2(NodeTaskDict):
                                     transforms.RandomVerticalFlip(),
                                     transforms.ToTensor()])
 
-        dset = DsetHER2(ind_global, args.dpath, transform=trans)
+        dset = DsetHER2(ind_global, args.dpath, args.d_dim, args.path_to_domain, transform=trans)
         train_set = dset
         val_set = dset
         # split dset into training and validation sets

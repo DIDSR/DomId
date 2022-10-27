@@ -21,13 +21,13 @@ class Pretraining():
         self.loader_val = loader_val
         self.i_h, self.i_w = i_h, i_w
 
-    def pretrain_loss(self, tensor_x, vec_y):
+    def pretrain_loss(self, tensor_x, vec_y, domain):
         """
         :param tensor_x: the input image
         :return: the loss
         """
-        tensor_x = tensor_x.to(self.device)
-        loss = self.model.pretrain_loss(tensor_x, vec_y)
+        #tensor_x = tensor_x.to(self.device)
+        loss = self.model.pretrain_loss(tensor_x, vec_y, domain)
         return loss
 
     def prediction(self):
@@ -50,15 +50,15 @@ class Pretraining():
         with torch.no_grad():
             for tensor_x, vec_y, vec_d, *other_vars in self.loader_tr:
                 if len(other_vars) > 0:
-                    machine, image_loc = other_vars
+                    machine, image_loc, pred_domain = other_vars
                     for i in range(len(machine)):
                         
                         machine_labels.append(machine[i])
                         image_path.append(image_loc[i])
                 tensor_x = tensor_x.to(self.device)
-                preds, z_mu, z, *_ = self.model.infer_d_v_2(tensor_x, vec_y)
+                preds, z_mu, z, *_ = self.model.infer_d_v_2(tensor_x, vec_y, pred_domain)
                 z = z.detach().cpu().numpy()  # [batch_size, zd_dim]
-                if z.shape[0]!=2:
+                if z.shape[0]==1:
                     IMGS[counter, :, :, :] = tensor_x.cpu().detach().numpy()
                     Z[counter, :] = z
                     preds = preds.detach().cpu()
@@ -77,8 +77,8 @@ class Pretraining():
                     domain_labels[counter:counter + z.shape[0], 0] = torch.argmax(preds, 1)+1
                 counter+=z.shape[0]
                 # print(counter)
-        print(domain_labels)
-        breakpoint()
+        # print(domain_labels)
+        # breakpoint()
         return IMGS, Z, domain_labels, machine_labels, image_path
     
     def prediction_te(self):
@@ -127,9 +127,9 @@ class Pretraining():
         Z = np.zeros((num_img, self.model.zd_dim))
         counter = 0
         with torch.no_grad():
-            for tensor_x, vec_y, vec_d, *_ in self.loader_tr:
+            for tensor_x, vec_y, vec_d, machine, img_locs, pred_domain in self.loader_tr:
                 tensor_x = tensor_x.to(self.device)
-                preds, z_mu, z, *_ = self.model.infer_d_v_2(tensor_x)
+                preds, z_mu, z, *_ = self.model.infer_d_v_2(tensor_x, vec_y, pred_domain)
                 z = z.detach().cpu().numpy()  # [batch_size, zd_dim]
                 Z[counter:counter + z.shape[0], :] = z
                 counter += z.shape[0]

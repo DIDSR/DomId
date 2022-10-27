@@ -9,6 +9,7 @@ print('I changed the path')
 from domainlab.compos.exp.exp_cuda_seed import set_seed  # reproducibility
 
 from domid.compos.exp.exp_main import Exp
+#from domid.compos.exp.exp_ray import Exp
 from domid.arg_parser import parse_cmd_args
 
 if __name__ == "__main__":
@@ -20,4 +21,5 @@ if __name__ == "__main__":
 
     set_seed(args.seed)
     exp = Exp(args=args)
+    #exp.tuning()
     exp.execute()

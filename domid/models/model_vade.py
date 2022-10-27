@@ -37,9 +37,13 @@ class ModelVaDE(nn.Module):
             self.encoder = LinearEncoder(zd_dim=zd_dim, input_dim=(i_c, i_h, i_w)).to(device)
             self.decoder = LinearDecoder(prior=args.prior, zd_dim=zd_dim, input_dim=(i_c, i_h, i_w)).to(device)
         else:
+            if args.path_to_domain==None:
+                domain_dim = 0
+            else:
+                domain_dim = args.d_dim
             self.encoder = ConvolutionalEncoder(zd_dim=zd_dim, num_channels=i_c, i_w=i_w, i_h=i_h).to(device)
             self.decoder = ConvolutionalDecoder(
-                prior=args.prior, zd_dim=zd_dim,y_dim= 3, h_dim=self.encoder.h_dim, num_channels=i_c
+                prior=args.prior, zd_dim=zd_dim,y_dim= 3,domain_dim = domain_dim, h_dim=self.encoder.h_dim, num_channels=i_c
             ).to(device)
         print(self.encoder)
         print(self.decoder)
@@ -93,31 +97,37 @@ class ModelVaDE(nn.Module):
         preds, *_ = self._inference(x)
         return preds.cpu().detach()
 
-    def infer_d_v_2(self, x, y):
+    def infer_d_v_2(self, x, y, pred_domain):
         """
         Used for tensorboard visualizations only.
         """
         results = self._inference(x)
+        if pred_domain!=None:
+            zy = torch.cat((results[2], y, pred_domain), 1)
+        else:
+            zy = torch.cat((results[2], y), 1)
 
-        zy = torch.cat((results[2], y), 1)
         x_pro, *_ = self.decoder(zy)
         preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = (r.cpu().detach() for r in results)
         return preds, z_mu, z, log_sigma2_c, probs, x_pro
 
-    def cal_loss(self, x, y, warmup_beta):
+    def cal_loss(self, x, y, pred_domain,warmup_beta):
         """Function that is called in trainer_vade to calculate loss
         :param x: tensor with input data
         :return: ELBO loss
         """
-        return self.ELBO_Loss(x, y, warmup_beta)
+        return self.ELBO_Loss(x, y, pred_domain,warmup_beta)
 
-    def pretrain_loss(self, x, y):
+    def pretrain_loss(self, x, y, pred_domain):
         Loss = nn.MSELoss()
         #Loss = nn.MSELoss(reduction='sum')
         #Loss = nn.HuberLoss()
         z_mu, z_sigma2_log = self.encoder(x)
         z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
-        zy = torch.cat((z, y), 1)
+        if pred_domain!=None:
+            zy = torch.cat((z, y, pred_domain), 1)
+        else:
+            zy = torch.cat((z, y), 1)
         x_pro, *_ = self.decoder(zy)
         loss = Loss(x, x_pro)
         return loss
@@ -161,7 +171,7 @@ class ModelVaDE(nn.Module):
 
         return L_rec
 
-    def ELBO_Loss(self, x, y, warmup_beta):
+    def ELBO_Loss(self, x, y, pred_domain, warmup_beta):
         """ELBO loss function
         Using SGVB estimator and the reparametrization trick calculates ELBO loss.
         Calculates loss between encoded input and input using ELBO equation (12) in the papaer.
@@ -174,8 +184,12 @@ class ModelVaDE(nn.Module):
 
         L_rec = 0.0
         for l in range(self.L):
-            z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu  # shape [batch_size, self.zd_dim]
-            zy = torch.cat((z, y), 1)
+            z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu  # shape [batch_size, self.zd_dim]4
+            if pred_domain != None:
+                zy = torch.cat((z, y, pred_domain), 1)
+            else:
+                zy = torch.cat((z, y), 1)
+
             x_pro, log_sigma = self.decoder(zy)  # x_pro, mu, sigma
             L_rec += self.reconstruction_loss(x, x_pro, log_sigma)
             

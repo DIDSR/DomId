@@ -6,8 +6,7 @@ from domainlab.utils.utils_class import store_args
 from PIL import Image
 from torch.utils.data import Dataset
 from torchvision import transforms
-
-
+import numpy as np
 class DsetHER2(Dataset):
     """
     Dataset of HER2 stained digital microscopy images.
@@ -16,13 +15,15 @@ class DsetHER2(Dataset):
     """
 
     @store_args
-    def __init__(self, class_num, path, transform=None):
+    def __init__(self, class_num, path, d_dim, path_to_domain = None, transform=None):
         self.dpath = os.path.normpath(path)
         self.img_dir = os.path.join(path, "class" + str(class_num + 1) + "jpg")
         self.images = os.listdir(self.img_dir)
         self.class_num = class_num
         self.transform = transform
         self.total_imgs = len(self.images)
+        self.path_to_domain = path_to_domain
+        self.d_dim = d_dim
 
     def __len__(self):
         return len(self.images)
@@ -51,8 +52,14 @@ class DsetHER2(Dataset):
         # image = norm_img
 
         # return the one-hot encoded label
+
         label = mk_fun_label2onehot(3)(self.class_num) #FIXME 3
         #A_FDA, A_NIH, H1, H2
         machine = img_loc[-6:-4]
 
-        return image, label, machine, img_loc
+        if self.path_to_domain:
+            domain = np.loadtxt(self.path_to_domain + 'domain_labels.txt')[:-1][idx]
+            domain = mk_fun_label2onehot(self.d_dim)(int(domain)-1)
+        else:
+            domain = None
+        return image, label, machine, img_loc, domain
