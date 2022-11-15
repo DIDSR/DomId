@@ -1,3 +1,10 @@
+# How the 2 rounds trainig were done
+
+1. https://github.com/agisga/DomId/blob/3d9682d86ffd471e961585e14454db210c4caddb/domid/arg_parser.py#L27
+2. Accorind to commandline, datasets return different tuples
+3. trainer will judge the last return of the tuple of dataset, whether none or not
+4. two rounds command line arguments to call different rounds of training. 
+
 # Domain Identification (DomId)
 
 Deep unsupervised clustering algorithms for domain identification.
