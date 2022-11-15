@@ -77,6 +77,19 @@ class ModelVaDE(nn.Module):
         z_mu, z_sigma2_log = self.encoder(x)
         z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
         pi = F.softmax(self.log_pi, dim=0)
+        # if torch.any(pi<0.01):
+        #     for i in range(len(pi)):
+        #         if pi[i]<0.01:
+        #
+        #             difference = (0.01-pi[i])/(self.d_dim)
+        #             pi+= difference
+        #             pi[i]=0.01
+                    # pi[:i]+=difference
+                    # pi[i+1:]+=difference
+
+
+
+
         mu_c = self.mu_c
         log_sigma2_c = self.log_sigma2_c
 
@@ -102,7 +115,7 @@ class ModelVaDE(nn.Module):
         Used for tensorboard visualizations only.
         """
         results = self._inference(x)
-        if pred_domain!=None:
+        if len(pred_domain)>0:
             zy = torch.cat((results[2], y, pred_domain), 1)
         else:
             zy = torch.cat((results[2], y), 1)
@@ -124,7 +137,7 @@ class ModelVaDE(nn.Module):
         #Loss = nn.HuberLoss()
         z_mu, z_sigma2_log = self.encoder(x)
         z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
-        if pred_domain!=None:
+        if len(pred_domain)>0:
             zy = torch.cat((z, y, pred_domain), 1)
         else:
             zy = torch.cat((z, y), 1)
@@ -185,7 +198,7 @@ class ModelVaDE(nn.Module):
         L_rec = 0.0
         for l in range(self.L):
             z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu  # shape [batch_size, self.zd_dim]4
-            if pred_domain != None:
+            if len(pred_domain)>0:
                 zy = torch.cat((z, y, pred_domain), 1)
             else:
                 zy = torch.cat((z, y), 1)

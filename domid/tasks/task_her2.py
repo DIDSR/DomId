@@ -62,6 +62,8 @@ class NodeTaskHER2(NodeTaskDict):
         trans = transforms.Compose([transforms.Resize((128, 128)),
                                     transforms.RandomHorizontalFlip(),
                                     transforms.RandomVerticalFlip(),
+                                    transforms.RandomAutocontrast(0.25),
+                                    transforms.RandomAdjustSharpness(2, 0.25),
                                     transforms.ToTensor()])
 
         dset = DsetHER2(ind_global, args.dpath, args.d_dim, args.path_to_domain, transform=trans)

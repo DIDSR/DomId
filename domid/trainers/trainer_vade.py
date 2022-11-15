@@ -65,7 +65,8 @@ class TrainerVADE(TrainerClassif):
 
 
         if self.warmup_beta<1 and self.pretraining_finished:
-            self.warmup_beta = self.warmup_beta + 0.1
+            self.warmup_beta = self.warmup_beta + 0.01
+            #self.LR = 0.00001
         # if self.LR<0.00005 and self.pretraining_finished:
         #     self.LR=0.0009
         for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
@@ -93,8 +94,8 @@ class TrainerVADE(TrainerClassif):
                     self.optimizer = optim.Adam(
                         self.model.parameters(),
                         lr=self.LR,
-                        # betas=(0.5, 0.9),
-                        # weight_decay=0.0001,
+                        betas=(0.5, 0.9),
+                        weight_decay=0.0001,
                     )
                     
                     print("".join(["#"] * 60))

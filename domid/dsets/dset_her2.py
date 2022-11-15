@@ -61,5 +61,5 @@ class DsetHER2(Dataset):
             domain = np.loadtxt(self.path_to_domain + 'domain_labels.txt')[:-1][idx]
             domain = mk_fun_label2onehot(self.d_dim)(int(domain)-1)
         else:
-            domain = None
+            domain = []
         return image, label, machine, img_loc, domain

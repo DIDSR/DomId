@@ -76,6 +76,7 @@ class Pretraining():
                     preds = preds.detach().cpu()
                     domain_labels[counter:counter + z.shape[0], 0] = torch.argmax(preds, 1)+1
                 counter+=z.shape[0]
+
                 # print(counter)
         # print(domain_labels)
         # breakpoint()
