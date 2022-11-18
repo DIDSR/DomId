@@ -7,7 +7,7 @@ from domid.utils.perf_cluster import PerfCluster
 
 
 class Pretraining():
-    def __init__(self, model, device, loader_tr, loader_val, i_h, i_w):
+    def __init__(self, model, device, loader_tr, loader_val, i_h, i_w, inject_domain):
         """
         :param model: the model to train
         :param device: the device to use
@@ -20,14 +20,15 @@ class Pretraining():
         self.loader_tr = loader_tr
         self.loader_val = loader_val
         self.i_h, self.i_w = i_h, i_w
+        self.inject_domain = inject_domain
 
-    def pretrain_loss(self, tensor_x, vec_y, domain):
+    def pretrain_loss(self, tensor_x, inject_domain):
         """
         :param tensor_x: the input image
         :return: the loss
         """
         #tensor_x = tensor_x.to(self.device)
-        loss = self.model.pretrain_loss(tensor_x, vec_y, domain)
+        loss = self.model.pretrain_loss(tensor_x, inject_domain)
         return loss
 
     def prediction(self):
@@ -56,7 +57,7 @@ class Pretraining():
                         machine_labels.append(machine[i])
                         image_path.append(image_loc[i])
                 tensor_x = tensor_x.to(self.device)
-                preds, z_mu, z, *_ = self.model.infer_d_v_2(tensor_x, vec_y, pred_domain)
+                preds, z_mu, z, *_ = self.model.infer_d_v_2(tensor_x, self.inject_domain)
                 z = z.detach().cpu().numpy()  # [batch_size, zd_dim]
                 if z.shape[0]==1:
                     IMGS[counter, :, :, :] = tensor_x.cpu().detach().numpy()
@@ -82,41 +83,41 @@ class Pretraining():
         # breakpoint()
         return IMGS, Z, domain_labels, machine_labels, image_path
     
-    def prediction_te(self):
-        """
-        This function is used for ease of storing the results. From training
-        dataloader u=images, the prediction using currect state of the model
-        are made.
-        :return: tensor of dateset images
-        :return: Z space of the current model
-        :return: domain labels corresponding to Z space
-        :return: machine (class labels) labels corresponding to Z space
-        """
-        num_img = len(self.loader_val.dataset)
-        Z = np.zeros((num_img, self.model.zd_dim))
-        IMGS = np.zeros((num_img, 3, self.i_h, self.i_w))
-        domain_labels = np.zeros((num_img, 1))
-        machine_labels = []
-        counter = 0
-        with torch.no_grad():
-            for tensor_x, vec_y, vec_d, *other_vars in self.loader_val:
-                if len(other_vars) > 0:
-                    machine, image_loc = other_vars
-                    for i in range(len(machine)): 
-                        machine_labels.append(machine[i][0])
-                tensor_x = tensor_x.to(self.device)
-                preds, z_mu, z, *_ = self.model.infer_d_v_2(tensor_x)
-                z = z.detach().cpu().numpy()  # [batch_size, zd_dim]
-                
-                IMGS[counter:counter+z.shape[0], :, :, :] = tensor_x.cpu().detach().numpy()
-                Z[counter:counter + z.shape[0], :] = z
-                preds = preds.detach().cpu()
-                domain_labels[counter:counter + z.shape[0], 0] = torch.argmax(preds, 1)+1
-       
-
-
-        return IMGS, Z, domain_labels, machine_labels 
-    
+    # def prediction_te(self):
+    #     """
+    #     This function is used for ease of storing the results. From training
+    #     dataloader u=images, the prediction using currect state of the model
+    #     are made.
+    #     :return: tensor of dateset images
+    #     :return: Z space of the current model
+    #     :return: domain labels corresponding to Z space
+    #     :return: machine (class labels) labels corresponding to Z space
+    #     """
+    #     num_img = len(self.loader_val.dataset)
+    #     Z = np.zeros((num_img, self.model.zd_dim))
+    #     IMGS = np.zeros((num_img, 3, self.i_h, self.i_w))
+    #     domain_labels = np.zeros((num_img, 1))
+    #     machine_labels = []
+    #     counter = 0
+    #     with torch.no_grad():
+    #         for tensor_x, vec_y, vec_d, *other_vars in self.loader_val:
+    #             if len(other_vars) > 0:
+    #                 machine, image_loc = other_vars
+    #                 for i in range(len(machine)):
+    #                     machine_labels.append(machine[i][0])
+    #             tensor_x = tensor_x.to(self.device)
+    #             preds, z_mu, z, *_ = self.model.infer_d_v_2(tensor_x)
+    #             z = z.detach().cpu().numpy()  # [batch_size, zd_dim]
+    #
+    #             IMGS[counter:counter+z.shape[0], :, :, :] = tensor_x.cpu().detach().numpy()
+    #             Z[counter:counter + z.shape[0], :] = z
+    #             preds = preds.detach().cpu()
+    #             domain_labels[counter:counter + z.shape[0], 0] = torch.argmax(preds, 1)+1
+    #
+    #
+    #
+    #     return IMGS, Z, domain_labels, machine_labels
+    #
 
     def GMM_fit(self):
         """
@@ -130,7 +131,7 @@ class Pretraining():
         with torch.no_grad():
             for tensor_x, vec_y, vec_d, machine, img_locs, pred_domain in self.loader_tr:
                 tensor_x = tensor_x.to(self.device)
-                preds, z_mu, z, *_ = self.model.infer_d_v_2(tensor_x, vec_y, pred_domain)
+                preds, z_mu, z, *_ = self.model.infer_d_v_2(tensor_x, self.inject_domain)
                 z = z.detach().cpu().numpy()  # [batch_size, zd_dim]
                 Z[counter:counter + z.shape[0], :] = z
                 counter += z.shape[0]
