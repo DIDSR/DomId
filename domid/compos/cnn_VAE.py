@@ -40,7 +40,7 @@ class ConvolutionalEncoder(nn.Module):
 
 
 class ConvolutionalDecoder(nn.Module):
-    def __init__(self, prior, zd_dim, y_dim, domain_dim, h_dim, num_channels=3, num_filters=[32, 64, 128], k = [4, 4, 4]):  # , 256, 512, 1024]):
+    def __init__(self, prior, zd_dim, y_dim, domain_dim, h_dim, num_channels=3, num_filters=[32, 64, 128], k = [3, 4, 4]):  # , 256, 512, 1024]):
         """
         VAE Decoder
         :param zd_dim: dimension of the latent space, which is the input space of the decoder
@@ -49,6 +49,7 @@ class ConvolutionalDecoder(nn.Module):
         :param num_filters: list of number of filters for each convolutional layer, given in *reverse* order
         :param k: list of kernel sizes for each convolutional layer
         """
+        #FIXME kernel size as an input from comand line? different for HER2 and MNIST
         super(ConvolutionalDecoder, self).__init__()
         self.prior = prior
         self.num_channels = num_channels

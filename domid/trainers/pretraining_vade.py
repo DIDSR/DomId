@@ -42,9 +42,10 @@ class Pretraining():
         Z = np.zeros((num_img, self.model.zd_dim))
         counter = 0
         with torch.no_grad():
-            for tensor_x, vec_y, vec_d, machine, img_locs, pred_domain in self.loader_tr:
+            for tensor_x, vec_y, vec_d,*other_vars  in self.loader_tr:
                 tensor_x = tensor_x.to(self.device)
-
+                if len(other_vars)>0:
+                    machine, img_locs, pred_domain = other_vars #Because of the MNIST color is implemented rn
 
                 if self.is_inject_domain:
                     # pred_domain is from loader_tr, we decide here wether we inject

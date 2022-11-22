@@ -31,7 +31,7 @@ def model_compiler(args, model):
             preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = model._inference(tensor_x)
             mu, log_sigma2 = model.encoder(tensor_x)
             model.decoder(z_mu)
-            loss = model.cal_loss(tensor_x, 1)
+            loss = model.cal_loss(x=tensor_x, inject_domain=[], warmup_beta=0.1)
         else:
             preds_c = model.infer_d_v(tensor_x)
             q_zd, zd_q, y_hat_logit = model.forward(tensor_x, vec_y)

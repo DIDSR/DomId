@@ -47,6 +47,8 @@ def test_VADE_CNN_nonbinary():
             "Gaus",
             "--model",
             "cnn",
+            "--pretrain",
+            "0"
         ]
     )
     experiment_train(args)
@@ -86,6 +88,8 @@ def test_VADE_CNN():
             "--nocu",
             "--model",
             "cnn",
+            "--pretrain",
+            "0"
         ]
     )
     experiment_train(args)
@@ -125,6 +129,8 @@ def test_VADE_nonbinary():
             "--nocu",
             "--prior",
             "Gaus",
+            "--pretrain",
+            "0"
         ]
     )
     experiment_train(args)
@@ -162,6 +168,8 @@ def test_VADE():
             "5",
             "--debug",
             "--nocu",
+            "--pretrain",
+            "0"
         ]
     )
     experiment_train(args)

@@ -21,7 +21,7 @@ class DsetMNIST(Dataset):
     """
 
     @store_args
-    def __init__(self, digit, path,
+    def __init__(self, digit, args,
                  subset_step=1,
                  list_transforms=None,
                  raw_split='train'):
@@ -32,7 +32,7 @@ class DsetMNIST(Dataset):
         :param list_transforms: torch transformations
         :param raw_split: default use the training part of mnist
         """
-        dpath = os.path.normpath(path)
+        dpath = os.path.normpath(args.dpath)
         dataset = datasets.MNIST(root=dpath,
                                  train=True,
                                  download=True,
@@ -60,4 +60,4 @@ class DsetMNIST(Dataset):
         # dummy class labels (should not be used; included for consistency with DomainLab)
         label = self.labels[idx]
         label = mk_fun_label2onehot(10)(label)
-        return image, label
+        return image, label, [], [], [] #FIXME for mnist color as well

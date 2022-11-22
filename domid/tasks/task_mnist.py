@@ -53,7 +53,7 @@ class NodeTaskMNIST(NodeTaskMNISTColor10):
         # set will be created. Otherwise, this argument is
         # the split ratio
         ind_global = self.get_list_domains().index(na_domain)
-        dset = DsetMNIST(ind_global, args.dpath)
+        dset = DsetMNIST(ind_global, args)
         train_set = dset
         val_set = dset
         # split dset into training and validation sets
