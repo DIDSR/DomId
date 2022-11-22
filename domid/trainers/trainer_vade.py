@@ -1,15 +1,14 @@
 import itertools
 
-import matplotlib.pyplot as plt
-import numpy as np
 import torch
 import torch.optim as optim
 from domainlab.algos.trainers.a_trainer import TrainerClassif
 
-from domid.trainers.pretraining import Pretraining
-from domid.trainers.storing_plotting import Storing
+from domid.trainers.pretraining_vade import Pretraining
+from domid.compos.storing import Storing
 from domid.utils.perf_cluster import PerfCluster
-
+from domid.compos.predict_basic import Prediction
+from domid.compos.tensorboard_fun import tensorboard_write
 
 class TrainerVADE(TrainerClassif):
     def __init__(self, model, task, observer, device, writer, pretrain=True, aconf=None):
@@ -26,24 +25,24 @@ class TrainerVADE(TrainerClassif):
 
         self.pretrain = pretrain
         self.pretraining_finished = not self.pretrain
-        self.LR = aconf.lr
+        self.lr = aconf.lr
         self.warmup_beta = 0.1
 
         if not self.pretraining_finished:
             self.optimizer = optim.Adam(
                 itertools.chain(self.model.encoder.parameters(), self.model.decoder.parameters()),
-                lr=self.LR
+                lr=self.lr
             )
             print("".join(["#"] * 60) + "\nPretraining initialized.\n" + "".join(["#"] * 60))
         else:
-            self.optimizer = optim.Adam(self.model.parameters(), lr=self.LR)
+            self.optimizer = optim.Adam(self.model.parameters(), lr=self.lr)
 
         self.epo_loss_tr = None
         self.writer = writer
-        self.thres = aconf.pre_tr
+        self.thres = aconf.pre_tr #number of epochs for pretraining
         self.i_h, self.i_w = task.isize.h, task.isize.w
         self.args = aconf
-        self.s = Storing(self.args)
+        self.storage = Storing(self.args)
         self.loader_val = task.loader_val
 
     def tr_epoch(self, epoch):
@@ -61,17 +60,18 @@ class TrainerVADE(TrainerClassif):
         else:
             is_inject_domain = False
 
-        p = Pretraining(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, is_inject_domain)
-        acc_tr, _ = p.epoch_tr_acc()
-        acc_val, _ = p.epoch_val_acc()
+
+        pretrain = Pretraining(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args, is_inject_domain)
+        prediction = Prediction(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args, is_inject_domain)
+        acc_tr, _ = prediction.epoch_tr_acc()
+        acc_val, _ = prediction.epoch_val_acc()
 
 
-
+        #___________Define warm-up for ELBO loss_________
         if self.warmup_beta<1 and self.pretraining_finished:
             self.warmup_beta = self.warmup_beta + 0.01
-            #self.LR = 0.00001
-        # if self.LR<0.00005 and self.pretraining_finished:
-        #     self.LR=0.0009
+
+        #_____________one training epoch: start_______________________
         for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
 
             if len(other_vars) >0:
@@ -86,9 +86,18 @@ class TrainerVADE(TrainerClassif):
                 vec_d.to(self.device),
             )
             self.optimizer.zero_grad()
+            #__________________Inject domain__________________
+            if is_inject_domain:
+                if len(vec_y) + len(pred_domain) == self.args.dim_inject_y:
+                    inject_tensor = torch.cat(vec_y, pred_domain)
+                elif len(vec_y) == self.args.dim_inject_y:
+                    inject_tensor = vec_y
+            else:
+                inject_tensor = []
 
+            #__________________Pretrain/ELBO loss____________
             if epoch < self.thres and not self.pretraining_finished:
-                loss = p.pretrain_loss(tensor_x, )
+                loss = pretrain.pretrain_loss(tensor_x, inject_tensor)
             else:
                 if not self.pretraining_finished:
                     self.pretraining_finished = True
@@ -96,7 +105,7 @@ class TrainerVADE(TrainerClassif):
                     
                     self.optimizer = optim.Adam(
                         self.model.parameters(),
-                        lr=self.LR,
+                        lr=self.lr,
                         betas=(0.5, 0.9),
                         weight_decay=0.0001,
                     )
@@ -105,35 +114,19 @@ class TrainerVADE(TrainerClassif):
                     print("Epoch {}: Finished pretraining and starting to use ELBO loss.".format(epoch))
                     print("".join(["#"] * 60))
 
-                if len(vec_y)+len(pred_domain)==self.args.dim_inject_y:
-                    inject_domain = torch.cat(vec_y, pred_domain)
-                elif len(vec_y)==self.args.dim_inject_y:
-                    inject_domain = torch.cat(vec_y)
-                else:
-                    inject_domain = []
 
-                loss = self.model.cal_loss(tensor_x, inject_domain, self.warmup_beta)
+
+                loss = self.model.cal_loss(tensor_x, inject_tensor, self.warmup_beta)
             
             loss = loss.sum()
             loss.backward()
             self.optimizer.step()
-            self.epo_loss_tr += loss.cpu().detach().item() #FIXME devide #  number of samples in the HER notebook 
-            self.writer.add_scalar('learning rate', self.LR, epoch)
-            self.writer.add_scalar('warmup', self.warmup_beta, epoch)
-            if not self.pretraining_finished:
-                self.writer.add_scalar('Pretraining', acc_tr, epoch)
-                self.writer.add_scalar('Pretraining Loss', loss, epoch)
-            else:
-                self.writer.add_scalar('Training acc', acc_tr, epoch)
-                self.writer.add_scalar('Loss', loss, epoch)
+            self.epo_loss_tr += loss.cpu().detach().item() #FIXME devide #  number of samples in the HER notebook
 
-        preds, z_mu, z, _, _, x_pro = self.model.infer_d_v_2(tensor_x,inject_domain)
-        name = "Output of the decoder" + str(epoch)
-        imgs = torch.cat((tensor_x[0:8, :, :, :], x_pro[0:8, :, :, :],), 0)
-        self.writer.add_images(name, imgs, epoch)
 
         if not self.pretraining_finished:
-            gmm = p.GMM_fit()
+            gmm = pretrain.GMM_fit()
+
         (preds_c,probs_c,z,z_mu,z_sigma2_log,mu_c,log_sigma2_c,pi,logits,) = self.model._inference(tensor_x)
         print("pi:")
         print(pi.cpu().detach().numpy())
@@ -146,17 +139,25 @@ class TrainerVADE(TrainerClassif):
                 vec_y.to(self.device),
                 vec_d.to(self.device),
             )
-            if acc_val < self.thres and not self.pretraining_finished:
-                loss_val = p.pretrain_loss(tensor_x, inject_domain)
-            else:
-                loss_val = self.model.cal_loss(tensor_x, inject_domain, self.warmup_beta)
 
-        self.s.storing(self.args, epoch, acc_tr, self.epo_loss_tr, acc_val, loss_val.sum())
+            if acc_val < self.thres and not self.pretraining_finished:
+                loss_val = pretrain.pretrain_loss(tensor_x, inject_tensor)
+            else:
+                loss_val = self.model.cal_loss(tensor_x, inject_tensor, self.warmup_beta)
+
+
+
+
+        tensorboard_write(self.writer, self.model, epoch, self.lr, self.warmup_beta,
+                          acc_tr, loss, self.pretraining_finished, tensor_x, inject_tensor)
+
+        # _____storing results and Z space__________
+        self.storage.storing(self.args, epoch, acc_tr, self.epo_loss_tr, acc_val, loss_val.sum())
         if epoch % 2 == 0:
-            _, Z, domain_labels, machine_labels, image_locs = p.prediction()
-            self.s.storing_z_space(Z, domain_labels, machine_labels, image_locs)
+            _, Z, domain_labels, machine_labels, image_locs = prediction.mk_prediction()
+            self.storage.storing_z_space(Z, domain_labels, machine_labels, image_locs)
         if epoch%10==0:
-            self.s.saving_model(self.model)
+            self.storage.saving_model(self.model)
             
         flag_stop = self.observer.update(epoch)  # notify observer
         return flag_stop
