@@ -1,3 +1,4 @@
+import warnings
 import itertools
 
 import torch
@@ -55,14 +56,8 @@ class TrainerVADE(TrainerClassif):
         self.model.train()
         self.epo_loss_tr = 0
 
-        if self.args.dim_inject_y>0:
-            is_inject_domain =True
-        else:
-            is_inject_domain = False
-
-
-        pretrain = Pretraining(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args, is_inject_domain)
-        prediction = Prediction(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args, is_inject_domain)
+        pretrain = Pretraining(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args)
+        prediction = Prediction(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args)
         acc_tr, _ = prediction.epoch_tr_acc()
         acc_val, _ = prediction.epoch_val_acc()
 
@@ -86,14 +81,17 @@ class TrainerVADE(TrainerClassif):
                 vec_d.to(self.device),
             )
             self.optimizer.zero_grad()
+
             #__________________Inject domain__________________
-            if is_inject_domain:
+
+            inject_tensor = []
+            if self.args.dim_inject_y > 0:
                 if len(vec_y) + len(pred_domain) == self.args.dim_inject_y:
                     inject_tensor = torch.cat(vec_y, pred_domain)
                 elif len(vec_y) == self.args.dim_inject_y:
                     inject_tensor = vec_y
-            else:
-                inject_tensor = []
+                else:
+                    raise RuntimeError("dimension does not match!")
 
             #__________________Pretrain/ELBO loss____________
             if epoch < self.thres and not self.pretraining_finished:
@@ -102,14 +100,14 @@ class TrainerVADE(TrainerClassif):
                 if not self.pretraining_finished:
                     self.pretraining_finished = True
                     # reset the optimizer
-                    
+
                     self.optimizer = optim.Adam(
                         self.model.parameters(),
                         lr=self.lr,
                         betas=(0.5, 0.9),
                         weight_decay=0.0001,
                     )
-                    
+
                     print("".join(["#"] * 60))
                     print("Epoch {}: Finished pretraining and starting to use ELBO loss.".format(epoch))
                     print("".join(["#"] * 60))
@@ -117,20 +115,35 @@ class TrainerVADE(TrainerClassif):
 
 
                 loss = self.model.cal_loss(tensor_x, inject_tensor, self.warmup_beta)
-            
+
             loss = loss.sum()
             loss.backward()
             self.optimizer.step()
-            self.epo_loss_tr += loss.cpu().detach().item() #FIXME devide #  number of samples in the HER notebook
+            self.epo_loss_tr += loss.cpu().detach().item()
+            # FIXME: devide #  number of samples in the HER notebook
 
-
+        # after one epoch (all batches), GMM is calculated again and pi, mu_c
+        # will get updated via this line.
+        # name convention: mu_c is the mean for the Gaussian mixture cluster,
+        # but mu alone means mean for decoded pixel
         if not self.pretraining_finished:
-            gmm = pretrain.GMM_fit()
+            pretrain.GMM_fit()
 
-        (preds_c,probs_c,z,z_mu,z_sigma2_log,mu_c,log_sigma2_c,pi,logits,) = self.model._inference(tensor_x)
+        # only z and pi needed
+        (preds_c,
+         probs_c,
+         z,
+         z_mu,
+         z_sigma2_log,
+         mu_c,
+         log_sigma2_c,
+         pi,
+         logits,
+         ) = self.model._inference(tensor_x)
+
         print("pi:")
         print(pi.cpu().detach().numpy())
-        
+
         for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_val):
             if len(other_vars) > 0:
                 machine, path, pred_domain = other_vars
@@ -156,9 +169,9 @@ class TrainerVADE(TrainerClassif):
         if epoch % 2 == 0:
             _, Z, domain_labels, machine_labels, image_locs = prediction.mk_prediction()
             self.storage.storing_z_space(Z, domain_labels, machine_labels, image_locs)
-        if epoch%10==0:
+        if epoch % 10 == 0:
             self.storage.saving_model(self.model)
-            
+
         flag_stop = self.observer.update(epoch)  # notify observer
         return flag_stop
 

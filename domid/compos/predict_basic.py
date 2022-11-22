@@ -3,18 +3,17 @@ import numpy as np
 from domid.utils.perf_cluster import PerfCluster
 
 class Prediction():
-    def __init__(self, model, device, loader_tr, loader_val, i_h, i_w,args, is_inject_domain):
+    def __init__(self, model, device, loader_tr, loader_val, i_h, i_w, args):
         self.loader_tr = loader_tr
         self.loader_val = loader_val
         self.model = model
         self.i_w = i_w
         self.i_h = i_h
         self.device = device
-        self.is_inject_domain = is_inject_domain
         self.args = args
-
-
-
+        self.is_inject_domain = False
+        if self.args.dim_inject_y > 0:
+            self.is_inject_domain = True
 
     def mk_prediction(self):
         """
