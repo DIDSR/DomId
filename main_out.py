@@ -3,8 +3,8 @@ import torch
 import torch
 torch.cuda.empty_cache()
 
-sys.path.insert(0,'/home/mariia.sidulova/DomId')
-sys.path.insert(0, '/home/mariia.sidulova/DomId/DomainLab')
+# sys.path.insert(0,'/home/mariia.sidulova/DomId')
+# sys.path.insert(0, '/home/mariia.sidulova/DomId/DomainLab')
 print('I changed the path') 
 from domainlab.compos.exp.exp_cuda_seed import set_seed  # reproducibility
 
