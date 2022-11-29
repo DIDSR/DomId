@@ -52,9 +52,9 @@ class ModelVaDE(nn.Module):
             self.encoder = ConvolutionalEncoder(zd_dim=zd_dim, num_channels=i_c, i_w=i_w, i_h=i_h).to(device)
             self.decoder = ConvolutionalDecoder(
                 prior=args.prior,
-                zd_dim=zd_dim,
-                y_dim=self.dim_inject_y,
-                domain_dim=self.dim_inject_domain,
+                zd_dim=zd_dim, #50
+                domain_dim=self.dim_inject_y, #
+                #domain_dim=self.dim_inject_y,
                 h_dim=self.encoder.h_dim,
                 num_channels=i_c
             ).to(device)
@@ -217,7 +217,6 @@ class ModelVaDE(nn.Module):
                 zy = torch.cat((z, inject_domain), 1)
             else:
                 zy = z
-
 
             x_pro, log_sigma = self.decoder(zy)  # x_pro, mu, sigma
             L_rec += self.reconstruction_loss(x, x_pro, log_sigma)

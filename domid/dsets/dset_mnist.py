@@ -12,7 +12,7 @@ from PIL import Image
 from torch.utils.data import Dataset
 from torchvision import datasets, transforms
 
-
+import random
 class DsetMNIST(Dataset):
     """
     MNIST
@@ -44,6 +44,7 @@ class DsetMNIST(Dataset):
         n_img = self.images.shape[0]
         # dummy class labels (should not be used; included for consistency with DomainLab)
         self.labels = torch.randint(10, (n_img,), dtype=torch.int32)
+        self.args = args
 
     def __len__(self):
         return len(self.images)
@@ -60,4 +61,13 @@ class DsetMNIST(Dataset):
         # dummy class labels (should not be used; included for consistency with DomainLab)
         label = self.labels[idx]
         label = mk_fun_label2onehot(10)(label)
-        return image, label, [], [], [] #FIXME for mnist color as well
+        another_label = np.random.randint(0, self.args.dim_inject_y, size = len(label))
+
+        location = ['test']*len(another_label)
+        if self.args.path_to_domain:
+            inject_domain = np.random.randint(0, 4, size = len(label))
+
+        else:
+            inject_domain = np.array([])
+
+        return image, label, another_label, location, inject_domain #FIXME for mnist color as well

@@ -51,9 +51,9 @@ class Pretraining():
                     # pred_domain is from loader_tr, we decide here wether we inject
                     # both class label and domain label or only class label, or
                     # nothing
-                    if len(vec_y) + len(pred_domain) == self.args.dim_inject_y:
+                    if vec_y.shape[1] + pred_domain.shape[1] == self.args.dim_inject_y and pred_domain.shape[1]!=0:
                         inject_tensor = torch.cat(vec_y, pred_domain)
-                    elif len(vec_y) == self.args.dim_inject_y:
+                    elif vec_y.shape[1] == self.args.dim_inject_y:
                         inject_tensor = vec_y
                 else:
                     inject_tensor = []

@@ -40,7 +40,7 @@ class ConvolutionalEncoder(nn.Module):
 
 
 class ConvolutionalDecoder(nn.Module):
-    def __init__(self, prior, zd_dim, y_dim, domain_dim, h_dim, num_channels=3, num_filters=[32, 64, 128], k = [3, 4, 4]):  # , 256, 512, 1024]):
+    def __init__(self, prior, zd_dim, domain_dim, h_dim, num_channels=3, num_filters=[32, 64, 128], k = [3, 4, 4]):  # , 256, 512, 1024]):
         """
         VAE Decoder
         :param zd_dim: dimension of the latent space, which is the input space of the decoder
@@ -53,7 +53,7 @@ class ConvolutionalDecoder(nn.Module):
         super(ConvolutionalDecoder, self).__init__()
         self.prior = prior
         self.num_channels = num_channels
-        self.linear = nn.Linear(zd_dim+y_dim+domain_dim, h_dim)
+        self.linear = nn.Linear(zd_dim+domain_dim, h_dim)
         self.sigmoid_layer = nn.Sigmoid()
         self.unflat = UnFlatten(num_filters[-1])
         
@@ -73,7 +73,6 @@ class ConvolutionalDecoder(nn.Module):
         :return x_pro: reconstructed data, which is assumed to have 3 channels, but the channels are assumed to be equal to each other.
         :return x_log_sigma2: log-variance of the reconstructed data
         """
-
         z = self.linear(z)
         z = self.unflat(z)
         x_decoded = self.decod(z)

@@ -86,9 +86,10 @@ class TrainerVADE(TrainerClassif):
 
             inject_tensor = []
             if self.args.dim_inject_y > 0:
-                if len(vec_y) + len(pred_domain) == self.args.dim_inject_y:
+
+                if vec_y.shape[1] + pred_domain.shape[1] == self.args.dim_inject_y and pred_domain.shape[1]!=0:
                     inject_tensor = torch.cat(vec_y, pred_domain)
-                elif len(vec_y) == self.args.dim_inject_y:
+                elif vec_y.shape[1] == self.args.dim_inject_y:
                     inject_tensor = vec_y
                 else:
                     raise RuntimeError("dimension does not match!")
