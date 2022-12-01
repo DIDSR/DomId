@@ -279,7 +279,7 @@ from domid.compos.nn_net import Net_MNIST
     on each component since the prior is draging each component to zero.
     """
 
-    @store_args
+<div class="viewcode-block" id="ModelXY2D.__init__"><a class="viewcode-back" href="../../../domid.models.html#domid.models.model_m2yd.ModelXY2D.__init__">[docs]</a>    @store_args
     def __init__(self, list_str_y, y_dim, zd_dim, gamma_y, device,
                  i_c, i_h, i_w, dim_feat_x=10, list_str_d=None):
         """
@@ -300,7 +300,7 @@ from domid.compos.nn_net import Net_MNIST
             z_dim=zd_dim+y_dim,
             i_c=self.i_c,
             i_w=self.i_w,
-            i_h=self.i_h)
+            i_h=self.i_h)</div>
 
 <div class="viewcode-block" id="ModelXY2D.cal_logit_y"><a class="viewcode-back" href="../../../domid.models.html#domid.models.model_m2yd.ModelXY2D.cal_logit_y">[docs]</a>    def cal_logit_y(self, tensor_x):
         """
@@ -310,18 +310,13 @@ from domid.compos.nn_net import Net_MNIST
 
 <div class="viewcode-block" id="ModelXY2D.infer_y_vpicn"><a class="viewcode-back" href="../../../domid.models.html#domid.models.model_m2yd.ModelXY2D.infer_y_vpicn">[docs]</a>    def infer_y_vpicn(self, tensor_x):
         """
-        Returns
-        -------
-        vec_one_hot : list
-            one-hot encoded classification output
-        prob : list
-            softmax probabilities per class
-        ind : int
-            index of maximal output class score
-        confidence : float
-            maximum probability (already included in prob)
-        na_class : string
-            class label for the maximum probability class
+        :param tensor_x: input tensor
+        :return:
+            - vec_one_hot - (list) one-hot encoded classification output
+            - prob - (list) softmax probabilities per class
+            - ind - (int) index of maximal output class score
+            - confidence - (float) maximum probability (already included in prob)
+            - na_class - (string) class label for the maximum probability class
         """
         with torch.no_grad():
             logit_y = self.infer_y_from_x(tensor_x)

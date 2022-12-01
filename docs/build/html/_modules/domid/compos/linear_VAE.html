@@ -243,7 +243,7 @@ from domid.compos.VAE_blocks import linear_block
 
 
 <div class="viewcode-block" id="LinearEncoder"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.linear_VAE.LinearEncoder">[docs]</a>class LinearEncoder(nn.Module):
-    def __init__(self, zd_dim, input_dim=(3, 28, 28), features_dim=[500, 500, 2000]):
+<div class="viewcode-block" id="LinearEncoder.__init__"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.linear_VAE.LinearEncoder.__init__">[docs]</a>    def __init__(self, zd_dim, input_dim=(3, 28, 28), features_dim=[500, 500, 2000]):
         """
         VAE Encoder
         :param zd_dim: dimension of the latent space
@@ -258,7 +258,7 @@ from domid.compos.VAE_blocks import linear_block
             *linear_block(features_dim[1], features_dim[2])
         )
         self.mu_layer = nn.Linear(features_dim[2], zd_dim)
-        self.log_sigma2_layer = nn.Linear(features_dim[2], zd_dim)
+        self.log_sigma2_layer = nn.Linear(features_dim[2], zd_dim)</div>
 
 <div class="viewcode-block" id="LinearEncoder.forward"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.linear_VAE.LinearEncoder.forward">[docs]</a>    def forward(self, x):
         """
@@ -273,7 +273,7 @@ from domid.compos.VAE_blocks import linear_block
         return mu, log_sigma2</div></div>
 
 <div class="viewcode-block" id="LinearDecoder"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.linear_VAE.LinearDecoder">[docs]</a>class LinearDecoder(nn.Module):
-    def __init__(self, prior, zd_dim, input_dim=(3, 28, 28), features_dim=[500, 500, 2000]):
+<div class="viewcode-block" id="LinearDecoder.__init__"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.linear_VAE.LinearDecoder.__init__">[docs]</a>    def __init__(self, prior, zd_dim, input_dim=(3, 28, 28), features_dim=[500, 500, 2000]):
         """
         VAE Decoder
         :param zd_dim: dimension of the latent space
@@ -290,7 +290,7 @@ from domid.compos.VAE_blocks import linear_block
         )
         self.mu_layer = nn.Linear(features_dim[0], np.prod(input_dim))
         self.log_sigma_layer = nn.Linear(features_dim[0], np.prod(input_dim))
-        self.activation = nn.Sigmoid()
+        self.activation = nn.Sigmoid()</div>
 
 <div class="viewcode-block" id="LinearDecoder.forward"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.linear_VAE.LinearDecoder.forward">[docs]</a>    def forward(self, z):
         """

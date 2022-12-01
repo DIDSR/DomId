@@ -242,7 +242,7 @@ from domid.compos.VAE_blocks import UnFlatten, get_output_shape
 
 
 <div class="viewcode-block" id="ConvolutionalEncoder"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.cnn_VAE.ConvolutionalEncoder">[docs]</a>class ConvolutionalEncoder(nn.Module):
-    def __init__(self, zd_dim, num_channels=3, num_filters=[32, 64, 128], i_w=28, i_h=28, k = [3, 3, 3]):
+<div class="viewcode-block" id="ConvolutionalEncoder.__init__"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.cnn_VAE.ConvolutionalEncoder.__init__">[docs]</a>    def __init__(self, zd_dim, num_channels=3, num_filters=[32, 64, 128], i_w=28, i_h=28, k = [3, 3, 3]):
         """
         VAE Encoder
         :param zd_dim: dimension of the latent space
@@ -264,7 +264,7 @@ from domid.compos.VAE_blocks import UnFlatten, get_output_shape
         self.encod = nn.Sequential(*modules)
         self.h_dim = get_output_shape(self.encod, (1, num_channels, i_w, i_h))[1]
         self.mu_layer = nn.Linear(self.h_dim, zd_dim)
-        self.log_sigma2_layer = nn.Linear(self.h_dim, zd_dim)
+        self.log_sigma2_layer = nn.Linear(self.h_dim, zd_dim)</div>
 
 <div class="viewcode-block" id="ConvolutionalEncoder.forward"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.cnn_VAE.ConvolutionalEncoder.forward">[docs]</a>    def forward(self, x):
         """
@@ -277,7 +277,7 @@ from domid.compos.VAE_blocks import UnFlatten, get_output_shape
 
 
 <div class="viewcode-block" id="ConvolutionalDecoder"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.cnn_VAE.ConvolutionalDecoder">[docs]</a>class ConvolutionalDecoder(nn.Module):
-    def __init__(self, prior, zd_dim, domain_dim, h_dim, num_channels=3, num_filters=[32, 64, 128], k = [3, 4, 4]):  # , 256, 512, 1024]):
+<div class="viewcode-block" id="ConvolutionalDecoder.__init__"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.cnn_VAE.ConvolutionalDecoder.__init__">[docs]</a>    def __init__(self, prior, zd_dim, domain_dim, h_dim, num_channels=3, num_filters=[32, 64, 128], k = [3, 4, 4]):  # , 256, 512, 1024]):
         """
         VAE Decoder
         :param zd_dim: dimension of the latent space, which is the input space of the decoder
@@ -303,7 +303,7 @@ from domid.compos.VAE_blocks import UnFlatten, get_output_shape
             modules.append(nn.BatchNorm2d(num_filters[i + 1]))
             modules.append(nn.LeakyReLU())
         modules.append(nn.ConvTranspose2d(num_filters[-2], num_channels * 2, kernel_size=k[-1], stride=2, padding=1))
-        self.decod = nn.Sequential(*modules)
+        self.decod = nn.Sequential(*modules)</div>
 
 <div class="viewcode-block" id="ConvolutionalDecoder.forward"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.cnn_VAE.ConvolutionalDecoder.forward">[docs]</a>    def forward(self, z):
         """

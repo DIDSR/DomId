@@ -17,13 +17,14 @@ class ModelVaDE(nn.Module):
         VaDE model (Jiang et al. 2017 "Variational Deep Embedding:
         An Unsupervised and Generative Approach to Clustering") with
         fully connected encoder and decoder.
+
         :param zd_dim: dimension of the latent space
         :param d_dim: number of clusters for the clustering task
         :param device: device to use, e.g., "cuda" or "cpu"
         :param i_c: number of channels of the input image
         :param i_h: height of the input image
         :param i_w: width of the input image
-        :args: command line arguments
+        :param args: command line arguments
         """
         super(ModelVaDE, self).__init__()
         self.zd_dim = zd_dim

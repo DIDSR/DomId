@@ -249,18 +249,19 @@ from domid.compos.linear_VAE import LinearDecoder, LinearEncoder
 
 
 <div class="viewcode-block" id="ModelVaDE"><a class="viewcode-back" href="../../../domid.models.html#domid.models.model_vade.ModelVaDE">[docs]</a>class ModelVaDE(nn.Module):
-    def __init__(self, zd_dim, d_dim, device, L, i_c, i_h, i_w, args):
+<div class="viewcode-block" id="ModelVaDE.__init__"><a class="viewcode-back" href="../../../domid.models.html#domid.models.model_vade.ModelVaDE.__init__">[docs]</a>    def __init__(self, zd_dim, d_dim, device, L, i_c, i_h, i_w, args):
         """
         VaDE model (Jiang et al. 2017 "Variational Deep Embedding:
         An Unsupervised and Generative Approach to Clustering") with
         fully connected encoder and decoder.
+
         :param zd_dim: dimension of the latent space
         :param d_dim: number of clusters for the clustering task
         :param device: device to use, e.g., "cuda" or "cpu"
         :param i_c: number of channels of the input image
         :param i_h: height of the input image
         :param i_w: width of the input image
-        :args: command line arguments
+        :param args: command line arguments
         """
         super(ModelVaDE, self).__init__()
         self.zd_dim = zd_dim
@@ -308,7 +309,7 @@ from domid.compos.linear_VAE import LinearDecoder, LinearEncoder
         self.mu_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
         self.log_sigma2_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
 
-        self.loss_writter = tensorboardX.SummaryWriter()
+        self.loss_writter = tensorboardX.SummaryWriter()</div>
 
     def _inference(self, x):
         """Auxiliary function for inference

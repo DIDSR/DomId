@@ -249,7 +249,7 @@ from domid.compos.predict_basic import Prediction
 from domid.compos.tensorboard_fun import tensorboard_write
 
 <div class="viewcode-block" id="TrainerVADE"><a class="viewcode-back" href="../../../domid.trainers.html#domid.trainers.trainer_vade.TrainerVADE">[docs]</a>class TrainerVADE(TrainerClassif):
-    def __init__(self, model, task, observer, device, writer, pretrain=True, aconf=None):
+<div class="viewcode-block" id="TrainerVADE.__init__"><a class="viewcode-back" href="../../../domid.trainers.html#domid.trainers.trainer_vade.TrainerVADE.__init__">[docs]</a>    def __init__(self, model, task, observer, device, writer, pretrain=True, aconf=None):
         """FIXME: add description of the parameters
         :param model: model to train
         :param task: task to train on
@@ -281,7 +281,7 @@ from domid.compos.tensorboard_fun import tensorboard_write
         self.i_h, self.i_w = task.isize.h, task.isize.w
         self.args = aconf
         self.storage = Storing(self.args)
-        self.loader_val = task.loader_val
+        self.loader_val = task.loader_val</div>
 
 <div class="viewcode-block" id="TrainerVADE.tr_epoch"><a class="viewcode-back" href="../../../domid.trainers.html#domid.trainers.trainer_vade.TrainerVADE.tr_epoch">[docs]</a>    def tr_epoch(self, epoch):
         """

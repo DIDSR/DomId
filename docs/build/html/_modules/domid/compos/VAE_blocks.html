@@ -260,9 +260,9 @@ import torch.nn as nn
     return layers</div>
 
 <div class="viewcode-block" id="UnFlatten"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.VAE_blocks.UnFlatten">[docs]</a>class UnFlatten(nn.Module):
-    def __init__(self, num_channels):
+<div class="viewcode-block" id="UnFlatten.__init__"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.VAE_blocks.UnFlatten.__init__">[docs]</a>    def __init__(self, num_channels):
         super(UnFlatten, self).__init__()
-        self.num_channels = num_channels
+        self.num_channels = num_channels</div>
 
 <div class="viewcode-block" id="UnFlatten.forward"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.VAE_blocks.UnFlatten.forward">[docs]</a>    def forward(self, input):
         filter_size = self.num_channels

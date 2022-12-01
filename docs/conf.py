@@ -79,6 +79,14 @@ myst_enable_extensions = [
     "substitution",
 ]
 
+autodoc_default_options = {
+    'members': True,
+    'member-order': 'bysource',
+    'special-members': True, # create docs for methods such as '__init__',
+    'undoc-members': True,
+    'exclude-members': '__weakref__'
+}
+
 # autosummary_generate = True
 # napoleon_google_docstring = False
 # napoleon_use_param = False

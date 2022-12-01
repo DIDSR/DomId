@@ -251,7 +251,7 @@ import numpy as np
     There are also 4 data collection site/machine combinations.
     """
 
-    @store_args
+<div class="viewcode-block" id="DsetHER2.__init__"><a class="viewcode-back" href="../../../domid.dsets.html#domid.dsets.dset_her2.DsetHER2.__init__">[docs]</a>    @store_args
     def __init__(self, class_num, path, d_dim, path_to_domain = None, transform=None):
         self.dpath = os.path.normpath(path)
         self.img_dir = os.path.join(path, "class" + str(class_num + 1) + "jpg")
@@ -260,12 +260,12 @@ import numpy as np
         self.transform = transform
         self.total_imgs = len(self.images)
         self.path_to_domain = path_to_domain
-        self.d_dim = d_dim
+        self.d_dim = d_dim</div>
 
-    def __len__(self):
-        return len(self.images)
+<div class="viewcode-block" id="DsetHER2.__len__"><a class="viewcode-back" href="../../../domid.dsets.html#domid.dsets.dset_her2.DsetHER2.__len__">[docs]</a>    def __len__(self):
+        return len(self.images)</div>
 
-    def __getitem__(self, idx):
+<div class="viewcode-block" id="DsetHER2.__getitem__"><a class="viewcode-back" href="../../../domid.dsets.html#domid.dsets.dset_her2.DsetHER2.__getitem__">[docs]</a>    def __getitem__(self, idx):
         img_loc = os.path.join(self.img_dir, self.images[idx])
 
         # import cv2
@@ -301,7 +301,7 @@ import numpy as np
             # FIXME: no need to hardcode the number of domains as d_dim
         else:
             domain = []
-        return image, label, machine, img_loc, domain</div>
+        return image, label, machine, img_loc, domain</div></div>
 </pre></div>
 
           </article>

@@ -73,18 +73,13 @@ class ModelXY2D(AModelClassif):
 
     def infer_y_vpicn(self, tensor_x):
         """
-        Returns
-        -------
-        vec_one_hot : list
-            one-hot encoded classification output
-        prob : list
-            softmax probabilities per class
-        ind : int
-            index of maximal output class score
-        confidence : float
-            maximum probability (already included in prob)
-        na_class : string
-            class label for the maximum probability class
+        :param tensor_x: input tensor
+        :return:
+            - vec_one_hot - (list) one-hot encoded classification output
+            - prob - (list) softmax probabilities per class
+            - ind - (int) index of maximal output class score
+            - confidence - (float) maximum probability (already included in prob)
+            - na_class - (string) class label for the maximum probability class
         """
         with torch.no_grad():
             logit_y = self.infer_y_from_x(tensor_x)

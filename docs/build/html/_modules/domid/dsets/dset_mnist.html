@@ -257,7 +257,7 @@ import random
     - structure: each subdomain contains all images of a given digit
     """
 
-    @store_args
+<div class="viewcode-block" id="DsetMNIST.__init__"><a class="viewcode-back" href="../../../domid.dsets.html#domid.dsets.dset_mnist.DsetMNIST.__init__">[docs]</a>    @store_args
     def __init__(self, digit, args,
                  subset_step=1,
                  list_transforms=None,
@@ -281,12 +281,12 @@ import random
         n_img = self.images.shape[0]
         # dummy class labels (should not be used; included for consistency with DomainLab)
         self.labels = torch.randint(10, (n_img,), dtype=torch.int32)
-        self.args = args
+        self.args = args</div>
 
-    def __len__(self):
-        return len(self.images)
+<div class="viewcode-block" id="DsetMNIST.__len__"><a class="viewcode-back" href="../../../domid.dsets.html#domid.dsets.dset_mnist.DsetMNIST.__len__">[docs]</a>    def __len__(self):
+        return len(self.images)</div>
 
-    def __getitem__(self, idx):
+<div class="viewcode-block" id="DsetMNIST.__getitem__"><a class="viewcode-back" href="../../../domid.dsets.html#domid.dsets.dset_mnist.DsetMNIST.__getitem__">[docs]</a>    def __getitem__(self, idx):
         image = self.images[idx].numpy()
         image = Image.fromarray(image)
         image = image.convert('RGB')
@@ -313,7 +313,7 @@ import random
 
         location = ['test']*len(another_label)
 
-        return image, label, another_label, location, inject_domain #FIXME for mnist color as well</div>
+        return image, label, another_label, location, inject_domain #FIXME for mnist color as well</div></div>
 </pre></div>
 
           </article>

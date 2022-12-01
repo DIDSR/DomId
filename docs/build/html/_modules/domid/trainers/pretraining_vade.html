@@ -242,7 +242,7 @@ from sklearn.mixture import GaussianMixture
 
 
 <div class="viewcode-block" id="Pretraining"><a class="viewcode-back" href="../../../domid.trainers.html#domid.trainers.pretraining_vade.Pretraining">[docs]</a>class Pretraining():
-    def __init__(self, model, device, loader_tr, loader_val, i_h, i_w, args):
+<div class="viewcode-block" id="Pretraining.__init__"><a class="viewcode-back" href="../../../domid.trainers.html#domid.trainers.pretraining_vade.Pretraining.__init__">[docs]</a>    def __init__(self, model, device, loader_tr, loader_val, i_h, i_w, args):
         """
         :param model: the model to train
         :param device: the device to use
@@ -258,7 +258,7 @@ from sklearn.mixture import GaussianMixture
         self.args = args
         self.is_inject_domain = False
         if self.args.dim_inject_y &gt; 0:
-            self.is_inject_domain = True
+            self.is_inject_domain = True</div>
 
 <div class="viewcode-block" id="Pretraining.pretrain_loss"><a class="viewcode-back" href="../../../domid.trainers.html#domid.trainers.pretraining_vade.Pretraining.pretrain_loss">[docs]</a>    def pretrain_loss(self, tensor_x, inject_tensor):
         """
