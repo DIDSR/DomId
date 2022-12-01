@@ -67,6 +67,7 @@ class ConvolutionalDecoder(nn.Module):
             modules.append(nn.LeakyReLU())
         modules.append(nn.ConvTranspose2d(num_filters[-2], num_channels * 2, kernel_size=k[-1], stride=2, padding=1))
         self.decod = nn.Sequential(*modules)
+
     def forward(self, z):
         """
         :param z: latent space representation
