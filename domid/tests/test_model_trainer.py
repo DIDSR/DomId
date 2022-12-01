@@ -111,5 +111,5 @@ def test_MNISTcolor_conditionalTwo_train():
  args = parser.parse_args(["--te_d", "7", "--tr_d", "0", "1", "2", "--zd_dim", "5", "--d_dim", "3", "--dpath",
                           "zout", "--task", "mnist", "--aname", "vade", "--apath", "domid/algos/builder_vade.py",
                           "--bs", "2", "--split", "0.8", "--L", "5", "--debug", "--nocu",
-                          "--model", "cnn", "--prior", "Gaus", "--pretrain", "0", "--dim_inject_y", "10", "--path_to_domain", 'test'])
+                          "--model", "cnn", "--prior", "Gaus", "--pretrain", "0", "--dim_inject_y", "10", "--path_to_domain",  "domid/tests/"])
  experiment_train(args)

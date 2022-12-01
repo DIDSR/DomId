@@ -61,13 +61,17 @@ class DsetMNIST(Dataset):
         # dummy class labels (should not be used; included for consistency with DomainLab)
         label = self.labels[idx]
         label = mk_fun_label2onehot(10)(label)
-        another_label = np.random.randint(0, self.args.dim_inject_y, size = len(label))
+        if self.args.dim_inject_y > 0:
+            another_label = np.random.randint(0, self.args.dim_inject_y, size = len(label))
+        else:
+            another_label = np.zeros(len(label))
 
-        location = ['test']*len(another_label)
         if self.args.path_to_domain:
-            inject_domain = np.random.randint(0, 4, size = len(label))
-
+            inject_domain = np.loadtxt(self.args.path_to_domain + 'domain_labels.txt')[:-1][idx]
+            inject_domain = mk_fun_label2onehot(self.args.d_dim)(int(inject_domain)-1)
         else:
             inject_domain = np.array([])
+
+        location = ['test']*len(another_label)
 
         return image, label, another_label, location, inject_domain #FIXME for mnist color as well
