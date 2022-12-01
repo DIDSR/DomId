@@ -1,5 +1,3 @@
-
-#from domid.models.model_vade import ModelVaDE
 from domid.arg_parser import mk_parser_main
 from domid.compos.exp.exp_main import Exp
 
@@ -48,7 +46,7 @@ def test_VADE_CNN_nonbinary():
             "--model",
             "cnn",
             "--pretrain",
-            "0"
+            "0",
         ]
     )
     experiment_train(args)
@@ -89,7 +87,7 @@ def test_VADE_CNN():
             "--model",
             "cnn",
             "--pretrain",
-            "0"
+            "0",
         ]
     )
     experiment_train(args)
@@ -130,7 +128,7 @@ def test_VADE_nonbinary():
             "--prior",
             "Gaus",
             "--pretrain",
-            "0"
+            "0",
         ]
     )
     experiment_train(args)
@@ -169,7 +167,7 @@ def test_VADE():
             "--debug",
             "--nocu",
             "--pretrain",
-            "0"
+            "0",
         ]
     )
     experiment_train(args)
