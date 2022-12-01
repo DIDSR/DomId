@@ -51,3 +51,11 @@ poetry run python main_out.py --te_d 0 --tr_d 1 2 --task=her2 --debug --epos=30 
 ```
 CUDA_VISIBLE_DEVICES=2 python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --debug --epos=100 --aname=vade --zd_dim=50 --d_dim=3 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=0.75 --dpath "HER2/combined_train" --split 0.8 --bs 8 --lr 0.0005 --model cnn --prior Gaus
 ```
+
+## Generate documentation with Sphinx
+
+Probably set up a separate Python virtual environment. Then run the following:
+
+```
+sh gen_doc.sh
+```
