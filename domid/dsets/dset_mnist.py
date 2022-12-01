@@ -67,8 +67,10 @@ class DsetMNIST(Dataset):
             another_label = np.zeros(len(label))
 
         if self.args.path_to_domain:
-            inject_domain = np.loadtxt(self.args.path_to_domain + 'domain_labels.txt')[:-1][idx]
+            inject_domain = np.loadtxt(os.path.join(self.args.path_to_domain, 'domain_labels.txt'))[:-1][idx]
+            # FIXME: no need to hardcode the name of the file as "domain_labels.txt"
             inject_domain = mk_fun_label2onehot(self.args.d_dim)(int(inject_domain)-1)
+            # FIXME: no need to hardcode the number of domains as d_dim
         else:
             inject_domain = np.array([])
 

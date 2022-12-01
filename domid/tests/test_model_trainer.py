@@ -1,4 +1,5 @@
-# import os
+import os
+import random
 #
 # import torch
 # import torch.utils.data
@@ -107,9 +108,17 @@ def test_MNISTcolor_conditionalOne_train():
  experiment_train(args)
 
 def test_MNISTcolor_conditionalTwo_train():
+ # create a text file filled with 0s, 1s, and 2s
+ with open('domid/tests/domain_labels.txt', 'w') as f:
+     for i in range(14897):
+         fake_label = random.randint(0, 3)
+         f.write(str(fake_label) + "\n")
+
  parser = mk_parser_main()
  args = parser.parse_args(["--te_d", "7", "--tr_d", "0", "1", "2", "--zd_dim", "5", "--d_dim", "3", "--dpath",
                           "zout", "--task", "mnist", "--aname", "vade", "--apath", "domid/algos/builder_vade.py",
                           "--bs", "2", "--split", "0.8", "--L", "5", "--debug", "--nocu",
                           "--model", "cnn", "--prior", "Gaus", "--pretrain", "0", "--dim_inject_y", "10", "--path_to_domain",  "domid/tests/"])
  experiment_train(args)
+ # remove the file after the test
+ os.remove('domid/tests/domain_labels.txt')
