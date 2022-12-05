@@ -54,7 +54,7 @@ def test_MNIST_pretrain():
             "linear",
             "--prior",
             "Bern",
-            "--pretrain",
+            "--pre_tr",
             "1",
         ]
     )
@@ -96,7 +96,7 @@ def test_MNIST_train():
             "linear",
             "--prior",
             "Bern",
-            "--pretrain",
+            "--pre_tr",
             "0",
         ]
     )
@@ -138,7 +138,7 @@ def test_MNIST_train_CNN():
             "cnn",
             "--prior",
             "Bern",
-            "--pretrain",
+            "--pre_tr",
             "0",
         ]
     )
@@ -180,7 +180,7 @@ def test_MNISTcolor_train():
             "linear",
             "--prior",
             "Gaus",
-            "--pretrain",
+            "--pre_tr",
             "0",
         ]
     )
@@ -223,7 +223,7 @@ def test_MNISTcolor_train_CNN():
             "cnn",
             "--prior",
             "Gaus",
-            "--pretrain",
+            "--pre_tr",
             "0",
         ]
     )
@@ -265,7 +265,7 @@ def test_MNISTcolor_pretrain_CNN():
             "cnn",
             "--prior",
             "Gaus",
-            "--pretrain",
+            "--pre_tr",
             "1",
         ]
     )
@@ -343,7 +343,7 @@ def test_MNISTcolor_conditionalOne_train():
             "cnn",
             "--prior",
             "Gaus",
-            "--pretrain",
+            "--pre_tr",
             "0",
             "--dim_inject_y",
             "10",
@@ -392,7 +392,7 @@ def test_MNISTcolor_conditionalTwo_train():
             "cnn",
             "--prior",
             "Gaus",
-            "--pretrain",
+            "--pre_tr",
             "0",
             "--dim_inject_y",
             "10",

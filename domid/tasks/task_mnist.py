@@ -52,7 +52,6 @@ class NodeTaskMNIST(NodeTaskMNISTColor10):
         # be evaluated in if statement, in which case, no validation
         # set will be created. Otherwise, this argument is
         # the split ratio
-        trans = transforms.Compose([transforms.Resize((32, 32)), transforms.ToTensor()])
         trans = [transforms.Resize((32, 32)), transforms.ToTensor()]
         ind_global = self.get_list_domains().index(na_domain)
         dset = DsetMNIST( digit= ind_global, args = args, list_transforms=trans)

@@ -8,7 +8,8 @@ from domid.compos.VAE_blocks import linear_block
 class LinearEncoder(nn.Module):
     def __init__(self, zd_dim, input_dim=(3, 28, 28), features_dim=[500, 500, 2000]):
         """
-        VAE Encoder
+        VAE Encoder with linear layers
+
         :param zd_dim: dimension of the latent space
         :param input_dim: dimensions of the input, e.g., (3, 28, 28) for MNIST in RGB format
         :param features_dim: list of dimensions of the hidden layers

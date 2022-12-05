@@ -76,6 +76,7 @@ class ModelVaDE(nn.Module):
 
     def _inference(self, x):
         """Auxiliary function for inference
+
         :param tensor x: Input tensor of a shape [batchsize, 3, horzintal dim, vertical dim].
         :return tensor preds_c: One hot encoded tensor of the predicted cluster assignment (shape: [batch_size, self.d_dim]).
         :return tensor probs_c: Tensor of the predicted cluster probabilities; this is q(c|x) per eq. (16) or gamma_c in eq. (12) (shape: [batch_size, self.d_dim]).
@@ -118,6 +119,7 @@ class ModelVaDE(nn.Module):
         """
         Predict the cluster/domain of the input data.
         Corresponds to equation (16) in the paper.
+
         :param tensor x: Input tensor of a shape [batchsize, 3, horzintal dim, vertical dim].
         :return tensor preds: One hot encoded tensor of the predicted cluster assignment.
         """
@@ -141,6 +143,7 @@ class ModelVaDE(nn.Module):
 
     def cal_loss(self, x, inject_domain, warmup_beta):
         """Function that is called in trainer_vade to calculate loss
+
         :param x: tensor with input data
         :return: ELBO loss
         """
