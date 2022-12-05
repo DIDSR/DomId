@@ -20,6 +20,7 @@ class Prediction():
         This function is used for ease of storing the results. From training
         dataloader u=images, the prediction using currect state of the model
         are made.
+
         :return: tensor of dateset images
         :return: Z space of the current model
         :return: domain labels corresponding to Z space

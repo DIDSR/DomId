@@ -12,6 +12,7 @@ class NodeTaskMNIST(NodeTaskMNISTColor10):
     Basic MNIST task where the digits are considered "domains"
     Based on NodeTaskMNISTColor10 from DomainLab.
     The digits (0, 1, ..., 9) are regarded as domains (to be separated by unsupervised clustering).
+
     """
     @property
     def list_str_y(self):
@@ -30,12 +31,14 @@ class NodeTaskMNIST(NodeTaskMNISTColor10):
     def get_list_domains(self):
         """
         Get list of domain names
+
         :return: list of domain names
         """
         return mk_dummy_label_list_str("digit", 10)
 
     def get_dset_by_domain(self, args, na_domain, split=True):
         """Get a dataset by digit
+
         :param args: command line arguments
         :param na_domain: domain name
         :param split: whether a training/validation split is performed (the

@@ -8,6 +8,7 @@ class ConvolutionalEncoder(nn.Module):
     def __init__(self, zd_dim, num_channels=3, num_filters=[32, 64, 128], i_w=28, i_h=28, k = [3, 3, 3]):
         """
         VAE Encoder
+
         :param zd_dim: dimension of the latent space
         :param num_channels: number of channels of the input
         :param num_filters: list of number of filters for each convolutional layer
@@ -43,6 +44,7 @@ class ConvolutionalDecoder(nn.Module):
     def __init__(self, prior, zd_dim, domain_dim, h_dim, num_channels=3, num_filters=[32, 64, 128], k = [4, 4, 4]):  # , 256, 512, 1024]):
         """
         VAE Decoder
+
         :param zd_dim: dimension of the latent space, which is the input space of the decoder
         :param h_dim: dimension of the first hidden layer, which is a linear layer
         :param num_channels: number of channels of the output; the output will have twice as many channels, e.g., 3 channels for the mean and 3 channels for log-sigma if num_channels is 3

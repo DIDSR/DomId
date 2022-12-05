@@ -15,7 +15,8 @@ from torchvision import datasets, transforms
 import random
 class DsetMNIST(Dataset):
     """
-    MNIST
+    MNIST Dataset Loading
+
     - subdomains: MNIST digit value
     - structure: each subdomain contains all images of a given digit
     """

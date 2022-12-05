@@ -40,6 +40,7 @@ class LinearDecoder(nn.Module):
     def __init__(self, prior, zd_dim, input_dim=(3, 28, 28), features_dim=[500, 500, 2000]):
         """
         VAE Decoder
+
         :param zd_dim: dimension of the latent space
         :param input_dim: dimension of the original input / output reconstruction, e.g., (3, 28, 28) for MNIST in RGB format
         :param features_dim: list of dimensions of the hidden layers, given in reverse order

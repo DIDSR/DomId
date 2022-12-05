@@ -10,6 +10,7 @@ from domid.dsets.dset_her2 import DsetHER2
 class NodeTaskHER2(NodeTaskDict):
     """
     HER2 task where the HER2 categories are considered "domains"
+
     """
 
     @property
