@@ -36,7 +36,7 @@ class DsetMNIST(Dataset):
         dataset = datasets.MNIST(root=dpath,
                                  train=True,
                                  download=True,
-                                 transform=transforms.ToTensor())
+                                 transform=list_transforms)
         # keep only images of specified digit
         self.images = dataset.data[dataset.targets==digit]
         inds_subset = list(range(0, self.images.shape[0], subset_step))
@@ -53,10 +53,14 @@ class DsetMNIST(Dataset):
         image = self.images[idx].numpy()
         image = Image.fromarray(image)
         image = image.convert('RGB')
+
+       # image = Image.open(img_loc)
+
         if self.list_transforms is not None:
             for trans in self.list_transforms:
                 image = trans(image)
-        image = transforms.ToTensor()(image)  # range of pixel [0,1]
+        else:
+            image = transforms.ToTensor()(image)  # range of pixel [0,1]
 
         # dummy class labels (should not be used; included for consistency with DomainLab)
         label = self.labels[idx]

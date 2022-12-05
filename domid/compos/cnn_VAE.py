@@ -20,7 +20,7 @@ class ConvolutionalEncoder(nn.Module):
         num_filters = [num_channels] + num_filters
         for i in range(len(num_filters) - 1):
             
-            modules.append(nn.Conv2d(num_filters[i], num_filters[i + 1], kernel_size=k[i], stride=2, padding=1))
+            modules.append(nn.Conv2d(num_filters[i], num_filters[i + 1], kernel_size=k[i], stride=1, padding=1))
             modules.append(nn.BatchNorm2d(num_filters[i + 1]))
             modules.append(nn.LeakyReLU())
         modules.append(nn.Flatten())
@@ -40,7 +40,7 @@ class ConvolutionalEncoder(nn.Module):
 
 
 class ConvolutionalDecoder(nn.Module):
-    def __init__(self, prior, zd_dim, domain_dim, h_dim, num_channels=3, num_filters=[32, 64, 128], k = [3, 4, 4]):  # , 256, 512, 1024]):
+    def __init__(self, prior, zd_dim, domain_dim, h_dim, num_channels=3, num_filters=[32, 64, 128], k = [4, 4, 4]):  # , 256, 512, 1024]):
         """
         VAE Decoder
         :param zd_dim: dimension of the latent space, which is the input space of the decoder
@@ -74,6 +74,7 @@ class ConvolutionalDecoder(nn.Module):
         :return x_pro: reconstructed data, which is assumed to have 3 channels, but the channels are assumed to be equal to each other.
         :return x_log_sigma2: log-variance of the reconstructed data
         """
+
         z = self.linear(z)
         z = self.unflat(z)
         x_decoded = self.decod(z)
