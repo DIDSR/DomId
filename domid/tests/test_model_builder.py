@@ -62,7 +62,7 @@ def test_VaDE_CNN():
             "cnn",
         ]
     )
-    i_c, i_w, i_h = 3, 28, 28
+    i_c, i_w, i_h = 3, 32, 32
 
     model = ModelVaDE(
         zd_dim=args.zd_dim,
@@ -95,7 +95,7 @@ def test_VaDE_linear():
             "5",
         ]
     )
-    i_c, i_w, i_h = 3, 28, 28
+    i_c, i_w, i_h = 3, 32, 32
     model = ModelVaDE(
         zd_dim=args.zd_dim,
         d_dim=args.d_dim,

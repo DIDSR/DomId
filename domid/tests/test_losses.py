@@ -26,7 +26,7 @@ def test_VADE_CNN_nonbinary():
             "--dpath",
             "zout",
             "--task",
-            "mnistcolor10",
+            "mnist",
             "--aname",
             "vade",
             "--apath",
@@ -45,7 +45,7 @@ def test_VADE_CNN_nonbinary():
             "Gaus",
             "--model",
             "cnn",
-            "--pretrain",
+            "--pre_tr",
             "0",
         ]
     )
@@ -69,7 +69,7 @@ def test_VADE_CNN():
             "--dpath",
             "zout",
             "--task",
-            "mnistcolor10",
+            "mnist",
             "--aname",
             "vade",
             "--apath",
@@ -86,7 +86,7 @@ def test_VADE_CNN():
             "--nocu",
             "--model",
             "cnn",
-            "--pretrain",
+            "--pre_tr",
             "0",
         ]
     )
@@ -110,7 +110,7 @@ def test_VADE_nonbinary():
             "--dpath",
             "zout",
             "--task",
-            "mnistcolor10",
+            "mnist",
             "--aname",
             "vade",
             "--apath",
@@ -127,7 +127,7 @@ def test_VADE_nonbinary():
             "--nocu",
             "--prior",
             "Gaus",
-            "--pretrain",
+            "--pre_tr",
             "0",
         ]
     )
@@ -151,7 +151,7 @@ def test_VADE():
             "--dpath",
             "zout",
             "--task",
-            "mnistcolor10",
+            "mnist",
             "--aname",
             "vade",
             "--apath",
@@ -166,7 +166,7 @@ def test_VADE():
             "5",
             "--debug",
             "--nocu",
-            "--pretrain",
+            "--pre_tr",
             "0",
         ]
     )

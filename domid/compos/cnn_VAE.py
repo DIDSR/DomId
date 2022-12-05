@@ -20,7 +20,7 @@ class ConvolutionalEncoder(nn.Module):
         num_filters = [num_channels] + num_filters
         for i in range(len(num_filters) - 1):
             
-            modules.append(nn.Conv2d(num_filters[i], num_filters[i + 1], kernel_size=k[i], stride=1, padding=1))
+            modules.append(nn.Conv2d(num_filters[i], num_filters[i + 1], kernel_size=k[i], stride=2, padding=1))
             modules.append(nn.BatchNorm2d(num_filters[i + 1]))
             modules.append(nn.LeakyReLU())
         modules.append(nn.Flatten())

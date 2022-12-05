@@ -25,7 +25,10 @@ class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
         zd_dim = args.zd_dim
         d_dim = args.d_dim
         L = args.L
-        pretrain = args.pretrain
+        pretrain = False
+        if args.pre_tr>0:
+            pretrain = True
+
         now = 'zd_dim_'+str(zd_dim)+'_lr_'+str(args.lr)+'_'+str(datetime.datetime.now())
         model = ModelVaDE(zd_dim=zd_dim,
                           d_dim=d_dim,
