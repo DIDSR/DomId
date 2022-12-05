@@ -1,7 +1,4 @@
-"""Clustering Performance
-
-FIXME: clean up the following discussion...
-
+# FIXME: clean up the following discussion...
 # rows are ground truth cluster label
 # columns are the predicted cluster label
 # entries are number of instances
@@ -78,8 +75,6 @@ FIXME: clean up the following discussion...
 # >>> col_ind
 # >>> cost[row_ind, col_ind].sum()
 
-
-"""
 
 import numpy as np
 import torch
