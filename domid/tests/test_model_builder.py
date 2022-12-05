@@ -140,7 +140,7 @@ def test_m2yd():
         gamma_y=args.gamma_y,
         device=torch.device("cpu"),
         i_c=3,
-        i_h=28,
-        i_w=28,
+        i_h=32,
+        i_w=32,
     )
     model_compiler(args, model)
