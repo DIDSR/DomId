@@ -43,14 +43,25 @@ class Prediction:
                         machine_labels.append(machine[i])
                         image_path.append(image_loc[i])
 
-                tensor_x = tensor_x.to(self.device)
+                tensor_x, vec_y, vec_d = (
+                    tensor_x.to(self.device),
+                    vec_y.to(self.device),
+                    vec_d.to(self.device),
+                )
+
+                inject_tensor = []
                 if self.is_inject_domain:
-                    if vec_y.shape[1] + pred_domain.shape[1] == self.args.dim_inject_y and pred_domain.shape[1] != 0:
-                        inject_tensor = torch.cat(vec_y, pred_domain)
-                    elif vec_y.shape[1] == self.args.dim_inject_y:
-                        inject_tensor = vec_y
-                else:
-                    inject_tensor = []
+                    if len(pred_domain) > 1:
+                        pred_domain = pred_domain.to(self.device)
+                        if vec_y.shape[1] + pred_domain.shape[1] == self.args.dim_inject_y:
+                            inject_tensor = torch.cat(vec_y, pred_domain)
+                        else:
+                            raise ValueError("Dimension of vec_y and pred_domain does not match dim_inject_y")
+                    else:
+                        if vec_y.shape[1] == self.args.dim_inject_y:
+                            inject_tensor = vec_y
+                        else:
+                            raise ValueError("Dimension of vec_y does not match dim_inject_y")
 
                 preds, z_mu, z, *_ = self.model.infer_d_v_2(tensor_x, inject_tensor)
                 z = z.detach().cpu().numpy()  # [batch_size, zd_dim]

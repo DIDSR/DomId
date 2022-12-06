@@ -1,4 +1,4 @@
 [submodule "DomainLab"]
 	path = DomainLab
 	url = https://github.com/marrlab/DomainLab.git
-	branch = cov-patrick
+	branch = master
