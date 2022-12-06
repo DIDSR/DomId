@@ -58,7 +58,7 @@ class DsetHER2(Dataset):
         machine = img_loc[-6:-4]
 
         if self.path_to_domain:
-            domain = np.loadtxt(os.path.join(self.path_to_domain, 'domain_labels.txt'))[:-1][idx]
+            domain = np.loadtxt(os.path.join(self.path_to_domain, 'domain_labels.txt'))[idx]
             # FIXME: no need to hardcode the name of the file as "domain_labels.txt"
             domain = mk_fun_label2onehot(self.d_dim)(int(domain)-1)
             # FIXME: no need to hardcode the number of domains as d_dim
