@@ -31,10 +31,12 @@ poetry run python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --epos=100 --ana
 ```
 poetry run python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --epos=100 --aname=vade --zd_dim=250 --d_dim=3 \
 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=20 --dpath "HER2/combined_train" --split 0.8 --bs 2 \
---lr 0.00005 --prio Gaus --model cnn --dim_inject_y 6 --path_to_domain notebooks/2022-11-02 17:30:13.132561/
+--lr 0.00005 --prior Gaus --model cnn --dim_inject_y 6 --path_to_domain notebooks/2022-11-02\ 17\:30\:13.132561/
 ```
 
-**Note**: dimension of the injected labels (`dim_inject_y`) in this case is the sum of the dimensions of the possible class labels and `d_dim` of previously predicted domains. (e.g. ). Also, `path_to_domain` is the path to the preciously obtained results needs to be specified. Predicted domain labels should be stored in 'domain_labels.txt'.
+**Notes**:
+- Dimension of the injected labels (`dim_inject_y`) in this case is the sum of the dimensions of the possible class labels and `d_dim` of previously predicted domains. (e.g. ).
+- `path_to_domain` is the path to the previously obtained results directory and needs to be specified. Predicted domain labels should be stored within the directory `path_to_domain` in the file `domain_labels.txt`.
 
 # Analyzing data
 
