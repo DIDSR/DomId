@@ -26,7 +26,8 @@ class Prediction():
         :return: domain labels corresponding to Z space
         :return: machine (class labels) labels corresponding to Z space
         """
-        num_img = len(self.loader_tr.dataset)
+
+        num_img = len(self.loader_tr.dataset)-1
         Z = np.zeros((num_img, self.model.zd_dim))
         IMGS = np.zeros((num_img, 3, self.i_h, self.i_w))
         domain_labels = np.zeros((num_img, 1))
@@ -37,7 +38,9 @@ class Prediction():
             for tensor_x, vec_y, vec_d, *other_vars in self.loader_tr:
                 if len(other_vars) > 0:
                     machine, image_loc, pred_domain = other_vars
+
                     for i in range(len(machine)):
+                        print(i)
                         machine_labels.append(machine[i])
                         image_path.append(image_loc[i])
 
