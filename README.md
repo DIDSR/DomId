@@ -59,3 +59,10 @@ Probably set up a separate Python virtual environment. Then run the following:
 ```
 sh gen_doc.sh
 ```
+
+## Developer hints
+If you wanna have DomID be based on another branch of DomainLab, you can do this first where you should replace "name" with the branch name you wanna change.
+```
+git config -f .gitmodules submodule.DomainLab.branch [name]
+git submodule update --remote
+```
