@@ -163,7 +163,7 @@ def test_MNISTcolor_train():
             "--dpath",
             "zout",
             "--task",
-            "mnist",
+            "mnistcolor10",
             "--aname",
             "vade",
             "--apath",
@@ -206,7 +206,7 @@ def test_MNISTcolor_train_CNN():
             "--dpath",
             "zout",
             "--task",
-            "mnist",
+            "mnistcolor10",
             "--aname",
             "vade",
             "--apath",
@@ -248,7 +248,7 @@ def test_MNISTcolor_pretrain_CNN():
             "--dpath",
             "zout",
             "--task",
-            "mnist",
+            "mnistcolor10",
             "--aname",
             "vade",
             "--apath",
@@ -289,7 +289,7 @@ def test_M2YD_train_MNISTcolor():
             "8",
             "9",
             "--task",
-            "mnist",
+            "mnistcolor10",
             "--aname",
             "m2yd",
             "--zd_dim",
@@ -309,7 +309,7 @@ def test_M2YD_train_MNISTcolor():
     experiment_train(args)
 
 
-def test_MNISTcolor_conditionalOne_train():
+def test_MNIST_conditionalOne_train():
     parser = mk_parser_main()
     args = parser.parse_args(
         [
@@ -352,7 +352,7 @@ def test_MNISTcolor_conditionalOne_train():
     experiment_train(args)
 
 
-def test_MNISTcolor_conditionalTwo_train():
+def test_MNIST_conditional_train():
     # create a text file filled with 0s, 1s, and 2s
     with open("domid/tests/domain_labels.txt", "w") as f:
         for i in range(14897):
