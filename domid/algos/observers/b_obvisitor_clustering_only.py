@@ -29,7 +29,7 @@ class ObVisitorClusteringOnly(ObVisitor):
         After training is done
         """
         #super().after_all()
-        model_ld = self.host_trainer.model() #self.exp.visitor.load()
+        model_ld = self.host_trainer.model  #self.exp.visitor.load()
         model_ld = model_ld.to(self.device)
         model_ld.eval()
 
