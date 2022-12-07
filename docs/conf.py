@@ -82,7 +82,7 @@ myst_enable_extensions = [
 autodoc_default_options = {
     'members': True,
     'member-order': 'bysource',
-    'special-members': True, # create docs for methods such as '__init__',
+    'special-members': '__init__', # create docs for methods such as '__init__',
     'undoc-members': True,
     'exclude-members': '__weakref__'
 }
@@ -165,11 +165,15 @@ html_theme_options = {
     "theme_color": "#2196f3",
     "master_doc": False,
     "nav_title": "DomId",
-#    "nav_links": [
-#        {
-#            "href": "readme_link",
-#            "internal": True,
-#            "title": "Introduction"},
+   "nav_links": [
+       # {
+       #     "href": "about_link",
+       #     "internal": True,
+       #     "title": "About"},
+       # {
+       #     "href": "readme_link",
+       #     "internal": True,
+       #     "title": "Quick Start"},
 #        {
 #            "href": "doc_tasks",
 #            "internal": True,
@@ -195,7 +199,7 @@ html_theme_options = {
 #        #     "internal": False,
 #        #     "title": "Material for MkDocs",
 #        # },
-#    ],
+    ],
     "heroes": {
         "index": "A pytorch platform for deep unsupervised clustering and domain identification",
         "customization": "Configuration options to personalize your site.",
@@ -207,7 +211,7 @@ html_theme_options = {
     #     "Development": "https://bashtage.github.io/sphinx-material/devel/",
     #     "Release (rel)": "/sphinx-material/",
     #     "Development (rel)": "/sphinx-material/devel/",
-    # },
+    # },p
     "table_classes": ["plain"],
 }
 

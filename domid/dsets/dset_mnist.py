@@ -16,7 +16,6 @@ import random
 class DsetMNIST(Dataset):
     """
     MNIST Dataset Loading
-
     - subdomains: MNIST digit value
     - structure: each subdomain contains all images of a given digit
     """

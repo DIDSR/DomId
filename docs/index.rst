@@ -10,7 +10,53 @@ Welcome to DomId's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   modules
+About DomID
+===============
+
+.. toctree::
+   :maxdepth: 2
+   :caption: About DomID
+
+   domid.algos
+
+DomainLab
+==============
+
+.. toctree::
+   :maxdepth: 2
+   :caption: FIXME: add link to DomainLab
+
+
+Loading a Datasets and Defining a Task
+=======================================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Loading a Datasets and Defining a Task
+
+   domid.dsets
+   domid.tasks
+
+
+Building and Defining a Model
+==================================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Building and Defining a Model
+
+   domid.compos
+   domid.models
+
+Training a Model
+=================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Training a Model
+
+   domid.algos
+   domid.trainers
 
 
 Indices and tables
@@ -19,3 +65,7 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+
+
+

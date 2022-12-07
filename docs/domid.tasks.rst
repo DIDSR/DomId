@@ -20,6 +20,14 @@ domid.tasks.task\_mnist module
    :undoc-members:
    :show-inheritance:
 
+domid.tasks.task\_mnist\_color module
+-------------------------------------
+
+.. automodule:: domid.tasks.task_mnist_color
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 domid.tasks.zoo\_tasks module
 -----------------------------
 
