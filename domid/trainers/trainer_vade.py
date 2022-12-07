@@ -11,6 +11,7 @@ from domid.utils.perf_cluster import PerfCluster
 from domid.compos.predict_basic import Prediction
 from domid.compos.tensorboard_fun import tensorboard_write
 
+
 class TrainerVADE(TrainerClassif):
     def __init__(self, model, task, observer, device, writer, pretrain=True, aconf=None):
         """FIXME: add description of the parameters
@@ -31,8 +32,7 @@ class TrainerVADE(TrainerClassif):
 
         if not self.pretraining_finished:
             self.optimizer = optim.Adam(
-                itertools.chain(self.model.encoder.parameters(), self.model.decoder.parameters()),
-                lr=self.lr
+                itertools.chain(self.model.encoder.parameters(), self.model.decoder.parameters()), lr=self.lr
             )
             print("".join(["#"] * 60) + "\nPretraining initialized.\n" + "".join(["#"] * 60))
         else:
@@ -40,7 +40,7 @@ class TrainerVADE(TrainerClassif):
 
         self.epo_loss_tr = None
         self.writer = writer
-        self.thres = aconf.pre_tr #number of epochs for pretraining
+        self.thres = aconf.pre_tr  # number of epochs for pretraining
         self.i_h, self.i_w = task.isize.h, task.isize.w
         self.args = aconf
         self.storage = Storing(self.args)
@@ -52,7 +52,9 @@ class TrainerVADE(TrainerClassif):
         :return:
         """
 
-        print("Epoch {}. ELBO loss".format(epoch)) if self.pretraining_finished else print("Epoch {}. MSE loss".format(epoch))
+        print("Epoch {}. ELBO loss".format(epoch)) if self.pretraining_finished else print(
+            "Epoch {}. MSE loss".format(epoch)
+        )
         self.model.train()
         self.epo_loss_tr = 0
 
@@ -61,19 +63,15 @@ class TrainerVADE(TrainerClassif):
         acc_tr, _ = prediction.epoch_tr_acc()
         acc_val, _ = prediction.epoch_val_acc()
 
-
-        #___________Define warm-up for ELBO loss_________
-        if self.warmup_beta<1 and self.pretraining_finished:
+        # ___________Define warm-up for ELBO loss_________
+        if self.warmup_beta < 1 and self.pretraining_finished:
             self.warmup_beta = self.warmup_beta + 0.01
 
-        #_____________one training epoch: start_______________________
+        # _____________one training epoch: start_______________________
         for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
 
-            if len(other_vars) >0:
+            if len(other_vars) > 0:
                 machine, path, pred_domain = other_vars
-                if len(pred_domain)>1:
-                    pred_domain = pred_domain.to(self.device)
-
 
             tensor_x, vec_y, vec_d = (
                 tensor_x.to(self.device),
@@ -82,19 +80,23 @@ class TrainerVADE(TrainerClassif):
             )
             self.optimizer.zero_grad()
 
-            #__________________Inject domain__________________
+            # __________________Inject domain__________________
 
             inject_tensor = []
             if self.args.dim_inject_y > 0:
-
-                if vec_y.shape[1] + pred_domain.shape[1] == self.args.dim_inject_y and pred_domain.shape[1]!=0:
-                    inject_tensor = torch.cat(vec_y, pred_domain)
-                elif vec_y.shape[1] == self.args.dim_inject_y:
-                    inject_tensor = vec_y
+                if len(pred_domain) > 1:
+                    pred_domain = pred_domain.to(self.device)
+                    if vec_y.shape[1] + pred_domain.shape[1] == self.args.dim_inject_y:
+                        inject_tensor = torch.cat(vec_y, pred_domain)
+                    else:
+                        raise ValueError("Dimension of vec_y and pred_domain does not match dim_inject_y")
                 else:
-                    raise RuntimeError("dimension does not match!")
+                    if vec_y.shape[1] == self.args.dim_inject_y:
+                        inject_tensor = vec_y
+                    else:
+                        raise ValueError("Dimension of vec_y does not match dim_inject_y")
 
-            #__________________Pretrain/ELBO loss____________
+            # __________________Pretrain/ELBO loss____________
             if epoch < self.thres and not self.pretraining_finished:
                 loss = pretrain.pretrain_loss(tensor_x, inject_tensor)
             else:
@@ -113,8 +115,6 @@ class TrainerVADE(TrainerClassif):
                     print("Epoch {}: Finished pretraining and starting to use ELBO loss.".format(epoch))
                     print("".join(["#"] * 60))
 
-
-
                 loss = self.model.cal_loss(tensor_x, inject_tensor, self.warmup_beta)
 
             loss = loss.sum()
@@ -131,16 +131,17 @@ class TrainerVADE(TrainerClassif):
             pretrain.GMM_fit()
 
         # only z and pi needed
-        (preds_c,
-         probs_c,
-         z,
-         z_mu,
-         z_sigma2_log,
-         mu_c,
-         log_sigma2_c,
-         pi,
-         logits,
-         ) = self.model._inference(tensor_x)
+        (
+            preds_c,
+            probs_c,
+            z,
+            z_mu,
+            z_sigma2_log,
+            mu_c,
+            log_sigma2_c,
+            pi,
+            logits,
+        ) = self.model._inference(tensor_x)
 
         print("pi:")
         print(pi.cpu().detach().numpy())
@@ -159,11 +160,18 @@ class TrainerVADE(TrainerClassif):
             else:
                 loss_val = self.model.cal_loss(tensor_x, inject_tensor, self.warmup_beta)
 
-
-
-
-        tensorboard_write(self.writer, self.model, epoch, self.lr, self.warmup_beta,
-                          acc_tr, loss, self.pretraining_finished, tensor_x, inject_tensor)
+        tensorboard_write(
+            self.writer,
+            self.model,
+            epoch,
+            self.lr,
+            self.warmup_beta,
+            acc_tr,
+            loss,
+            self.pretraining_finished,
+            tensor_x,
+            inject_tensor,
+        )
 
         # _____storing results and Z space__________
         self.storage.storing(self.args, epoch, acc_tr, self.epo_loss_tr, acc_val, loss_val.sum())
@@ -184,5 +192,5 @@ class TrainerVADE(TrainerClassif):
         print("before training, model accuracy:", acc)
 
     def post_tr(self):
-        print('training is done')
+        print("training is done")
         self.observer.after_all()
