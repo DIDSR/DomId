@@ -54,7 +54,7 @@ class Prediction:
                     if len(pred_domain) > 1:
                         pred_domain = pred_domain.to(self.device)
                         if vec_y.shape[1] + pred_domain.shape[1] == self.args.dim_inject_y:
-                            inject_tensor = torch.cat(vec_y, pred_domain)
+                            inject_tensor = torch.cat((vec_y, pred_domain), 1)
                         else:
                             raise ValueError("Dimension of vec_y and pred_domain does not match dim_inject_y")
                     else:
