@@ -19,7 +19,7 @@ class DsetHER2(Dataset):
         """
         :param class_num: a integer value from 0 to 2, only images of this class will be kept.Note: that actual classes are from 1-3 (therefore, 1 is added in line 28)
         :param path: path to root storage directory
-        :param d_dim: used to subsample the dataset; a fraction of 1/subset_step images is kept
+        :param d_dim: number of clusters for the clustering task
         :param path_to_domain: if inject previously predicted domain labels, the path needs to be specified.domain_labels.txt must be inside the directory, containing to-be-injected labels.
         :param transform: torch transformations
         """

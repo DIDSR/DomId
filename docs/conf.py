@@ -170,10 +170,10 @@ html_theme_options = {
        #     "href": "about_link",
        #     "internal": True,
        #     "title": "About"},
-       # {
-       #     "href": "readme_link",
-       #     "internal": True,
-       #     "title": "Quick Start"},
+       {
+           "href": "readme_link",
+           "internal": True,
+           "title": "Quick Start"},
 #        {
 #            "href": "doc_tasks",
 #            "internal": True,
@@ -211,7 +211,7 @@ html_theme_options = {
     #     "Development": "https://bashtage.github.io/sphinx-material/devel/",
     #     "Release (rel)": "/sphinx-material/",
     #     "Development (rel)": "/sphinx-material/devel/",
-    # },p
+    # },
     "table_classes": ["plain"],
 }
 
