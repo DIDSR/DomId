@@ -1,11 +1,6 @@
-# How the 2 rounds trainig were done
-
-1. https://github.com/agisga/DomId/blob/3d9682d86ffd471e961585e14454db210c4caddb/domid/arg_parser.py#L27
-2. Accorind to commandline, datasets return different tuples
-3. trainer will judge the last return of the tuple of dataset, whether none or not
-4. two rounds command line arguments to call different rounds of training. 
-
 # Domain Identification (DomId)
+
+![GH Actions CI ](https://github.com/agisga/DomId/actions/workflows/ci.yml/badge.svg)
 
 Deep unsupervised clustering algorithms for domain identification.
 
@@ -71,8 +66,18 @@ sh gen_doc.sh
 ```
 
 ## Developer hints
+
 If you wanna have DomID be based on another branch of DomainLab, you can do this first where you should replace "name" with the branch name you wanna change.
+
 ```
 git config -f .gitmodules submodule.DomainLab.branch [name]
 git submodule update --remote
 ```
+
+### How the 2 rounds trainig were done [FIXME: move this to an appropriate place in the documentation.]
+
+1. https://github.com/agisga/DomId/blob/3d9682d86ffd471e961585e14454db210c4caddb/domid/arg_parser.py#L27
+2. Accorind to commandline, datasets return different tuples
+3. trainer will judge the last return of the tuple of dataset, whether none or not
+4. two rounds command line arguments to call different rounds of training. 
+
