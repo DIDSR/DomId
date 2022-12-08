@@ -1,0 +1,6 @@
+*__pycache__
+runs/*
+figures/*
+notebooks/2022-*
+docs/build/*
+docs/build/html/*

@@ -2,13 +2,13 @@ import os
 
 from domainlab.compos.pcr.request import RequestTask
 from domainlab.tasks.task_folder_mk import mk_task_folder
-from domainlab.tasks.task_mnist_color import NodeTaskMNISTColor10
 from domainlab.tasks.utils_task import ImSize
 from domainlab.utils.u_import import import_path
 from torchvision import transforms
 
 from domid.tasks.task_her2 import NodeTaskHER2
 from domid.tasks.task_mnist import NodeTaskMNIST
+from domid.tasks.task_mnist_color import NodeTaskMNISTColor10
 
 path_this_file = os.path.dirname(os.path.realpath(__file__))
 

@@ -1,3 +1,10 @@
+# How the 2 rounds trainig were done
+
+1. https://github.com/agisga/DomId/blob/3d9682d86ffd471e961585e14454db210c4caddb/domid/arg_parser.py#L27
+2. Accorind to commandline, datasets return different tuples
+3. trainer will judge the last return of the tuple of dataset, whether none or not
+4. two rounds command line arguments to call different rounds of training. 
+
 # Domain Identification (DomId)
 
 Deep unsupervised clustering algorithms for domain identification.
@@ -48,4 +55,24 @@ poetry run python main_out.py --te_d 0 1 2 3 --tr_d 4 5 6 7 8 9 --task=mnist --d
 - Example of applying VaDE model to cluster HER2 dataset (make sure to insert dpath)
 ```
 poetry run python main_out.py --te_d 0 --tr_d 1 2 --task=her2 --debug --epos=30 --aname=vade --zd_dim=50 --d_dim=2 --apath=domid/algos/builder_vade.py --L=25 --pre_tr=0.80 --nocu --dpath "HER2/combined_train" --split 0.8 --bs 4 --lr 0.0005
+```
 
+- Example to run on the GPU cluster
+```
+CUDA_VISIBLE_DEVICES=2 python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --debug --epos=100 --aname=vade --zd_dim=50 --d_dim=3 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=0.75 --dpath "HER2/combined_train" --split 0.8 --bs 8 --lr 0.0005 --model cnn --prior Gaus
+```
+
+## Generate documentation with Sphinx
+
+Probably set up a separate Python virtual environment. Then run the following:
+
+```
+sh gen_doc.sh
+```
+
+## Developer hints
+If you wanna have DomID be based on another branch of DomainLab, you can do this first where you should replace "name" with the branch name you wanna change.
+```
+git config -f .gitmodules submodule.DomainLab.branch [name]
+git submodule update --remote
+```

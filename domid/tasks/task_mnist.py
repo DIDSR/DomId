@@ -6,12 +6,13 @@ from torch.utils.data import random_split
 
 from domid.dsets.dset_mnist import DsetMNIST
 
-
+from torchvision import transforms
 class NodeTaskMNIST(NodeTaskMNISTColor10):
     """
     Basic MNIST task where the digits are considered "domains"
     Based on NodeTaskMNISTColor10 from DomainLab.
     The digits (0, 1, ..., 9) are regarded as domains (to be separated by unsupervised clustering).
+
     """
     @property
     def list_str_y(self):
@@ -25,17 +26,19 @@ class NodeTaskMNIST(NodeTaskMNISTColor10):
         """
         :return: image size object storing image channels, height, width.
         """
-        return ImSize(3, 28, 28)
+        return ImSize(3, 32, 32)
 
     def get_list_domains(self):
         """
         Get list of domain names
+
         :return: list of domain names
         """
         return mk_dummy_label_list_str("digit", 10)
 
     def get_dset_by_domain(self, args, na_domain, split=True):
         """Get a dataset by digit
+
         :param args: command line arguments
         :param na_domain: domain name
         :param split: whether a training/validation split is performed (the
@@ -52,8 +55,9 @@ class NodeTaskMNIST(NodeTaskMNISTColor10):
         # be evaluated in if statement, in which case, no validation
         # set will be created. Otherwise, this argument is
         # the split ratio
+        trans = [transforms.Resize((32, 32)), transforms.ToTensor()]
         ind_global = self.get_list_domains().index(na_domain)
-        dset = DsetMNIST(ind_global, args.dpath)
+        dset = DsetMNIST( digit= ind_global, args = args, list_transforms=trans)
         train_set = dset
         val_set = dset
         # split dset into training and validation sets

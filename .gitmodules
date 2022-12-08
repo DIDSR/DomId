@@ -1,4 +1,4 @@
 [submodule "DomainLab"]
 	path = DomainLab
-	url = https://github.com/smilesun/DomainLab.git
-	branch = python-3-10
+	url = https://github.com/marrlab/DomainLab.git
+	branch = master

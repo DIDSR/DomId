@@ -1,5 +1,3 @@
-
-#from domid.models.model_vade import ModelVaDE
 from domid.arg_parser import mk_parser_main
 from domid.compos.exp.exp_main import Exp
 
@@ -28,7 +26,7 @@ def test_VADE_CNN_nonbinary():
             "--dpath",
             "zout",
             "--task",
-            "mnistcolor10",
+            "mnist",
             "--aname",
             "vade",
             "--apath",
@@ -47,6 +45,8 @@ def test_VADE_CNN_nonbinary():
             "Gaus",
             "--model",
             "cnn",
+            "--pre_tr",
+            "0",
         ]
     )
     experiment_train(args)
@@ -69,7 +69,7 @@ def test_VADE_CNN():
             "--dpath",
             "zout",
             "--task",
-            "mnistcolor10",
+            "mnist",
             "--aname",
             "vade",
             "--apath",
@@ -86,6 +86,8 @@ def test_VADE_CNN():
             "--nocu",
             "--model",
             "cnn",
+            "--pre_tr",
+            "0",
         ]
     )
     experiment_train(args)
@@ -108,7 +110,7 @@ def test_VADE_nonbinary():
             "--dpath",
             "zout",
             "--task",
-            "mnistcolor10",
+            "mnist",
             "--aname",
             "vade",
             "--apath",
@@ -125,6 +127,8 @@ def test_VADE_nonbinary():
             "--nocu",
             "--prior",
             "Gaus",
+            "--pre_tr",
+            "0",
         ]
     )
     experiment_train(args)
@@ -147,7 +151,7 @@ def test_VADE():
             "--dpath",
             "zout",
             "--task",
-            "mnistcolor10",
+            "mnist",
             "--aname",
             "vade",
             "--apath",
@@ -162,6 +166,8 @@ def test_VADE():
             "5",
             "--debug",
             "--nocu",
+            "--pre_tr",
+            "0",
         ]
     )
     experiment_train(args)

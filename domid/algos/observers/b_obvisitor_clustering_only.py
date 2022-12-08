@@ -29,17 +29,14 @@ class ObVisitorClusteringOnly(ObVisitor):
         """
         After training is done
         """
-        super().after_all()
-        try:
-            model_ld = self.exp.visitor.load()
-            model_ld = model_ld.to(self.device)
-            model_ld.eval()
-            # Note that the final clustering performance is computed on the
-            # validation set because the test set (loader_te) consists of different
-            # (non-overlapping) clusters than training and validation sets.
-            acc_val, conf_mat_val = PerfCluster.cal_acc(model_ld, self.loader_val, self.device)
-            self.acc_val = acc_val
-            print("persisted model clustering acc: ", acc_val)
-        except Exception as e:
-            warnings.warn(str(e))
-            warnings.warn("failed to load model")
+        #super().after_all()
+        model_ld = self.host_trainer.model  #self.exp.visitor.load()
+        model_ld = model_ld.to(self.device)
+        model_ld.eval()
+
+        # Note that the final clustering performance is computed on the
+        # validation set because the test set (loader_te) consists of different
+        # (non-overlapping) clusters than training and validation sets.
+        acc_val, conf_mat_val = PerfCluster.cal_acc(model_ld, self.loader_val, self.device)
+        self.acc_val = acc_val
+        print("persisted model clustering acc: ", acc_val)

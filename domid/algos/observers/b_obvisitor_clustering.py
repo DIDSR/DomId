@@ -2,7 +2,7 @@ from domainlab.algos.observers.b_obvisitor import ObVisitor
 
 from domid.utils.perf_cluster import PerfCluster
 
-
+from ray import tune
 class ObVisitorClustering(ObVisitor):
     """
     Observer + Visitor pattern for clustering algorithms
@@ -20,6 +20,9 @@ class ObVisitorClustering(ObVisitor):
             self.acc_val = acc_val
             print("clustering validation acc: ", acc_val)
             print(conf_mat_val)
+
+            tune.report(accuracy=acc_tr_pool)
+
         return super().update(epoch)
 
     def after_all(self):

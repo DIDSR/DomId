@@ -10,6 +10,7 @@ from domid.dsets.dset_her2 import DsetHER2
 class NodeTaskHER2(NodeTaskDict):
     """
     HER2 task where the HER2 categories are considered "domains"
+
     """
 
     @property
@@ -24,7 +25,7 @@ class NodeTaskHER2(NodeTaskDict):
         """
         :return: image size object storing image channels, height, width.
         """
-        return ImSize(3, 100, 100)  # FIXME should be in sync with transforms
+        return ImSize(3, 128 , 128)  # FIXME should be in sync with transforms
 
     def get_list_domains(self):
         """
@@ -59,12 +60,14 @@ class NodeTaskHER2(NodeTaskDict):
         # std = [0.1800, 0.1980, 0.2070]
 
 
-        trans = transforms.Compose([transforms.Resize((100, 100)),
+        trans = transforms.Compose([transforms.Resize((128, 128)),
                                     transforms.RandomHorizontalFlip(),
                                     transforms.RandomVerticalFlip(),
+                                    transforms.RandomAutocontrast(0.25),
+                                    transforms.RandomAdjustSharpness(2, 0.25),
                                     transforms.ToTensor()])
 
-        dset = DsetHER2(ind_global, args.dpath, transform=trans)
+        dset = DsetHER2(ind_global, args.dpath, args.d_dim, args.path_to_domain, transform=trans)
         train_set = dset
         val_set = dset
         # split dset into training and validation sets

@@ -19,24 +19,24 @@ class ModelXY2D(AModelClassif):
     to component $k$. Note $zd_k~N(0,1)$.
 
     Computational Structure:
-        generative path: (zd,y) -> x (image)
-        generative path: N(0,I) -> zd (prior for zd)
-        variational posterior path:
-            1. x -> y,
-            2. [y, feat(x)] -> z_d
+    generative path: (zd,y) -> x (image)
+    generative path: N(0,I) -> zd (prior for zd)
+    variational posterior path:
+    1. x -> y,
+    2. [y, feat(x)] -> z_d
 
-        FIXME: if we change the variational inference order, instead of x->y, then [y,feat(x)]->z_d
-        if we do first x->d (style extraction, texture prediction),
-        then [feat(x),d]-> y,  will this be better?
+    FIXME: if we change the variational inference order, instead of x->y, then [y,feat(x)]->z_d
+    if we do first x->d (style extraction, texture prediction),
+    then [feat(x),d]-> y,  will this be better?
 
-        KL divergence between posterior path vs generative(prior) path:
-            1. x->y: auxiliary path (not regularized by generative path, but by supervised learning)
-                no KL for y
-            2. KL(q(z_d)|p(z_d)),
-                q(z_d): [y,feat(x)]-> z_d
-                p(z_d): N(0,I)
+    KL divergence between posterior path vs generative(prior) path:
+    1. x->y: auxiliary path (not regularized by generative path, but by supervised learning)
+    no KL for y
+    2. KL(q(z_d)|p(z_d)),
+    q(z_d): [y,feat(x)]-> z_d
+    p(z_d): N(0,I)
 
-        Auxilliary path: supervised learning of x->y
+    Auxilliary path: supervised learning of x->y
 
     FIXME: original M2 has prior Gaussian(0, I) for $z_d$, will this hinder learning of $z_d$
     on each component since the prior is draging each component to zero.
@@ -73,18 +73,13 @@ class ModelXY2D(AModelClassif):
 
     def infer_y_vpicn(self, tensor_x):
         """
-        Returns
-        -------
-        vec_one_hot : list
-            one-hot encoded classification output
-        prob : list
-            softmax probabilities per class
-        ind : int
-            index of maximal output class score
-        confidence : float
-            maximum probability (already included in prob)
-        na_class : string
-            class label for the maximum probability class
+        :param tensor_x: input tensor
+        :return:
+            - vec_one_hot - (list) one-hot encoded classification output
+            - prob - (list) softmax probabilities per class
+            - ind - (int) index of maximal output class score
+            - confidence - (float) maximum probability (already included in prob)
+            - na_class - (string) class label for the maximum probability class
         """
         with torch.no_grad():
             logit_y = self.infer_y_from_x(tensor_x)
