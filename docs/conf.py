@@ -166,10 +166,10 @@ html_theme_options = {
     "master_doc": False,
     "nav_title": "DomId",
    "nav_links": [
-       # {
-       #     "href": "about_link",
-       #     "internal": True,
-       #     "title": "About"},
+       {
+           "href": "about_link",
+           "internal": True,
+           "title": "About"},
        {
            "href": "readme_link",
            "internal": True,
