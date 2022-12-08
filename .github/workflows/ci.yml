@@ -27,4 +27,4 @@ jobs:
         pip install -r requirements.txt
         pip install pytest pytest-cov pytest-shell
     - name: Generate coverage report
-      run: pytest domid
+      run: PYTHONPATH=./DomainLab pytest domid
