@@ -82,7 +82,7 @@ class TrainerVADE(TrainerClassif):
 
             # __________________Inject domain__________________
 
-            inject_tensor = []
+            inject_tensor = torch.tensor([], dtype=vec_y.dtype)
             if self.args.dim_inject_y > 0:
                 if len(pred_domain) > 1:
                     pred_domain = pred_domain.to(self.device)
@@ -95,6 +95,8 @@ class TrainerVADE(TrainerClassif):
                         inject_tensor = vec_y
                     else:
                         raise ValueError("Dimension of vec_y does not match dim_inject_y")
+            # convert to dtype of vec_y
+            inject_tensor = inject_tensor.to(vec_y.dtype)
 
             # __________________Pretrain/ELBO loss____________
             if epoch < self.thres and not self.pretraining_finished:

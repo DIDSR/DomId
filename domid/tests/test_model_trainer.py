@@ -395,7 +395,7 @@ def test_MNIST_conditional_train():
             "--pre_tr",
             "0",
             "--dim_inject_y",
-            "10",
+            "13",
             "--path_to_domain",
             "domid/tests/",
         ]

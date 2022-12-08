@@ -53,7 +53,7 @@ class Pretraining():
                 )
 
                 if not self.is_inject_domain:
-                    inject_tensor = []
+                    inject_tensor = torch.tensor([], dtype=vec_y.dtype)
                 else:
                     # pred_domain is from loader_tr, we decide here wether we inject
                     # both class label and domain label or only class label, or
@@ -69,6 +69,8 @@ class Pretraining():
                             inject_tensor = vec_y
                         else:
                             raise ValueError("Dimension of vec_y does not match dim_inject_y")
+                    # convert to dtype of vec_y
+                    inject_tensor = inject_tensor.to(vec_y.dtype)
                 # only use the encoder to get latent representations, which is
                 # later fed into GMM. (hint: infer_d_v_2 does use decoder but this is
                 # not connected to computational graph)

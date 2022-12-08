@@ -27,7 +27,7 @@ class Prediction:
         :return: image acquisition machine labels for the input images (when applicable/available)
         """
 
-        num_img = len(self.loader_tr.dataset)
+        num_img = len(self.loader_tr.dataset)  # FIXME: this returns sample size + 1 for some reason
         z_proj = np.zeros((num_img, self.model.zd_dim))
         input_imgs = np.zeros((num_img, 3, self.i_h, self.i_w))
         domain_labels = np.zeros((num_img, 1))
@@ -49,7 +49,7 @@ class Prediction:
                     vec_d.to(self.device),
                 )
 
-                inject_tensor = []
+                inject_tensor = torch.tensor([], dtype=vec_y.dtype)
                 if self.is_inject_domain:
                     if len(pred_domain) > 1:
                         pred_domain = pred_domain.to(self.device)
@@ -62,6 +62,8 @@ class Prediction:
                             inject_tensor = vec_y
                         else:
                             raise ValueError("Dimension of vec_y does not match dim_inject_y")
+                # convert to dtype of vec_y
+                inject_tensor = inject_tensor.to(vec_y.dtype)
 
                 preds, z_mu, z, *_ = self.model.infer_d_v_2(tensor_x, inject_tensor)
                 z = z.detach().cpu().numpy()  # [batch_size, zd_dim]
