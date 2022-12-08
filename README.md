@@ -28,6 +28,16 @@ git checkout Mariia-DomID
 poetry install
 ```
 
+### Example setup instuctions for a Anaconda based environment
+
+```
+conda activate env_domainid   # change environment
+git config -f .gitmodules submodule.DomainLab.branch python-3-10
+git submodule update --remote   # without --remote it is not the most recent upstream version of DomainLab!!
+cd DomainLab
+git log   # check if everything is updated with respect to the server
+```
+
 ## Usage instructions
 
 - We use Python Poetry (see <https://python-poetry.org/docs/master/#installation>) to manage dependencies and to deploy the code in this repository.

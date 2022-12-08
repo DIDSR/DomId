@@ -2,12 +2,14 @@ import abc
 import os
 
 import numpy as np
-import torch
+import warnings
+
 from domainlab.algos.observers.a_observer import AObVisitor
 from domainlab.compos.exp.exp_utils import ExpModelPersistVisitor
 from domainlab.tasks.task_folder_mk import NodeTaskFolderClassNaMismatch
 from domainlab.utils.perf import PerfClassif
 from domainlab.utils.utils_class import store_args
+
 
 
 def pred2file(loader_te, model, device, fa='path_prediction.txt', flag_pred_scalar=False):
@@ -79,13 +81,16 @@ class ObVisitor(AObVisitor):
         After training is done
         """
         super().after_all()
-        model_ld = self.exp.visitor.load()
-        model_ld = model_ld.to(self.device)
-        model_ld.eval()
-        acc_te = PerfClassif.cal_acc(model_ld, self.loader_te, self.device)
+        try:
+            model_ld = self.exp.visitor.load()
+            model_ld = model_ld.to(self.device)
+            model_ld.eval()
+            acc_te = PerfClassif.cal_acc(model_ld, self.loader_te, self.device)
+            print("persisted model acc: ", acc_te)
+            self.exp.visitor(acc_te)
+        except Exception as e:
+            warnings.warn("failed to load pesistent model")
 
-        print("persisted model acc: ", acc_te)
-        self.exp.visitor(acc_te)
         if isinstance(self.exp.task, NodeTaskFolderClassNaMismatch):
             pred2file(self.loader_te, self.host_trainer.model, self.device)
 
@@ -95,9 +100,12 @@ class ObVisitor(AObVisitor):
         """
 
         print('was in clean up in c obvisitor, but did not clean anything')
-        # if not self.keep_model:
-        #     self.exp.visitor.remove("epoch")    # the last epoch
-        #     # epoch exist to still have a model to evaluate if the training stops in between
-        #     self.exp.visitor.remove("final")
-        #     self.exp.visitor.remove()
-        #     self.exp.visitor.remove("oracle")   # oracle means use out-of-domain test accuracy to select the model
+        if not self.keep_model:
+            try:
+                self.exp.visitor.remove("epoch")    # the last epoch
+                # epoch exist to still have a model to evaluate if the training stops in between
+                self.exp.visitor.remove("final")
+                self.exp.visitor.remove()
+                self.exp.visitor.remove("oracle")   # oracle means use out-of-domain test accuracy to select the model
+            except Exception as e:
+                warnings.warn("failed to delete model")
