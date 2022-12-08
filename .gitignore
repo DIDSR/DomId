@@ -2,4 +2,5 @@
 runs/*
 figures/*
 notebooks/2022-*
-docs/*
+docs/build/*
+docs/build/html/*
