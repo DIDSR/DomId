@@ -4,40 +4,26 @@
 
 Deep unsupervised clustering algorithms for domain identification.
 
-## Initial setup instructions
+## Installation
+
+0. Prerequisites:
+    - This Python package uses [Poetry](https://python-poetry.org/) for dependency management and various package development workflows. To install Poetry see: <https://python-poetry.org/docs/#installation>.
+	- A workflow without Poetry is also possible, but it is currently not recommended. For a workflow without Poetry, dependencies can be installed from the `requirements.txt` files in the `DomId` and `DomainLab` folders. Note that in order to run `DomId` without installation via Poetry, you also will have to manually add `DomainLab` to the python path.
 1. Clone this repository, e.g.,
 ```
 git clone https://github.com/agisga/DomId.git
 ```
-2. (Optional) Switch to a branch, e.g.,
-```
-git checkout Mariia-DomID
-```
-3. Initialize the DomainLab submodule:
-    - Enter the DomainLab subfolder: `cd DomainLab`
+2. Set up the [DomainLab](https://github.com/marrlab/DomainLab) submodule:
+    - Enter the `DomId` directory, then run the following commands.
     - `git submodule init`
-    - `git submodule update` to fetch all the data from DomainLab and check out the appropriate commit listed in DomId configuration. Alternatively, to check out the latest commit of DomainLab use `git submodule update --remote`.
-    - Go back to the DomId directory: `cd ..`
-4. Install `DomId` and `DomainLab` packages with:
+    - `git submodule update` to fetch all the data from DomainLab and check out the appropriate commit listed in DomId configuration.
+3. Install `DomId` and `DomainLab` packages as well as all dependencies with:
 ```
 poetry install
 ```
 
-### Example setup instuctions for a Anaconda based environment
+## DomId usage examples (FIXME: needs updating)
 
-```
-conda activate env_domainid   # change environment
-git config -f .gitmodules submodule.DomainLab.branch python-3-10
-git submodule update --remote   # without --remote it is not the most recent upstream version of DomainLab!!
-cd DomainLab
-git log   # check if everything is updated with respect to the server
-```
-
-## Usage instructions
-
-- We use Python Poetry (see <https://python-poetry.org/docs/master/#installation>) to manage dependencies and to deploy the code in this repository.
-- To install the DomId package as well as the underlying DomainLab python package run: `poetry install`.
-    - If you want to update this repository to the newest version before installing, run `git pull` (update DomId) followed by `git submodule update --remote` (update DomainLab). 
 - Here is a basic example to run a DL algorithm that performs supervised classification (digits) and unsupervised clustering (e.g., color) on the Color-MNIST dataset:
 ```
 poetry run python main_out.py --te_d 0 1 2 --tr_d 3 4 5 6 7 8 9 --task=mnistcolor10 --debug --epos=10 --aname=m2yd --zd_dim=7 --apath=domid/algos/builder_m2yd.py
@@ -57,6 +43,13 @@ poetry run python main_out.py --te_d 0 --tr_d 1 2 --task=her2 --debug --epos=30 
 CUDA_VISIBLE_DEVICES=2 python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --debug --epos=100 --aname=vade --zd_dim=50 --d_dim=3 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=0.75 --dpath "HER2/combined_train" --split 0.8 --bs 8 --lr 0.0005 --model cnn --prior Gaus
 ```
 
+### How the 2 rounds trainig were done [FIXME: rewrite and move this to an appropriate place in the documentation?]
+
+1. https://github.com/agisga/DomId/blob/3d9682d86ffd471e961585e14454db210c4caddb/domid/arg_parser.py#L27
+2. Accorind to commandline, datasets return different tuples
+3. trainer will judge the last return of the tuple of dataset, whether none or not
+4. two rounds command line arguments to call different rounds of training. 
+
 ## Generate documentation with Sphinx
 
 Probably set up a separate Python virtual environment. Then run the following:
@@ -67,17 +60,11 @@ sh gen_doc.sh
 
 ## Developer hints
 
-If you wanna have DomID be based on another branch of DomainLab, you can do this first where you should replace "name" with the branch name you wanna change.
+- To use the latest version of [DomainLab](https://github.com/marrlab/DomainLab) (rather than the version that DomId was tested with), run `git submodule update --remote`.
+- By default DomId uses the master branch of DomainLab. If desired, you can set DomId to use another branch of DomainLab (replace `<branch_name>` with the name of the branch you want to use):
 
 ```
-git config -f .gitmodules submodule.DomainLab.branch [name]
+git config -f .gitmodules submodule.DomainLab.branch <branch_name>
 git submodule update --remote
 ```
-
-### How the 2 rounds trainig were done [FIXME: move this to an appropriate place in the documentation.]
-
-1. https://github.com/agisga/DomId/blob/3d9682d86ffd471e961585e14454db210c4caddb/domid/arg_parser.py#L27
-2. Accorind to commandline, datasets return different tuples
-3. trainer will judge the last return of the tuple of dataset, whether none or not
-4. two rounds command line arguments to call different rounds of training. 
 
