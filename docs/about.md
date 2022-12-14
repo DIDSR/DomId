@@ -24,6 +24,6 @@ Thus, the trained decoder CNN can also be used to generate synthetic images from
 VaDE is optimized using Stochastic Gradient Variational Bayes cite{kingmaAutoEncodingVariationalBayes2013} to maximize
 a statistical measure called the Evidence Lower Bound (ELBO).
 
-![methods.png](..%2F..%2F..%2FDownloads%2Fmethods.png)
+![methods.png](methods.png)
 
 #M2YD Model Summary

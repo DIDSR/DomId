@@ -1,10 +1,8 @@
-domid.tasks package
-===================
+Task Initialization Submodule
+============================
 
-Submodules
-----------
 
-domid.tasks.task\_her2 module
+HER Dataset example
 -----------------------------
 
 .. automodule:: domid.tasks.task_her2
@@ -12,7 +10,7 @@ domid.tasks.task\_her2 module
    :undoc-members:
    :show-inheritance:
 
-domid.tasks.task\_mnist module
+MNIST Dataset example
 ------------------------------
 
 .. automodule:: domid.tasks.task_mnist
@@ -20,7 +18,7 @@ domid.tasks.task\_mnist module
    :undoc-members:
    :show-inheritance:
 
-domid.tasks.task\_mnist\_color module
+Color MNIST Dataset example
 -------------------------------------
 
 .. automodule:: domid.tasks.task_mnist_color
@@ -28,7 +26,7 @@ domid.tasks.task\_mnist\_color module
    :undoc-members:
    :show-inheritance:
 
-domid.tasks.zoo\_tasks module
+Base Dataset Submodule
 -----------------------------
 
 .. automodule:: domid.tasks.zoo_tasks
