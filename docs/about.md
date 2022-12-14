@@ -4,7 +4,8 @@ Variational Deep Embedding (VaDE) cite{jiang2016variational} is an unsupervised 
 approach based on Variational Autoencoders cite{kingmaAutoEncodingVariationalBayes2013}. 
 
 In this library, VaDE can be deployed as a deep clustering model using both Artificial Neural Network (ANN) and 
-Convolutional Neural Network (CNN) architectures for the encoder *g(x,phi)* and the decoder *f(z,theta)*. 
+Convolutional Neural Network (CNN) architectures for the encoder *
+$(x,phi)$ and the decoder *f(z,theta)*. 
 
 The encoder learns to compress the high-dimensional input images *x* into lower-dimensional latent representations *z*.
 
