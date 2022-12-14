@@ -49,7 +49,7 @@
     <link rel="apple-touch-icon" href="_static/images/apple-icon-152x152.png"/>
   
   
-    <title>domid.models package &#8212; domid  documentation</title>
+    <title>Model Initialization Module &#8212; domid  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
@@ -59,10 +59,11 @@
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="domid.tasks package" href="domid.tasks.html" />
-    <link rel="prev" title="domid.dsets package" href="domid.dsets.html" />
+    <link rel="next" title="Model Trainers" href="domid.trainers.html" />
+    <link rel="prev" title="Model Building Structures Submodule" href="domid.compos.html" />
   
     <link rel="apple-touch-icon" href="_static/images/apple-icon-152x152.png"/>
   
@@ -101,7 +102,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">DomId</span>
-          <span class="md-header-nav__topic"> domid.models package </span>
+          <span class="md-header-nav__topic"> Model Initialization Module </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -164,8 +165,10 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="modules.html" class="md-tabs__link">domid</a></li>
-          <li class="md-tabs__item"><a href="domid.html" class="md-tabs__link">domid package</a></li>
+            
+            <li class="md-tabs__item"><a href="about_link.html" class="md-tabs__link">About</a></li>
+            
+            <li class="md-tabs__item"><a href="readme_link.html" class="md-tabs__link">Quick Start</a></li>
       </ul>
     </div>
   </nav>
@@ -206,42 +209,62 @@
   <ul class="md-nav__list">
     <li class="md-nav__item">
     
-      <span class="md-nav__link caption"><span class="caption-text">Contents:</span></span>
+      <span class="md-nav__link caption"><span class="caption-text">About DomID</span></span>
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="modules.html" class="md-nav__link">domid</a>
-      <ul class="md-nav__list"> 
-    <li class="md-nav__item">
-    
-    
-      <a href="domid.html" class="md-nav__link">domid package</a>
+      <a href="domid.algos.html" class="md-nav__link">Model Builders</a>
       
     
-    </li></ul>
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Loading a Datasets and Defining a Task</span></span>
     
     </li>
-  </ul>
-  
-
-</nav>
-              </div>
-            </div>
-          </div>
-          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
-            <div class="md-sidebar__scrollwrap">
-              <div class="md-sidebar__inner">
-                
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.dsets.html" class="md-nav__link">Dataset Initialization Submodule</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.tasks.html" class="md-nav__link">Task Initialization Submodule</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Building and Defining a Model</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.compos.html" class="md-nav__link">Model Building Structures Submodule</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    <label class="md-nav__link md-nav__link--active" for="__toc"> Model Initialization Module </label>
+    
+      <a href="#" class="md-nav__link md-nav__link--active">Model Initialization Module</a>
+      
+        
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#domid-models--page-root" class="md-nav__link">domid.models package</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#domid-models--page-root" class="md-nav__link">Model Initialization Module</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#submodules" class="md-nav__link">Submodules</a>
-        </li>
-        <li class="md-nav__item"><a href="#module-domid.models.model_m2yd" class="md-nav__link">domid.models.model_m2yd module</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#module-domid.models.model_m2yd" class="md-nav__link">M2YD Model</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#domid.models.model_m2yd.ModelXY2D" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelXY2D</span></code></a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -256,12 +279,6 @@
         <li class="md-nav__item"><a href="#domid.models.model_m2yd.ModelXY2D.forward" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelXY2D.forward()</span></code></a>
         </li>
         <li class="md-nav__item"><a href="#domid.models.model_m2yd.ModelXY2D.cal_loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelXY2D.cal_loss()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_m2yd.ModelXY2D.__abstractmethods__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelXY2D.__abstractmethods__</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_m2yd.ModelXY2D.__annotations__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelXY2D.__annotations__</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_m2yd.ModelXY2D.__module__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelXY2D.__module__</span></code></a>
         </li></ul>
             </nav>
         </li>
@@ -269,7 +286,7 @@
         </li></ul>
             </nav>
         </li>
-        <li class="md-nav__item"><a href="#module-domid.models.model_vade" class="md-nav__link">domid.models.model_vade module</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#module-domid.models.model_vade" class="md-nav__link">VaDE Model</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE</span></code></a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -287,9 +304,120 @@
         </li>
         <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE.ELBO_Loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE.ELBO_Loss()</span></code></a>
         </li>
-        <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE.__annotations__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE.__annotations__</span></code></a>
+        <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE.gaussian_pdfs_log" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE.gaussian_pdfs_log()</span></code></a>
         </li>
-        <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE.__module__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE.__module__</span></code></a>
+        <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE.gaussian_pdf_log" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE.gaussian_pdf_log()</span></code></a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#domid.models.model_vade.test_fun" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">test_fun()</span></code></a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#module-domid.models" class="md-nav__link">Module contents</a>
+        </li></ul>
+            </nav>
+        </li>
+  </ul>
+</nav>
+      <ul class="md-nav__list"> 
+    <li class="md-nav__item">
+    
+    
+      <a href="#module-domid.models.model_m2yd" class="md-nav__link">M2YD Model</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#module-domid.models.model_vade" class="md-nav__link">VaDE Model</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#module-domid.models" class="md-nav__link">Module contents</a>
+      
+    
+    </li></ul>
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Training a Model</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.algos.html" class="md-nav__link">Model Builders</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.trainers.html" class="md-nav__link">Model Trainers</a>
+      
+    
+    </li>
+  </ul>
+  
+
+</nav>
+              </div>
+            </div>
+          </div>
+          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">Contents</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#domid-models--page-root" class="md-nav__link">Model Initialization Module</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#module-domid.models.model_m2yd" class="md-nav__link">M2YD Model</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#domid.models.model_m2yd.ModelXY2D" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelXY2D</span></code></a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#domid.models.model_m2yd.ModelXY2D.__init__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelXY2D.__init__()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#domid.models.model_m2yd.ModelXY2D.cal_logit_y" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelXY2D.cal_logit_y()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#domid.models.model_m2yd.ModelXY2D.infer_y_vpicn" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelXY2D.infer_y_vpicn()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#domid.models.model_m2yd.ModelXY2D.infer_d_v" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelXY2D.infer_d_v()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#domid.models.model_m2yd.ModelXY2D.forward" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelXY2D.forward()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#domid.models.model_m2yd.ModelXY2D.cal_loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelXY2D.cal_loss()</span></code></a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#domid.models.model_m2yd.test_fun" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">test_fun()</span></code></a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#module-domid.models.model_vade" class="md-nav__link">VaDE Model</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE</span></code></a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE.__init__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE.__init__()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE.infer_d_v" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE.infer_d_v()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE.infer_d_v_2" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE.infer_d_v_2()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE.cal_loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE.cal_loss()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE.pretrain_loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE.pretrain_loss()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE.reconstruction_loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE.reconstruction_loss()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE.ELBO_Loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE.ELBO_Loss()</span></code></a>
         </li>
         <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE.gaussian_pdfs_log" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE.gaussian_pdfs_log()</span></code></a>
         </li>
@@ -314,13 +442,10 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="domid-models-package">
-<h1 id="domid-models--page-root">domid.models package<a class="headerlink" href="#domid-models--page-root" title="Permalink to this heading">¶</a></h1>
-<section id="submodules">
-<h2 id="submodules">Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
-</section>
+  <section id="model-initialization-module">
+<h1 id="domid-models--page-root">Model Initialization Module<a class="headerlink" href="#domid-models--page-root" title="Permalink to this heading">¶</a></h1>
 <section id="module-domid.models.model_m2yd">
-<span id="domid-models-model-m2yd-module"></span><h2 id="module-domid.models.model_m2yd">domid.models.model_m2yd module<a class="headerlink" href="#module-domid.models.model_m2yd" title="Permalink to this heading">¶</a></h2>
+<span id="m2yd-model"></span><h2 id="module-domid.models.model_m2yd">M2YD Model<a class="headerlink" href="#module-domid.models.model_m2yd" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="domid.models.model_m2yd.ModelXY2D">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">domid.models.model_m2yd.</span></span><span class="sig-name descname"><span class="pre">ModelXY2D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list_str_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zd_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim_feat_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list_str_d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_m2yd.html#ModelXY2D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_m2yd.ModelXY2D" title="Permalink to this definition">¶</a></dt>
@@ -405,18 +530,6 @@ registered hooks while the latter silently ignores them.</p>
 <span class="sig-name descname"><span class="pre">cal_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_m2yd.html#ModelXY2D.cal_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_m2yd.ModelXY2D.cal_loss" title="Permalink to this definition">¶</a></dt>
 <dd><p>calculate the loss</p>
 </dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="domid.models.model_m2yd.ModelXY2D.__abstractmethods__">
-<span class="sig-name descname"><span class="pre">__abstractmethods__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({})</span></em><a class="headerlink" href="#domid.models.model_m2yd.ModelXY2D.__abstractmethods__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="domid.models.model_m2yd.ModelXY2D.__annotations__">
-<span class="sig-name descname"><span class="pre">__annotations__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'__call__':</span> <span class="pre">'Callable[...,</span> <span class="pre">Any]',</span> <span class="pre">'_backward_hooks':</span> <span class="pre">'Dict[int,</span> <span class="pre">Callable]',</span> <span class="pre">'_buffers':</span> <span class="pre">'Dict[str,</span> <span class="pre">Optional[Tensor]]',</span> <span class="pre">'_forward_hooks':</span> <span class="pre">'Dict[int,</span> <span class="pre">Callable]',</span> <span class="pre">'_forward_pre_hooks':</span> <span class="pre">'Dict[int,</span> <span class="pre">Callable]',</span> <span class="pre">'_is_full_backward_hook':</span> <span class="pre">'Optional[bool]',</span> <span class="pre">'_load_state_dict_post_hooks':</span> <span class="pre">'Dict[int,</span> <span class="pre">Callable]',</span> <span class="pre">'_load_state_dict_pre_hooks':</span> <span class="pre">'Dict[int,</span> <span class="pre">Callable]',</span> <span class="pre">'_modules':</span> <span class="pre">"Dict[str,</span> <span class="pre">Optional['Module']]",</span> <span class="pre">'_non_persistent_buffers_set':</span> <span class="pre">'Set[str]',</span> <span class="pre">'_parameters':</span> <span class="pre">'Dict[str,</span> <span class="pre">Optional[Parameter]]',</span> <span class="pre">'_state_dict_hooks':</span> <span class="pre">'Dict[int,</span> <span class="pre">Callable]',</span> <span class="pre">'_version':</span> <span class="pre">'int',</span> <span class="pre">'dump_patches':</span> <span class="pre">'bool',</span> <span class="pre">'forward':</span> <span class="pre">'Callable[...,</span> <span class="pre">Any]',</span> <span class="pre">'training':</span> <span class="pre">'bool'}</span></em><a class="headerlink" href="#domid.models.model_m2yd.ModelXY2D.__annotations__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="domid.models.model_m2yd.ModelXY2D.__module__">
-<span class="sig-name descname"><span class="pre">__module__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'domid.models.model_m2yd'</span></em><a class="headerlink" href="#domid.models.model_m2yd.ModelXY2D.__module__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 </dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="domid.models.model_m2yd.test_fun">
@@ -424,7 +537,7 @@ registered hooks while the latter silently ignores them.</p>
 <dd></dd></dl>
 </section>
 <section id="module-domid.models.model_vade">
-<span id="domid-models-model-vade-module"></span><h2 id="module-domid.models.model_vade">domid.models.model_vade module<a class="headerlink" href="#module-domid.models.model_vade" title="Permalink to this heading">¶</a></h2>
+<span id="vade-model"></span><h2 id="module-domid.models.model_vade">VaDE Model<a class="headerlink" href="#module-domid.models.model_vade" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="domid.models.model_vade.ModelVaDE">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">domid.models.model_vade.</span></span><span class="sig-name descname"><span class="pre">ModelVaDE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zd_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_vade.html#ModelVaDE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_vade.ModelVaDE" title="Permalink to this definition">¶</a></dt>
@@ -453,9 +566,15 @@ fully connected encoder and decoder.</p>
 <dt class="sig sig-object py" id="domid.models.model_vade.ModelVaDE.infer_d_v">
 <span class="sig-name descname"><span class="pre">infer_d_v</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_vade.html#ModelVaDE.infer_d_v"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_vade.ModelVaDE.infer_d_v" title="Permalink to this definition">¶</a></dt>
 <dd><p>Predict the cluster/domain of the input data.
-Corresponds to equation (16) in the paper.
-:param tensor x: Input tensor of a shape [batchsize, 3, horzintal dim, vertical dim].
-:return tensor preds: One hot encoded tensor of the predicted cluster assignment.</p>
+Corresponds to equation (16) in the paper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>tensor</em>) – Input tensor of a shape [batchsize, 3, horzintal dim, vertical dim].</p>
+</dd>
+<dt class="field-even">Return tensor preds<span class="colon">:</span></dt>
+<dd class="field-even"><p>One hot encoded tensor of the predicted cluster assignment.</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="domid.models.model_vade.ModelVaDE.infer_d_v_2">
@@ -465,9 +584,15 @@ Corresponds to equation (16) in the paper.
 <dl class="py method">
 <dt class="sig sig-object py" id="domid.models.model_vade.ModelVaDE.cal_loss">
 <span class="sig-name descname"><span class="pre">cal_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inject_domain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warmup_beta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_vade.html#ModelVaDE.cal_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_vade.ModelVaDE.cal_loss" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function that is called in trainer_vade to calculate loss
-:param x: tensor with input data
-:return: ELBO loss</p>
+<dd><p>Function that is called in trainer_vade to calculate loss</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> – tensor with input data</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>ELBO loss</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="domid.models.model_vade.ModelVaDE.pretrain_loss">
@@ -486,14 +611,6 @@ Calculates loss between encoded input and input using ELBO equation (12) in the 
 :param tensor x: Input tensor of a shape [batchsize, 3, horzintal dim, vertical dim].
 :param int L: Number of Monte Carlo samples in the SGVB</p>
 </dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="domid.models.model_vade.ModelVaDE.__annotations__">
-<span class="sig-name descname"><span class="pre">__annotations__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#domid.models.model_vade.ModelVaDE.__annotations__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="domid.models.model_vade.ModelVaDE.__module__">
-<span class="sig-name descname"><span class="pre">__module__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'domid.models.model_vade'</span></em><a class="headerlink" href="#domid.models.model_vade.ModelVaDE.__module__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="domid.models.model_vade.ModelVaDE.gaussian_pdfs_log">
 <span class="sig-name descname"><span class="pre">gaussian_pdfs_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mus</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_sigma2s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_vade.html#ModelVaDE.gaussian_pdfs_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_vade.ModelVaDE.gaussian_pdfs_log" title="Permalink to this definition">¶</a></dt>
@@ -529,7 +646,7 @@ Calculates loss between encoded input and input using ELBO equation (12) in the 
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="domid.dsets.html" title="domid.dsets package"
+            <a href="domid.compos.html" title="Model Building Structures Submodule"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -538,17 +655,17 @@ Calculates loss between encoded input and input using ELBO equation (12) in the 
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> domid.dsets package </span>
+                      class="md-footer-nav__direction"> Previous </span> Model Building Structures Submodule </span>
               </div>
             </a>
           
           
-            <a href="domid.tasks.html" title="domid.tasks package"
+            <a href="domid.trainers.html" title="Model Trainers"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> domid.tasks package </span>
+                class="md-footer-nav__direction"> Next </span> Model Trainers </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>

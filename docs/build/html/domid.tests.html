@@ -49,7 +49,7 @@
     <link rel="apple-touch-icon" href="_static/images/apple-icon-152x152.png"/>
   
   
-    <title>domid.tests package &#8212; domid  documentation</title>
+    <title>Unit Tests With Pytest &#8212; domid  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
@@ -59,10 +59,9 @@
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="domid.trainers package" href="domid.trainers.html" />
-    <link rel="prev" title="domid.tasks package" href="domid.tasks.html" />
   
     <link rel="apple-touch-icon" href="_static/images/apple-icon-152x152.png"/>
   
@@ -101,7 +100,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">DomId</span>
-          <span class="md-header-nav__topic"> domid.tests package </span>
+          <span class="md-header-nav__topic"> Unit Tests With Pytest </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -164,8 +163,10 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="modules.html" class="md-tabs__link">domid</a></li>
-          <li class="md-tabs__item"><a href="domid.html" class="md-tabs__link">domid package</a></li>
+            
+            <li class="md-tabs__item"><a href="about_link.html" class="md-tabs__link">About</a></li>
+            
+            <li class="md-tabs__item"><a href="readme_link.html" class="md-tabs__link">Quick Start</a></li>
       </ul>
     </div>
   </nav>
@@ -206,21 +207,40 @@
   <ul class="md-nav__list">
     <li class="md-nav__item">
     
-      <span class="md-nav__link caption"><span class="caption-text">Contents:</span></span>
+      <span class="md-nav__link caption"><span class="caption-text">Datasets and Tasks</span></span>
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="modules.html" class="md-nav__link">domid</a>
-      <ul class="md-nav__list"> 
+      <a href="domid.dsets.html" class="md-nav__link">Dataset Initialization Submodule</a>
+      
+    
+    </li>
     <li class="md-nav__item">
     
     
-      <a href="domid.html" class="md-nav__link">domid package</a>
+      <a href="domid.tasks.html" class="md-nav__link">Task Initialization Submodule</a>
       
     
-    </li></ul>
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Models</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.compos.html" class="md-nav__link">Model Building Structures Submodule</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.models.html" class="md-nav__link">Model Initialization Module</a>
+      
     
     </li>
   </ul>
@@ -237,17 +257,11 @@
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#domid-tests--page-root" class="md-nav__link">domid.tests package</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#domid-tests--page-root" class="md-nav__link">Unit Tests With Pytest</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#submodules" class="md-nav__link">Submodules</a>
+        <li class="md-nav__item"><a href="#init" class="md-nav__link">Init</a>
         </li>
-        <li class="md-nav__item"><a href="#module-domid.tests.test_domid" class="md-nav__link">domid.tests.test_domid module</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.tests.test_domid.test_version" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">test_version()</span></code></a>
-        </li></ul>
-            </nav>
-        </li>
-        <li class="md-nav__item"><a href="#module-domid.tests.test_losses" class="md-nav__link">domid.tests.test_losses module</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#module-domid.tests.test_losses" class="md-nav__link">Test Loss Functions</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#domid.tests.test_losses.experiment_train" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">experiment_train()</span></code></a>
         </li>
@@ -261,7 +275,7 @@
         </li></ul>
             </nav>
         </li>
-        <li class="md-nav__item"><a href="#module-domid.tests.test_model_builder" class="md-nav__link">domid.tests.test_model_builder module</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#module-domid.tests.test_model_builder" class="md-nav__link">Test Builders</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#domid.tests.test_model_builder.model_compiler" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">model_compiler()</span></code></a>
         </li>
@@ -273,7 +287,7 @@
         </li></ul>
             </nav>
         </li>
-        <li class="md-nav__item"><a href="#module-domid.tests.test_model_trainer" class="md-nav__link">domid.tests.test_model_trainer module</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#module-domid.tests.test_model_trainer" class="md-nav__link">Test Trainers</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#domid.tests.test_model_trainer.experiment_train" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">experiment_train()</span></code></a>
         </li>
@@ -291,9 +305,9 @@
         </li>
         <li class="md-nav__item"><a href="#domid.tests.test_model_trainer.test_M2YD_train_MNISTcolor" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">test_M2YD_train_MNISTcolor()</span></code></a>
         </li>
-        <li class="md-nav__item"><a href="#domid.tests.test_model_trainer.test_MNISTcolor_conditionalOne_train" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">test_MNISTcolor_conditionalOne_train()</span></code></a>
+        <li class="md-nav__item"><a href="#domid.tests.test_model_trainer.test_MNIST_conditionalOne_train" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">test_MNIST_conditionalOne_train()</span></code></a>
         </li>
-        <li class="md-nav__item"><a href="#domid.tests.test_model_trainer.test_MNISTcolor_conditionalTwo_train" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">test_MNISTcolor_conditionalTwo_train()</span></code></a>
+        <li class="md-nav__item"><a href="#domid.tests.test_model_trainer.test_MNIST_conditional_train" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">test_MNIST_conditional_train()</span></code></a>
         </li></ul>
             </nav>
         </li>
@@ -310,20 +324,13 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="domid-tests-package">
-<h1 id="domid-tests--page-root">domid.tests package<a class="headerlink" href="#domid-tests--page-root" title="Permalink to this heading">¶</a></h1>
-<section id="submodules">
-<h2 id="submodules">Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
-</section>
-<section id="module-domid.tests.test_domid">
-<span id="domid-tests-test-domid-module"></span><h2 id="module-domid.tests.test_domid">domid.tests.test_domid module<a class="headerlink" href="#module-domid.tests.test_domid" title="Permalink to this heading">¶</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="domid.tests.test_domid.test_version">
-<span class="sig-prename descclassname"><span class="pre">domid.tests.test_domid.</span></span><span class="sig-name descname"><span class="pre">test_version</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_domid.html#test_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_domid.test_version" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+  <section id="unit-tests-with-pytest">
+<h1 id="domid-tests--page-root">Unit Tests With Pytest<a class="headerlink" href="#domid-tests--page-root" title="Permalink to this heading">¶</a></h1>
+<section id="init">
+<h2 id="init">Init<a class="headerlink" href="#init" title="Permalink to this heading">¶</a></h2>
 </section>
 <section id="module-domid.tests.test_losses">
-<span id="domid-tests-test-losses-module"></span><h2 id="module-domid.tests.test_losses">domid.tests.test_losses module<a class="headerlink" href="#module-domid.tests.test_losses" title="Permalink to this heading">¶</a></h2>
+<span id="test-loss-functions"></span><h2 id="module-domid.tests.test_losses">Test Loss Functions<a class="headerlink" href="#module-domid.tests.test_losses" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="domid.tests.test_losses.experiment_train">
 <span class="sig-prename descclassname"><span class="pre">domid.tests.test_losses.</span></span><span class="sig-name descname"><span class="pre">experiment_train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_losses.html#experiment_train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_losses.experiment_train" title="Permalink to this definition">¶</a></dt>
@@ -346,7 +353,7 @@
 <dd></dd></dl>
 </section>
 <section id="module-domid.tests.test_model_builder">
-<span id="domid-tests-test-model-builder-module"></span><h2 id="module-domid.tests.test_model_builder">domid.tests.test_model_builder module<a class="headerlink" href="#module-domid.tests.test_model_builder" title="Permalink to this heading">¶</a></h2>
+<span id="test-builders"></span><h2 id="module-domid.tests.test_model_builder">Test Builders<a class="headerlink" href="#module-domid.tests.test_model_builder" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="domid.tests.test_model_builder.model_compiler">
 <span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_builder.</span></span><span class="sig-name descname"><span class="pre">model_compiler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_builder.html#model_compiler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_builder.model_compiler" title="Permalink to this definition">¶</a></dt>
@@ -365,7 +372,7 @@
 <dd></dd></dl>
 </section>
 <section id="module-domid.tests.test_model_trainer">
-<span id="domid-tests-test-model-trainer-module"></span><h2 id="module-domid.tests.test_model_trainer">domid.tests.test_model_trainer module<a class="headerlink" href="#module-domid.tests.test_model_trainer" title="Permalink to this heading">¶</a></h2>
+<span id="test-trainers"></span><h2 id="module-domid.tests.test_model_trainer">Test Trainers<a class="headerlink" href="#module-domid.tests.test_model_trainer" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="domid.tests.test_model_trainer.experiment_train">
 <span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_trainer.</span></span><span class="sig-name descname"><span class="pre">experiment_train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_trainer.html#experiment_train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_trainer.experiment_train" title="Permalink to this definition">¶</a></dt>
@@ -399,12 +406,12 @@
 <span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_trainer.</span></span><span class="sig-name descname"><span class="pre">test_M2YD_train_MNISTcolor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_trainer.html#test_M2YD_train_MNISTcolor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_trainer.test_M2YD_train_MNISTcolor" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py function">
-<dt class="sig sig-object py" id="domid.tests.test_model_trainer.test_MNISTcolor_conditionalOne_train">
-<span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_trainer.</span></span><span class="sig-name descname"><span class="pre">test_MNISTcolor_conditionalOne_train</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_trainer.html#test_MNISTcolor_conditionalOne_train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_trainer.test_MNISTcolor_conditionalOne_train" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="domid.tests.test_model_trainer.test_MNIST_conditionalOne_train">
+<span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_trainer.</span></span><span class="sig-name descname"><span class="pre">test_MNIST_conditionalOne_train</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_trainer.html#test_MNIST_conditionalOne_train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_trainer.test_MNIST_conditionalOne_train" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py function">
-<dt class="sig sig-object py" id="domid.tests.test_model_trainer.test_MNISTcolor_conditionalTwo_train">
-<span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_trainer.</span></span><span class="sig-name descname"><span class="pre">test_MNISTcolor_conditionalTwo_train</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_trainer.html#test_MNISTcolor_conditionalTwo_train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_trainer.test_MNISTcolor_conditionalTwo_train" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="domid.tests.test_model_trainer.test_MNIST_conditional_train">
+<span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_trainer.</span></span><span class="sig-name descname"><span class="pre">test_MNIST_conditional_train</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_trainer.html#test_MNIST_conditional_train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_trainer.test_MNIST_conditional_train" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 </section>
 <section id="module-domid.tests">
@@ -422,30 +429,6 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="domid.tasks.html" title="domid.tasks package"
-               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
-               rel="prev">
-              <div class="md-flex__cell md-flex__cell--shrink">
-                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
-              </div>
-              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
-                <span class="md-flex__ellipsis">
-                  <span
-                      class="md-footer-nav__direction"> Previous </span> domid.tasks package </span>
-              </div>
-            </a>
-          
-          
-            <a href="domid.trainers.html" title="domid.trainers package"
-               class="md-flex md-footer-nav__link md-footer-nav__link--next"
-               rel="next">
-            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
-                class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> domid.trainers package </span>
-            </div>
-            <div class="md-flex__cell md-flex__cell--shrink"><i
-                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
-            </div>
           
         </a>
         
