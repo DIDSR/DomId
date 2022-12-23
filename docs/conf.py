@@ -61,7 +61,7 @@ extensions = [
     "sphinx_material",
     "nbsphinx",
     "nbsphinx_link",
-    "IPython.sphinxext.ipython_console_highlighting",
+    #"IPython.sphinxext.ipython_console_highlighting",
 ]
 
 # myst_all_links_external = True

@@ -315,37 +315,8 @@ import torch
                 
         with open("./notebooks/"+self.experiment_name+"/image_locs.txt", 'w') as output:
             for row in image_locs:
-                output.write(str(row) + '\n')</div>
+                output.write(str(row) + '\n')</div></div>
 
-
-
-
-<div class="viewcode-block" id="Storing.plot_histogram"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.storing.Storing.plot_histogram">[docs]</a>    def plot_histogram(self, epoch):
-        if epoch &gt; 0:
-            IMGS, Z, domain_labels, machine_label = p.prediction()
-
-            d1_machine = []
-            d2_machine = []
-
-            for i in range(0, len(domain_labels) - 1):
-
-                if domain_labels[i] == 1:
-                    d1_machine.append(machine_label[i])
-                elif domain_labels[i] == 2:
-                    d2_machine.append(machine_label[i])
-
-            from matplotlib import pyplot as plt
-
-            plt.subplot(2, 1, 1)
-            plt.hist(d1_machine)
-            plt.title('Class 1 Cancerous Tissue Scan Sources')
-
-            plt.subplot(2, 1, 2)
-            plt.hist(d2_machine)
-            plt.title('Class 2 Cancerous Tissue Scan Sources')
-            plt.show()
-            # plt.savefig('./figures/hist_results'+str(epoch)+'.png')
-            plt.close()</div></div>
 </pre></div>
 
           </article>

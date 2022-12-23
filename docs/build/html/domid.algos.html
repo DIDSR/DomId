@@ -49,7 +49,7 @@
     <link rel="apple-touch-icon" href="_static/images/apple-icon-152x152.png"/>
   
   
-    <title>domid.algos package &#8212; domid  documentation</title>
+    <title>Model Builders &#8212; domid  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
@@ -59,10 +59,11 @@
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="domid.compos package" href="domid.compos.html" />
-    <link rel="prev" title="domid package" href="domid.html" />
+    <link rel="next" title="Model Trainers" href="domid.trainers.html" />
+    <link rel="prev" title="Model Initialization Module" href="domid.models.html" />
   
     <link rel="apple-touch-icon" href="_static/images/apple-icon-152x152.png"/>
   
@@ -101,7 +102,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">DomId</span>
-          <span class="md-header-nav__topic"> domid.algos package </span>
+          <span class="md-header-nav__topic"> Model Builders </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -164,8 +165,10 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="modules.html" class="md-tabs__link">domid</a></li>
-          <li class="md-tabs__item"><a href="domid.html" class="md-tabs__link">domid package</a></li>
+            
+            <li class="md-tabs__item"><a href="about_link.html" class="md-tabs__link">About</a></li>
+            
+            <li class="md-tabs__item"><a href="readme_link.html" class="md-tabs__link">Quick Start</a></li>
       </ul>
     </div>
   </nav>
@@ -206,21 +209,112 @@
   <ul class="md-nav__list">
     <li class="md-nav__item">
     
-      <span class="md-nav__link caption"><span class="caption-text">Contents:</span></span>
+      <span class="md-nav__link caption"><span class="caption-text">More information about the models</span></span>
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="modules.html" class="md-nav__link">domid</a>
+      <a href="about_link.html" class="md-nav__link">About DomId</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Datasets and Tasks</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.dsets.html" class="md-nav__link">Dataset Initialization Submodule</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.tasks.html" class="md-nav__link">Task Initialization Submodule</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Models</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.compos.html" class="md-nav__link">Model Building Structures Submodule</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.models.html" class="md-nav__link">Model Initialization Module</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Training a Model</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    <label class="md-nav__link md-nav__link--active" for="__toc"> Model Builders </label>
+    
+      <a href="#" class="md-nav__link md-nav__link--active">Model Builders</a>
+      
+        
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">Contents</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#domid-algos--page-root" class="md-nav__link">Model Builders</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#m2yd-builder-submodule" class="md-nav__link">M2YD Builder Submodule</a>
+        </li>
+        <li class="md-nav__item"><a href="#vade-builder-submodule" class="md-nav__link">VaDe Builder Submodule</a>
+        </li>
+        <li class="md-nav__item"><a href="#module-domid.algos" class="md-nav__link">Module contents</a>
+        </li></ul>
+            </nav>
+        </li>
+  </ul>
+</nav>
       <ul class="md-nav__list"> 
     <li class="md-nav__item">
     
     
-      <a href="domid.html" class="md-nav__link">domid package</a>
+      <a href="#m2yd-builder-submodule" class="md-nav__link">M2YD Builder Submodule</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#vade-builder-submodule" class="md-nav__link">VaDe Builder Submodule</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#module-domid.algos" class="md-nav__link">Module contents</a>
       
     
     </li></ul>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.trainers.html" class="md-nav__link">Model Trainers</a>
+      
     
     </li>
   </ul>
@@ -237,43 +331,11 @@
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#domid-algos--page-root" class="md-nav__link">domid.algos package</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#domid-algos--page-root" class="md-nav__link">Model Builders</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#submodules" class="md-nav__link">Submodules</a>
+        <li class="md-nav__item"><a href="#m2yd-builder-submodule" class="md-nav__link">M2YD Builder Submodule</a>
         </li>
-        <li class="md-nav__item"><a href="#module-domid.algos.builder_m2yd" class="md-nav__link">domid.algos.builder_m2yd module</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.algos.builder_m2yd.NodeAlgoBuilderM2YD" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">NodeAlgoBuilderM2YD</span></code></a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.algos.builder_m2yd.NodeAlgoBuilderM2YD.init_business" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">NodeAlgoBuilderM2YD.init_business()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.algos.builder_m2yd.NodeAlgoBuilderM2YD.__abstractmethods__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">NodeAlgoBuilderM2YD.__abstractmethods__</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.algos.builder_m2yd.NodeAlgoBuilderM2YD.__module__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">NodeAlgoBuilderM2YD.__module__</span></code></a>
-        </li></ul>
-            </nav>
-        </li>
-        <li class="md-nav__item"><a href="#domid.algos.builder_m2yd.get_node_na" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">get_node_na()</span></code></a>
-        </li></ul>
-            </nav>
-        </li>
-        <li class="md-nav__item"><a href="#module-domid.algos.builder_vade" class="md-nav__link">domid.algos.builder_vade module</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.algos.builder_vade.NodeAlgoBuilderVaDE" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">NodeAlgoBuilderVaDE</span></code></a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.algos.builder_vade.NodeAlgoBuilderVaDE.init_business" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">NodeAlgoBuilderVaDE.init_business()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.algos.builder_vade.NodeAlgoBuilderVaDE.__abstractmethods__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">NodeAlgoBuilderVaDE.__abstractmethods__</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.algos.builder_vade.NodeAlgoBuilderVaDE.__annotations__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">NodeAlgoBuilderVaDE.__annotations__</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.algos.builder_vade.NodeAlgoBuilderVaDE.__module__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">NodeAlgoBuilderVaDE.__module__</span></code></a>
-        </li></ul>
-            </nav>
-        </li>
-        <li class="md-nav__item"><a href="#domid.algos.builder_vade.get_node_na" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">get_node_na()</span></code></a>
-        </li></ul>
-            </nav>
+        <li class="md-nav__item"><a href="#vade-builder-submodule" class="md-nav__link">VaDe Builder Submodule</a>
         </li>
         <li class="md-nav__item"><a href="#module-domid.algos" class="md-nav__link">Module contents</a>
         </li></ul>
@@ -288,64 +350,13 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="domid-algos-package">
-<h1 id="domid-algos--page-root">domid.algos package<a class="headerlink" href="#domid-algos--page-root" title="Permalink to this heading">¶</a></h1>
-<section id="submodules">
-<h2 id="submodules">Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
+  <section id="model-builders">
+<h1 id="domid-algos--page-root">Model Builders<a class="headerlink" href="#domid-algos--page-root" title="Permalink to this heading">¶</a></h1>
+<section id="m2yd-builder-submodule">
+<h2 id="m2yd-builder-submodule">M2YD Builder Submodule<a class="headerlink" href="#m2yd-builder-submodule" title="Permalink to this heading">¶</a></h2>
 </section>
-<section id="module-domid.algos.builder_m2yd">
-<span id="domid-algos-builder-m2yd-module"></span><h2 id="module-domid.algos.builder_m2yd">domid.algos.builder_m2yd module<a class="headerlink" href="#module-domid.algos.builder_m2yd" title="Permalink to this heading">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="domid.algos.builder_m2yd.NodeAlgoBuilderM2YD">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">domid.algos.builder_m2yd.</span></span><span class="sig-name descname"><span class="pre">NodeAlgoBuilderM2YD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">success_node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/algos/builder_m2yd.html#NodeAlgoBuilderM2YD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.algos.builder_m2yd.NodeAlgoBuilderM2YD" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">NodeAlgoBuilder</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.algos.builder_m2yd.NodeAlgoBuilderM2YD.init_business">
-<span class="sig-name descname"><span class="pre">init_business</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/algos/builder_m2yd.html#NodeAlgoBuilderM2YD.init_business"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.algos.builder_m2yd.NodeAlgoBuilderM2YD.init_business" title="Permalink to this definition">¶</a></dt>
-<dd><p>return trainer, model, observer</p>
-</dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="domid.algos.builder_m2yd.NodeAlgoBuilderM2YD.__abstractmethods__">
-<span class="sig-name descname"><span class="pre">__abstractmethods__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({})</span></em><a class="headerlink" href="#domid.algos.builder_m2yd.NodeAlgoBuilderM2YD.__abstractmethods__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="domid.algos.builder_m2yd.NodeAlgoBuilderM2YD.__module__">
-<span class="sig-name descname"><span class="pre">__module__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'domid.algos.builder_m2yd'</span></em><a class="headerlink" href="#domid.algos.builder_m2yd.NodeAlgoBuilderM2YD.__module__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-</dd></dl>
-<dl class="py function">
-<dt class="sig sig-object py" id="domid.algos.builder_m2yd.get_node_na">
-<span class="sig-prename descclassname"><span class="pre">domid.algos.builder_m2yd.</span></span><span class="sig-name descname"><span class="pre">get_node_na</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/algos/builder_m2yd.html#get_node_na"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.algos.builder_m2yd.get_node_na" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-</section>
-<section id="module-domid.algos.builder_vade">
-<span id="domid-algos-builder-vade-module"></span><h2 id="module-domid.algos.builder_vade">domid.algos.builder_vade module<a class="headerlink" href="#module-domid.algos.builder_vade" title="Permalink to this heading">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="domid.algos.builder_vade.NodeAlgoBuilderVaDE">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">domid.algos.builder_vade.</span></span><span class="sig-name descname"><span class="pre">NodeAlgoBuilderVaDE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">success_node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/algos/builder_vade.html#NodeAlgoBuilderVaDE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.algos.builder_vade.NodeAlgoBuilderVaDE" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">NodeAlgoBuilder</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.algos.builder_vade.NodeAlgoBuilderVaDE.init_business">
-<span class="sig-name descname"><span class="pre">init_business</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/algos/builder_vade.html#NodeAlgoBuilderVaDE.init_business"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.algos.builder_vade.NodeAlgoBuilderVaDE.init_business" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize model, observer, trainer. Return trainer.</p>
-</dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="domid.algos.builder_vade.NodeAlgoBuilderVaDE.__abstractmethods__">
-<span class="sig-name descname"><span class="pre">__abstractmethods__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({})</span></em><a class="headerlink" href="#domid.algos.builder_vade.NodeAlgoBuilderVaDE.__abstractmethods__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="domid.algos.builder_vade.NodeAlgoBuilderVaDE.__annotations__">
-<span class="sig-name descname"><span class="pre">__annotations__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#domid.algos.builder_vade.NodeAlgoBuilderVaDE.__annotations__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="domid.algos.builder_vade.NodeAlgoBuilderVaDE.__module__">
-<span class="sig-name descname"><span class="pre">__module__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'domid.algos.builder_vade'</span></em><a class="headerlink" href="#domid.algos.builder_vade.NodeAlgoBuilderVaDE.__module__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-</dd></dl>
-<dl class="py function">
-<dt class="sig sig-object py" id="domid.algos.builder_vade.get_node_na">
-<span class="sig-prename descclassname"><span class="pre">domid.algos.builder_vade.</span></span><span class="sig-name descname"><span class="pre">get_node_na</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/algos/builder_vade.html#get_node_na"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.algos.builder_vade.get_node_na" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<section id="vade-builder-submodule">
+<h2 id="vade-builder-submodule">VaDe Builder Submodule<a class="headerlink" href="#vade-builder-submodule" title="Permalink to this heading">¶</a></h2>
 </section>
 <section id="module-domid.algos">
 <span id="module-contents"></span><h2 id="module-domid.algos">Module contents<a class="headerlink" href="#module-domid.algos" title="Permalink to this heading">¶</a></h2>
@@ -362,7 +373,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="domid.html" title="domid package"
+            <a href="domid.models.html" title="Model Initialization Module"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -371,17 +382,17 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> domid package </span>
+                      class="md-footer-nav__direction"> Previous </span> Model Initialization Module </span>
               </div>
             </a>
           
           
-            <a href="domid.compos.html" title="domid.compos package"
+            <a href="domid.trainers.html" title="Model Trainers"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> domid.compos package </span>
+                class="md-footer-nav__direction"> Next </span> Model Trainers </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>

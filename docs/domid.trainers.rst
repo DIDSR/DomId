@@ -1,10 +1,8 @@
-domid.trainers package
+Model Trainers
 ======================
 
-Submodules
-----------
 
-domid.trainers.pretraining\_vade module
+VaDE pretraining
 ---------------------------------------
 
 .. automodule:: domid.trainers.pretraining_vade
@@ -12,7 +10,7 @@ domid.trainers.pretraining\_vade module
    :undoc-members:
    :show-inheritance:
 
-domid.trainers.trainer\_vade module
+VaDE Trainer
 -----------------------------------
 
 .. automodule:: domid.trainers.trainer_vade

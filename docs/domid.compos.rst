@@ -1,10 +1,9 @@
-domid.compos package
-====================
+Model Building Structures Submodule
+===================================
 
-Submodules
-----------
 
-domid.compos.VAE\_blocks module
+
+Building blocks
 -------------------------------
 
 .. automodule:: domid.compos.VAE_blocks
@@ -12,7 +11,7 @@ domid.compos.VAE\_blocks module
    :undoc-members:
    :show-inheritance:
 
-domid.compos.cnn\_VAE module
+Convolutional VAE
 ----------------------------
 
 .. automodule:: domid.compos.cnn_VAE
@@ -20,7 +19,7 @@ domid.compos.cnn\_VAE module
    :undoc-members:
    :show-inheritance:
 
-domid.compos.linear\_VAE module
+Linear VAE
 -------------------------------
 
 .. automodule:: domid.compos.linear_VAE
@@ -28,7 +27,7 @@ domid.compos.linear\_VAE module
    :undoc-members:
    :show-inheritance:
 
-domid.compos.nn\_net module
+Base MNIST Model
 ---------------------------
 
 .. automodule:: domid.compos.nn_net
@@ -36,7 +35,7 @@ domid.compos.nn\_net module
    :undoc-members:
    :show-inheritance:
 
-domid.compos.predict\_basic module
+Predict Function
 ----------------------------------
 
 .. automodule:: domid.compos.predict_basic
@@ -44,7 +43,7 @@ domid.compos.predict\_basic module
    :undoc-members:
    :show-inheritance:
 
-domid.compos.storing module
+Store Results
 ---------------------------
 
 .. automodule:: domid.compos.storing
@@ -52,7 +51,7 @@ domid.compos.storing module
    :undoc-members:
    :show-inheritance:
 
-domid.compos.tensorboard\_fun module
+Tensorboard Function
 ------------------------------------
 
 .. automodule:: domid.compos.tensorboard_fun

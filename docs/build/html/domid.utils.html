@@ -49,7 +49,7 @@
     <link rel="apple-touch-icon" href="_static/images/apple-icon-152x152.png"/>
   
   
-    <title>domid.utils package &#8212; domid  documentation</title>
+    <title>Utilities &#8212; domid  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
@@ -59,9 +59,9 @@
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="domid.trainers package" href="domid.trainers.html" />
   
     <link rel="apple-touch-icon" href="_static/images/apple-icon-152x152.png"/>
   
@@ -100,7 +100,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">DomId</span>
-          <span class="md-header-nav__topic"> domid.utils package </span>
+          <span class="md-header-nav__topic"> Utilities </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -163,8 +163,10 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="modules.html" class="md-tabs__link">domid</a></li>
-          <li class="md-tabs__item"><a href="domid.html" class="md-tabs__link">domid package</a></li>
+            
+            <li class="md-tabs__item"><a href="about_link.html" class="md-tabs__link">About</a></li>
+            
+            <li class="md-tabs__item"><a href="readme_link.html" class="md-tabs__link">Quick Start</a></li>
       </ul>
     </div>
   </nav>
@@ -205,21 +207,71 @@
   <ul class="md-nav__list">
     <li class="md-nav__item">
     
-      <span class="md-nav__link caption"><span class="caption-text">Contents:</span></span>
+      <span class="md-nav__link caption"><span class="caption-text">More information about the models</span></span>
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="modules.html" class="md-nav__link">domid</a>
-      <ul class="md-nav__list"> 
+      <a href="about_link.html" class="md-nav__link">About DomId</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Datasets and Tasks</span></span>
+    
+    </li>
     <li class="md-nav__item">
     
     
-      <a href="domid.html" class="md-nav__link">domid package</a>
+      <a href="domid.dsets.html" class="md-nav__link">Dataset Initialization Submodule</a>
       
     
-    </li></ul>
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.tasks.html" class="md-nav__link">Task Initialization Submodule</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Models</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.compos.html" class="md-nav__link">Model Building Structures Submodule</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.models.html" class="md-nav__link">Model Initialization Module</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Training a Model</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.algos.html" class="md-nav__link">Model Builders</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.trainers.html" class="md-nav__link">Model Trainers</a>
+      
     
     </li>
   </ul>
@@ -236,11 +288,9 @@
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#domid-utils--page-root" class="md-nav__link">domid.utils package</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#domid-utils--page-root" class="md-nav__link">Utilities</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#submodules" class="md-nav__link">Submodules</a>
-        </li>
-        <li class="md-nav__item"><a href="#module-domid.utils.mean_std" class="md-nav__link">domid.utils.mean_std module</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#calculate-mean-std-of-images-in-dataset" class="md-nav__link">Calculate Mean/Std of Images in Dataset</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#domid.utils.mean_std.run" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a>
         </li>
@@ -248,17 +298,7 @@
         </li></ul>
             </nav>
         </li>
-        <li class="md-nav__item"><a href="#module-domid.utils.perf_cluster" class="md-nav__link">domid.utils.perf_cluster module</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.utils.perf_cluster.PerfCluster" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">PerfCluster</span></code></a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.utils.perf_cluster.PerfCluster.cal_acc" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">PerfCluster.cal_acc()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.utils.perf_cluster.PerfCluster.__module__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">PerfCluster.__module__</span></code></a>
-        </li></ul>
-            </nav>
-        </li></ul>
-            </nav>
+        <li class="md-nav__item"><a href="#cluster-performance-evaluation" class="md-nav__link">Cluster Performance Evaluation</a>
         </li>
         <li class="md-nav__item"><a href="#module-domid.utils" class="md-nav__link">Module contents</a>
         </li></ul>
@@ -273,14 +313,11 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="domid-utils-package">
-<h1 id="domid-utils--page-root">domid.utils package<a class="headerlink" href="#domid-utils--page-root" title="Permalink to this heading">¶</a></h1>
-<section id="submodules">
-<h2 id="submodules">Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
-</section>
-<section id="module-domid.utils.mean_std">
-<span id="domid-utils-mean-std-module"></span><h2 id="module-domid.utils.mean_std">domid.utils.mean_std module<a class="headerlink" href="#module-domid.utils.mean_std" title="Permalink to this heading">¶</a></h2>
-<dl class="py function">
+  <section id="utilities">
+<h1 id="domid-utils--page-root">Utilities<a class="headerlink" href="#domid-utils--page-root" title="Permalink to this heading">¶</a></h1>
+<section id="calculate-mean-std-of-images-in-dataset">
+<h2 id="calculate-mean-std-of-images-in-dataset">Calculate Mean/Std of Images in Dataset<a class="headerlink" href="#calculate-mean-std-of-images-in-dataset" title="Permalink to this heading">¶</a></h2>
+<span class="target" id="module-domid.utils.mean_std"></span><dl class="py function">
 <dt class="sig sig-object py" id="domid.utils.mean_std.run">
 <span class="sig-prename descclassname"><span class="pre">domid.utils.mean_std.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/utils/mean_std.html#run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.utils.mean_std.run" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -289,34 +326,8 @@
 <span class="sig-prename descclassname"><span class="pre">domid.utils.mean_std.</span></span><span class="sig-name descname"><span class="pre">run2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/utils/mean_std.html#run2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.utils.mean_std.run2" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 </section>
-<section id="module-domid.utils.perf_cluster">
-<span id="domid-utils-perf-cluster-module"></span><h2 id="module-domid.utils.perf_cluster">domid.utils.perf_cluster module<a class="headerlink" href="#module-domid.utils.perf_cluster" title="Permalink to this heading">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="domid.utils.perf_cluster.PerfCluster">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">domid.utils.perf_cluster.</span></span><span class="sig-name descname"><span class="pre">PerfCluster</span></span><a class="reference internal" href="_modules/domid/utils/perf_cluster.html#PerfCluster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.utils.perf_cluster.PerfCluster" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PerfClassif</span></code></p>
-<p>Clustering Performance</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.utils.perf_cluster.PerfCluster.cal_acc">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cal_acc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loader_te</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_batches</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/utils/perf_cluster.html#PerfCluster.cal_acc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.utils.perf_cluster.PerfCluster.cal_acc" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>model</strong> – </p></li>
-<li><p><strong>loader_te</strong> – </p></li>
-<li><p><strong>device</strong> – for final test, GPU can be used</p></li>
-<li><p><strong>max_batches</strong> – maximum number of iteration for data loader, used to
-probe performance with less computation burden.
-default None, which means to traverse the whole dataset</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="domid.utils.perf_cluster.PerfCluster.__module__">
-<span class="sig-name descname"><span class="pre">__module__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'domid.utils.perf_cluster'</span></em><a class="headerlink" href="#domid.utils.perf_cluster.PerfCluster.__module__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-</dd></dl>
+<section id="cluster-performance-evaluation">
+<h2 id="cluster-performance-evaluation">Cluster Performance Evaluation<a class="headerlink" href="#cluster-performance-evaluation" title="Permalink to this heading">¶</a></h2>
 </section>
 <section id="module-domid.utils">
 <span id="module-contents"></span><h2 id="module-domid.utils">Module contents<a class="headerlink" href="#module-domid.utils" title="Permalink to this heading">¶</a></h2>
@@ -332,19 +343,6 @@ default None, which means to traverse the whole dataset</p></li>
   <footer class="md-footer">
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
-          
-            <a href="domid.trainers.html" title="domid.trainers package"
-               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
-               rel="prev">
-              <div class="md-flex__cell md-flex__cell--shrink">
-                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
-              </div>
-              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
-                <span class="md-flex__ellipsis">
-                  <span
-                      class="md-footer-nav__direction"> Previous </span> domid.trainers package </span>
-              </div>
-            </a>
           
           
         </a>

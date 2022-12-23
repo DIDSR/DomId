@@ -1,10 +1,8 @@
-domid.tests package
+Unit Tests With Pytest
 ===================
 
-Submodules
-----------
 
-domid.tests.test\_domid module
+Init
 ------------------------------
 
 .. automodule:: domid.tests.test_domid
@@ -12,7 +10,7 @@ domid.tests.test\_domid module
    :undoc-members:
    :show-inheritance:
 
-domid.tests.test\_losses module
+Test Loss Functions
 -------------------------------
 
 .. automodule:: domid.tests.test_losses
@@ -20,7 +18,7 @@ domid.tests.test\_losses module
    :undoc-members:
    :show-inheritance:
 
-domid.tests.test\_model\_builder module
+Test Builders
 ---------------------------------------
 
 .. automodule:: domid.tests.test_model_builder
@@ -28,7 +26,7 @@ domid.tests.test\_model\_builder module
    :undoc-members:
    :show-inheritance:
 
-domid.tests.test\_model\_trainer module
+Test Trainers
 ---------------------------------------
 
 .. automodule:: domid.tests.test_model_trainer

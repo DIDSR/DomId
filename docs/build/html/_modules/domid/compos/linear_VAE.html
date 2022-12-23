@@ -245,7 +245,8 @@ from domid.compos.VAE_blocks import linear_block
 <div class="viewcode-block" id="LinearEncoder"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.linear_VAE.LinearEncoder">[docs]</a>class LinearEncoder(nn.Module):
 <div class="viewcode-block" id="LinearEncoder.__init__"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.linear_VAE.LinearEncoder.__init__">[docs]</a>    def __init__(self, zd_dim, input_dim=(3, 28, 28), features_dim=[500, 500, 2000]):
         """
-        VAE Encoder
+        VAE Encoder with linear layers
+
         :param zd_dim: dimension of the latent space
         :param input_dim: dimensions of the input, e.g., (3, 28, 28) for MNIST in RGB format
         :param features_dim: list of dimensions of the hidden layers
@@ -276,6 +277,7 @@ from domid.compos.VAE_blocks import linear_block
 <div class="viewcode-block" id="LinearDecoder.__init__"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.linear_VAE.LinearDecoder.__init__">[docs]</a>    def __init__(self, prior, zd_dim, input_dim=(3, 28, 28), features_dim=[500, 500, 2000]):
         """
         VAE Decoder
+
         :param zd_dim: dimension of the latent space
         :param input_dim: dimension of the original input / output reconstruction, e.g., (3, 28, 28) for MNIST in RGB format
         :param features_dim: list of dimensions of the hidden layers, given in reverse order

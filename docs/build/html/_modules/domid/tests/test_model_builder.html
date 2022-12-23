@@ -299,7 +299,7 @@ from domid.tasks.task_mnist import NodeTaskMNIST
             "cnn",
         ]
     )
-    i_c, i_w, i_h = 3, 28, 28
+    i_c, i_w, i_h = 3, 32, 32
 
     model = ModelVaDE(
         zd_dim=args.zd_dim,
@@ -332,7 +332,7 @@ from domid.tasks.task_mnist import NodeTaskMNIST
             "5",
         ]
     )
-    i_c, i_w, i_h = 3, 28, 28
+    i_c, i_w, i_h = 3, 32, 32
     model = ModelVaDE(
         zd_dim=args.zd_dim,
         d_dim=args.d_dim,
@@ -377,8 +377,8 @@ from domid.tasks.task_mnist import NodeTaskMNIST
         gamma_y=args.gamma_y,
         device=torch.device("cpu"),
         i_c=3,
-        i_h=28,
-        i_w=28,
+        i_h=32,
+        i_w=32,
     )
     model_compiler(args, model)</div>
 </pre></div>

@@ -1,10 +1,8 @@
-domid.utils package
+Utilities
 ===================
 
-Submodules
-----------
 
-domid.utils.mean\_std module
+Calculate Mean/Std of Images in Dataset
 ----------------------------
 
 .. automodule:: domid.utils.mean_std
@@ -12,7 +10,7 @@ domid.utils.mean\_std module
    :undoc-members:
    :show-inheritance:
 
-domid.utils.perf\_cluster module
+Cluster Performance Evaluation
 --------------------------------
 
 .. automodule:: domid.utils.perf_cluster

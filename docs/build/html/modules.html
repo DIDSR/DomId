@@ -59,10 +59,9 @@
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="domid package" href="domid.html" />
-    <link rel="prev" title="Welcome to DomId’s documentation!" href="index.html" />
   
     <link rel="apple-touch-icon" href="_static/images/apple-icon-152x152.png"/>
   
@@ -161,6 +160,16 @@
     
     
     
+  <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+      <ul class="md-tabs__list">
+            
+            <li class="md-tabs__item"><a href="about_link.html" class="md-tabs__link">About</a></li>
+            
+            <li class="md-tabs__item"><a href="readme_link.html" class="md-tabs__link">Quick Start</a></li>
+      </ul>
+    </div>
+  </nav>
     <main class="md-main">
       <div class="md-main__inner md-grid" data-md-component="container">
         
@@ -198,30 +207,40 @@
   <ul class="md-nav__list">
     <li class="md-nav__item">
     
-      <span class="md-nav__link caption"><span class="caption-text">Contents:</span></span>
+      <span class="md-nav__link caption"><span class="caption-text">Datasets and Tasks</span></span>
     
     </li>
     <li class="md-nav__item">
     
     
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    <label class="md-nav__link md-nav__link--active" for="__toc"> domid </label>
-    
-      <a href="#" class="md-nav__link md-nav__link--active">domid</a>
+      <a href="domid.dsets.html" class="md-nav__link">Dataset Initialization Submodule</a>
       
-        
-<nav class="md-nav md-nav--secondary">
-  <ul class="md-nav__list" data-md-scrollfix="">
-  </ul>
-</nav>
-      <ul class="md-nav__list"> 
+    
+    </li>
     <li class="md-nav__item">
     
     
-      <a href="domid.html" class="md-nav__link">domid package</a>
+      <a href="domid.tasks.html" class="md-nav__link">Task Initialization Submodule</a>
       
     
-    </li></ul>
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Models</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.compos.html" class="md-nav__link">Model Building Structures Submodule</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.models.html" class="md-nav__link">Model Initialization Module</a>
+      
     
     </li>
   </ul>
@@ -252,67 +271,60 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="domid.html">domid package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="domid.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="domid.algos.html">domid.algos package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="domid.algos.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="domid.algos.html#module-domid.algos.builder_m2yd">domid.algos.builder_m2yd module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="domid.algos.html#module-domid.algos.builder_vade">domid.algos.builder_vade module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domid.algos.html">Model Builders</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="domid.algos.html#m2yd-builder-submodule">M2YD Builder Submodule</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domid.algos.html#vade-builder-submodule">VaDe Builder Submodule</a></li>
 <li class="toctree-l4"><a class="reference internal" href="domid.algos.html#module-domid.algos">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="domid.compos.html">domid.compos package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="domid.compos.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="domid.compos.html#module-domid.compos.VAE_blocks">domid.compos.VAE_blocks module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="domid.compos.html#module-domid.compos.cnn_VAE">domid.compos.cnn_VAE module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="domid.compos.html#module-domid.compos.linear_VAE">domid.compos.linear_VAE module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="domid.compos.html#module-domid.compos.nn_net">domid.compos.nn_net module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="domid.compos.html#module-domid.compos.predict_basic">domid.compos.predict_basic module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="domid.compos.html#module-domid.compos.storing">domid.compos.storing module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="domid.compos.html#module-domid.compos.tensorboard_fun">domid.compos.tensorboard_fun module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domid.compos.html">Model Building Structures Submodule</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="domid.compos.html#module-domid.compos.VAE_blocks">Building blocks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domid.compos.html#module-domid.compos.cnn_VAE">Convolutional VAE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domid.compos.html#module-domid.compos.linear_VAE">Linear VAE</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domid.compos.html#module-domid.compos.nn_net">Base MNIST Model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domid.compos.html#predict-function">Predict Function</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domid.compos.html#store-results">Store Results</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domid.compos.html#tensorboard-function">Tensorboard Function</a></li>
 <li class="toctree-l4"><a class="reference internal" href="domid.compos.html#module-domid.compos">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="domid.dsets.html">domid.dsets package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="domid.dsets.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="domid.dsets.html#module-domid.dsets.dset_her2">domid.dsets.dset_her2 module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="domid.dsets.html#module-domid.dsets.dset_mnist">domid.dsets.dset_mnist module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domid.dsets.html">Dataset Initialization Submodule</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="domid.dsets.html#module-domid.dsets.dset_her2">HER2 Dataset Module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domid.dsets.html#module-domid.dsets.dset_mnist">MNIST Dataset Module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="domid.dsets.html#module-domid.dsets">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="domid.models.html">domid.models package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="domid.models.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="domid.models.html#module-domid.models.model_m2yd">domid.models.model_m2yd module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="domid.models.html#module-domid.models.model_vade">domid.models.model_vade module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domid.models.html">Model Initialization Module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="domid.models.html#module-domid.models.model_m2yd">M2YD Model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domid.models.html#vade-model">VaDE Model</a></li>
 <li class="toctree-l4"><a class="reference internal" href="domid.models.html#module-domid.models">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="domid.tasks.html">domid.tasks package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="domid.tasks.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="domid.tasks.html#module-domid.tasks.task_her2">domid.tasks.task_her2 module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="domid.tasks.html#module-domid.tasks.task_mnist">domid.tasks.task_mnist module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="domid.tasks.html#module-domid.tasks.zoo_tasks">domid.tasks.zoo_tasks module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domid.tasks.html">Task Initialization Submodule</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="domid.tasks.html#module-domid.tasks.task_her2">HER Dataset example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domid.tasks.html#module-domid.tasks.task_mnist">MNIST Dataset example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domid.tasks.html#module-domid.tasks.task_mnist_color">Color MNIST Dataset example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domid.tasks.html#module-domid.tasks.zoo_tasks">Base Dataset Submodule</a></li>
 <li class="toctree-l4"><a class="reference internal" href="domid.tasks.html#module-domid.tasks">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="domid.tests.html">domid.tests package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="domid.tests.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="domid.tests.html#module-domid.tests.test_domid">domid.tests.test_domid module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="domid.tests.html#module-domid.tests.test_losses">domid.tests.test_losses module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="domid.tests.html#module-domid.tests.test_model_builder">domid.tests.test_model_builder module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="domid.tests.html#module-domid.tests.test_model_trainer">domid.tests.test_model_trainer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domid.tests.html">Unit Tests With Pytest</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="domid.tests.html#module-domid.tests.test_domid">Init</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domid.tests.html#module-domid.tests.test_losses">Test Loss Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domid.tests.html#test-builders">Test Builders</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domid.tests.html#test-trainers">Test Trainers</a></li>
 <li class="toctree-l4"><a class="reference internal" href="domid.tests.html#module-domid.tests">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="domid.trainers.html">domid.trainers package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="domid.trainers.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="domid.trainers.html#module-domid.trainers.pretraining_vade">domid.trainers.pretraining_vade module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="domid.trainers.html#module-domid.trainers.trainer_vade">domid.trainers.trainer_vade module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domid.trainers.html">Model Trainers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="domid.trainers.html#vade-pretraining">VaDE pretraining</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domid.trainers.html#vade-trainer">VaDE Trainer</a></li>
 <li class="toctree-l4"><a class="reference internal" href="domid.trainers.html#module-domid.trainers">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="domid.utils.html">domid.utils package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="domid.utils.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="domid.utils.html#module-domid.utils.mean_std">domid.utils.mean_std module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="domid.utils.html#module-domid.utils.perf_cluster">domid.utils.perf_cluster module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domid.utils.html">Utilities</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="domid.utils.html#calculate-mean-std-of-images-in-dataset">Calculate Mean/Std of Images in Dataset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="domid.utils.html#cluster-performance-evaluation">Cluster Performance Evaluation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="domid.utils.html#module-domid.utils">Module contents</a></li>
 </ul>
 </li>
@@ -341,30 +353,6 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="index.html" title="Welcome to DomId’s documentation!"
-               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
-               rel="prev">
-              <div class="md-flex__cell md-flex__cell--shrink">
-                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
-              </div>
-              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
-                <span class="md-flex__ellipsis">
-                  <span
-                      class="md-footer-nav__direction"> Previous </span> Welcome to DomId’s documentation! </span>
-              </div>
-            </a>
-          
-          
-            <a href="domid.html" title="domid package"
-               class="md-flex md-footer-nav__link md-footer-nav__link--next"
-               rel="next">
-            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
-                class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> domid package </span>
-            </div>
-            <div class="md-flex__cell md-flex__cell--shrink"><i
-                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
-            </div>
           
         </a>
         
