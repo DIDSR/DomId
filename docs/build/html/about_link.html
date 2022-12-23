@@ -59,8 +59,6 @@
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -262,6 +260,8 @@
         <li class="md-nav__item"><a href="#about-link--page-root" class="md-nav__link">About DomId</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#vade-model-summary" class="md-nav__link">VaDE Model Summary</a>
+        </li>
+        <li class="md-nav__item"><a href="#m2yd-model-summary" class="md-nav__link">M2YD Model Summary</a>
         </li></ul>
             </nav>
         </li>
@@ -278,25 +278,29 @@
 <h1 id="about-link--page-root">About DomId<a class="headerlink" href="#about-link--page-root" title="Permalink to this heading">¶</a></h1>
 <section class="tex2jax_ignore mathjax_ignore" id="vade-model-summary">
 <h2 id="vade-model-summary">VaDE Model Summary<a class="headerlink" href="#vade-model-summary" title="Permalink to this heading">¶</a></h2>
-<p>Variational Deep Embedding (VaDE) cite{jiang2016variational} is an unsupervised generative clustering
-approach based on Variational Autoencoders cite{kingmaAutoEncodingVariationalBayes2013}.</p>
+<p>Variational Deep Embedding (VaDE) [1] is an unsupervised generative clustering
+approach based on Variational Autoencoders [2].</p>
 <p>In this library, VaDE can be deployed as a deep clustering model using both Artificial Neural Network (ANN) and
-Convolutional Neural Network (CNN) architectures for the encoder *
-<span class="math notranslate nohighlight">\((x,phi)\)</span> and the decoder <em>f(z,theta)</em>.</p>
-<p>The encoder learns to compress the high-dimensional input images <em>x</em> into lower-dimensional latent representations <em>z</em>.</p>
-<p>Using a Mixture-of-Gaussians (MOG) prior distribution for the latent representations <em>z</em>, we examine
+Convolutional Neural Network (CNN) architectures for the encoder <em><strong>(x,φ)</strong></em> and the decoder <em><strong>f(z,θ)</strong></em>.</p>
+<p>The encoder learns to compress the high-dimensional input images <em><strong>x</strong></em> into lower-dimensional latent representations <em><strong>z</strong></em>.</p>
+<p>Using a Mixture-of-Gaussians (MOG) prior distribution for the latent representations <em><strong>z</strong></em>, we examine
 sub-groups or domains within the dataset, revealed by the individual Gaussians within the learned
-latent space, and how <em>z</em> affects the generation of <em>x</em>.</p>
-<p>The model can be used to perform inference, where observed images <em>x</em> are mapped to a series of corresponding
-latent variables <em>z</em> and their cluster/domain assignments <em>c</em>.</p>
-<p>We denote the latent space dimensionality by <em>d</em> (i.e., <em>z in R^d</em>), and the number of
-clusters by <em>D</em> (i.e., <em>c in {1, 2, …, D}</em>).</p>
-<p>The decoder CNN generates images <em>x</em> from latent space samples <em>z</em>.
+latent space, and how <em><strong>z</strong></em> affects the generation of <em><strong>x</strong></em>.</p>
+<p>The model can be used to perform inference, where observed images <em><strong>x</strong></em> are mapped to a series of corresponding
+latent variables <em><strong>z</strong></em> and their cluster/domain assignments <em><strong>c</strong></em>.</p>
+<p>We denote the latent space dimensionality by <em><strong>d</strong></em> (i.e., <em><strong>z ∈ R^d</strong></em>), and the number of
+clusters by <em><strong>D</strong></em> (i.e., <em><strong>c ∈ {1, 2, …, D}</strong></em>).</p>
+<p>The decoder CNN generates images <em><strong>x</strong></em> from latent space samples <em><strong>z</strong></em>.
 Thus, the trained decoder CNN can also be used to generate synthetic images from the algorithmically identified subgroups.
 VaDE is optimized using Stochastic Gradient Variational Bayes cite{kingmaAutoEncodingVariationalBayes2013} to maximize
 a statistical measure called the Evidence Lower Bound (ELBO).</p>
 <p><img alt="methods.png" src="_images/methods.png"/></p>
-<p>#M2YD Model Summary</p>
+<p>[1] Jiang, Zhuxi, et al. “Variational deep embedding: An unsupervised and generative approach to clustering.”
+arXiv preprint arXiv:1611.05148 (2016).(<a class="reference external" href="https://arxiv.org/abs/1611.05148">https://arxiv.org/abs/1611.05148</a>)</p>
+<p>[2] Kingma, Diederik P., and Max Welling. “Auto-encoding variational bayes.” arXiv preprint arXiv:1312.6114 (2013) (<a class="reference external" href="https://arxiv.org/abs/1312.6114">https://arxiv.org/abs/1312.6114</a>)</p>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="m2yd-model-summary">
+<h2 id="m2yd-model-summary">M2YD Model Summary<a class="headerlink" href="#m2yd-model-summary" title="Permalink to this heading">¶</a></h2>
 </section>
 </section>
 

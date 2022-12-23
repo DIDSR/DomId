@@ -62,7 +62,7 @@
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Model Initialization Module" href="domid.models.html" />
+    <link rel="prev" title="Model Builders" href="domid.algos.html" />
   
     <link rel="apple-touch-icon" href="_static/images/apple-icon-152x152.png"/>
   
@@ -208,19 +208,19 @@
   <ul class="md-nav__list">
     <li class="md-nav__item">
     
-      <span class="md-nav__link caption"><span class="caption-text">About DomID</span></span>
+      <span class="md-nav__link caption"><span class="caption-text">More information about the models</span></span>
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="domid.algos.html" class="md-nav__link">Model Builders</a>
+      <a href="about_link.html" class="md-nav__link">About DomId</a>
       
     
     </li>
     <li class="md-nav__item">
     
-      <span class="md-nav__link caption"><span class="caption-text">Loading a Datasets and Defining a Task</span></span>
+      <span class="md-nav__link caption"><span class="caption-text">Datasets and Tasks</span></span>
     
     </li>
     <li class="md-nav__item">
@@ -239,7 +239,7 @@
     </li>
     <li class="md-nav__item">
     
-      <span class="md-nav__link caption"><span class="caption-text">Building and Defining a Model</span></span>
+      <span class="md-nav__link caption"><span class="caption-text">Models</span></span>
     
     </li>
     <li class="md-nav__item">
@@ -282,35 +282,9 @@
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#domid-trainers--page-root" class="md-nav__link">Model Trainers</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#module-domid.trainers.pretraining_vade" class="md-nav__link">VaDE pretraining</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.trainers.pretraining_vade.Pretraining" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Pretraining</span></code></a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.trainers.pretraining_vade.Pretraining.__init__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Pretraining.__init__()</span></code></a>
+        <li class="md-nav__item"><a href="#vade-pretraining" class="md-nav__link">VaDE pretraining</a>
         </li>
-        <li class="md-nav__item"><a href="#domid.trainers.pretraining_vade.Pretraining.pretrain_loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Pretraining.pretrain_loss()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.trainers.pretraining_vade.Pretraining.GMM_fit" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Pretraining.GMM_fit()</span></code></a>
-        </li></ul>
-            </nav>
-        </li></ul>
-            </nav>
-        </li>
-        <li class="md-nav__item"><a href="#module-domid.trainers.trainer_vade" class="md-nav__link">VaDE Trainer</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.trainers.trainer_vade.TrainerVADE" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">TrainerVADE</span></code></a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.trainers.trainer_vade.TrainerVADE.__init__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">TrainerVADE.__init__()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.trainers.trainer_vade.TrainerVADE.tr_epoch" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">TrainerVADE.tr_epoch()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.trainers.trainer_vade.TrainerVADE.before_tr" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">TrainerVADE.before_tr()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.trainers.trainer_vade.TrainerVADE.post_tr" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">TrainerVADE.post_tr()</span></code></a>
-        </li></ul>
-            </nav>
-        </li></ul>
-            </nav>
+        <li class="md-nav__item"><a href="#vade-trainer" class="md-nav__link">VaDE Trainer</a>
         </li>
         <li class="md-nav__item"><a href="#module-domid.trainers" class="md-nav__link">Module contents</a>
         </li></ul>
@@ -322,14 +296,14 @@
     <li class="md-nav__item">
     
     
-      <a href="#module-domid.trainers.pretraining_vade" class="md-nav__link">VaDE pretraining</a>
+      <a href="#vade-pretraining" class="md-nav__link">VaDE pretraining</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="#module-domid.trainers.trainer_vade" class="md-nav__link">VaDE Trainer</a>
+      <a href="#vade-trainer" class="md-nav__link">VaDE Trainer</a>
       
     
     </li>
@@ -358,35 +332,9 @@
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#domid-trainers--page-root" class="md-nav__link">Model Trainers</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#module-domid.trainers.pretraining_vade" class="md-nav__link">VaDE pretraining</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.trainers.pretraining_vade.Pretraining" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Pretraining</span></code></a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.trainers.pretraining_vade.Pretraining.__init__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Pretraining.__init__()</span></code></a>
+        <li class="md-nav__item"><a href="#vade-pretraining" class="md-nav__link">VaDE pretraining</a>
         </li>
-        <li class="md-nav__item"><a href="#domid.trainers.pretraining_vade.Pretraining.pretrain_loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Pretraining.pretrain_loss()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.trainers.pretraining_vade.Pretraining.GMM_fit" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Pretraining.GMM_fit()</span></code></a>
-        </li></ul>
-            </nav>
-        </li></ul>
-            </nav>
-        </li>
-        <li class="md-nav__item"><a href="#module-domid.trainers.trainer_vade" class="md-nav__link">VaDE Trainer</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.trainers.trainer_vade.TrainerVADE" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">TrainerVADE</span></code></a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.trainers.trainer_vade.TrainerVADE.__init__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">TrainerVADE.__init__()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.trainers.trainer_vade.TrainerVADE.tr_epoch" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">TrainerVADE.tr_epoch()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.trainers.trainer_vade.TrainerVADE.before_tr" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">TrainerVADE.before_tr()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.trainers.trainer_vade.TrainerVADE.post_tr" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">TrainerVADE.post_tr()</span></code></a>
-        </li></ul>
-            </nav>
-        </li></ul>
-            </nav>
+        <li class="md-nav__item"><a href="#vade-trainer" class="md-nav__link">VaDE Trainer</a>
         </li>
         <li class="md-nav__item"><a href="#module-domid.trainers" class="md-nav__link">Module contents</a>
         </li></ul>
@@ -403,89 +351,11 @@
             
   <section id="model-trainers">
 <h1 id="domid-trainers--page-root">Model Trainers<a class="headerlink" href="#domid-trainers--page-root" title="Permalink to this heading">¶</a></h1>
-<section id="module-domid.trainers.pretraining_vade">
-<span id="vade-pretraining"></span><h2 id="module-domid.trainers.pretraining_vade">VaDE pretraining<a class="headerlink" href="#module-domid.trainers.pretraining_vade" title="Permalink to this heading">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="domid.trainers.pretraining_vade.Pretraining">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">domid.trainers.pretraining_vade.</span></span><span class="sig-name descname"><span class="pre">Pretraining</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loader_tr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loader_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/trainers/pretraining_vade.html#Pretraining"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.trainers.pretraining_vade.Pretraining" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.trainers.pretraining_vade.Pretraining.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loader_tr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loader_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/trainers/pretraining_vade.html#Pretraining.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.trainers.pretraining_vade.Pretraining.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>model</strong> – the model to train</p></li>
-<li><p><strong>device</strong> – the device to use</p></li>
-<li><p><strong>loader_tr</strong> – the training data loader</p></li>
-<li><p><strong>i_h</strong> – image height</p></li>
-<li><p><strong>i_w</strong> – image width</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.trainers.pretraining_vade.Pretraining.pretrain_loss">
-<span class="sig-name descname"><span class="pre">pretrain_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensor_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inject_tensor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/trainers/pretraining_vade.html#Pretraining.pretrain_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.trainers.pretraining_vade.Pretraining.pretrain_loss" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>tensor_x</strong> – the input image</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the loss</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.trainers.pretraining_vade.Pretraining.GMM_fit">
-<span class="sig-name descname"><span class="pre">GMM_fit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/trainers/pretraining_vade.html#Pretraining.GMM_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.trainers.pretraining_vade.Pretraining.GMM_fit" title="Permalink to this definition">¶</a></dt>
-<dd><p>During pre-training we estimate pi, mu_c, and log_sigma2_c with a GMM at the end of each epoch.
-After pre-training these initial parameter values are used in the calculation of the ELBO loss,
-and are further updated with backpropagation like all other neural network weights.</p>
-</dd></dl>
-</dd></dl>
+<section id="vade-pretraining">
+<h2 id="vade-pretraining">VaDE pretraining<a class="headerlink" href="#vade-pretraining" title="Permalink to this heading">¶</a></h2>
 </section>
-<section id="module-domid.trainers.trainer_vade">
-<span id="vade-trainer"></span><h2 id="module-domid.trainers.trainer_vade">VaDE Trainer<a class="headerlink" href="#module-domid.trainers.trainer_vade" title="Permalink to this heading">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="domid.trainers.trainer_vade.TrainerVADE">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">domid.trainers.trainer_vade.</span></span><span class="sig-name descname"><span class="pre">TrainerVADE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">writer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pretrain</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aconf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/trainers/trainer_vade.html#TrainerVADE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.trainers.trainer_vade.TrainerVADE" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TrainerClassif</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.trainers.trainer_vade.TrainerVADE.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">writer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pretrain</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aconf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/trainers/trainer_vade.html#TrainerVADE.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.trainers.trainer_vade.TrainerVADE.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>FIXME: add description of the parameters
-:param model: model to train
-:param task: task to train on
-:param observer: observer to notify
-:param device: device to use
-:param writer: tensorboard writer
-:param pretrain: whether to pretrain the model with MSE loss
-:param aconf: configuration parameters, including learning rate and pretrain threshold</p>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.trainers.trainer_vade.TrainerVADE.tr_epoch">
-<span class="sig-name descname"><span class="pre">tr_epoch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epoch</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/trainers/trainer_vade.html#TrainerVADE.tr_epoch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.trainers.trainer_vade.TrainerVADE.tr_epoch" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>epoch</strong> – epoch number</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p></p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.trainers.trainer_vade.TrainerVADE.before_tr">
-<span class="sig-name descname"><span class="pre">before_tr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/trainers/trainer_vade.html#TrainerVADE.before_tr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.trainers.trainer_vade.TrainerVADE.before_tr" title="Permalink to this definition">¶</a></dt>
-<dd><p>check the performance of randomly initialized weight</p>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.trainers.trainer_vade.TrainerVADE.post_tr">
-<span class="sig-name descname"><span class="pre">post_tr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/trainers/trainer_vade.html#TrainerVADE.post_tr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.trainers.trainer_vade.TrainerVADE.post_tr" title="Permalink to this definition">¶</a></dt>
-<dd><p>after training</p>
-</dd></dl>
-</dd></dl>
+<section id="vade-trainer">
+<h2 id="vade-trainer">VaDE Trainer<a class="headerlink" href="#vade-trainer" title="Permalink to this heading">¶</a></h2>
 </section>
 <section id="module-domid.trainers">
 <span id="module-contents"></span><h2 id="module-domid.trainers">Module contents<a class="headerlink" href="#module-domid.trainers" title="Permalink to this heading">¶</a></h2>
@@ -502,7 +372,7 @@ and are further updated with backpropagation like all other neural network weigh
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="domid.models.html" title="Model Initialization Module"
+            <a href="domid.algos.html" title="Model Builders"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -511,7 +381,7 @@ and are further updated with backpropagation like all other neural network weigh
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> Model Initialization Module </span>
+                      class="md-footer-nav__direction"> Previous </span> Model Builders </span>
               </div>
             </a>
           

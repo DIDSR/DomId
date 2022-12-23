@@ -10,15 +10,18 @@ Welcome to DomId's documentation!
    :maxdepth: 1
    :caption: Contents:
 
+
 About DomID
 ===============
+
 The Variational Deep Embedding (VaDE) model is trained to learn lower-dimensional representations of images based on a Mixture-of-Gaussians latent space prior distribution while optimizing cluster assignments. In this package, examples on multiple dataset has been presented.
 
 .. toctree::
    :maxdepth: 1
-   :caption: About
+   :caption: More information about the models
 
-about_link
+   about_link
+
 
 DomainLab
 ==============
@@ -27,6 +30,7 @@ DomainLab is a submodule that has been used to develop DomID, and it aims at lea
 .. toctree::
    :maxdepth: 1
    :caption: DomainLab
+
 
 
 Loading a Datasets and Defining a Task
@@ -53,9 +57,12 @@ Model is built from the building blocks in domid/compos directory. However, the 
    domid.compos
    domid.models
 
+
 Training a Model
 =================
+
 Training of the model consists of Observer and Trainer.
+
 .. toctree::
    :maxdepth: 2
    :caption: Training a Model

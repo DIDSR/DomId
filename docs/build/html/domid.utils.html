@@ -207,19 +207,19 @@
   <ul class="md-nav__list">
     <li class="md-nav__item">
     
-      <span class="md-nav__link caption"><span class="caption-text">About DomID</span></span>
+      <span class="md-nav__link caption"><span class="caption-text">More information about the models</span></span>
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="domid.algos.html" class="md-nav__link">Model Builders</a>
+      <a href="about_link.html" class="md-nav__link">About DomId</a>
       
     
     </li>
     <li class="md-nav__item">
     
-      <span class="md-nav__link caption"><span class="caption-text">Loading a Datasets and Defining a Task</span></span>
+      <span class="md-nav__link caption"><span class="caption-text">Datasets and Tasks</span></span>
     
     </li>
     <li class="md-nav__item">
@@ -238,7 +238,7 @@
     </li>
     <li class="md-nav__item">
     
-      <span class="md-nav__link caption"><span class="caption-text">Building and Defining a Model</span></span>
+      <span class="md-nav__link caption"><span class="caption-text">Models</span></span>
     
     </li>
     <li class="md-nav__item">
@@ -298,15 +298,7 @@
         </li></ul>
             </nav>
         </li>
-        <li class="md-nav__item"><a href="#module-domid.utils.perf_cluster" class="md-nav__link">Cluster Performance Evaluation</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.utils.perf_cluster.PerfCluster" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">PerfCluster</span></code></a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.utils.perf_cluster.PerfCluster.cal_acc" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">PerfCluster.cal_acc()</span></code></a>
-        </li></ul>
-            </nav>
-        </li></ul>
-            </nav>
+        <li class="md-nav__item"><a href="#cluster-performance-evaluation" class="md-nav__link">Cluster Performance Evaluation</a>
         </li>
         <li class="md-nav__item"><a href="#module-domid.utils" class="md-nav__link">Module contents</a>
         </li></ul>
@@ -334,30 +326,8 @@
 <span class="sig-prename descclassname"><span class="pre">domid.utils.mean_std.</span></span><span class="sig-name descname"><span class="pre">run2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/utils/mean_std.html#run2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.utils.mean_std.run2" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 </section>
-<section id="module-domid.utils.perf_cluster">
-<span id="cluster-performance-evaluation"></span><h2 id="module-domid.utils.perf_cluster">Cluster Performance Evaluation<a class="headerlink" href="#module-domid.utils.perf_cluster" title="Permalink to this heading">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="domid.utils.perf_cluster.PerfCluster">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">domid.utils.perf_cluster.</span></span><span class="sig-name descname"><span class="pre">PerfCluster</span></span><a class="reference internal" href="_modules/domid/utils/perf_cluster.html#PerfCluster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.utils.perf_cluster.PerfCluster" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PerfClassif</span></code></p>
-<p>Clustering Performance</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.utils.perf_cluster.PerfCluster.cal_acc">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cal_acc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loader_te</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_batches</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/utils/perf_cluster.html#PerfCluster.cal_acc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.utils.perf_cluster.PerfCluster.cal_acc" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>model</strong> – </p></li>
-<li><p><strong>loader_te</strong> – </p></li>
-<li><p><strong>device</strong> – for final test, GPU can be used</p></li>
-<li><p><strong>max_batches</strong> – maximum number of iteration for data loader, used to
-probe performance with less computation burden.
-default None, which means to traverse the whole dataset</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-</dd></dl>
+<section id="cluster-performance-evaluation">
+<h2 id="cluster-performance-evaluation">Cluster Performance Evaluation<a class="headerlink" href="#cluster-performance-evaluation" title="Permalink to this heading">¶</a></h2>
 </section>
 <section id="module-domid.utils">
 <span id="module-contents"></span><h2 id="module-domid.utils">Module contents<a class="headerlink" href="#module-domid.utils" title="Permalink to this heading">¶</a></h2>
