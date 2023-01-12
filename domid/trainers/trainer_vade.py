@@ -157,7 +157,7 @@ class TrainerVADE(TrainerClassif):
                 vec_d.to(self.device),
             )
 
-            if acc_val < self.thres and not self.pretraining_finished:
+            if epoch < self.thres and not self.pretraining_finished:
                 loss_val = pretrain.pretrain_loss(tensor_x, inject_tensor)
             else:
                 loss_val = self.model.cal_loss(tensor_x, inject_tensor, self.warmup_beta)

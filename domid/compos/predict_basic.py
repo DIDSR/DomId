@@ -40,7 +40,6 @@ class Prediction:
                     machine, image_loc, pred_domain = other_vars
                     #print(machine.shape)
                     for ii in range(0, self.args.bs):
-
                         machine_labels.append(machine[ii])
                         image_path.append(image_loc[ii])
 
