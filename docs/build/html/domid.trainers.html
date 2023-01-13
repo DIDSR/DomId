@@ -59,10 +59,10 @@
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="domid.utils package" href="domid.utils.html" />
-    <link rel="prev" title="domid.tests package" href="domid.tests.html" />
+    <link rel="prev" title="domid.algos package" href="domid.algos.html" />
   
     <link rel="apple-touch-icon" href="_static/images/apple-icon-152x152.png"/>
   
@@ -164,8 +164,10 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="modules.html" class="md-tabs__link">domid</a></li>
-          <li class="md-tabs__item"><a href="domid.html" class="md-tabs__link">domid package</a></li>
+            
+            <li class="md-tabs__item"><a href="about_link.html" class="md-tabs__link">About</a></li>
+            
+            <li class="md-tabs__item"><a href="readme_link.html" class="md-tabs__link">Quick Start</a></li>
       </ul>
     </div>
   </nav>
@@ -206,18 +208,144 @@
   <ul class="md-nav__list">
     <li class="md-nav__item">
     
-      <span class="md-nav__link caption"><span class="caption-text">Contents:</span></span>
+      <span class="md-nav__link caption"><span class="caption-text">More information about the models</span></span>
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="modules.html" class="md-nav__link">domid</a>
+      <a href="about_link.html" class="md-nav__link">About DomId</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Datasets and Tasks</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.dsets.html" class="md-nav__link">domid.dsets package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.tasks.html" class="md-nav__link">domid.tasks package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Models</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.compos.html" class="md-nav__link">domid.compos package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.models.html" class="md-nav__link">domid.models package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Training a Model</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.algos.html" class="md-nav__link">domid.algos package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    <label class="md-nav__link md-nav__link--active" for="__toc"> domid.trainers package </label>
+    
+      <a href="#" class="md-nav__link md-nav__link--active">domid.trainers package</a>
+      
+        
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">Contents</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#domid-trainers--page-root" class="md-nav__link">domid.trainers package</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#submodules" class="md-nav__link">Submodules</a>
+        </li>
+        <li class="md-nav__item"><a href="#module-domid.trainers.pretraining_vade" class="md-nav__link">domid.trainers.pretraining_vade module</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#domid.trainers.pretraining_vade.Pretraining" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Pretraining</span></code></a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#domid.trainers.pretraining_vade.Pretraining.__init__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Pretraining.__init__()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#domid.trainers.pretraining_vade.Pretraining.pretrain_loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Pretraining.pretrain_loss()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#domid.trainers.pretraining_vade.Pretraining.GMM_fit" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Pretraining.GMM_fit()</span></code></a>
+        </li></ul>
+            </nav>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#module-domid.trainers.trainer_vade" class="md-nav__link">domid.trainers.trainer_vade module</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#domid.trainers.trainer_vade.TrainerVADE" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">TrainerVADE</span></code></a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#domid.trainers.trainer_vade.TrainerVADE.__init__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">TrainerVADE.__init__()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#domid.trainers.trainer_vade.TrainerVADE.tr_epoch" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">TrainerVADE.tr_epoch()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#domid.trainers.trainer_vade.TrainerVADE.before_tr" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">TrainerVADE.before_tr()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#domid.trainers.trainer_vade.TrainerVADE.post_tr" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">TrainerVADE.post_tr()</span></code></a>
+        </li></ul>
+            </nav>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#module-domid.trainers" class="md-nav__link">Module contents</a>
+        </li></ul>
+            </nav>
+        </li>
+  </ul>
+</nav>
       <ul class="md-nav__list"> 
     <li class="md-nav__item">
     
     
-      <a href="domid.html" class="md-nav__link">domid package</a>
+      <a href="#submodules" class="md-nav__link">Submodules</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#module-domid.trainers.pretraining_vade" class="md-nav__link">domid.trainers.pretraining_vade module</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#module-domid.trainers.trainer_vade" class="md-nav__link">domid.trainers.trainer_vade module</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#module-domid.trainers" class="md-nav__link">Module contents</a>
       
     
     </li></ul>
@@ -250,10 +378,6 @@
         <li class="md-nav__item"><a href="#domid.trainers.pretraining_vade.Pretraining.pretrain_loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Pretraining.pretrain_loss()</span></code></a>
         </li>
         <li class="md-nav__item"><a href="#domid.trainers.pretraining_vade.Pretraining.GMM_fit" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Pretraining.GMM_fit()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.trainers.pretraining_vade.Pretraining.__dict__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Pretraining.__dict__</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.trainers.pretraining_vade.Pretraining.__module__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Pretraining.__module__</span></code></a>
         </li></ul>
             </nav>
         </li></ul>
@@ -268,10 +392,6 @@
         <li class="md-nav__item"><a href="#domid.trainers.trainer_vade.TrainerVADE.tr_epoch" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">TrainerVADE.tr_epoch()</span></code></a>
         </li>
         <li class="md-nav__item"><a href="#domid.trainers.trainer_vade.TrainerVADE.before_tr" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">TrainerVADE.before_tr()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.trainers.trainer_vade.TrainerVADE.__abstractmethods__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">TrainerVADE.__abstractmethods__</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.trainers.trainer_vade.TrainerVADE.__module__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">TrainerVADE.__module__</span></code></a>
         </li>
         <li class="md-nav__item"><a href="#domid.trainers.trainer_vade.TrainerVADE.post_tr" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">TrainerVADE.post_tr()</span></code></a>
         </li></ul>
@@ -337,14 +457,6 @@
 After pre-training these initial parameter values are used in the calculation of the ELBO loss,
 and are further updated with backpropagation like all other neural network weights.</p>
 </dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="domid.trainers.pretraining_vade.Pretraining.__dict__">
-<span class="sig-name descname"><span class="pre">__dict__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">mappingproxy({'__module__':</span> <span class="pre">'domid.trainers.pretraining_vade',</span> <span class="pre">'__init__':</span> <span class="pre">&lt;function</span> <span class="pre">Pretraining.__init__&gt;,</span> <span class="pre">'pretrain_loss':</span> <span class="pre">&lt;function</span> <span class="pre">Pretraining.pretrain_loss&gt;,</span> <span class="pre">'GMM_fit':</span> <span class="pre">&lt;function</span> <span class="pre">Pretraining.GMM_fit&gt;,</span> <span class="pre">'__dict__':</span> <span class="pre">&lt;attribute</span> <span class="pre">'__dict__'</span> <span class="pre">of</span> <span class="pre">'Pretraining'</span> <span class="pre">objects&gt;,</span> <span class="pre">'__weakref__':</span> <span class="pre">&lt;attribute</span> <span class="pre">'__weakref__'</span> <span class="pre">of</span> <span class="pre">'Pretraining'</span> <span class="pre">objects&gt;,</span> <span class="pre">'__doc__':</span> <span class="pre">None,</span> <span class="pre">'__annotations__':</span> <span class="pre">{}})</span></em><a class="headerlink" href="#domid.trainers.pretraining_vade.Pretraining.__dict__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="domid.trainers.pretraining_vade.Pretraining.__module__">
-<span class="sig-name descname"><span class="pre">__module__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'domid.trainers.pretraining_vade'</span></em><a class="headerlink" href="#domid.trainers.pretraining_vade.Pretraining.__module__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 </dd></dl>
 </section>
 <section id="module-domid.trainers.trainer_vade">
@@ -382,14 +494,6 @@ and are further updated with backpropagation like all other neural network weigh
 <span class="sig-name descname"><span class="pre">before_tr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/trainers/trainer_vade.html#TrainerVADE.before_tr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.trainers.trainer_vade.TrainerVADE.before_tr" title="Permalink to this definition">¶</a></dt>
 <dd><p>check the performance of randomly initialized weight</p>
 </dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="domid.trainers.trainer_vade.TrainerVADE.__abstractmethods__">
-<span class="sig-name descname"><span class="pre">__abstractmethods__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({})</span></em><a class="headerlink" href="#domid.trainers.trainer_vade.TrainerVADE.__abstractmethods__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="domid.trainers.trainer_vade.TrainerVADE.__module__">
-<span class="sig-name descname"><span class="pre">__module__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'domid.trainers.trainer_vade'</span></em><a class="headerlink" href="#domid.trainers.trainer_vade.TrainerVADE.__module__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="domid.trainers.trainer_vade.TrainerVADE.post_tr">
 <span class="sig-name descname"><span class="pre">post_tr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/trainers/trainer_vade.html#TrainerVADE.post_tr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.trainers.trainer_vade.TrainerVADE.post_tr" title="Permalink to this definition">¶</a></dt>
@@ -412,7 +516,7 @@ and are further updated with backpropagation like all other neural network weigh
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="domid.tests.html" title="domid.tests package"
+            <a href="domid.algos.html" title="domid.algos package"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -421,21 +525,10 @@ and are further updated with backpropagation like all other neural network weigh
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> domid.tests package </span>
+                      class="md-footer-nav__direction"> Previous </span> domid.algos package </span>
               </div>
             </a>
           
-          
-            <a href="domid.utils.html" title="domid.utils package"
-               class="md-flex md-footer-nav__link md-footer-nav__link--next"
-               rel="next">
-            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
-                class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> domid.utils package </span>
-            </div>
-            <div class="md-flex__cell md-flex__cell--shrink"><i
-                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
-            </div>
           
         </a>
         
@@ -445,7 +538,7 @@ and are further updated with backpropagation like all other neural network weigh
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
           <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2022, FDA/CDRH/OSEL/DIDSR..
+              &#169; Copyright 2023, FDA/CDRH/OSEL/DIDSR..
               
           </div>
             Created using

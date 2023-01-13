@@ -59,10 +59,9 @@
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="domid.trainers package" href="domid.trainers.html" />
-    <link rel="prev" title="domid.tasks package" href="domid.tasks.html" />
   
     <link rel="apple-touch-icon" href="_static/images/apple-icon-152x152.png"/>
   
@@ -164,8 +163,10 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="modules.html" class="md-tabs__link">domid</a></li>
-          <li class="md-tabs__item"><a href="domid.html" class="md-tabs__link">domid package</a></li>
+            
+            <li class="md-tabs__item"><a href="about_link.html" class="md-tabs__link">About</a></li>
+            
+            <li class="md-tabs__item"><a href="readme_link.html" class="md-tabs__link">Quick Start</a></li>
       </ul>
     </div>
   </nav>
@@ -206,21 +207,71 @@
   <ul class="md-nav__list">
     <li class="md-nav__item">
     
-      <span class="md-nav__link caption"><span class="caption-text">Contents:</span></span>
+      <span class="md-nav__link caption"><span class="caption-text">More information about the models</span></span>
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="modules.html" class="md-nav__link">domid</a>
-      <ul class="md-nav__list"> 
+      <a href="about_link.html" class="md-nav__link">About DomId</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Datasets and Tasks</span></span>
+    
+    </li>
     <li class="md-nav__item">
     
     
-      <a href="domid.html" class="md-nav__link">domid package</a>
+      <a href="domid.dsets.html" class="md-nav__link">domid.dsets package</a>
       
     
-    </li></ul>
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.tasks.html" class="md-nav__link">domid.tasks package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Models</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.compos.html" class="md-nav__link">domid.compos package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.models.html" class="md-nav__link">domid.models package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Training a Model</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.algos.html" class="md-nav__link">domid.algos package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.trainers.html" class="md-nav__link">domid.trainers package</a>
+      
     
     </li>
   </ul>
@@ -291,9 +342,9 @@
         </li>
         <li class="md-nav__item"><a href="#domid.tests.test_model_trainer.test_M2YD_train_MNISTcolor" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">test_M2YD_train_MNISTcolor()</span></code></a>
         </li>
-        <li class="md-nav__item"><a href="#domid.tests.test_model_trainer.test_MNISTcolor_conditionalOne_train" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">test_MNISTcolor_conditionalOne_train()</span></code></a>
+        <li class="md-nav__item"><a href="#domid.tests.test_model_trainer.test_MNIST_conditionalOne_train" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">test_MNIST_conditionalOne_train()</span></code></a>
         </li>
-        <li class="md-nav__item"><a href="#domid.tests.test_model_trainer.test_MNISTcolor_conditionalTwo_train" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">test_MNISTcolor_conditionalTwo_train()</span></code></a>
+        <li class="md-nav__item"><a href="#domid.tests.test_model_trainer.test_MNIST_conditional_train" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">test_MNIST_conditional_train()</span></code></a>
         </li></ul>
             </nav>
         </li>
@@ -399,12 +450,12 @@
 <span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_trainer.</span></span><span class="sig-name descname"><span class="pre">test_M2YD_train_MNISTcolor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_trainer.html#test_M2YD_train_MNISTcolor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_trainer.test_M2YD_train_MNISTcolor" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py function">
-<dt class="sig sig-object py" id="domid.tests.test_model_trainer.test_MNISTcolor_conditionalOne_train">
-<span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_trainer.</span></span><span class="sig-name descname"><span class="pre">test_MNISTcolor_conditionalOne_train</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_trainer.html#test_MNISTcolor_conditionalOne_train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_trainer.test_MNISTcolor_conditionalOne_train" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="domid.tests.test_model_trainer.test_MNIST_conditionalOne_train">
+<span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_trainer.</span></span><span class="sig-name descname"><span class="pre">test_MNIST_conditionalOne_train</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_trainer.html#test_MNIST_conditionalOne_train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_trainer.test_MNIST_conditionalOne_train" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py function">
-<dt class="sig sig-object py" id="domid.tests.test_model_trainer.test_MNISTcolor_conditionalTwo_train">
-<span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_trainer.</span></span><span class="sig-name descname"><span class="pre">test_MNISTcolor_conditionalTwo_train</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_trainer.html#test_MNISTcolor_conditionalTwo_train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_trainer.test_MNISTcolor_conditionalTwo_train" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="domid.tests.test_model_trainer.test_MNIST_conditional_train">
+<span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_trainer.</span></span><span class="sig-name descname"><span class="pre">test_MNIST_conditional_train</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_trainer.html#test_MNIST_conditional_train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_trainer.test_MNIST_conditional_train" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 </section>
 <section id="module-domid.tests">
@@ -422,30 +473,6 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="domid.tasks.html" title="domid.tasks package"
-               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
-               rel="prev">
-              <div class="md-flex__cell md-flex__cell--shrink">
-                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
-              </div>
-              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
-                <span class="md-flex__ellipsis">
-                  <span
-                      class="md-footer-nav__direction"> Previous </span> domid.tasks package </span>
-              </div>
-            </a>
-          
-          
-            <a href="domid.trainers.html" title="domid.trainers package"
-               class="md-flex md-footer-nav__link md-footer-nav__link--next"
-               rel="next">
-            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
-                class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> domid.trainers package </span>
-            </div>
-            <div class="md-flex__cell md-flex__cell--shrink"><i
-                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
-            </div>
           
         </a>
         
@@ -455,7 +482,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
           <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2022, FDA/CDRH/OSEL/DIDSR..
+              &#169; Copyright 2023, FDA/CDRH/OSEL/DIDSR..
               
           </div>
             Created using

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta http-equiv="refresh" content="0; url=./build/html/index.html" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -62,7 +62,7 @@
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="About DomId" href="about_link.html" />
+    <link rel="next" title="Dataset Initialization Submodule" href="domid.dsets.html" />
   
     <link rel="apple-touch-icon" href="_static/images/apple-icon-152x152.png"/>
   
@@ -215,32 +215,20 @@
   <ul class="md-nav__list">
     <li class="md-nav__item">
     
-      <span class="md-nav__link caption"><span class="caption-text">More information about the models</span></span>
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="about_link.html" class="md-nav__link">About DomId</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
       <span class="md-nav__link caption"><span class="caption-text">Datasets and Tasks</span></span>
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="domid.dsets.html" class="md-nav__link">domid.dsets package</a>
+      <a href="domid.dsets.html" class="md-nav__link">Dataset Initialization Submodule</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="domid.tasks.html" class="md-nav__link">domid.tasks package</a>
+      <a href="domid.tasks.html" class="md-nav__link">Task Initialization Submodule</a>
       
     
     </li>
@@ -252,33 +240,14 @@
     <li class="md-nav__item">
     
     
-      <a href="domid.compos.html" class="md-nav__link">domid.compos package</a>
+      <a href="domid.compos.html" class="md-nav__link">Model Building Structures Submodule</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="domid.models.html" class="md-nav__link">domid.models package</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-      <span class="md-nav__link caption"><span class="caption-text">Training a Model</span></span>
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="domid.algos.html" class="md-nav__link">domid.algos package</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="domid.trainers.html" class="md-nav__link">domid.trainers package</a>
+      <a href="domid.models.html" class="md-nav__link">Model Initialization Module</a>
       
     
     </li>
@@ -328,11 +297,8 @@
 <h1 id="about-domid">About DomID<a class="headerlink" href="#about-domid" title="Permalink to this heading">¶</a></h1>
 <p>The Variational Deep Embedding (VaDE) model is trained to learn lower-dimensional representations of images based on a Mixture-of-Gaussians latent space prior distribution while optimizing cluster assignments. In this package, examples on multiple dataset has been presented.</p>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">More information about the models</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="about_link.html">About DomId</a></li>
-</ul>
 </div>
+<p>about_link</p>
 </section>
 <section id="domainlab">
 <h1 id="domainlab">DomainLab<a class="headerlink" href="#domainlab" title="Permalink to this heading">¶</a></h1>
@@ -346,8 +312,8 @@
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Datasets and Tasks</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="domid.dsets.html">domid.dsets package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="domid.tasks.html">domid.tasks package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="domid.dsets.html">Dataset Initialization Submodule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="domid.tasks.html">Task Initialization Submodule</a></li>
 </ul>
 </div>
 </section>
@@ -357,22 +323,20 @@
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Models</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="domid.compos.html">domid.compos package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="domid.compos.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="domid.compos.html#module-domid.compos.VAE_blocks">domid.compos.VAE_blocks module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="domid.compos.html#module-domid.compos.cnn_VAE">domid.compos.cnn_VAE module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="domid.compos.html#module-domid.compos.linear_VAE">domid.compos.linear_VAE module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="domid.compos.html#module-domid.compos.nn_net">domid.compos.nn_net module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="domid.compos.html#module-domid.compos.predict_basic">domid.compos.predict_basic module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="domid.compos.html#module-domid.compos.storing">domid.compos.storing module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="domid.compos.html#module-domid.compos.tensorboard_fun">domid.compos.tensorboard_fun module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="domid.compos.html">Model Building Structures Submodule</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="domid.compos.html#module-domid.compos.VAE_blocks">Building blocks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domid.compos.html#module-domid.compos.cnn_VAE">Convolutional VAE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domid.compos.html#module-domid.compos.linear_VAE">Linear VAE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domid.compos.html#module-domid.compos.nn_net">Base MNIST Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domid.compos.html#module-domid.compos.predict_basic">Predict Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domid.compos.html#module-domid.compos.storing">Store Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domid.compos.html#module-domid.compos.tensorboard_fun">Tensorboard Function</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.compos.html#module-domid.compos">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="domid.models.html">domid.models package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="domid.models.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="domid.models.html#module-domid.models.model_m2yd">domid.models.model_m2yd module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="domid.models.html#module-domid.models.model_vade">domid.models.model_vade module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="domid.models.html">Model Initialization Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="domid.models.html#module-domid.models.model_m2yd">M2YD Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domid.models.html#module-domid.models.model_vade">VaDE Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.models.html#module-domid.models">Module contents</a></li>
 </ul>
 </li>
@@ -381,25 +345,14 @@
 </section>
 <section id="training-a-model">
 <h1 id="training-a-model">Training a Model<a class="headerlink" href="#training-a-model" title="Permalink to this heading">¶</a></h1>
-<p>Training of the model consists of Observer and Trainer.</p>
-<div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Training a Model</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="domid.algos.html">domid.algos package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="domid.algos.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="domid.algos.html#module-domid.algos.builder_m2yd">domid.algos.builder_m2yd module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="domid.algos.html#module-domid.algos.builder_vade">domid.algos.builder_vade module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="domid.algos.html#module-domid.algos">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="domid.trainers.html">domid.trainers package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="domid.trainers.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="domid.trainers.html#module-domid.trainers.pretraining_vade">domid.trainers.pretraining_vade module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="domid.trainers.html#module-domid.trainers.trainer_vade">domid.trainers.trainer_vade module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="domid.trainers.html#module-domid.trainers">Module contents</a></li>
-</ul>
-</li>
-</ul>
+<p>Training of the model consists of Observer and Trainer.
+.. toctree:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>:maxdepth: 2
+:caption: Training a Model
+
+domid.algos
+domid.trainers
+</pre></div>
 </div>
 </section>
 <section id="indices-and-tables">
@@ -422,12 +375,12 @@
       <nav class="md-footer-nav__inner md-grid">
           
           
-            <a href="about_link.html" title="About DomId"
+            <a href="domid.dsets.html" title="Dataset Initialization Submodule"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> About DomId </span>
+                class="md-footer-nav__direction"> Next </span> Dataset Initialization Submodule </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -441,7 +394,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
           <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2023, FDA/CDRH/OSEL/DIDSR..
+              &#169; Copyright 2022, FDA/CDRH/OSEL/DIDSR..
               
           </div>
             Created using

@@ -58,6 +58,7 @@
     <script src="../../../_static/doctools.js"></script>
     <script src="../../../_static/sphinx_highlight.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="author" title="About these documents" href="../../../about.html" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
   
@@ -161,6 +162,10 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
+            
+            <li class="md-tabs__item"><a href="../../../about_link.html" class="md-tabs__link">About</a></li>
+            
+            <li class="md-tabs__item"><a href="../../../readme_link.html" class="md-tabs__link">Quick Start</a></li>
           <li class="md-tabs__item"><a href="../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -202,13 +207,70 @@
   <ul class="md-nav__list">
     <li class="md-nav__item">
     
-      <span class="md-nav__link caption"><span class="caption-text">Contents:</span></span>
+      <span class="md-nav__link caption"><span class="caption-text">More information about the models</span></span>
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="../../../modules.html" class="md-nav__link">domid</a>
+      <a href="../../../about_link.html" class="md-nav__link">About DomId</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Datasets and Tasks</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.dsets.html" class="md-nav__link">domid.dsets package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.tasks.html" class="md-nav__link">domid.tasks package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Models</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.compos.html" class="md-nav__link">domid.compos package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.models.html" class="md-nav__link">domid.models package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Training a Model</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.algos.html" class="md-nav__link">domid.algos package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.trainers.html" class="md-nav__link">domid.trainers package</a>
       
     
     </li>
@@ -248,6 +310,7 @@ from domid.utils.perf_cluster import PerfCluster
 from domid.compos.predict_basic import Prediction
 from domid.compos.tensorboard_fun import tensorboard_write
 
+
 <div class="viewcode-block" id="TrainerVADE"><a class="viewcode-back" href="../../../domid.trainers.html#domid.trainers.trainer_vade.TrainerVADE">[docs]</a>class TrainerVADE(TrainerClassif):
 <div class="viewcode-block" id="TrainerVADE.__init__"><a class="viewcode-back" href="../../../domid.trainers.html#domid.trainers.trainer_vade.TrainerVADE.__init__">[docs]</a>    def __init__(self, model, task, observer, device, writer, pretrain=True, aconf=None):
         """FIXME: add description of the parameters
@@ -268,8 +331,7 @@ from domid.compos.tensorboard_fun import tensorboard_write
 
         if not self.pretraining_finished:
             self.optimizer = optim.Adam(
-                itertools.chain(self.model.encoder.parameters(), self.model.decoder.parameters()),
-                lr=self.lr
+                itertools.chain(self.model.encoder.parameters(), self.model.decoder.parameters()), lr=self.lr
             )
             print("".join(["#"] * 60) + "\nPretraining initialized.\n" + "".join(["#"] * 60))
         else:
@@ -277,7 +339,7 @@ from domid.compos.tensorboard_fun import tensorboard_write
 
         self.epo_loss_tr = None
         self.writer = writer
-        self.thres = aconf.pre_tr #number of epochs for pretraining
+        self.thres = aconf.pre_tr  # number of epochs for pretraining
         self.i_h, self.i_w = task.isize.h, task.isize.w
         self.args = aconf
         self.storage = Storing(self.args)
@@ -289,7 +351,9 @@ from domid.compos.tensorboard_fun import tensorboard_write
         :return:
         """
 
-        print("Epoch {}. ELBO loss".format(epoch)) if self.pretraining_finished else print("Epoch {}. MSE loss".format(epoch))
+        print("Epoch {}. ELBO loss".format(epoch)) if self.pretraining_finished else print(
+            "Epoch {}. MSE loss".format(epoch)
+        )
         self.model.train()
         self.epo_loss_tr = 0
 
@@ -298,19 +362,15 @@ from domid.compos.tensorboard_fun import tensorboard_write
         acc_tr, _ = prediction.epoch_tr_acc()
         acc_val, _ = prediction.epoch_val_acc()
 
-
-        #___________Define warm-up for ELBO loss_________
-        if self.warmup_beta&lt;1 and self.pretraining_finished:
+        # ___________Define warm-up for ELBO loss_________
+        if self.warmup_beta &lt; 1 and self.pretraining_finished:
             self.warmup_beta = self.warmup_beta + 0.01
 
-        #_____________one training epoch: start_______________________
+        # _____________one training epoch: start_______________________
         for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
 
-            if len(other_vars) &gt;0:
+            if len(other_vars) &gt; 0:
                 machine, path, pred_domain = other_vars
-                if len(pred_domain)&gt;1:
-                    pred_domain = pred_domain.to(self.device)
-
 
             tensor_x, vec_y, vec_d = (
                 tensor_x.to(self.device),
@@ -319,19 +379,25 @@ from domid.compos.tensorboard_fun import tensorboard_write
             )
             self.optimizer.zero_grad()
 
-            #__________________Inject domain__________________
+            # __________________Inject domain__________________
 
-            inject_tensor = []
+            inject_tensor = torch.tensor([], dtype=vec_y.dtype)
             if self.args.dim_inject_y &gt; 0:
-
-                if vec_y.shape[1] + pred_domain.shape[1] == self.args.dim_inject_y and pred_domain.shape[1]!=0:
-                    inject_tensor = torch.cat(vec_y, pred_domain)
-                elif vec_y.shape[1] == self.args.dim_inject_y:
-                    inject_tensor = vec_y
+                if len(pred_domain) &gt; 1:
+                    pred_domain = pred_domain.to(self.device)
+                    if vec_y.shape[1] + pred_domain.shape[1] == self.args.dim_inject_y:
+                        inject_tensor = torch.cat((vec_y, pred_domain), 1)
+                    else:
+                        raise ValueError("Dimension of vec_y and pred_domain does not match dim_inject_y")
                 else:
-                    raise RuntimeError("dimension does not match!")
+                    if vec_y.shape[1] == self.args.dim_inject_y:
+                        inject_tensor = vec_y
+                    else:
+                        raise ValueError("Dimension of vec_y does not match dim_inject_y")
+            # convert to dtype of vec_y
+            inject_tensor = inject_tensor.to(vec_y.dtype)
 
-            #__________________Pretrain/ELBO loss____________
+            # __________________Pretrain/ELBO loss____________
             if epoch &lt; self.thres and not self.pretraining_finished:
                 loss = pretrain.pretrain_loss(tensor_x, inject_tensor)
             else:
@@ -350,8 +416,6 @@ from domid.compos.tensorboard_fun import tensorboard_write
                     print("Epoch {}: Finished pretraining and starting to use ELBO loss.".format(epoch))
                     print("".join(["#"] * 60))
 
-
-
                 loss = self.model.cal_loss(tensor_x, inject_tensor, self.warmup_beta)
 
             loss = loss.sum()
@@ -368,16 +432,17 @@ from domid.compos.tensorboard_fun import tensorboard_write
             pretrain.GMM_fit()
 
         # only z and pi needed
-        (preds_c,
-         probs_c,
-         z,
-         z_mu,
-         z_sigma2_log,
-         mu_c,
-         log_sigma2_c,
-         pi,
-         logits,
-         ) = self.model._inference(tensor_x)
+        (
+            preds_c,
+            probs_c,
+            z,
+            z_mu,
+            z_sigma2_log,
+            mu_c,
+            log_sigma2_c,
+            pi,
+            logits,
+        ) = self.model._inference(tensor_x)
 
         print("pi:")
         print(pi.cpu().detach().numpy())
@@ -391,16 +456,23 @@ from domid.compos.tensorboard_fun import tensorboard_write
                 vec_d.to(self.device),
             )
 
-            if acc_val &lt; self.thres and not self.pretraining_finished:
+            if epoch &lt; self.thres and not self.pretraining_finished:
                 loss_val = pretrain.pretrain_loss(tensor_x, inject_tensor)
             else:
                 loss_val = self.model.cal_loss(tensor_x, inject_tensor, self.warmup_beta)
 
-
-
-
-        tensorboard_write(self.writer, self.model, epoch, self.lr, self.warmup_beta,
-                          acc_tr, loss, self.pretraining_finished, tensor_x, inject_tensor)
+        tensorboard_write(
+            self.writer,
+            self.model,
+            epoch,
+            self.lr,
+            self.warmup_beta,
+            acc_tr,
+            loss,
+            self.pretraining_finished,
+            tensor_x,
+            inject_tensor,
+        )
 
         # _____storing results and Z space__________
         self.storage.storing(self.args, epoch, acc_tr, self.epo_loss_tr, acc_val, loss_val.sum())
@@ -421,7 +493,7 @@ from domid.compos.tensorboard_fun import tensorboard_write
         print("before training, model accuracy:", acc)</div>
 
 <div class="viewcode-block" id="TrainerVADE.post_tr"><a class="viewcode-back" href="../../../domid.trainers.html#domid.trainers.trainer_vade.TrainerVADE.post_tr">[docs]</a>    def post_tr(self):
-        print('training is done')
+        print("training is done")
         self.observer.after_all()</div></div>
 </pre></div>
 
@@ -443,7 +515,7 @@ from domid.compos.tensorboard_fun import tensorboard_write
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
           <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2022, FDA/CDRH/OSEL/DIDSR..
+              &#169; Copyright 2023, FDA/CDRH/OSEL/DIDSR..
               
           </div>
             Created using

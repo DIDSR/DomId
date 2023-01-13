@@ -58,6 +58,7 @@
     <script src="../../../_static/doctools.js"></script>
     <script src="../../../_static/sphinx_highlight.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="author" title="About these documents" href="../../../about.html" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
   
@@ -161,6 +162,10 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
+            
+            <li class="md-tabs__item"><a href="../../../about_link.html" class="md-tabs__link">About</a></li>
+            
+            <li class="md-tabs__item"><a href="../../../readme_link.html" class="md-tabs__link">Quick Start</a></li>
           <li class="md-tabs__item"><a href="../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -202,13 +207,70 @@
   <ul class="md-nav__list">
     <li class="md-nav__item">
     
-      <span class="md-nav__link caption"><span class="caption-text">Contents:</span></span>
+      <span class="md-nav__link caption"><span class="caption-text">More information about the models</span></span>
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="../../../modules.html" class="md-nav__link">domid</a>
+      <a href="../../../about_link.html" class="md-nav__link">About DomId</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Datasets and Tasks</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.dsets.html" class="md-nav__link">domid.dsets package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.tasks.html" class="md-nav__link">domid.tasks package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Models</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.compos.html" class="md-nav__link">domid.compos package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.models.html" class="md-nav__link">domid.models package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Training a Model</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.algos.html" class="md-nav__link">domid.algos package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.trainers.html" class="md-nav__link">domid.trainers package</a>
       
     
     </li>
@@ -239,13 +301,13 @@
 
 from domainlab.compos.pcr.request import RequestTask
 from domainlab.tasks.task_folder_mk import mk_task_folder
-from domainlab.tasks.task_mnist_color import NodeTaskMNISTColor10
 from domainlab.tasks.utils_task import ImSize
 from domainlab.utils.u_import import import_path
 from torchvision import transforms
 
 from domid.tasks.task_her2 import NodeTaskHER2
 from domid.tasks.task_mnist import NodeTaskMNIST
+from domid.tasks.task_mnist_color import NodeTaskMNISTColor10
 
 path_this_file = os.path.dirname(os.path.realpath(__file__))
 
@@ -263,7 +325,7 @@ path_this_file = os.path.dirname(os.path.realpath(__file__))
         if tpath is not None:
             self.task_module = import_path(self.tpath)</div>
 
-<div class="viewcode-block" id="TaskChainNodeGetter.__call__"><a class="viewcode-back" href="../../../domid.tasks.html#domid.tasks.zoo_tasks.TaskChainNodeGetter.__call__">[docs]</a>    def __call__(self):
+    def __call__(self):
         """
         1. construct the chain, filter out responsible node, create heavy-weight business object
         2. hard code seems to be the best solution
@@ -324,7 +386,7 @@ path_this_file = os.path.dirname(os.path.realpath(__file__))
                 print("")
                 self.request = node.task_name  # FIXME
         node = chain.handle(self.request)
-        return node</div></div>
+        return node</div>
 </pre></div>
 
           </article>
@@ -345,7 +407,7 @@ path_this_file = os.path.dirname(os.path.realpath(__file__))
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
           <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2022, FDA/CDRH/OSEL/DIDSR..
+              &#169; Copyright 2023, FDA/CDRH/OSEL/DIDSR..
               
           </div>
             Created using

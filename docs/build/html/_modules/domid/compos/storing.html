@@ -58,6 +58,7 @@
     <script src="../../../_static/doctools.js"></script>
     <script src="../../../_static/sphinx_highlight.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="author" title="About these documents" href="../../../about.html" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
   
@@ -161,6 +162,10 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
+            
+            <li class="md-tabs__item"><a href="../../../about_link.html" class="md-tabs__link">About</a></li>
+            
+            <li class="md-tabs__item"><a href="../../../readme_link.html" class="md-tabs__link">Quick Start</a></li>
           <li class="md-tabs__item"><a href="../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -202,13 +207,70 @@
   <ul class="md-nav__list">
     <li class="md-nav__item">
     
-      <span class="md-nav__link caption"><span class="caption-text">Contents:</span></span>
+      <span class="md-nav__link caption"><span class="caption-text">More information about the models</span></span>
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="../../../modules.html" class="md-nav__link">domid</a>
+      <a href="../../../about_link.html" class="md-nav__link">About DomId</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Datasets and Tasks</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.dsets.html" class="md-nav__link">domid.dsets package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.tasks.html" class="md-nav__link">domid.tasks package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Models</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.compos.html" class="md-nav__link">domid.compos package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.models.html" class="md-nav__link">domid.models package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Training a Model</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.algos.html" class="md-nav__link">domid.algos package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.trainers.html" class="md-nav__link">domid.trainers package</a>
       
     
     </li>
@@ -315,37 +377,8 @@ import torch
                 
         with open("./notebooks/"+self.experiment_name+"/image_locs.txt", 'w') as output:
             for row in image_locs:
-                output.write(str(row) + '\n')</div>
+                output.write(str(row) + '\n')</div></div>
 
-
-
-
-<div class="viewcode-block" id="Storing.plot_histogram"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.storing.Storing.plot_histogram">[docs]</a>    def plot_histogram(self, epoch):
-        if epoch &gt; 0:
-            IMGS, Z, domain_labels, machine_label = p.prediction()
-
-            d1_machine = []
-            d2_machine = []
-
-            for i in range(0, len(domain_labels) - 1):
-
-                if domain_labels[i] == 1:
-                    d1_machine.append(machine_label[i])
-                elif domain_labels[i] == 2:
-                    d2_machine.append(machine_label[i])
-
-            from matplotlib import pyplot as plt
-
-            plt.subplot(2, 1, 1)
-            plt.hist(d1_machine)
-            plt.title('Class 1 Cancerous Tissue Scan Sources')
-
-            plt.subplot(2, 1, 2)
-            plt.hist(d2_machine)
-            plt.title('Class 2 Cancerous Tissue Scan Sources')
-            plt.show()
-            # plt.savefig('./figures/hist_results'+str(epoch)+'.png')
-            plt.close()</div></div>
 </pre></div>
 
           </article>
@@ -366,7 +399,7 @@ import torch
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
           <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2022, FDA/CDRH/OSEL/DIDSR..
+              &#169; Copyright 2023, FDA/CDRH/OSEL/DIDSR..
               
           </div>
             Created using

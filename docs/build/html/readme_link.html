@@ -1,0 +1,515 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="lang:clipboard.copy" content="Copy to clipboard">
+  <meta name="lang:clipboard.copied" content="Copied to clipboard">
+  <meta name="lang:search.language" content="en">
+  <meta name="lang:search.pipeline.stopwords" content="True">
+  <meta name="lang:search.pipeline.trimmer" content="True">
+  <meta name="lang:search.result.none" content="No matching documents">
+  <meta name="lang:search.result.one" content="1 matching document">
+  <meta name="lang:search.result.other" content="# matching documents">
+  <meta name="lang:search.tokenizer" content="[\s\-]+">
+
+  
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
+
+    <style>
+      body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+    </style>
+  
+
+  <link rel="stylesheet" href="_static/stylesheets/application.css"/>
+  <link rel="stylesheet" href="_static/stylesheets/application-palette.css"/>
+  <link rel="stylesheet" href="_static/stylesheets/application-fixes.css"/>
+  
+  <link rel="stylesheet" href="_static/fonts/material-icons.css"/>
+  
+  <meta name="theme-color" content="#2196f3">
+  <script src="_static/javascripts/modernizr.js"></script>
+  
+  
+    <link rel="apple-touch-icon" href="_static/images/apple-icon-152x152.png"/>
+  
+  
+    <title>Introduction &#8212; domid  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+  
+    <link rel="apple-touch-icon" href="_static/images/apple-icon-152x152.png"/>
+  
+   
+
+  </head>
+  <body dir=ltr
+        data-md-color-primary=teal data-md-color-accent=cyan>
+  
+  <svg class="md-svg">
+    <defs data-children-count="0">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+      
+    </defs>
+  </svg>
+  
+  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
+  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
+  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+  <a href="#readme_link" tabindex="1" class="md-skip"> Skip to content </a>
+  <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="index.html" title="domid  documentation"
+           class="md-header-nav__button md-logo">
+          
+            <i class="md-icon">school</i>
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          <span class="md-header-nav__topic">DomId</span>
+          <span class="md-header-nav__topic"> Introduction </span>
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+        
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" action="search.html" method="get" name="search">
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
+             autocapitalize="off" autocomplete="off" spellcheck="false"
+             data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            <a href="https://github.com/agisga/DomId" title="Go to repository" class="md-source" data-md-source="github">
+
+    <div class="md-source__icon">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="28" height="28">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    DomId
+  </div>
+</a>
+          </div>
+        </div>
+      
+      
+    </div>
+  </nav>
+</header>
+
+  
+  <div class="md-container">
+    
+    
+    
+  <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+      <ul class="md-tabs__list">
+            
+            <li class="md-tabs__item"><a href="about_link.html" class="md-tabs__link">About</a></li>
+            
+            <li class="md-tabs__item"><a href="#" class="md-tabs__link">Quick Start</a></li>
+      </ul>
+    </div>
+  </nav>
+    <main class="md-main">
+      <div class="md-main__inner md-grid" data-md-component="container">
+        
+          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="index.html" title="domid documentation" class="md-nav__button md-logo">
+      
+        <i class="md-icon">school</i>
+      
+    </a>
+    <a href="index.html"
+       title="domid documentation">DomId</a>
+  </label>
+    <div class="md-nav__source">
+      <a href="https://github.com/agisga/DomId" title="Go to repository" class="md-source" data-md-source="github">
+
+    <div class="md-source__icon">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="28" height="28">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    DomId
+  </div>
+</a>
+    </div>
+  
+  
+
+  
+  <ul class="md-nav__list">
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">More information about the models</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="about_link.html" class="md-nav__link">About DomId</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Datasets and Tasks</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.dsets.html" class="md-nav__link">domid.dsets package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.tasks.html" class="md-nav__link">domid.tasks package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Models</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.compos.html" class="md-nav__link">domid.compos package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.models.html" class="md-nav__link">domid.models package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Training a Model</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.algos.html" class="md-nav__link">domid.algos package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.trainers.html" class="md-nav__link">domid.trainers package</a>
+      
+    
+    </li>
+  </ul>
+  
+
+</nav>
+              </div>
+            </div>
+          </div>
+          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">Contents</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#readme-link--page-root" class="md-nav__link">Introduction</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#domain-identification-domid" class="md-nav__link">Domain Identification (DomId)</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#installation" class="md-nav__link">Installation</a>
+        </li>
+        <li class="md-nav__item"><a href="#usage" class="md-nav__link">Usage</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#vade-model" class="md-nav__link">VaDE model</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#applying-vade-to-mnist" class="md-nav__link">Applying VaDE to MNIST</a>
+        </li>
+        <li class="md-nav__item"><a href="#applying-vade-to-color-mnist" class="md-nav__link">Applying VaDE to Color-MNIST</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#custom-datasets" class="md-nav__link">Custom datasets</a>
+        </li>
+        <li class="md-nav__item"><a href="#cvade-model" class="md-nav__link">CVaDE model</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#training-cvade" class="md-nav__link">Training CVaDE:</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#simultaneous-unsupervised-clustering-and-supervised-classification" class="md-nav__link">Simultaneous unsupervised clustering and supervised classification</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#m2yd-model" class="md-nav__link">M2YD model</a>
+        </li></ul>
+            </nav>
+        </li></ul>
+            </nav>
+        </li></ul>
+            </nav>
+        </li></ul>
+            </nav>
+        </li>
+  </ul>
+</nav>
+              </div>
+            </div>
+          </div>
+        
+        <div class="md-content">
+          <article class="md-content__inner md-typeset" role="main">
+            
+  <section id="introduction">
+<h1 id="readme-link--page-root">Introduction<a class="headerlink" href="#readme-link--page-root" title="Permalink to this heading">¶</a></h1>
+<section class="tex2jax_ignore mathjax_ignore" id="domain-identification-domid">
+<h2 id="domain-identification-domid">Domain Identification (DomId)<a class="headerlink" href="#domain-identification-domid" title="Permalink to this heading">¶</a></h2>
+<p><img alt="GH Actions CI " src="https://github.com/agisga/DomId/actions/workflows/ci.yml/badge.svg"/></p>
+<p>Deep unsupervised clustering algorithms for domain identification.</p>
+<section id="installation">
+<h3 id="installation">Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h3>
+<ol class="arabic simple" start="0">
+<li><p>Prerequisites:</p>
+<ul class="simple">
+<li><p>This Python package uses <a class="reference external" href="https://python-poetry.org/">Poetry</a> for dependency management and various package development workflows. To install Poetry see: <a class="reference external" href="https://python-poetry.org/docs/#installation">https://python-poetry.org/docs/#installation</a>.</p></li>
+<li><p>A workflow without Poetry is also possible, but it is currently not recommended. For a workflow without Poetry, dependencies can be installed from the <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> files in the <code class="docutils literal notranslate"><span class="pre">DomId</span></code> and <code class="docutils literal notranslate"><span class="pre">DomainLab</span></code> folders. Note that in order to run <code class="docutils literal notranslate"><span class="pre">DomId</span></code> without installation via Poetry, you also will have to manually add <code class="docutils literal notranslate"><span class="pre">DomainLab</span></code> to the python path.</p></li>
+</ul>
+</li>
+<li><p>Clone this repository, e.g.,</p></li>
+</ol>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/agisga/DomId.git
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Set up the <a class="reference external" href="https://github.com/marrlab/DomainLab">DomainLab</a> submodule:</p>
+<ul class="simple">
+<li><p>Enter the <code class="docutils literal notranslate"><span class="pre">DomId</span></code> directory, then run the following commands.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">submodule</span> <span class="pre">init</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">submodule</span> <span class="pre">update</span></code> to fetch all the data from DomainLab and check out the appropriate commit listed in DomId configuration.</p></li>
+</ul>
+</li>
+<li><p>Install <code class="docutils literal notranslate"><span class="pre">DomId</span></code> and <code class="docutils literal notranslate"><span class="pre">DomainLab</span></code> packages as well as all dependencies with:</p></li>
+</ol>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>poetry install
+</pre></div>
+</div>
+<p><em>Note</em>: DomId will be published to PyPI in the near future, and the installation will be as easy as <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">domid</span></code>.</p>
+</section>
+<section id="usage">
+<h3 id="usage">Usage<a class="headerlink" href="#usage" title="Permalink to this heading">¶</a></h3>
+<section id="vade-model">
+<h4 id="vade-model">VaDE model<a class="headerlink" href="#vade-model" title="Permalink to this heading">¶</a></h4>
+<p>The deep unsupervised clustering model VaDE has been proposed in [Jiang et al. 2017].</p>
+<p><em>[Jiang et al. 2017]</em> Jiang, Zheng, Tan, Tang, and Zhou, “Variational deep embedding: An unsupervised and generative approach to clustering,” in IJCAI, 2017. <a class="reference external" href="http://arxiv.org/abs/1611.05148">http://arxiv.org/abs/1611.05148</a></p>
+<section id="applying-vade-to-mnist">
+<h5 id="applying-vade-to-mnist">Applying VaDE to MNIST<a class="headerlink" href="#applying-vade-to-mnist" title="Permalink to this heading">¶</a></h5>
+<p>For examle, to cluster digits 0-4 of the MNIST dataset with the VaDE model proposed in [Jiang et al. 2017] using CNN encoder and decoder architectures with a 200-dimensional latent space:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 --task=mnist --epos=10 --aname=vade --zd_dim=200 --d_dim=5 --apath=domid/algos/builder_vade.py --split 0.8 --bs 100 --pre_tr 5 --lr 0.00005 --model cnn
+</pre></div>
+</div>
+<p>The output metrics and confusion matrices assess how well the identified clusters correspond to the digit labels:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(...)
+Epoch 10. ELBO loss
+pi:
+[0.14428806 0.22498095 0.1877629  0.24480581 0.19816224]
+epoch: 10
+pooled train clustering acc:  0.7213934426229508
+[[3407    0   13    2    2]
+ [   0 5203   31   61   20]
+ [  18  104 1243 1293    7]
+ [1266   24 3204 3299  178]
+ [  34   46  265  230 4450]]
+clustering validation acc:  0.7236065573770492
+[[ 848    0    1    6    0]
+ [   0 1305   13    8    8]
+ [   7   26  340  311    3]
+ [ 316    4  816  813   44]
+ [   9   10   53   51 1108]]
+</pre></div>
+</div>
+</section>
+<section id="applying-vade-to-color-mnist">
+<h5 id="applying-vade-to-color-mnist">Applying VaDE to Color-MNIST<a class="headerlink" href="#applying-vade-to-color-mnist" title="Permalink to this heading">¶</a></h5>
+<ul class="simple">
+<li><p>To apply VaDE to the color-MNIST dataset:</p></li>
+</ul>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 5 6 7 8 9 --task=mnistcolor10 --debug --epos=20 --pre_tr=10 --aname=vade --zd_dim=50 --d_dim=10 --apath=domid/algos/builder_vade.py --model cnn
+</pre></div>
+</div>
+<p>The output metrics and confusion matrices assess how well the identified clusters correspond to the different colors:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(...)
+Epoch 20. ELBO loss
+pi:
+[0.09958664 0.09956316 0.09337884 0.0995345  0.04938212 0.09954792
+ 0.2096352  0.09956467 0.09960268 0.05020422]
+epoch: 20
+pooled train clustering acc:  0.7561666666666667
+[[600   0   0   0   0   0   0   0   0   0]
+ [  0 600   0   0   0   0   0   0   0   0]
+ [  0   0   0   0   0   0   0   0   0   0]
+ [  0   0   0 600   0   0   0   0   0   0]
+ [  0   0   0   0   0   0   0   0   0 262]
+ [  0   0   0   0   0 599   0   0   0   0]
+ [  0   0 600   0 600   1 600   0   0   0]
+ [  0   0   0   0   0   0   0 600   0   0]
+ [  0   0   0   0   0   0   0   0 600   0]
+ [  0   0   0   0   0   0   0   0   0 338]]
+clustering validation acc:  0.7568333333333334
+[[600   0   0   0   0   0   0   0   0   0]
+ [  0 600   0   0   0   0   0   0   0   0]
+ [  0   0   0   0   0   0   0   0   0   0]
+ [  0   0   0 600   0   0   0   0   0   0]
+ [  0   0   0   0   0   0   0   0   0 259]
+ [  0   0   0   0   0 600   0   0   0   0]
+ [  0   0 600   0 600   0 600   0   0   0]
+ [  0   0   0   0   0   0   0 600   0   0]
+ [  0   0   0   0   0   0   0   0 600   0]
+ [  0   0   0   0   0   0   0   0   0 341]]
+</pre></div>
+</div>
+</section>
+</section>
+<section id="custom-datasets">
+<h4 id="custom-datasets">Custom datasets<a class="headerlink" href="#custom-datasets" title="Permalink to this heading">¶</a></h4>
+<p>To apply a deep clustering model, such as VaDE, to a custom (e.g., your own) dataset one needs to define a dataset class and a task class. For example, for the “HER2” dataset used in [Sidulova et al 2023] the respective python files are <code class="docutils literal notranslate"><span class="pre">domid/dsets/dset_her2.py</span></code> and <code class="docutils literal notranslate"><span class="pre">domid/tasks/task_her2.py</span></code>. Finally, the defined new task should be added in the chain defined in <code class="docutils literal notranslate"><span class="pre">domid/tasks/zoo_tasks.py</span></code>. For example, with the defined “HER2” dataset and task, the following command would apply the VaDE model to the “HER2” dataset:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>poetry run python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --debug --epos=30 --aname=vade --zd_dim=250 --d_dim=3 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=10 --dpath "/path/to/HER2/combined_train" --split 0.8 --bs 2 --lr 0.00005 --prio Gaus --model cnn
+</pre></div>
+</div>
+</section>
+<section id="cvade-model">
+<h4 id="cvade-model">CVaDE model<a class="headerlink" href="#cvade-model" title="Permalink to this heading">¶</a></h4>
+<p>The Conditional VaDE model (CVaDE) has been proposed in [Sidulova et al. 2023].</p>
+<p><em>[Sidulova et al. 2023]</em> Sidulova, Sun, Gossmann, “DEEP UNSUPERVISED CLUSTERING FOR CONDITIONAL IDENTIFICATION OF SUBGROUPS WITHIN A DIGITAL PATHOLOGY IMAGE SET,” in review, 2023.</p>
+<section id="training-cvade">
+<h5 id="training-cvade">Training CVaDE:<a class="headerlink" href="#training-cvade" title="Permalink to this heading">¶</a></h5>
+<ul class="simple">
+<li><p>Additional labels (for example previously predicted cluster assignments or known subgroups) that are going to be passed as a conditions should be stored in a <code class="docutils literal notranslate"><span class="pre">domain_labels.txt</span></code> file, and the command line arguments <code class="docutils literal notranslate"><span class="pre">--path_to_domain</span></code> and <code class="docutils literal notranslate"><span class="pre">--dim_inject_y</span></code> should be specified when executing the CVaDE model. Note that the dimensionality of the injected label should correspond to the number of domains in <code class="docutils literal notranslate"><span class="pre">domain_label.txt</span></code>. Note: only one label can be injected per experiment in this way.</p></li>
+<li><p>According to the command line, the pytorch dataset object / data generator will return appropriate additional labels, and in the training process those labels are going to be concatinated to the decoder input.</p></li>
+<li><p>Furthermore, the y label specified in the pytorch dataset class is injected, either as the only conditioning variable or in addition to the labels from <code class="docutils literal notranslate"><span class="pre">domain_labels.txt</span></code>, if <code class="docutils literal notranslate"><span class="pre">--path_to_domain</span></code> and <code class="docutils literal notranslate"><span class="pre">--dim_inject_y</span></code> are set appropriately. That is, two types of “labels” can be passed to the model at the same time to condition the clustering process.</p></li>
+<li><p>Example command line calls are given in <code class="docutils literal notranslate"><span class="pre">README_paper.md</span></code> in this code repository.</p></li>
+</ul>
+</section>
+</section>
+<section id="simultaneous-unsupervised-clustering-and-supervised-classification">
+<h4 id="simultaneous-unsupervised-clustering-and-supervised-classification">Simultaneous unsupervised clustering and supervised classification<a class="headerlink" href="#simultaneous-unsupervised-clustering-and-supervised-classification" title="Permalink to this heading">¶</a></h4>
+<section id="m2yd-model">
+<h5 id="m2yd-model">M2YD model<a class="headerlink" href="#m2yd-model" title="Permalink to this heading">¶</a></h5>
+<p>The M2YD model is a rather simple (toy) DL model implemented in <code class="docutils literal notranslate"><span class="pre">DomId</span></code>, that simultaneously performs a supervised classification task (e.g., digit labels in color-MNIST) and an unsupervised clustering task (e.g., cluster the colors in color-MNIST).
+Here is a basic example to run the M2YD model on the Color-MNIST dataset:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>poetry run python main_out.py --te_d 0 1 2 --tr_d 3 4 5 6 7 8 9 --task=mnistcolor10 --debug --epos=10 --aname=m2yd --zd_dim=7 --apath=domid/algos/builder_m2yd.py --gamma_y 1
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+</section>
+</section>
+
+
+          </article>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer class="md-footer">
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+          
+          
+        </a>
+        
+      </nav>
+    </div>
+    <div class="md-footer-meta md-typeset">
+      <div class="md-footer-meta__inner md-grid">
+        <div class="md-footer-copyright">
+          <div class="md-footer-copyright__highlight">
+              &#169; Copyright 2023, FDA/CDRH/OSEL/DIDSR..
+              
+          </div>
+            Created using
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+             and
+            <a href="https://github.com/bashtage/sphinx-material/">Material for
+              Sphinx</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="_static/javascripts/application.js"></script>
+  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
+  </body>
+</html>
