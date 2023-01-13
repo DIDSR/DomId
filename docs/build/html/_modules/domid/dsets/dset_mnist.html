@@ -163,6 +163,8 @@
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
             
+            <li class="md-tabs__item"><a href="../../../about_link.html" class="md-tabs__link">About</a></li>
+            
             <li class="md-tabs__item"><a href="../../../readme_link.html" class="md-tabs__link">Quick Start</a></li>
           <li class="md-tabs__item"><a href="../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
@@ -205,19 +207,19 @@
   <ul class="md-nav__list">
     <li class="md-nav__item">
     
-      <span class="md-nav__link caption"><span class="caption-text">About DomID</span></span>
+      <span class="md-nav__link caption"><span class="caption-text">More information about the models</span></span>
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="../../../domid.algos.html" class="md-nav__link">domid.algos package</a>
+      <a href="../../../about_link.html" class="md-nav__link">About DomId</a>
       
     
     </li>
     <li class="md-nav__item">
     
-      <span class="md-nav__link caption"><span class="caption-text">Loading a Datasets and Defining a Task</span></span>
+      <span class="md-nav__link caption"><span class="caption-text">Datasets and Tasks</span></span>
     
     </li>
     <li class="md-nav__item">
@@ -236,7 +238,7 @@
     </li>
     <li class="md-nav__item">
     
-      <span class="md-nav__link caption"><span class="caption-text">Building and Defining a Model</span></span>
+      <span class="md-nav__link caption"><span class="caption-text">Models</span></span>
     
     </li>
     <li class="md-nav__item">
@@ -366,6 +368,10 @@ import random
         else:
             another_label = np.zeros((len(label)))
 
+        # dummy image locations; included for consistency with code that uses inject_domain.
+        # FIXME: remove location and another_label here, and adjust the code elsewhere that only needs inject_domain but still expects location and another_label.
+        location = "dummy_placeholder"
+
         if self.args.path_to_domain:
             inject_domain = np.loadtxt(os.path.join(self.args.path_to_domain, "domain_labels.txt"))[idx]
             # FIXME: no need to hardcode the name of the file as "domain_labels.txt"
@@ -373,8 +379,6 @@ import random
             # FIXME: no need to hardcode the number of domains as d_dim
         else:
             inject_domain = np.array([])
-
-        location = ["test"] * len(another_label)
 
         return (
             image,
@@ -403,7 +407,7 @@ import random
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
           <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2022, FDA/CDRH/OSEL/DIDSR..
+              &#169; Copyright 2023, FDA/CDRH/OSEL/DIDSR..
               
           </div>
             Created using

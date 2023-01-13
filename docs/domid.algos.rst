@@ -1,8 +1,10 @@
-Model Builders
+domid.algos package
 ===================
 
+Submodules
+----------
 
-M2YD Builder Submodule
+domid.algos.builder\_m2yd module
 --------------------------------
 
 .. automodule:: domid.algos.builder_m2yd
@@ -10,7 +12,7 @@ M2YD Builder Submodule
    :undoc-members:
    :show-inheritance:
 
-VaDe Builder Submodule
+domid.algos.builder\_vade module
 --------------------------------
 
 .. automodule:: domid.algos.builder_vade

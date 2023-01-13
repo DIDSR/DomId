@@ -1,9 +1,10 @@
-Model Initialization Module
-===========================
+domid.models package
+====================
 
+Submodules
+----------
 
-
-M2YD Model
+domid.models.model\_m2yd module
 -------------------------------
 
 .. automodule:: domid.models.model_m2yd
@@ -11,7 +12,7 @@ M2YD Model
    :undoc-members:
    :show-inheritance:
 
-VaDE Model
+domid.models.model\_vade module
 -------------------------------
 
 .. automodule:: domid.models.model_vade

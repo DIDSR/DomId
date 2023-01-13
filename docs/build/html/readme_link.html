@@ -207,20 +207,32 @@
   <ul class="md-nav__list">
     <li class="md-nav__item">
     
+      <span class="md-nav__link caption"><span class="caption-text">More information about the models</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="about_link.html" class="md-nav__link">About DomId</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
       <span class="md-nav__link caption"><span class="caption-text">Datasets and Tasks</span></span>
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="domid.dsets.html" class="md-nav__link">Dataset Initialization Submodule</a>
+      <a href="domid.dsets.html" class="md-nav__link">domid.dsets package</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="domid.tasks.html" class="md-nav__link">Task Initialization Submodule</a>
+      <a href="domid.tasks.html" class="md-nav__link">domid.tasks package</a>
       
     
     </li>
@@ -232,14 +244,33 @@
     <li class="md-nav__item">
     
     
-      <a href="domid.compos.html" class="md-nav__link">Model Building Structures Submodule</a>
+      <a href="domid.compos.html" class="md-nav__link">domid.compos package</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="domid.models.html" class="md-nav__link">Model Initialization Module</a>
+      <a href="domid.models.html" class="md-nav__link">domid.models package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Training a Model</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.algos.html" class="md-nav__link">domid.algos package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.trainers.html" class="md-nav__link">domid.trainers package</a>
       
     
     </li>
@@ -263,15 +294,31 @@
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#installation" class="md-nav__link">Installation</a>
         </li>
-        <li class="md-nav__item"><a href="#domid-usage-examples-fixme-needs-updating" class="md-nav__link">DomId usage examples (FIXME: needs updating)</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#usage" class="md-nav__link">Usage</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#how-the-2-rounds-trainig-were-done-fixme-rewrite-and-move-this-to-an-appropriate-place-in-the-documentation" class="md-nav__link">How the 2 rounds trainig were done [FIXME: rewrite and move this to an appropriate place in the documentation?]</a>
+        <li class="md-nav__item"><a href="#vade-model" class="md-nav__link">VaDE model</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#applying-vade-to-mnist" class="md-nav__link">Applying VaDE to MNIST</a>
+        </li>
+        <li class="md-nav__item"><a href="#applying-vade-to-color-mnist" class="md-nav__link">Applying VaDE to Color-MNIST</a>
         </li></ul>
             </nav>
         </li>
-        <li class="md-nav__item"><a href="#generate-documentation-with-sphinx" class="md-nav__link">Generate documentation with Sphinx</a>
+        <li class="md-nav__item"><a href="#custom-datasets" class="md-nav__link">Custom datasets</a>
         </li>
-        <li class="md-nav__item"><a href="#developer-hints" class="md-nav__link">Developer hints</a>
+        <li class="md-nav__item"><a href="#cvade-model" class="md-nav__link">CVaDE model</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#training-cvade" class="md-nav__link">Training CVaDE:</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#simultaneous-unsupervised-clustering-and-supervised-classification" class="md-nav__link">Simultaneous unsupervised clustering and supervised classification</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#m2yd-model" class="md-nav__link">M2YD model</a>
+        </li></ul>
+            </nav>
+        </li></ul>
+            </nav>
         </li></ul>
             </nav>
         </li></ul>
@@ -297,11 +344,8 @@
 <ol class="arabic simple" start="0">
 <li><p>Prerequisites:</p>
 <ul class="simple">
-<li><p>This Python package uses <a class="reference external" href="https://python-poetry.org/">Poetry</a> for dependency management and various package development workflows. To install Poetry see: <a class="reference external" href="https://python-poetry.org/docs/#installation">https://python-poetry.org/docs/#installation</a>.</p>
-<ul>
+<li><p>This Python package uses <a class="reference external" href="https://python-poetry.org/">Poetry</a> for dependency management and various package development workflows. To install Poetry see: <a class="reference external" href="https://python-poetry.org/docs/#installation">https://python-poetry.org/docs/#installation</a>.</p></li>
 <li><p>A workflow without Poetry is also possible, but it is currently not recommended. For a workflow without Poetry, dependencies can be installed from the <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> files in the <code class="docutils literal notranslate"><span class="pre">DomId</span></code> and <code class="docutils literal notranslate"><span class="pre">DomainLab</span></code> folders. Note that in order to run <code class="docutils literal notranslate"><span class="pre">DomId</span></code> without installation via Poetry, you also will have to manually add <code class="docutils literal notranslate"><span class="pre">DomainLab</span></code> to the python path.</p></li>
-</ul>
-</li>
 </ul>
 </li>
 <li><p>Clone this repository, e.g.,</p></li>
@@ -322,60 +366,114 @@
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>poetry install
 </pre></div>
 </div>
+<p><em>Note</em>: DomId will be published to PyPI in the near future, and the installation will be as easy as <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">domid</span></code>.</p>
 </section>
-<section id="domid-usage-examples-fixme-needs-updating">
-<h3 id="domid-usage-examples-fixme-needs-updating">DomId usage examples (FIXME: needs updating)<a class="headerlink" href="#domid-usage-examples-fixme-needs-updating" title="Permalink to this heading">¶</a></h3>
-<ul class="simple">
-<li><p>Here is a basic example to run a DL algorithm that performs supervised classification (digits) and unsupervised clustering (e.g., color) on the Color-MNIST dataset:</p></li>
-</ul>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>poetry run python main_out.py --te_d 0 1 2 --tr_d 3 4 5 6 7 8 9 --task=mnistcolor10 --debug --epos=10 --aname=m2yd --zd_dim=7 --apath=domid/algos/builder_m2yd.py
+<section id="usage">
+<h3 id="usage">Usage<a class="headerlink" href="#usage" title="Permalink to this heading">¶</a></h3>
+<section id="vade-model">
+<h4 id="vade-model">VaDE model<a class="headerlink" href="#vade-model" title="Permalink to this heading">¶</a></h4>
+<p>The deep unsupervised clustering model VaDE has been proposed in [Jiang et al. 2017].</p>
+<p><em>[Jiang et al. 2017]</em> Jiang, Zheng, Tan, Tang, and Zhou, “Variational deep embedding: An unsupervised and generative approach to clustering,” in IJCAI, 2017. <a class="reference external" href="http://arxiv.org/abs/1611.05148">http://arxiv.org/abs/1611.05148</a></p>
+<section id="applying-vade-to-mnist">
+<h5 id="applying-vade-to-mnist">Applying VaDE to MNIST<a class="headerlink" href="#applying-vade-to-mnist" title="Permalink to this heading">¶</a></h5>
+<p>For examle, to cluster digits 0-4 of the MNIST dataset with the VaDE model proposed in [Jiang et al. 2017] using CNN encoder and decoder architectures with a 200-dimensional latent space:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 --task=mnist --epos=10 --aname=vade --zd_dim=200 --d_dim=5 --apath=domid/algos/builder_vade.py --split 0.8 --bs 100 --pre_tr 5 --lr 0.00005 --model cnn
 </pre></div>
 </div>
-<ul class="simple">
-<li><p>Example of applying VaDE model to cluster regular MNIST:</p></li>
-</ul>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>poetry run python main_out.py --te_d 0 1 2 3 --tr_d 4 5 6 7 8 9 --task=mnist --debug --epos=10 --aname=vade --zd_dim=200 --d_dim=6 --apath=domid/algos/builder_vade.py
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>Example of applying VaDE model to cluster HER2 dataset (make sure to insert dpath)</p></li>
-</ul>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>poetry run python main_out.py --te_d 0 --tr_d 1 2 --task=her2 --debug --epos=30 --aname=vade --zd_dim=50 --d_dim=2 --apath=domid/algos/builder_vade.py --L=25 --pre_tr=0.80 --nocu --dpath "HER2/combined_train" --split 0.8 --bs 4 --lr 0.0005
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>Example to run on the GPU cluster</p></li>
-</ul>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>CUDA_VISIBLE_DEVICES=2 python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --debug --epos=100 --aname=vade --zd_dim=50 --d_dim=3 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=0.75 --dpath "HER2/combined_train" --split 0.8 --bs 8 --lr 0.0005 --model cnn --prior Gaus
-</pre></div>
-</div>
-<section id="how-the-2-rounds-trainig-were-done-fixme-rewrite-and-move-this-to-an-appropriate-place-in-the-documentation">
-<h4 id="how-the-2-rounds-trainig-were-done-fixme-rewrite-and-move-this-to-an-appropriate-place-in-the-documentation">How the 2 rounds trainig were done [FIXME: rewrite and move this to an appropriate place in the documentation?]<a class="headerlink" href="#how-the-2-rounds-trainig-were-done-fixme-rewrite-and-move-this-to-an-appropriate-place-in-the-documentation" title="Permalink to this heading">¶</a></h4>
-<ol class="arabic simple">
-<li><p><a class="reference external" href="https://github.com/agisga/DomId/blob/3d9682d86ffd471e961585e14454db210c4caddb/domid/arg_parser.py#L27">https://github.com/agisga/DomId/blob/3d9682d86ffd471e961585e14454db210c4caddb/domid/arg_parser.py#L27</a></p></li>
-<li><p>Accorind to commandline, datasets return different tuples</p></li>
-<li><p>trainer will judge the last return of the tuple of dataset, whether none or not</p></li>
-<li><p>two rounds command line arguments to call different rounds of training.</p></li>
-</ol>
-</section>
-</section>
-<section id="generate-documentation-with-sphinx">
-<h3 id="generate-documentation-with-sphinx">Generate documentation with Sphinx<a class="headerlink" href="#generate-documentation-with-sphinx" title="Permalink to this heading">¶</a></h3>
-<p>Probably set up a separate Python virtual environment. Then run the following:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>sh gen_doc.sh
+<p>The output metrics and confusion matrices assess how well the identified clusters correspond to the digit labels:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(...)
+Epoch 10. ELBO loss
+pi:
+[0.14428806 0.22498095 0.1877629  0.24480581 0.19816224]
+epoch: 10
+pooled train clustering acc:  0.7213934426229508
+[[3407    0   13    2    2]
+ [   0 5203   31   61   20]
+ [  18  104 1243 1293    7]
+ [1266   24 3204 3299  178]
+ [  34   46  265  230 4450]]
+clustering validation acc:  0.7236065573770492
+[[ 848    0    1    6    0]
+ [   0 1305   13    8    8]
+ [   7   26  340  311    3]
+ [ 316    4  816  813   44]
+ [   9   10   53   51 1108]]
 </pre></div>
 </div>
 </section>
-<section id="developer-hints">
-<h3 id="developer-hints">Developer hints<a class="headerlink" href="#developer-hints" title="Permalink to this heading">¶</a></h3>
+<section id="applying-vade-to-color-mnist">
+<h5 id="applying-vade-to-color-mnist">Applying VaDE to Color-MNIST<a class="headerlink" href="#applying-vade-to-color-mnist" title="Permalink to this heading">¶</a></h5>
 <ul class="simple">
-<li><p>To use the latest version of <a class="reference external" href="https://github.com/marrlab/DomainLab">DomainLab</a> (rather than the version that DomId was tested with), run <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">submodule</span> <span class="pre">update</span> <span class="pre">--remote</span></code>.</p></li>
-<li><p>By default DomId uses the master branch of DomainLab. If desired, you can set DomId to use another branch of DomainLab (replace <code class="docutils literal notranslate"><span class="pre">&lt;branch_name&gt;</span></code> with the name of the branch you want to use):</p></li>
+<li><p>To apply VaDE to the color-MNIST dataset:</p></li>
 </ul>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git config -f .gitmodules submodule.DomainLab.branch &lt;branch_name&gt;
-git submodule update --remote
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 5 6 7 8 9 --task=mnistcolor10 --debug --epos=20 --pre_tr=10 --aname=vade --zd_dim=50 --d_dim=10 --apath=domid/algos/builder_vade.py --model cnn
 </pre></div>
 </div>
+<p>The output metrics and confusion matrices assess how well the identified clusters correspond to the different colors:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(...)
+Epoch 20. ELBO loss
+pi:
+[0.09958664 0.09956316 0.09337884 0.0995345  0.04938212 0.09954792
+ 0.2096352  0.09956467 0.09960268 0.05020422]
+epoch: 20
+pooled train clustering acc:  0.7561666666666667
+[[600   0   0   0   0   0   0   0   0   0]
+ [  0 600   0   0   0   0   0   0   0   0]
+ [  0   0   0   0   0   0   0   0   0   0]
+ [  0   0   0 600   0   0   0   0   0   0]
+ [  0   0   0   0   0   0   0   0   0 262]
+ [  0   0   0   0   0 599   0   0   0   0]
+ [  0   0 600   0 600   1 600   0   0   0]
+ [  0   0   0   0   0   0   0 600   0   0]
+ [  0   0   0   0   0   0   0   0 600   0]
+ [  0   0   0   0   0   0   0   0   0 338]]
+clustering validation acc:  0.7568333333333334
+[[600   0   0   0   0   0   0   0   0   0]
+ [  0 600   0   0   0   0   0   0   0   0]
+ [  0   0   0   0   0   0   0   0   0   0]
+ [  0   0   0 600   0   0   0   0   0   0]
+ [  0   0   0   0   0   0   0   0   0 259]
+ [  0   0   0   0   0 600   0   0   0   0]
+ [  0   0 600   0 600   0 600   0   0   0]
+ [  0   0   0   0   0   0   0 600   0   0]
+ [  0   0   0   0   0   0   0   0 600   0]
+ [  0   0   0   0   0   0   0   0   0 341]]
+</pre></div>
+</div>
+</section>
+</section>
+<section id="custom-datasets">
+<h4 id="custom-datasets">Custom datasets<a class="headerlink" href="#custom-datasets" title="Permalink to this heading">¶</a></h4>
+<p>To apply a deep clustering model, such as VaDE, to a custom (e.g., your own) dataset one needs to define a dataset class and a task class. For example, for the “HER2” dataset used in [Sidulova et al 2023] the respective python files are <code class="docutils literal notranslate"><span class="pre">domid/dsets/dset_her2.py</span></code> and <code class="docutils literal notranslate"><span class="pre">domid/tasks/task_her2.py</span></code>. Finally, the defined new task should be added in the chain defined in <code class="docutils literal notranslate"><span class="pre">domid/tasks/zoo_tasks.py</span></code>. For example, with the defined “HER2” dataset and task, the following command would apply the VaDE model to the “HER2” dataset:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>poetry run python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --debug --epos=30 --aname=vade --zd_dim=250 --d_dim=3 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=10 --dpath "/path/to/HER2/combined_train" --split 0.8 --bs 2 --lr 0.00005 --prio Gaus --model cnn
+</pre></div>
+</div>
+</section>
+<section id="cvade-model">
+<h4 id="cvade-model">CVaDE model<a class="headerlink" href="#cvade-model" title="Permalink to this heading">¶</a></h4>
+<p>The Conditional VaDE model (CVaDE) has been proposed in [Sidulova et al. 2023].</p>
+<p><em>[Sidulova et al. 2023]</em> Sidulova, Sun, Gossmann, “DEEP UNSUPERVISED CLUSTERING FOR CONDITIONAL IDENTIFICATION OF SUBGROUPS WITHIN A DIGITAL PATHOLOGY IMAGE SET,” in review, 2023.</p>
+<section id="training-cvade">
+<h5 id="training-cvade">Training CVaDE:<a class="headerlink" href="#training-cvade" title="Permalink to this heading">¶</a></h5>
+<ul class="simple">
+<li><p>Additional labels (for example previously predicted cluster assignments or known subgroups) that are going to be passed as a conditions should be stored in a <code class="docutils literal notranslate"><span class="pre">domain_labels.txt</span></code> file, and the command line arguments <code class="docutils literal notranslate"><span class="pre">--path_to_domain</span></code> and <code class="docutils literal notranslate"><span class="pre">--dim_inject_y</span></code> should be specified when executing the CVaDE model. Note that the dimensionality of the injected label should correspond to the number of domains in <code class="docutils literal notranslate"><span class="pre">domain_label.txt</span></code>. Note: only one label can be injected per experiment in this way.</p></li>
+<li><p>According to the command line, the pytorch dataset object / data generator will return appropriate additional labels, and in the training process those labels are going to be concatinated to the decoder input.</p></li>
+<li><p>Furthermore, the y label specified in the pytorch dataset class is injected, either as the only conditioning variable or in addition to the labels from <code class="docutils literal notranslate"><span class="pre">domain_labels.txt</span></code>, if <code class="docutils literal notranslate"><span class="pre">--path_to_domain</span></code> and <code class="docutils literal notranslate"><span class="pre">--dim_inject_y</span></code> are set appropriately. That is, two types of “labels” can be passed to the model at the same time to condition the clustering process.</p></li>
+<li><p>Example command line calls are given in <code class="docutils literal notranslate"><span class="pre">README_paper.md</span></code> in this code repository.</p></li>
+</ul>
+</section>
+</section>
+<section id="simultaneous-unsupervised-clustering-and-supervised-classification">
+<h4 id="simultaneous-unsupervised-clustering-and-supervised-classification">Simultaneous unsupervised clustering and supervised classification<a class="headerlink" href="#simultaneous-unsupervised-clustering-and-supervised-classification" title="Permalink to this heading">¶</a></h4>
+<section id="m2yd-model">
+<h5 id="m2yd-model">M2YD model<a class="headerlink" href="#m2yd-model" title="Permalink to this heading">¶</a></h5>
+<p>The M2YD model is a rather simple (toy) DL model implemented in <code class="docutils literal notranslate"><span class="pre">DomId</span></code>, that simultaneously performs a supervised classification task (e.g., digit labels in color-MNIST) and an unsupervised clustering task (e.g., cluster the colors in color-MNIST).
+Here is a basic example to run the M2YD model on the Color-MNIST dataset:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>poetry run python main_out.py --te_d 0 1 2 --tr_d 3 4 5 6 7 8 9 --task=mnistcolor10 --debug --epos=10 --aname=m2yd --zd_dim=7 --apath=domid/algos/builder_m2yd.py --gamma_y 1
+</pre></div>
+</div>
+</section>
+</section>
 </section>
 </section>
 </section>
@@ -399,7 +497,7 @@ git submodule update --remote
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
           <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2022, FDA/CDRH/OSEL/DIDSR..
+              &#169; Copyright 2023, FDA/CDRH/OSEL/DIDSR..
               
           </div>
             Created using

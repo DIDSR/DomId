@@ -1,9 +1,10 @@
-Dataset Initialization Submodule
-================================
+domid.dsets package
+===================
 
+Submodules
+----------
 
-
-HER2 Dataset Module
+domid.dsets.dset\_her2 module
 -----------------------------
 
 .. automodule:: domid.dsets.dset_her2
@@ -11,7 +12,7 @@ HER2 Dataset Module
    :undoc-members:
    :show-inheritance:
 
-MNIST Dataset Module
+domid.dsets.dset\_mnist module
 ------------------------------
 
 .. automodule:: domid.dsets.dset_mnist
