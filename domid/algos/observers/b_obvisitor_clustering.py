@@ -21,7 +21,7 @@ class ObVisitorClustering(ObVisitor):
             print("clustering validation acc: ", acc_val)
             print(conf_mat_val)
 
-            tune.report(accuracy=acc_tr_pool)
+
 
         return super().update(epoch)
 

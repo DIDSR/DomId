@@ -14,9 +14,7 @@ def mk_parser_main():
     parser = arg_parser.mk_parser_main()
     parser.add_argument('--d_dim', type=int, default=7,
                         help='number of domains (or clusters)')
-    parser.add_argument('--pre_tr', type=float, default=25, help="threshold for pretraining: pretraining finishes "
-                                                                  "when validation clustering accuracy "
-                                                                  "exceeds the pre_tr value")
+    parser.add_argument('--pre_tr', type=int, default=25, help="number of pretraining epochs")
     parser.add_argument('--L', type=int, default=3, help="number of MC runs")
     parser.add_argument('--prior', type = str, default="Bern", help='specifies whether binary or continuous-valued '
                                                                     ' input data.Input either "Bern" for Bernoulli or '
