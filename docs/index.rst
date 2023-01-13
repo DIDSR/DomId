@@ -11,10 +11,12 @@ Welcome to DomId's documentation!
    :caption: Contents:
 
 
-About DomID
+About DomId
 ===============
 
-The Variational Deep Embedding (VaDE) model is trained to learn lower-dimensional representations of images based on a Mixture-of-Gaussians latent space prior distribution while optimizing cluster assignments. In this package, examples on multiple dataset has been presented.
+The goal of this Python package is to provide a PyTorch-based platform for deep unsupervised clustering and domain identification.
+
+Currently most implemented models are based on the Variational Deep Embedding (VaDE) model, but other types of deep clustering models will be added in the future. VaDE is trained to learn lower-dimensional representations of images based on a Mixture-of-Gaussians latent space prior distribution while optimizing cluster assignments. Examples on multiple datasets are presented at: :doc:`readme_link`.
 
 .. toctree::
    :maxdepth: 1
