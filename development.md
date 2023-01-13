@@ -8,6 +8,16 @@ Probably set up a separate Python virtual environment. Then run the following:
 sh gen_doc.sh
 ```
 
+## Automated (unit) tests
+
+For automated testing of this python package we use the [pytest](https://docs.pytest.org/en/latest/getting-started.html#getstarted) framework.
+Tests are found in the `domid/tests/` directory.
+Tests can be executed locally with:
+
+```
+poetry run pytest domid
+```
+
 ## DomainLab
 
 - To use the latest version of [DomainLab](https://github.com/marrlab/DomainLab) (rather than the version that DomId was tested with), run `git submodule update --remote`.
