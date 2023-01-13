@@ -8,7 +8,7 @@ Deep unsupervised clustering algorithms for domain identification.
 
 0. Prerequisites:
     - This Python package uses [Poetry](https://python-poetry.org/) for dependency management and various package development workflows. To install Poetry see: <https://python-poetry.org/docs/#installation>.
-	- A workflow without Poetry is also possible, but it is currently not recommended. For a workflow without Poetry, dependencies can be installed from the `requirements.txt` files in the `DomId` and `DomainLab` folders. Note that in order to run `DomId` without installation via Poetry, you also will have to manually add `DomainLab` to the python path.
+    - A workflow without Poetry is also possible, but it is currently not recommended. For a workflow without Poetry, dependencies can be installed from the `requirements.txt` files in the `DomId` and `DomainLab` folders. Note that in order to run `DomId` without installation via Poetry, you also will have to manually add `DomainLab` to the python path.
 1. Clone this repository, e.g.,
 ```
 git clone https://github.com/agisga/DomId.git
@@ -22,49 +22,116 @@ git clone https://github.com/agisga/DomId.git
 poetry install
 ```
 
-## DomId usage examples (FIXME: needs updating)
+*Note*: DomId will be published to PyPI in the near future, and the installation will be as easy as `pip install domid`.
 
-- Here is a basic example to run a DL algorithm that performs supervised classification (digits) and unsupervised clustering (e.g., color) on the Color-MNIST dataset:
-```
-poetry run python main_out.py --te_d 0 1 2 --tr_d 3 4 5 6 7 8 9 --task=mnistcolor10 --debug --epos=10 --aname=m2yd --zd_dim=7 --apath=domid/algos/builder_m2yd.py
-```
-- Example of applying VaDE model to cluster regular MNIST:
-```
-poetry run python main_out.py --te_d 0 1 2 3 --tr_d 4 5 6 7 8 9 --task=mnist --debug --epos=10 --aname=vade --zd_dim=200 --d_dim=6 --apath=domid/algos/builder_vade.py
-```
+## Usage
 
-- Example of applying VaDE model to cluster HER2 dataset (make sure to insert dpath)
-```
-poetry run python main_out.py --te_d 0 --tr_d 1 2 --task=her2 --debug --epos=30 --aname=vade --zd_dim=50 --d_dim=2 --apath=domid/algos/builder_vade.py --L=25 --pre_tr=0.80 --nocu --dpath "HER2/combined_train" --split 0.8 --bs 4 --lr 0.0005
-```
+### VaDE model
 
-- Example to run on the GPU cluster
-```
-CUDA_VISIBLE_DEVICES=2 python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --debug --epos=100 --aname=vade --zd_dim=50 --d_dim=3 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=0.75 --dpath "HER2/combined_train" --split 0.8 --bs 8 --lr 0.0005 --model cnn --prior Gaus
-```
+The deep unsupervised clustering model VaDE has been proposed in [Jiang et al. 2017].
 
-### How the 2 rounds trainig were done [FIXME: rewrite and move this to an appropriate place in the documentation?]
+*[Jiang et al. 2017]* Jiang, Zheng, Tan, Tang, and Zhou, "Variational deep embedding: An unsupervised and generative approach to clustering," in IJCAI, 2017. <http://arxiv.org/abs/1611.05148>
 
-1. https://github.com/agisga/DomId/blob/3d9682d86ffd471e961585e14454db210c4caddb/domid/arg_parser.py#L27
-2. Accorind to commandline, datasets return different tuples
-3. trainer will judge the last return of the tuple of dataset, whether none or not
-4. two rounds command line arguments to call different rounds of training. 
+#### Applying VaDE to MNIST
 
-## Generate documentation with Sphinx
-
-Probably set up a separate Python virtual environment. Then run the following:
+For examle, to cluster digits 0-4 of the MNIST dataset with the VaDE model proposed in [Jiang et al. 2017] using CNN encoder and decoder architectures with a 200-dimensional latent space:
 
 ```
-sh gen_doc.sh
+poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 --task=mnist --epos=10 --aname=vade --zd_dim=200 --d_dim=5 --apath=domid/algos/builder_vade.py --split 0.8 --bs 100 --pre_tr 5 --lr 0.00005 --model cnn
 ```
 
-## Developer hints
-
-- To use the latest version of [DomainLab](https://github.com/marrlab/DomainLab) (rather than the version that DomId was tested with), run `git submodule update --remote`.
-- By default DomId uses the master branch of DomainLab. If desired, you can set DomId to use another branch of DomainLab (replace `<branch_name>` with the name of the branch you want to use):
+The output metrics and confusion matrices assess how well the identified clusters correspond to the digit labels:
 
 ```
-git config -f .gitmodules submodule.DomainLab.branch <branch_name>
-git submodule update --remote
+(...)
+Epoch 10. ELBO loss
+pi:
+[0.14428806 0.22498095 0.1877629  0.24480581 0.19816224]
+epoch: 10
+pooled train clustering acc:  0.7213934426229508
+[[3407    0   13    2    2]
+ [   0 5203   31   61   20]
+ [  18  104 1243 1293    7]
+ [1266   24 3204 3299  178]
+ [  34   46  265  230 4450]]
+clustering validation acc:  0.7236065573770492
+[[ 848    0    1    6    0]
+ [   0 1305   13    8    8]
+ [   7   26  340  311    3]
+ [ 316    4  816  813   44]
+ [   9   10   53   51 1108]]
 ```
 
+#### Applying VaDE to Color-MNIST
+
+- To apply VaDE to the color-MNIST dataset:
+
+```
+poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 5 6 7 8 9 --task=mnistcolor10 --debug --epos=20 --pre_tr=10 --aname=vade --zd_dim=50 --d_dim=10 --apath=domid/algos/builder_vade.py --model cnn
+```
+
+The output metrics and confusion matrices assess how well the identified clusters correspond to the different colors:
+
+```
+(...)
+Epoch 20. ELBO loss
+pi:
+[0.09958664 0.09956316 0.09337884 0.0995345  0.04938212 0.09954792
+ 0.2096352  0.09956467 0.09960268 0.05020422]
+epoch: 20
+pooled train clustering acc:  0.7561666666666667
+[[600   0   0   0   0   0   0   0   0   0]
+ [  0 600   0   0   0   0   0   0   0   0]
+ [  0   0   0   0   0   0   0   0   0   0]
+ [  0   0   0 600   0   0   0   0   0   0]
+ [  0   0   0   0   0   0   0   0   0 262]
+ [  0   0   0   0   0 599   0   0   0   0]
+ [  0   0 600   0 600   1 600   0   0   0]
+ [  0   0   0   0   0   0   0 600   0   0]
+ [  0   0   0   0   0   0   0   0 600   0]
+ [  0   0   0   0   0   0   0   0   0 338]]
+clustering validation acc:  0.7568333333333334
+[[600   0   0   0   0   0   0   0   0   0]
+ [  0 600   0   0   0   0   0   0   0   0]
+ [  0   0   0   0   0   0   0   0   0   0]
+ [  0   0   0 600   0   0   0   0   0   0]
+ [  0   0   0   0   0   0   0   0   0 259]
+ [  0   0   0   0   0 600   0   0   0   0]
+ [  0   0 600   0 600   0 600   0   0   0]
+ [  0   0   0   0   0   0   0 600   0   0]
+ [  0   0   0   0   0   0   0   0 600   0]
+ [  0   0   0   0   0   0   0   0   0 341]]
+```
+
+
+#### Custom datasets
+
+To apply the VaDE model to any given dataset one needs to define a dataset class and a task class. For example, for the "HER2" dataset used in [Sidulova et al 2023] the respective python files are `domid/dsets/dset_her2.py` and `domid/tasks/task_her2.py`. Finally, the defined new task should be added in the chain defined in `domid/tasks/zoo_tasks.py`. For example, with the defined "HER2" dataset and task, the following command would apply the VaDE model to the "HER2" dataset:
+
+```
+poetry run python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --debug --epos=30 --aname=vade --zd_dim=250 --d_dim=3 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=10 --dpath "/path/to/HER2/combined_train" --split 0.8 --bs 2 --lr 0.00005 --prio Gaus --model cnn
+```
+
+### CVaDE model
+
+The Conditional VaDE model (CVaDE) has been proposed in [Sidulova et al. 2023].
+
+*[Sidulova et al. 2023]* Sidulova, Sun, Gossmann, "DEEP UNSUPERVISED CLUSTERING FOR CONDITIONAL IDENTIFICATION OF SUBGROUPS WITHIN A DIGITAL PATHOLOGY IMAGE SET," in review, 2023.
+
+#### Training CVaDE:
+
+- Additional labels (for example previously predicted cluster assignments or known subgroups) that are going to be passed as a conditions should be stored in a `domain_labels.txt` file, and the command line arguments `--path_to_domain` and `--dim_inject_y` should be specified when executing the CVaDE model. Note that the dimensionality of the injected label should correspond to the number of domains in `domain_label.txt`. Note: only one label can be injected per experiment in this way.
+- According to the command line, the pytorch dataset object / data generator will return appropriate additional labels, and in the training process those labels are going to be concatinated to the decoder input.
+- Furthermore, the y label specified in the pytorch dataset class is injected, either as the only conditioning variable or in addition to the labels from `domain_labels.txt`, if `--path_to_domain` and `--dim_inject_y` are set appropriately. That is, two types of "labels" can be passed to the model at the same time to condition the clustering process.
+- Example command line calls are given in `README_paper.md` in this code repository.
+
+### Simultaneous unsupervised clustering and supervised classification
+
+#### M2YD model
+
+The M2YD model is a rather simple (toy) DL model implemented in `DomId`, that simultaneously performs a supervised classification task (e.g., digit labels in color-MNIST) and an unsupervised clustering task (e.g., cluster the colors in color-MNIST).
+Here is a basic example to run the M2YD model on the Color-MNIST dataset:
+
+```
+poetry run python main_out.py --te_d 0 1 2 --tr_d 3 4 5 6 7 8 9 --task=mnistcolor10 --debug --epos=10 --aname=m2yd --zd_dim=7 --apath=domid/algos/builder_m2yd.py --gamma_y 1
+```

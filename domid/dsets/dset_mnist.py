@@ -69,6 +69,10 @@ class DsetMNIST(Dataset):
         else:
             another_label = np.zeros((len(label)))
 
+        # dummy image locations; included for consistency with code that uses inject_domain.
+        # FIXME: remove location and another_label here, and adjust the code elsewhere that only needs inject_domain but still expects location and another_label.
+        location = "dummy_placeholder"
+
         if self.args.path_to_domain:
             inject_domain = np.loadtxt(os.path.join(self.args.path_to_domain, "domain_labels.txt"))[idx]
             # FIXME: no need to hardcode the name of the file as "domain_labels.txt"
@@ -76,8 +80,6 @@ class DsetMNIST(Dataset):
             # FIXME: no need to hardcode the number of domains as d_dim
         else:
             inject_domain = np.array([])
-
-        location = ["test"] * len(another_label)
 
         return (
             image,

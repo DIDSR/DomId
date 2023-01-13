@@ -38,10 +38,10 @@ class Prediction:
             for tensor_x, vec_y, vec_d, *other_vars in self.loader_tr:
                 if len(other_vars) > 0:
                     machine, image_loc, pred_domain = other_vars
-
-                    for i in range(len(machine)):
-                        machine_labels.append(machine[i])
-                        image_path.append(image_loc[i])
+                    #print(machine.shape)
+                    for ii in range(0, self.args.bs):
+                        machine_labels.append(machine[ii])
+                        image_path.append(image_loc[ii])
 
                 tensor_x, vec_y, vec_d = (
                     tensor_x.to(self.device),
