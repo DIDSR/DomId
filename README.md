@@ -104,9 +104,9 @@ clustering validation acc:  0.7568333333333334
 ```
 
 
-#### Custom datasets
+### Custom datasets
 
-To apply the VaDE model to any given dataset one needs to define a dataset class and a task class. For example, for the "HER2" dataset used in [Sidulova et al 2023] the respective python files are `domid/dsets/dset_her2.py` and `domid/tasks/task_her2.py`. Finally, the defined new task should be added in the chain defined in `domid/tasks/zoo_tasks.py`. For example, with the defined "HER2" dataset and task, the following command would apply the VaDE model to the "HER2" dataset:
+To apply a deep clustering model, such as VaDE, to a custom (e.g., your own) dataset one needs to define a dataset class and a task class. For example, for the "HER2" dataset used in [Sidulova et al 2023] the respective python files are `domid/dsets/dset_her2.py` and `domid/tasks/task_her2.py`. Finally, the defined new task should be added in the chain defined in `domid/tasks/zoo_tasks.py`. For example, with the defined "HER2" dataset and task, the following command would apply the VaDE model to the "HER2" dataset:
 
 ```
 poetry run python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --debug --epos=30 --aname=vade --zd_dim=250 --d_dim=3 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=10 --dpath "/path/to/HER2/combined_train" --split 0.8 --bs 2 --lr 0.00005 --prio Gaus --model cnn
