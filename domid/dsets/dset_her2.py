@@ -31,13 +31,18 @@ class DsetHER2(Dataset):
         self.total_imgs = len(self.images)
         self.path_to_domain = path_to_domain
         self.d_dim = d_dim
+        self.loockup_dic = []
+        if self.path_to_domain:
+            previously_predicted_domain = np.loadtxt(os.path.join(self.path_to_domain, 'domain_labels.txt'))
+            previously_predicted_image_path = np.loadtxt(os.path.join(self.path_to_domain, 'image_locs.txt'), str)
+            self.lookup_dic = {previously_predicted_image_path[i].split('/')[-1]: int(previously_predicted_domain[i]) for i in range(len(previously_predicted_domain))} #dict{img_path: predicted}
 
     def __len__(self):
         return len(self.images)
 
     def __getitem__(self, idx):
         img_loc = os.path.join(self.img_dir, self.images[idx])
-
+    
         # import cv2
         # image = cv2.imread(img_loc)
         # image1 = image[:, :, ::-1]
@@ -65,9 +70,12 @@ class DsetHER2(Dataset):
         machine = img_loc[-6:-4]
 
         if self.path_to_domain:
-            domain = np.loadtxt(os.path.join(self.path_to_domain, 'domain_labels.txt'))[idx]
+            #domain = np.loadtxt(os.path.join(self.path_to_domain, 'domain_labels.txt'))[idx]
             # FIXME: no need to hardcode the name of the file as "domain_labels.txt"
+   
+            domain = self.lookup_dic[self.images[idx]]
             domain = mk_fun_label2onehot(self.d_dim)(int(domain)-1)
+
             # FIXME: no need to hardcode the number of domains as d_dim
         else:
             domain = []
