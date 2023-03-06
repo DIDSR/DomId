@@ -23,7 +23,7 @@ class NodeTaskMNISTColor10(NodeTaskDict):
     @property
     def isize(self):
         """image channel, height, width"""
-        return ImSize(3, 32, 32)
+        return ImSize(3, 128, 128)
 
     def get_list_domains(self):
         """
@@ -51,8 +51,9 @@ class NodeTaskMNISTColor10(NodeTaskDict):
         # be evaluated in if statement, in which case, no validation
         # set will be created. Otherwise, this argument is
         # the split ratio
+
         ind_global = self.get_list_domains().index(na_domain)
-        trans = [transforms.Resize((32, 32))]
+        trans = [transforms.Resize((128, 128))]
         dset = DsetMNISTColorSoloDefault(ind_global, args.dpath, list_transforms=trans)
         train_set = dset
         val_set = dset

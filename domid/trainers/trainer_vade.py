@@ -57,6 +57,7 @@ class TrainerVADE(TrainerClassif):
         )
         self.model.train()
         self.epo_loss_tr = 0
+        pred_domain =[]
 
         pretrain = Pretraining(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args)
         prediction = Prediction(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args)
@@ -69,7 +70,7 @@ class TrainerVADE(TrainerClassif):
 
         # _____________one training epoch: start_______________________
         for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
-
+            
             if len(other_vars) > 0:
                 machine, path, pred_domain = other_vars
 
@@ -81,8 +82,9 @@ class TrainerVADE(TrainerClassif):
             self.optimizer.zero_grad()
 
             # __________________Inject domain__________________
-
+            
             inject_tensor = torch.tensor([], dtype=vec_y.dtype)
+            #import pdb; pdb.set_trace()
             if self.args.dim_inject_y > 0:
                 if len(pred_domain) > 1:
                     pred_domain = pred_domain.to(self.device)
@@ -91,8 +93,8 @@ class TrainerVADE(TrainerClassif):
                     else:
                         raise ValueError("Dimension of vec_y and pred_domain does not match dim_inject_y")
                 else:
-                    if vec_y.shape[1] == self.args.dim_inject_y:
-                        inject_tensor = vec_y
+                    if vec_d.shape[1] == self.args.dim_inject_y:
+                        inject_tensor = vec_d
                     else:
                         raise ValueError("Dimension of vec_y does not match dim_inject_y")
             # convert to dtype of vec_y
@@ -149,6 +151,7 @@ class TrainerVADE(TrainerClassif):
         print(pi.cpu().detach().numpy())
 
         for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_val):
+            #import pdb; pdb.set_trace()
             if len(other_vars) > 0:
                 machine, path, pred_domain = other_vars
             tensor_x, vec_y, vec_d = (
@@ -182,6 +185,7 @@ class TrainerVADE(TrainerClassif):
             self.storage.storing_z_space(Z, domain_labels, machine_labels, image_locs)
         if epoch % 10 == 0:
             self.storage.saving_model(self.model)
+            
 
         flag_stop = self.observer.update(epoch)  # notify observer
         return flag_stop

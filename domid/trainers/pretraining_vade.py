@@ -28,6 +28,7 @@ class Pretraining():
         :param tensor_x: the input image
         :return: the loss
         """
+       # import pdb; pdb.set_trace()
         loss = self.model.pretrain_loss(tensor_x, inject_tensor)
         return loss
 
@@ -41,17 +42,29 @@ class Pretraining():
         num_img = len(self.loader_tr.dataset)
         Z = np.zeros((num_img, self.model.zd_dim))
         counter = 0
+        pred_domain =[]
         with torch.no_grad():
             for tensor_x, vec_y, vec_d, *other_vars in self.loader_tr:
                 if len(other_vars)>0:
-                    machine, img_locs, pred_domain = other_vars  #Because of the MNIST color is implemented rn
+                   
+                    if self.args.task == 'mnistcolor10':
+            
+                        machine = torch.argmax(vec_y).item()
+                        image_loc = torch.argmax(vec_d).item()
+                            
+                    else:
+                        machine, image_loc, pred_domain = other_vars
+                    #print(machine.shape)
+                        for ii in range(0, self.args.bs):
+                            machine_labels.append(machine[ii])
+                            image_path.append(image_loc[ii])
 
                 tensor_x, vec_y, vec_d = (
                     tensor_x.to(self.device),
                     vec_y.to(self.device),
                     vec_d.to(self.device),
                 )
-
+                #pred_domain =[]
                 if not self.is_inject_domain:
                     inject_tensor = torch.tensor([], dtype=vec_y.dtype)
                 else:
@@ -61,19 +74,26 @@ class Pretraining():
                     if len(pred_domain) > 1:
                         pred_domain = pred_domain.to(self.device)
                         if vec_y.shape[1] + pred_domain.shape[1] == self.args.dim_inject_y:
-                            inject_tensor = torch.cat((vec_y, pred_domain), 1)
+                            if self.args.task == 'mnistcolor10':
+                                inject_tensor = torch.cat((vec_y, pred_domain), 1)
+                            else:
+                                inject_tensor = torch.cat((vec_d, pred_domain), 1)
                         else:
                             raise ValueError("Dimension of vec_y and pred_domain does not match dim_inject_y")
                     else:
-                        if vec_y.shape[1] == self.args.dim_inject_y:
-                            inject_tensor = vec_y
+                        if vec_d.shape[1] == self.args.dim_inject_y:
+                            if self.args.task == 'mnistcolor10':
+                                inject_tensor = vec_d
+                            else:
+                                inject_tensor = vec_y
                         else:
                             raise ValueError("Dimension of vec_y does not match dim_inject_y")
                     # convert to dtype of vec_y
                     inject_tensor = inject_tensor.to(vec_y.dtype)
                 # only use the encoder to get latent representations, which is
                 # later fed into GMM. (hint: infer_d_v_2 does use decoder but this is
-                # not connected to computational graph)
+                # not connected to computational graph)_t
+                # import pdb; pdb.set_trace()
                 preds, z_mu, z, *_ = self.model.infer_d_v_2(tensor_x, inject_tensor)
                 z = z.detach().cpu().numpy()  # [batch_size, zd_dim]
                 Z[counter:counter + z.shape[0], :] = z
