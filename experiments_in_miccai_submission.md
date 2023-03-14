@@ -15,7 +15,7 @@ CUDA_VISIBLE_DEVICES=2 python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --ep
 # MNIST experiments
 ```
 VaDE base result: miccai/DomID/2023-03-09 17:29:14.153074/
-CUDA_VISIBLE_DEVICES=0 python main_out.py --te_d 0 --tr_d 0 1 2 3 4 --task=mnistcolor10 --epos=20 --aname=vade --zd_dim=20 --d_dim=5 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=10 --bs 2 --lr 0.005 --split 0.8 --prior Gaus --model cnn
+CUDA_VISIBLE_DEVICES=0 python main_out.py --te_d 0 --tr_d 0 1 2 3 4 --task=mnistcolor10 --epos=20 --aname=vade --zd_dim=20 --d_dim=5 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=9 --bs 2 --lr 0.005 --split 0.8 --prior Gaus --model cnn
 
 CDVaDE base result: miccai/DomID/2023-03-09 17:28:58.961270/
 CUDA_VISIBLE_DEVICES=1 python main_out.py --te_d 0 --tr_d 0 1 2 3 4 --task=mnistcolor10 --epos=20 --aname=vade --zd_dim=20 --d_dim=5 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=10 --bs 2 --lr 0.005 --split 0.8 --prior Gaus --model cnn --dim_inject 5
