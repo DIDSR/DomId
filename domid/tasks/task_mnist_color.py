@@ -23,7 +23,7 @@ class NodeTaskMNISTColor10(NodeTaskDict):
     @property
     def isize(self):
         """image channel, height, width"""
-        return ImSize(3, 128, 128)
+        return ImSize(3, 32, 32)
 
     def get_list_domains(self):
         """
@@ -53,7 +53,7 @@ class NodeTaskMNISTColor10(NodeTaskDict):
         # the split ratio
 
         ind_global = self.get_list_domains().index(na_domain)
-        trans = [transforms.Resize((128, 128))]
+        trans = [transforms.Resize((32, 32))]
         dset = DsetMNISTColorSoloDefault(ind_global, args.dpath, list_transforms=trans)
         train_set = dset
         val_set = dset

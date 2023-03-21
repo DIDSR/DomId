@@ -43,14 +43,19 @@ class Pretraining():
         Z = np.zeros((num_img, self.model.zd_dim))
         counter = 0
         pred_domain =[]
+        machine_labels =[]
+        image_path =[]
         with torch.no_grad():
             for tensor_x, vec_y, vec_d, *other_vars in self.loader_tr:
                 if len(other_vars)>0:
                    
                     if self.args.task == 'mnistcolor10':
-            
+                        
                         machine = torch.argmax(vec_y).item()
                         image_loc = torch.argmax(vec_d).item()
+                        for ii in range(0, self.args.bs):
+                            machine_labels.append(machine[ii])
+                            image_path.append(image_loc[ii])
                             
                     else:
                         machine, image_loc, pred_domain = other_vars

@@ -35,7 +35,7 @@ class Prediction:
         image_path = []
         pred_domain =[]
         counter = 0
-        # import pdb; pdb.set_trace()
+        #import pdb; pdb.set_trace()
         with torch.no_grad():
             for tensor_x, vec_y, vec_d, *other_vars in self.loader_tr:
                 if len(other_vars) > -1:
@@ -43,8 +43,10 @@ class Prediction:
                         #for ii in range(0, self.args.bs):
                         machine = torch.argmax(vec_y).item()
                         image_loc = torch.argmax(vec_d).item() #color
-                        machine_labels.append(machine)
-                        image_path.append(image_loc)
+                        for ii in range(0, self.args.bs):
+                            
+                            machine_labels.append(torch.argmax(vec_y[ii]).item())
+                            image_path.append(torch.argmax(vec_d[ii]).item())
                       
                         
                             
