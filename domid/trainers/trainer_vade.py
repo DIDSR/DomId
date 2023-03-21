@@ -183,7 +183,7 @@ class TrainerVADE(TrainerClassif):
         if epoch % 2 == 0:
             _, Z, domain_labels, machine_labels, image_locs = prediction.mk_prediction()
             self.storage.storing_z_space(Z, domain_labels, machine_labels, image_locs)
-        if epoch % 10 == 0 and epoch>0:
+        if epoch % 10 == 0:
             self.storage.saving_model(self.model)
             
 
