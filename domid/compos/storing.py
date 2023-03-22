@@ -24,7 +24,8 @@ class Storing():
         self.acc.append(accuracy)
         self.val_loss.append(val_loss.detach().cpu().numpy())
         self.val_acc.append(val_accuracy)
-        
+
+        print('IN STORING FUNCTION')
 
         if not os.path.exists("./notebooks/"+self.experiment_name):
             print('______Created directory to save result_________')
@@ -63,21 +64,25 @@ class Storing():
         
         path ="./notebooks/"+self.experiment_name+"/Z_space.npy"
         np.save(path, Z)
-
+        print('IN Z SPACE STORING')
         with open("./notebooks/"+self.experiment_name+"/domain_labels.txt", 'w') as output:
            
             for row in domain_labels:
                 output.write(str(row) + '\n')
+        print('AFTER DOMAIN LABELS')
 
         with open("./notebooks/"+self.experiment_name+"/machine_labels.txt", 'w') as output:
             for row in machine_labels:
                 output.write(str(row) + '\n')
+        print('AFTER MACHINE LABELS')
         with open("./notebooks/"+self.experiment_name+"/times.txt", 'w') as output:
             times = [self.experiment_name, str(datetime.datetime.now())]
             for row in times:
                 output.write(str(row)+'\n')
+        print('AFTER TIME LABELS')
                 
         with open("./notebooks/"+self.experiment_name+"/image_locs.txt", 'w') as output:
             for row in image_locs:
                 output.write(str(row) + '\n')
+        print('AFTER IMG_LOCS LABELS')
 
