@@ -136,7 +136,7 @@ class ModelVaDE(nn.Module):
         else:
             zy = results[2]
 
-
+        print(results[2].shape, inject_domain.shape, zy.shape)
         x_pro, *_ = self.decoder(zy)
         preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = (r.cpu().detach() for r in results)
         return preds, z_mu, z, log_sigma2_c, probs, x_pro

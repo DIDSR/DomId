@@ -72,14 +72,14 @@ class Prediction:
                             if self.args.task == 'mnistcolor10':
                                 inject_tensor = torch.cat((vec_y, pred_domain), 1)
                             else:
-                                inject_tensor = torch.cat((vec_d, pred_domain), 1)
+                                inject_tensor = torch.cat((vec_y, pred_domain), 1)
                                 
                         else:
                             raise ValueError("Dimension of vec_y and pred_domain does not match dim_inject_y")
                     else:
-                        if vec_d.shape[1] == self.args.dim_inject_y:
+                        if vec_y.shape[1] == self.args.dim_inject_y:
                             if self.args.task == 'mnistcolor10':
-                                inject_tensor = vec_d
+                                inject_tensor = vec_y
                             else:
                                 inject_tensor = vec_y
                         else:
