@@ -6,10 +6,15 @@ import torch.nn as nn
 import torch.nn.functional as F
 from domainlab.utils.utils_classif import logit2preds_vpic
 from tensorboardX import SummaryWriter
-
+from domainlab.models.a_model_classif import AModelClassif
 from domid.compos.cnn_VAE import ConvolutionalDecoder, ConvolutionalEncoder
 from domid.compos.linear_VAE import LinearDecoder, LinearEncoder
 
+from domainlab.utils.perf import PerfClassif
+from domainlab.utils.perf_metrics import PerfMetricClassif
+from domid.utils.perf_cluster import PerfCluster
+from rich import print as rprint
+import pandas as pd
 
 class ModelVaDE(nn.Module):
     def __init__(self, zd_dim, d_dim, device, L, i_c, i_h, i_w, args):
@@ -136,7 +141,7 @@ class ModelVaDE(nn.Module):
         else:
             zy = results[2]
 
-        print(results[2].shape, inject_domain.shape, zy.shape)
+        #print(results[2].shape, inject_domain.shape, zy.shape)
         x_pro, *_ = self.decoder(zy)
         preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = (r.cpu().detach() for r in results)
         return preds, z_mu, z, log_sigma2_c, probs, x_pro
@@ -285,6 +290,38 @@ class ModelVaDE(nn.Module):
                 1,
             )
         )
+    def create_perf_obj(self, task):
+        """
+        for classification, dimension of target can be quieried from task
+        """
+
+        self.perf_metric = PerfCluster(task.dim_y) #PerfMetricClassif(task.dim_y)
+        return self.perf_metric
+    def cal_perf_metric(self, loader_tr, device, loader_te=None):
+        """
+        classification performance matric
+        """
+
+        metric_te = None
+        with torch.no_grad():
+            metric_te = self.perf_metric.cal_acc(self, loader_tr, device)
+            # metric_tr_pool = self.perf_metric.cal_metrics(self, loader_tr, device)
+            # confmat = metric_tr_pool.pop("confmat")
+            # print("pooled train domains performance:")
+            # print(metric_tr_pool)
+            # print("confusion matrix:")
+            # print(pd.DataFrame(confmat))
+            # metric_tr_pool["confmat"] = confmat
+            # # test set has no domain label, so can be more custom
+            # if loader_te is not None:
+            #     metric_te = self.perf_metric.cal_metrics(self, loader_te, device)
+            #     confmat = metric_te.pop("confmat")
+            #     print("out of domain test performance:")
+            #     print(metric_te)
+            #     print("confusion matrix:")
+            #     print(pd.DataFrame(confmat))
+            #     metric_te["confmat"] = confmat
+        return metric_te
 
 
 def test_fun(d_dim, zd_dim, device):

@@ -23,6 +23,7 @@ class ObVisitorClustering(AObVisitor):
         #     self.acc_val = acc_val
         #     print("clustering validation acc: ", acc_val)
         #     print(conf_mat_val)
+        breakpoint()
         self.epo = epoch
         if epoch % self.epo_te == 0:
             metric_te = self.host_trainer.model.cal_perf_metric(

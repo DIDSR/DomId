@@ -3,8 +3,8 @@ import itertools
 
 import torch
 import torch.optim as optim
-from domainlab.algos.trainers.a_trainer import TrainerClassif
-
+from domainlab.algos.trainers.a_trainer import AbstractTrainer #TrainerClassif
+from domainlab.models.a_model_classif import AModelClassif
 from domid.trainers.pretraining_vade import Pretraining
 from domid.compos.storing import Storing
 from domid.utils.perf_cluster import PerfCluster
@@ -12,7 +12,7 @@ from domid.compos.predict_basic import Prediction
 from domid.compos.tensorboard_fun import tensorboard_write
 
 
-class TrainerVADE(TrainerClassif):
+class TrainerVADE(AbstractTrainer):#TrainerClassif):
     def __init__(self, model, task, observer, device, writer, pretrain=True, aconf=None):
         """FIXME: add description of the parameters
         :param model: model to train
