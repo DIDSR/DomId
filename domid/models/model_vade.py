@@ -16,6 +16,7 @@ from domid.utils.perf_cluster import PerfCluster
 from rich import print as rprint
 import pandas as pd
 
+
 class ModelVaDE(nn.Module):
     def __init__(self, zd_dim, d_dim, device, L, i_c, i_h, i_w, args):
         """
@@ -303,8 +304,10 @@ class ModelVaDE(nn.Module):
         """
 
         metric_te = None
+        metric_tr = None
         with torch.no_grad():
-            metric_te = self.perf_metric.cal_acc(self, loader_tr, device)
+            metric_te = self.perf_metric.cal_acc(self, loader_te, device)
+            metric_tr = self.perf_metric.cal_acc(self, loader_tr, device)
             # metric_tr_pool = self.perf_metric.cal_metrics(self, loader_tr, device)
             # confmat = metric_tr_pool.pop("confmat")
             # print("pooled train domains performance:")
@@ -321,7 +324,8 @@ class ModelVaDE(nn.Module):
             #     print("confusion matrix:")
             #     print(pd.DataFrame(confmat))
             #     metric_te["confmat"] = confmat
-        return metric_te
+
+        return metric_tr
 
 
 def test_fun(d_dim, zd_dim, device):

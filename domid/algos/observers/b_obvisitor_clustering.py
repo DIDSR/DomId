@@ -1,16 +1,14 @@
 from domainlab.algos.observers.b_obvisitor import ObVisitor
-
 from domid.utils.perf_cluster import PerfCluster
-
 from domainlab.algos.observers.a_observer import AObVisitor
 from domainlab.tasks.task_folder_mk import NodeTaskFolderClassNaMismatch
 from domainlab.tasks.task_pathlist import NodeTaskPathListDummy
+
+
 class ObVisitorClustering(ObVisitor):
-#class ObVisitorClustering(AObVisitor):
     """
     Observer + Visitor pattern for clustering algorithms
     """
-
     def update(self, epoch):
         print("epoch:", epoch)
         self.epo = epoch

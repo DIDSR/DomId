@@ -1,9 +1,10 @@
 import warnings
 from domid.algos.observers.c_obvisitor_clustering import ObVisitor
-#from domainlab.algos.observers.b_obvisitor import ObVisitor
 from domid.utils.perf_cluster import PerfCluster
-
 from domainlab.algos.observers.a_observer import AObVisitor
+
+
+
 class ObVisitorClusteringOnly(ObVisitor):
     """
     Observer + Visitor pattern for clustering algorithms
@@ -27,13 +28,18 @@ class ObVisitorClusteringOnly(ObVisitor):
             metric_te = self.host_trainer.model.cal_perf_metric(
                 self.loader_tr, self.device, self.loader_te)
             self.metric_te = metric_te
-        # if self.model_sel.update():
-        #     print("model selected")
-        #     self.exp.visitor.save(self.host_trainer.model)
-        #     print("persisted")
-        flag_stop = self.model_sel.if_stop()
+            print("pooled train clustering acc: ", metric_te[0])
+            print(metric_te[1])
 
-        return flag_stop #.model_sel.if_stop()
+        try:
+            if self.model_sel.update():
+                print("model selected")
+                self.exp.visitor.save(self.host_trainer.model)
+                print("persisted")
+        except:
+            warnings.warn("The model has not been saved in a oracle file")
+        flag_stop = self.model_sel.if_stop()
+        return flag_stop
     def accept(self, trainer):
         """
         accept invitation as a visitor

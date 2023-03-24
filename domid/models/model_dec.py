@@ -4,11 +4,25 @@ import tensorboardX
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from domid.compos.clustering_layer import ClusteringLayer
+from domid.compos.DEC_clustering_layer import DECClusteringLayer
 from domid.compos.cnn_VAE import ConvolutionalDecoder, ConvolutionalEncoder
 from domainlab.utils.utils_classif import logit2preds_vpic
+
+
 class ModelDEC(nn.Module):
-    def __init__(self, zd_dim, d_dim, device, L, i_c, i_h, i_w, args):
+    def __init__(self, zd_dim, d_dim, L, device, i_c, i_h, i_w, args):
+        """
+        DEC model (Xie et al. 2015 "Unsupervised Deep Embedding for Clustering Analysis") with
+        fully connected encoder and decoder.
+
+        :param zd_dim: dimension of the latent space
+        :param d_dim: number of clusters for the clustering task
+        :param device: device to use, e.g., "cuda" or "cpu"
+        :param i_c: number of channels of the input image
+        :param i_h: height of the input image
+        :param i_w: width of the input image
+        :param args: command line arguments
+        """
         super(ModelDEC, self).__init__()
         self.n_clusters = d_dim
         self.d_dim = d_dim
@@ -34,7 +48,7 @@ class ModelDEC(nn.Module):
         self.autoencoder = self.encoder
         #self.mu_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
 
-        self.clusteringlayer = ClusteringLayer(self.n_clusters, self.hidden, None, self.alpha, self.device) # learnable parameter - cluster center
+        self.clusteringlayer = DECClusteringLayer(self.n_clusters, self.hidden, None, self.alpha, self.device) # learnable parameter - cluster center
 
         self.mu_c = self.clusteringlayer.cluster_centers
         self.log_pi = nn.Parameter(
@@ -50,8 +64,12 @@ class ModelDEC(nn.Module):
 
     def target_distribution(self, q_):
         """
-        Equation 3 from the paper
-        """
+           Corresponds to equation 3 from the paper.
+           Calculates the target distribution for the Kullback-Leibler divergence loss.
+
+           :param q_: A tensor of the predicted cluster probabilities.
+           :return tensor: The calculated target distribution
+           """
         weight = (q_ ** 2) / torch.sum(q_, 0)
         return (weight.t() / torch.sum(weight, 1)).t()
 
@@ -67,19 +85,11 @@ class ModelDEC(nn.Module):
         :return tensor pi: Tensor of the estimated cluster prevalences, p(c) (shape: [self.d_dim])
         :return tensor logits: Tensor where each column contains the log-probability p(c)p(z|c) for cluster c=0,...,self.d_dim-1 (shape: [batch_size, self.d_dim]).
         """
-
-
         z_mu, z_sigma2_log = self.encoder(x)
-
         z = z_mu # no reparametrization
-
-        probs_c = self.clusteringlayer(z_mu) # in dec it is q
-
+        probs_c = self.clusteringlayer(z_mu) # in dec it is
         preds_c, logits, *_ = logit2preds_vpic(probs_c) # preds c is oen hot encoded
-
-
         mu_c =self.mu_c
-
         #print(mu_c[0, :5])
         log_sigma2_c = self.log_sigma2_c
         pi = self.log_pi
@@ -87,6 +97,11 @@ class ModelDEC(nn.Module):
         return preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits
 
     def infer_d_v(self, x):
+
+        """
+        :param x: input tensor(image)
+        :return tensor preds: Predicted cluster assignments of shape  (shape: [batch_size, self.d_dim]).
+        """
         preds, *_ = self._inference(x)
         return preds.cpu().detach()
     def infer_d_v_2(self, x, inject_domain):
@@ -117,6 +132,14 @@ class ModelDEC(nn.Module):
         loss = Loss(x, x_pro)
         return loss
     def cal_loss(self, x, inject_tensor, warmup_beta):
+        """
+            Calculates the KL-divergence loss between the predicted probabilities and the target distribution.
+
+            :param x: input tensor/image
+            :param inject_tensor: tensor to inject (not used in DEC, only used in CDVaDE
+            :param warmup_beta: warm-up beta value
+            :return tensor loss (float): calculated KL-divergence loss value
+            """
 
         preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = self._inference(x)
 
