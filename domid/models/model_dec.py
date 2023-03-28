@@ -46,10 +46,7 @@ class ModelDEC(nn.Module):
         ).to(device)
 
         self.autoencoder = self.encoder
-        #self.mu_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
-
         self.clusteringlayer = DECClusteringLayer(self.n_clusters, self.hidden, None, self.alpha, self.device) # learnable parameter - cluster center
-
         self.mu_c = self.clusteringlayer.cluster_centers
         self.log_pi = nn.Parameter(
             torch.FloatTensor(
@@ -59,7 +56,6 @@ class ModelDEC(nn.Module):
             .log(),
             requires_grad=True,
         )
-
         self.log_sigma2_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
 
     def target_distribution(self, q_):
