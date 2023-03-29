@@ -34,6 +34,7 @@ class ConvolutionalEncoder(nn.Module):
         """
         :param x: input data
         """
+
         z = self.encod(x)
         mu = self.mu_layer(z)
         log_sigma2 = self.log_sigma2_layer(z)
@@ -76,7 +77,6 @@ class ConvolutionalDecoder(nn.Module):
         :return x_pro: reconstructed data, which is assumed to have 3 channels, but the channels are assumed to be equal to each other.
         :return x_log_sigma2: log-variance of the reconstructed data
         """
-
         z = self.linear(z)
         z = self.unflat(z)
         x_decoded = self.decod(z)

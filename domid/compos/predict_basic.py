@@ -13,8 +13,8 @@ class Prediction:
         self.device = device
         self.args = args
         self.is_inject_domain = False
-        if self.args.dim_inject_y > 0:
-            self.is_inject_domain = True
+        # if self.args.dim_inject_y > 0:
+        #     self.is_inject_domain = True
 
     def mk_prediction(self):
         """
@@ -30,32 +30,24 @@ class Prediction:
         num_img = len(self.loader_tr.dataset)  # FIXME: this returns sample size + 1 for some reason
         z_proj = np.zeros((num_img, self.model.zd_dim))
         input_imgs = np.zeros((num_img, 3, self.i_h, self.i_w))
-        domain_labels = [] #np.zeros((num_img, 1))
-        machine_labels = []
-        image_path = []
-        pred_domain =[]
+        inject_tensors = []
+        image_ids = []
+        domain_labels =[]
+        labels =[]
         counter = 0
         #import pdb; pdb.set_trace()
         with torch.no_grad():
             for tensor_x, vec_y, vec_d, *other_vars in self.loader_tr:
-                if len(other_vars) > -1:
-                    if self.args.task == 'mnistcolor10':
-                        #for ii in range(0, self.args.bs):
-                        machine = torch.argmax(vec_y).item()
-                        image_loc = torch.argmax(vec_d).item() #color
-                        for ii in range(0, self.args.bs):
-                            
-                            machine_labels.append(torch.argmax(vec_y[ii]).item())
-                            image_path.append(torch.argmax(vec_d[ii]).item())
-                      
-                        
-                            
-                    else:
-                        machine, image_loc, pred_domain = other_vars
-                    #print(machine.shape)
-                        for ii in range(0, self.args.bs):
-                            machine_labels.append(machine[ii])
-                            image_path.append(image_loc[ii])
+                if len(other_vars) > 0:
+                    inject_tensor, image_id = other_vars
+
+                    for ii in range(0, self.args.bs):
+                        domain_labels.append(torch.argmax(vec_d).item())
+                        labels.append(torch.argmax(vec_y).item())
+                        image_ids.append(image_id[ii])
+                        if len(inject_tensor)>0:
+                            inject_tensors.append(torch.argmax(inject_tensor))
+
 
                 tensor_x, vec_y, vec_d = (
                     tensor_x.to(self.device),
@@ -63,29 +55,6 @@ class Prediction:
                     vec_d.to(self.device),
                 )
 
-                inject_tensor = torch.tensor([], dtype=vec_y.dtype)
-                #pred_domain =[]
-                if self.is_inject_domain:
-                    if len(pred_domain) > 1:
-                        pred_domain = pred_domain.to(self.device)
-                        if vec_y.shape[1] + pred_domain.shape[1] == self.args.dim_inject_y:
-                            if self.args.task == 'mnistcolor10':
-                                inject_tensor = torch.cat((vec_y, pred_domain), 1)
-                            else:
-                                inject_tensor = torch.cat((vec_y, pred_domain), 1)
-                                
-                        else:
-                            raise ValueError("Dimension of vec_y and pred_domain does not match dim_inject_y")
-                    else:
-                        if vec_y.shape[1] == self.args.dim_inject_y:
-                            if self.args.task == 'mnistcolor10':
-                                inject_tensor = vec_y
-                            else:
-                                inject_tensor = vec_y
-                        else:
-                            raise ValueError("Dimension of vec_y does not match dim_inject_y")
-                # convert to dtype of vec_y
-                inject_tensor = inject_tensor.to(vec_y.dtype)
 
                 preds, z_mu, z, *_ = self.model.infer_d_v_2(tensor_x, inject_tensor)
                 z = z.detach().cpu().numpy()  # [batch_size, zd_dim]
@@ -105,7 +74,7 @@ class Prediction:
                     domain_labels+=(torch.argmax(preds, 1) + 1).tolist()
                 counter += z.shape[0]
 
-        return input_imgs, z_proj, domain_labels, machine_labels, image_path
+        return input_imgs, z_proj, domain_labels, inject_tensor, image_ids
 
     def epoch_tr_acc(self):
         acc, conf = PerfCluster.cal_acc(self.model, self.loader_tr, self.device, max_batches=None)

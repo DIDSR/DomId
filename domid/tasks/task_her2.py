@@ -25,7 +25,7 @@ class NodeTaskHER2(NodeTaskDict):
         """
         :return: image size object storing image channels, height, width.
         """
-        return ImSize(3,512 , 512)  # FIXME should be in sync with transforms
+        return ImSize(3,32 , 32)  # FIXME should be in sync with transforms
 
     def get_list_domains(self):
         """
@@ -60,7 +60,7 @@ class NodeTaskHER2(NodeTaskDict):
         # std = [0.1800, 0.1980, 0.2070]
 
 
-        trans = transforms.Compose([transforms.Resize((512, 512)),
+        trans = transforms.Compose([transforms.Resize((32, 32)),
                                     transforms.RandomHorizontalFlip(),
                                     transforms.RandomVerticalFlip(),
                                     transforms.RandomAutocontrast(0.25),

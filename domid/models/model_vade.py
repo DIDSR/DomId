@@ -166,7 +166,6 @@ class ModelVaDE(nn.Module):
             zy = torch.cat((z, inject_domain), 1)
         else:
             zy = z
-
         x_pro, *_ = self.decoder(zy)
         
         loss = Loss(x, x_pro)
@@ -306,7 +305,7 @@ class ModelVaDE(nn.Module):
         metric_te = None
         metric_tr = None
         with torch.no_grad():
-            metric_te = self.perf_metric.cal_acc(self, loader_te, device)
+            #metric_te = self.perf_metric.cal_acc(self, loader_te, device) #FIXME to vaidation loader
             metric_tr = self.perf_metric.cal_acc(self, loader_tr, device)
             # metric_tr_pool = self.perf_metric.cal_metrics(self, loader_tr, device)
             # confmat = metric_tr_pool.pop("confmat")
