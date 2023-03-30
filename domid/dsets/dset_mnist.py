@@ -33,6 +33,7 @@ class DsetMNIST(Dataset):
         """
         dpath = os.path.normpath(args.dpath)
         dataset = datasets.MNIST(root=dpath, train=True, download=True, transform=list_transforms)
+        breakpoint()
         # keep only images of specified digit
         self.images = dataset.data[dataset.targets == digit]
         if subset_step == 1 and args.debug:
@@ -47,7 +48,9 @@ class DsetMNIST(Dataset):
 
     def __len__(self):
         return len(self.images)
+    def generate_dataframe(self, images, digit):
 
+        row = [image_id, label, another_label]
     def __getitem__(self, idx):
         image = self.images[idx].numpy()
         image = Image.fromarray(image)

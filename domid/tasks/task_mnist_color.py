@@ -1,11 +1,14 @@
 """
 Color MNIST with palette
 """
+import os
+
 from torch.utils.data import random_split
 from torchvision import transforms
 
-from domainlab.dsets.dset_mnist_color_solo_default import \
-    DsetMNISTColorSoloDefault
+# from domainlab.dsets.dset_mnist_color_solo_default import \
+#     DsetMNISTColorSoloDefault
+from domid.dsets.dset_mnist_color_solo_default import DsetMNISTColorSoloDefault
 from domainlab.dsets.utils_color_palette import default_rgb_palette  # @FIXME
 from domainlab.tasks.b_task import NodeTaskDict
 from domainlab.tasks.utils_task import ImSize
@@ -54,7 +57,9 @@ class NodeTaskMNISTColor10(NodeTaskDict):
 
         ind_global = self.get_list_domains().index(na_domain)
         trans = [transforms.Resize((32, 32))]
-        dset = DsetMNISTColorSoloDefault(ind_global, args.dpath, list_transforms=trans)
+
+        dset = DsetMNISTColorSoloDefault(ind_global, args.dpath, inject_variable=args.injected_var,list_transforms=trans, args = args)
+
         train_set = dset
         val_set = dset
         # split dset into training and test

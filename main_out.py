@@ -6,6 +6,7 @@ from domid.arg_parser import parse_cmd_args
 from domid.compos.exp.exp_main import Exp
 
 torch.cuda.empty_cache()
+import os
 
 # print('I changed the path') 
 
@@ -14,6 +15,8 @@ if __name__ == "__main__":
     print('python version', sys.version)
     args = parse_cmd_args()
     print(args)
+    if os.path.exists(os.path.join(args.dpath, 'dataframe_mnist.csv')):
+        os.remove(os.path.join(args.dpath, 'dataframe_mnist.csv'))
 
     set_seed(args.seed)
     exp = Exp(args=args)
