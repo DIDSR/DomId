@@ -87,7 +87,6 @@ class TrainerVADE(AbstractTrainer):#TrainerClassif):
             )
             self.optimizer.zero_grad()
 
-
             # __________________Pretrain/ELBO loss____________
             if epoch < self.thres and not self.pretraining_finished:
                 loss = pretrain.pretrain_loss(tensor_x, inject_tensor)
