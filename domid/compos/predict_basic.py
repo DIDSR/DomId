@@ -40,13 +40,14 @@ class Prediction:
             for tensor_x, vec_y, vec_d, *other_vars in self.loader_tr:
                 if len(other_vars) > 0:
                     inject_tensor, image_id = other_vars
+                    if len(inject_tensor) > 0:
+                        inject_tensor = inject_tensor.to(self.device)
 
                     for ii in range(0, self.args.bs):
                         domain_labels.append(torch.argmax(vec_d).item())
                         labels.append(torch.argmax(vec_y).item())
                         image_ids.append(image_id[ii])
-                        if len(inject_tensor)>0:
-                            inject_tensors.append(torch.argmax(inject_tensor))
+
 
 
                 tensor_x, vec_y, vec_d = (

@@ -46,8 +46,8 @@ class ModelVaDE(nn.Module):
             self.dim_inject_y = self.args.dim_inject_y
 
         self.dim_inject_domain = 0
-        if self.args.path_to_domain:    # FIXME: one can simply read from the file to find out the injected dimension
-            self.dim_inject_domain = args.d_dim   # FIXME: allow arbitrary domain vector to be injected
+        # if self.args.path_to_domain:    # FIXME: one can simply read from the file to find out the injected dimension
+        #     self.dim_inject_domain = args.d_dim   # FIXME: allow arbitrary domain vector to be injected
 
 
         if self.args.model == "linear":

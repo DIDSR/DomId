@@ -16,7 +16,7 @@ class DsetHER2(Dataset):
     """
 
     @store_args
-    def __init__(self, class_num, path, d_dim, path_to_domain = None, transform=None):
+    def __init__(self, class_num, path, d_dim, inject_variabe = None, transform=None):
         """
         :param class_num: a integer value from 0 to 2, only images of this class will be kept.Note: that actual classes are from 1-3 (therefore, 1 is added in line 28)
         :param path: path to root storage directory
@@ -42,7 +42,8 @@ class DsetHER2(Dataset):
         # self.d_dim = d_dim
         #self.loockup_dic = []
         self.df = pd.read_csv(os.path.join(path, 'dataframe.csv'))
-        self.inject_variable = "class"
+        self.inject_variable = inject_variabe
+
 
 
 

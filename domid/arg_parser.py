@@ -21,7 +21,7 @@ def mk_parser_main():
                                                                     '"Gaus" for Gaussian prior distribution for the data.')
     parser.add_argument('--model', type = str, default="linear", help = "specify 'linear' for a fully-connected or "
                                                                         "'cnn' for a convolutional model architecture" )
-    parser.add_argument('--path_to_domain', type=str, default=None, help="path to existing domain labels")
+    parser.add_argument('--injected_var', type=str, default=None, help="name of the injected variable (column) in the csv file")
     parser.add_argument('--dim_inject_y', type=int, default=0, help="dimension to inject to input of the decoder from annotation")
 
     return parser

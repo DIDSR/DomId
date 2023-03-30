@@ -156,7 +156,7 @@ class TrainerVADE(AbstractTrainer):#TrainerClassif):
                 loss_val = pretrain.pretrain_loss(tensor_x_val, inject_tensor_val)
             else:
                 loss_val = self.model.cal_loss(tensor_x_val, inject_tensor_val, self.warmup_beta)
-        breakpoint()
+
         tensorboard_write(
             self.writer,
             self.model,
