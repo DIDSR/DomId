@@ -307,24 +307,11 @@ class ModelVaDE(nn.Module):
         with torch.no_grad():
             #metric_te = self.perf_metric.cal_acc(self, loader_te, device) #FIXME to vaidation loader
             metric_tr = self.perf_metric.cal_acc(self, loader_tr, device)
-            # metric_tr_pool = self.perf_metric.cal_metrics(self, loader_tr, device)
-            # confmat = metric_tr_pool.pop("confmat")
-            # print("pooled train domains performance:")
-            # print(metric_tr_pool)
-            # print("confusion matrix:")
-            # print(pd.DataFrame(confmat))
-            # metric_tr_pool["confmat"] = confmat
-            # # test set has no domain label, so can be more custom
-            # if loader_te is not None:
-            #     metric_te = self.perf_metric.cal_metrics(self, loader_te, device)
-            #     confmat = metric_te.pop("confmat")
-            #     print("out of domain test performance:")
-            #     print(metric_te)
-            #     print("confusion matrix:")
-            #     print(pd.DataFrame(confmat))
-            #     metric_te["confmat"] = confmat
+            metric_te = self.perf_metric.cal_acc(self, loader_te, device)
 
-        return metric_tr
+
+
+        return metric_tr, metric_te
 
 
 def test_fun(d_dim, zd_dim, device):

@@ -25,10 +25,15 @@ class ObVisitorClusteringOnly(ObVisitor):
         #     print(conf_mat_val)
         #self.epo = epoch
         if epoch % self.epo_te == 0:
-            metric_te = self.host_trainer.model.cal_perf_metric(
-                self.loader_tr, self.device, self.loader_te)
+            metric_tr, metric_te = self.host_trainer.model.cal_perf_metric(
+                self.loader_tr, self.device, self.loader_val) #note the loader is validation, not test dset
             self.metric_te = metric_te
-            print("pooled train clustering acc: ", metric_te[0])
+            self.metric_tr = metric_tr
+
+            print("pooled train clustering acc: ", metric_tr[0])
+            print(metric_tr[1])
+
+            print("clustering validation acc: ", metric_te[0])
             print(metric_te[1])
 
         try:
