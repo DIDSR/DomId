@@ -36,13 +36,7 @@ class ObVisitorClusteringOnly(ObVisitor):
             print("clustering validation acc: ", metric_te[0])
             print(metric_te[1])
 
-        try:
-            if self.model_sel.update():
-                print("model selected")
-                self.exp.visitor.save(self.host_trainer.model)
-                print("persisted")
-        except:
-            warnings.warn("The model has not been saved in a oracle file")
+        self.exp.visitor.save(self.host_trainer.model)
         flag_stop = self.model_sel.if_stop()
         return flag_stop
     def accept(self, trainer):

@@ -16,7 +16,7 @@ class DsetHER2(Dataset):
     """
 
     @store_args
-    def __init__(self, class_num, path, d_dim, inject_variabe = None, transform=None):
+    def __init__(self, class_num, path, d_dim, inject_variabe = None, metadata= None, transform=None):
         """
         :param class_num: a integer value from 0 to 2, only images of this class will be kept.Note: that actual classes are from 1-3 (therefore, 1 is added in line 28)
         :param path: path to root storage directory
@@ -27,31 +27,21 @@ class DsetHER2(Dataset):
 
         self.dpath = os.path.normpath(path)
         self.list_of_images = []
-        # for folder in os.listdir(self.dpath):
-        #
-        #     folder_path = os.path.join(path, folder)
-        #     if os.path.isdir(folder_path):
-        #         self.list_of_images += [os.path.join(path, folder, image) for image in os.listdir(folder_path)]
 
         self.img_dir = os.path.join(path, "class" + str(class_num + 1) + "jpg")
         self.images = os.listdir(self.img_dir)
         self.class_num = class_num
         self.transform = transform
         self.total_imgs = len(self.images)
-        #self.path_to_domain = path_to_domain
-        # self.d_dim = d_dim
-        #self.loockup_dic = []
-        self.df = pd.read_csv(os.path.join(path, 'dataframe.csv'))
-        self.inject_variable = inject_variabe
+        if inject_variabe is not None:
+            if metadata is None:
+                self.df = pd.read_csv(os.path.join(path, 'dataframe.csv'))
+            else:
+                self.df = pd.read_csv(metadata)
 
 
 
 
-        #
-        # if self.path_to_domain:
-        #     previously_predicted_domain = np.loadtxt(os.path.join(self.path_to_domain, 'domain_labels.txt'))
-        #     previously_predicted_image_path = np.loadtxt(os.path.join(self.path_to_domain, 'image_locs.txt'), str)
-        #     self.lookup_dic = {previously_predicted_image_path[i].split('/')[-1]: int(previously_predicted_domain[i]) for i in range(len(previously_predicted_domain))} #dict{img_path: predicted}
 
     def __len__(self):
         return len(self.images)

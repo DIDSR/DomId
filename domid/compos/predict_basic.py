@@ -30,13 +30,15 @@ class Prediction:
         num_img = len(self.loader_tr.dataset)  # FIXME: this returns sample size + 1 for some reason
         z_proj = np.zeros((num_img, self.model.zd_dim))
         input_imgs = np.zeros((num_img, 3, self.i_h, self.i_w))
-        inject_tensors = []
-        image_ids = []
-        domain_labels =[]
-        labels =[]
+
+        image_id_labels = []
+        vec_d_labels =[]
+        vec_y_labels =[]
+        predictions = []
         counter = 0
         #import pdb; pdb.set_trace()
         with torch.no_grad():
+
             for tensor_x, vec_y, vec_d, *other_vars in self.loader_tr:
                 if len(other_vars) > 0:
                     inject_tensor, image_id = other_vars
@@ -44,9 +46,10 @@ class Prediction:
                         inject_tensor = inject_tensor.to(self.device)
 
                     for ii in range(0, self.args.bs):
-                        domain_labels.append(torch.argmax(vec_d).item())
-                        labels.append(torch.argmax(vec_y).item())
-                        image_ids.append(image_id[ii])
+                        vec_d_labels.append(torch.argmax(vec_d[ii, :]).item())
+                        vec_y_labels.append(torch.argmax(vec_y[ii, :]).item())
+                        image_id_labels.append(image_id[ii])
+
 
 
 
@@ -59,23 +62,23 @@ class Prediction:
 
                 preds, z_mu, z, *_ = self.model.infer_d_v_2(tensor_x, inject_tensor)
                 z = z.detach().cpu().numpy()  # [batch_size, zd_dim]
-                if z.shape[0] == 1:
-                    input_imgs[counter, :, :, :] = tensor_x.cpu().detach().numpy()
-                    z_proj[counter, :] = z
-                    preds = preds.detach().cpu()
-                    domain_labels.append(torch.argmax(preds, 1).item()+1)
-
-                else:
+                # if z.shape[0] == 1:
+                #     input_imgs[counter, :, :, :] = tensor_x.cpu().detach().numpy()
+                #     z_proj[counter, :] = z
+                #     preds = preds.detach().cpu()
+                #     predicted.append(torch.argmax(preds, 1).item()+1)
+                #
+                # else:
                     #pdb.set_trace()
-                    input_imgs[counter : counter + z.shape[0], :, :, :] = tensor_x.cpu().detach().numpy()
-                    z_proj[counter : counter + z.shape[0], :] = z
+                input_imgs[counter : counter + z.shape[0], :, :, :] = tensor_x.cpu().detach().numpy()
+                z_proj[counter : counter + z.shape[0], :] = z
 
-                    preds = preds.detach().cpu()
-                    #domain_labels[counter : counter + z.shape[0], 0] = torch.argmax(preds, 1) + 1
-                    domain_labels+=(torch.argmax(preds, 1) + 1).tolist()
+                preds = preds.detach().cpu()
+                #domain_labels[counter : counter + z.shape[0], 0] = torch.argmax(preds, 1) + 1
+                predictions+=(torch.argmax(preds, 1) + 1).tolist()
                 counter += z.shape[0]
 
-        return input_imgs, z_proj, domain_labels, inject_tensor, image_ids
+        return input_imgs, z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels
 
     def epoch_tr_acc(self):
         acc, conf = PerfCluster.cal_acc(self.model, self.loader_tr, self.device, max_batches=None)
