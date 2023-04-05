@@ -58,7 +58,7 @@ class NodeTaskMNISTColor10(NodeTaskDict):
         ind_global = self.get_list_domains().index(na_domain)
         trans = [transforms.Resize((32, 32))]
 
-        dset = DsetMNISTColorSoloDefault(ind_global, args.dpath, inject_variable=args.injected_var,list_transforms=trans, args = args)
+        dset = DsetMNISTColorSoloDefault(ind_global, args.dpath, inject_variable=args.inject_var,list_transforms=trans, args = args)
 
         train_set = dset
         val_set = dset

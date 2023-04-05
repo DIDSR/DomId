@@ -42,9 +42,7 @@ class Pretraining():
         num_img = len(self.loader_tr.dataset)
         Z = np.zeros((num_img, self.model.zd_dim))
         counter = 0
-        pred_domain =[]
-        inject_tensors =[]
-        image_ids =[]
+
         with torch.no_grad():
             for tensor_x, vec_y, vec_d, *other_vars in self.loader_tr:
                 if len(other_vars)>0:
