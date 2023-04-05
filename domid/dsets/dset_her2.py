@@ -62,7 +62,7 @@ class DsetHER2(Dataset):
         if self.inject_variable:
             img_info = self.df.loc[self.df['img_id'] == self.images[idx]]
             ind_in_df = img_info.index.item()
-            inject_tensor = int(self.df[self.inject_variable][ind_in_df][-4])-1
+            inject_tensor = int(self.df[self.inject_variable][ind_in_df])-1
             inject_tensor = mk_fun_label2onehot(self.u_inject_tensor)(inject_tensor)
         else:
             inject_tensor = [] #torch.Tensor([])#, dtype=label.dtype)

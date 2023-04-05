@@ -76,10 +76,10 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
         self.labels = self.labels[inds_subset]
         self._color_imgs_onehot_labels()
 
-
-        self.df = self.generate_dataframe()
+        self.generate_dataframe()
+        self.flag_load_df = True
         self.inject_variable = inject_variable
-        self.inject_dim =  5 # FIXME: args.dim_inject_y
+
 
 
     def _collect_imgs_labels(self, path, raw_split):
@@ -187,9 +187,10 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
             for trans in self.list_transforms:
                 image = trans(image)
         image = transforms.ToTensor()(image)  # range of pixel [0,1]
-
-
-        #self.df[self.inject_variable].unique()
+        if self.flag_load_df:
+            self.df = pd.read_csv(os.path.join(self.path, 'dataframe_mnist.csv'))
+            self.flag_load_df = False
+            self.inject_dim = len(self.df[self.inject_variable].unique())
 
         if self.inject_variable:
 

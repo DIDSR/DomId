@@ -119,14 +119,37 @@ The Conditional VaDE model (CVaDE) has been proposed in [Sidulova et al. 2023].
 *[Sidulova et al. 2023]* Sidulova, Sun, Gossmann, "DEEP UNSUPERVISED CLUSTERING FOR CONDITIONAL IDENTIFICATION OF SUBGROUPS WITHIN A DIGITAL PATHOLOGY IMAGE SET," in review, 2023.
 
 #### Training CVaDE:
+In order to train the CVaDE model, the following command can be used:
 
-- Additional labels (for example previously predicted cluster assignments or known subgroups) that are going to be passed as a conditions should be stored in a `domain_labels.txt` file, and the command line arguments `--path_to_domain` and `--dim_inject_y` should be specified when executing the CVaDE model. Note that the dimensionality of the injected label should correspond to the number of domains in `domain_label.txt`. Note: only one label can be injected per experiment in this way.
-- According to the command line, the pytorch dataset object / data generator will return appropriate additional labels, and in the training process those labels are going to be concatinated to the decoder input.
-- Furthermore, the y label specified in the pytorch dataset class is injected, either as the only conditioning variable or in addition to the labels from `domain_labels.txt`, if `--path_to_domain` and `--dim_inject_y` are set appropriately. That is, two types of "labels" can be passed to the model at the same time to condition the clustering process.
-- Example command line calls are given in `README_paper.md` in this code repository.
+
+- Generate csv file for the dataset, with the following columns: `image_id`, `label`, `domain_label`.
+The `image_id` column should contain the path to the image, the `label` column should contain the label of the image, 
+and the `domain_label` column should contain the domain label of the image. The `domain_label` column is optional,
+and if it is not present, the CVaDE model will be trained without domain labels. 
+Note: that the name of the columns could be different, but the values can only be integers. 
+- The csv file should be stored in the root `data` directory (same as `zd_path`).
+
+- If csv file is in a differente directory the path can be specified in the `--csv_file` command line argument.
+- Injected variable and the dimentions of the injected variable should be specified in the `--inject_var` and `--dim_inject_y` command line argument.
+- The `--inject_var` argument should be a string matching the name of one of the columns in the generated dataframe. 
+- The `--dim_inject_y` argument should be an integer specifying the number of unique values in the column specified in the `--inject_var` argument.
+
+For example, to train the CVaDE model on the Color-MNIST dataset with injection of color labels, the following command can be used:
+
+```
+poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 --task=mnistcolor10 --epos=20 --aname=vade --zd_dim=20 --d_dim=5 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=9 --bs 2 --lr 0.00005 --split 0.8 --prior Gaus --model cnn --inject_var "color" --dim_inject_y 5
+
+```
+For color-MNIST csv file is generated automatically in the `a_dset_mnist_color_rgb_solo.py`. 
+For other datasets, the csv file should be generated manually. 
+
+Assuming that there is a generated csv for HER2 dataset in the `"../HER2/combined_train/"` (note: the code for generating csv for HER2 can be found in `dset` folder), CDVaDE can be trained with the following command:
+The injected variable is the class of the image, and the number of unique values in the class column is 3.
+```
+poetry run python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --epos=20 --aname=vade --zd_dim=20 --d_dim=3 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=9 --bs 2 --lr 0.00005 --split 0.8 --prior Gaus --model cnn --inject_var "class" --dim_inject_y 3 --dpath "../HER2/combined_train/"
+```
 
 ### Simultaneous unsupervised clustering and supervised classification
-
 #### M2YD model
 
 The M2YD model is a rather simple (toy) DL model implemented in `DomId`, that simultaneously performs a supervised classification task (e.g., digit labels in color-MNIST) and an unsupervised clustering task (e.g., cluster the colors in color-MNIST).

@@ -15,8 +15,10 @@ def total_count_images(path):
     return counter
 def parse_machine_labels(image_names):
     machine_labels =[]
+    machine_dict = {'FD': 0, 'H1': 1, 'H2': 2, 'ND': 3}
     for image in image_names:
         machine = image[-6:-4]
+        machine = machine_dict[machine]
         machine_labels.append(machine)
     return machine_labels
 
@@ -25,13 +27,14 @@ N = total_count_images(path)
 data =np.zeros((N, number_labels+1)).astype('str')
 start = 0
 
-for folder in folders:
 
+for folder in folders:
+    label_of_the_folder_int = int(folder[-4])
     print(folder)
     print('start', start)
     folder_path = os.path.join(path, folder)
     images = os.listdir(folder_path)
-    labels = [folder]*len(images)
+    labels = [label_of_the_folder_int]*len(images)
     machine_labels = parse_machine_labels(images)
 
     data[start:start+len(images), :] = np.stack((images, labels, machine_labels),0).T
