@@ -172,8 +172,9 @@ class TrainerVADE(AbstractTrainer):#TrainerClassif):
         # _____storing results and Z space__________
         self.storage.storing(self.args, epoch, acc_tr, self.epo_loss_tr, acc_val, loss_val.sum())
         if epoch % 2 == 0:
-            _, Z, domain_labels, machine_labels, image_locs = prediction.mk_prediction()
-            self.storage.storing_z_space(Z, domain_labels, machine_labels, image_locs)
+            _, z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels = prediction.mk_prediction()
+            #_, Z, domain_labels, machine_labels, image_locs = prediction.mk_prediction()
+            self.storage.storing_z_space(z_proj, predictions, vec_d_labels, image_id_labels)
         if epoch % 10 == 0:
             self.storage.saving_model(self.model)
             

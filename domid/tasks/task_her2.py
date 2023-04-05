@@ -67,7 +67,7 @@ class NodeTaskHER2(NodeTaskDict):
                                     transforms.RandomAdjustSharpness(2, 0.25),
                                     transforms.ToTensor()])
 
-        dset = DsetHER2(ind_global, args.dpath, args.d_dim, args.injected_var, transform=trans)
+        dset = DsetHER2(ind_global, args.dpath, args.d_dim, args.inject_var, transform=trans)
         train_set = dset
         val_set = dset
         # split dset into training and validation sets
