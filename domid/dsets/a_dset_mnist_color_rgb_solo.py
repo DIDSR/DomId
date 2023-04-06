@@ -81,7 +81,6 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
         self.inject_variable = inject_variable
 
 
-
     def _collect_imgs_labels(self, path, raw_split):
         """
         :param path:
@@ -190,10 +189,10 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
         if self.flag_load_df:
             self.df = pd.read_csv(os.path.join(self.path, 'dataframe_mnist.csv'))
             self.flag_load_df = False
-            self.inject_dim = len(self.df[self.inject_variable].unique())
+
 
         if self.inject_variable:
-
+            self.inject_dim = len(self.df[self.inject_variable].unique())
             inject_tensor = self.df[self.inject_variable][idx]
 
             inject_tensor = mk_fun_label2onehot(self.inject_dim)(inject_tensor)

@@ -45,7 +45,7 @@ class ModelVaDE(nn.Module):
         if self.args.dim_inject_y:
             self.dim_inject_y = self.args.dim_inject_y
 
-        self.dim_inject_domain = 0
+        #self.dim_inject_domain = 0
         # if self.args.path_to_domain:    # FIXME: one can simply read from the file to find out the injected dimension
         #     self.dim_inject_domain = args.d_dim   # FIXME: allow arbitrary domain vector to be injected
 
@@ -159,7 +159,7 @@ class ModelVaDE(nn.Module):
     
         Loss = nn.MSELoss()
         #Loss = nn.MSELoss(reduction='sum')
-        Loss = nn.HuberLoss()
+        #Loss = nn.HuberLoss()
         z_mu, z_sigma2_log = self.encoder(x)
         z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
         if len(inject_domain)>0:
@@ -169,6 +169,7 @@ class ModelVaDE(nn.Module):
         x_pro, *_ = self.decoder(zy)
         
         loss = Loss(x, x_pro)
+
         return loss
 
     def reconstruction_loss(self, x, x_pro, log_sigma):

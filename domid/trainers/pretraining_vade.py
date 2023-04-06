@@ -42,7 +42,6 @@ class Pretraining():
         num_img = len(self.loader_tr.dataset)
         Z = np.zeros((num_img, self.model.zd_dim))
         counter = 0
-
         with torch.no_grad():
             for tensor_x, vec_y, vec_d, *other_vars in self.loader_tr:
                 if len(other_vars)>0:
@@ -62,7 +61,7 @@ class Pretraining():
                 counter += z.shape[0]
 
         try:
-            gmm = GaussianMixture(n_components=self.model.d_dim, covariance_type='diag', reg_covar = 10 ** -5) #, reg_covar=10)
+            gmm = GaussianMixture(n_components=self.model.d_dim, covariance_type='diag', reg_covar = 10 ** -3) #, reg_covar=10)
             out_fit_pred = gmm.fit_predict(Z)
             # print(out_fit_pred)
         except Exception as ex:
