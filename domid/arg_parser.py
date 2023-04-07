@@ -1,8 +1,6 @@
 """
 Command line arguments
 """
-import argparse
-import warnings
 
 from domainlab import arg_parser
 

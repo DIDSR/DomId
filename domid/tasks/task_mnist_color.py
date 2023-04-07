@@ -1,7 +1,6 @@
 """
 Color MNIST with palette
 """
-import os
 
 from torch.utils.data import random_split
 from torchvision import transforms

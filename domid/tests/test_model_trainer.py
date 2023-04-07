@@ -1,5 +1,3 @@
-import os
-import random
 
 from domid.algos.builder_vade import NodeAlgoBuilderVaDE
 from domid.algos.observers.b_obvisitor_clustering_only import \

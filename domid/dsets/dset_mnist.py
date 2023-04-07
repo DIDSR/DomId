@@ -12,7 +12,6 @@ from PIL import Image
 from torch.utils.data import Dataset
 from torchvision import datasets, transforms
 
-import random
 
 
 class DsetMNIST(Dataset):

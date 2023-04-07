@@ -1,4 +1,3 @@
-import warnings
 from domid.algos.observers.c_obvisitor_clustering import ObVisitor
 from domid.utils.perf_cluster import PerfCluster
 from domainlab.algos.observers.a_observer import AObVisitor
