@@ -4,7 +4,6 @@ import torch
 import torch.optim as optim
 from domainlab.algos.trainers.a_trainer import \
     AbstractTrainer  # TrainerClassif
-from domainlab.models.a_model_classif import AModelClassif
 
 from domid.compos.predict_basic import Prediction
 from domid.compos.storing import Storing

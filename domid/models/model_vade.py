@@ -1,24 +1,18 @@
 import warnings
 
 import numpy as np
-import pandas as pd
-import tensorboardX
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from domainlab.models.a_model_classif import AModelClassif
-from domainlab.utils.perf import PerfClassif
-from domainlab.utils.perf_metrics import PerfMetricClassif
 from domainlab.utils.utils_classif import logit2preds_vpic
-from rich import print as rprint
 from tensorboardX import SummaryWriter
 
 from domid.compos.cnn_VAE import ConvolutionalDecoder, ConvolutionalEncoder
 from domid.compos.linear_VAE import LinearDecoder, LinearEncoder
-from domid.utils.perf_cluster import PerfCluster
+from domid.models.a_model_cluster import AModelCluster
 
 
-class ModelVaDE(nn.Module):
+class ModelVaDE(AModelCluster):
     def __init__(self, zd_dim, d_dim, device, L, i_c, i_h, i_w, args):
         """
         VaDE model (Jiang et al. 2017 "Variational Deep Embedding:
@@ -79,7 +73,7 @@ class ModelVaDE(nn.Module):
         self.mu_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
         self.log_sigma2_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
 
-        self.loss_writter = tensorboardX.SummaryWriter()
+        self.loss_writter = SummaryWriter()
 
     def _inference(self, x):
         """Auxiliary function for inference
@@ -292,26 +286,6 @@ class ModelVaDE(nn.Module):
                 1,
             )
         )
-
-    def create_perf_obj(self, task):
-        """
-        Sets up the performance metrics used.
-        """
-        self.perf_metric = PerfCluster(task.dim_y) #PerfMetricClassif(task.dim_y)
-        return self.perf_metric
-
-    def cal_perf_metric(self, loader_tr, device, loader_te=None):
-        """
-        Clustering performance metric on the training and test/validation sets.
-        """
-        metric_te = None
-        metric_tr = None
-        with torch.no_grad():
-            metric_tr = self.perf_metric.cal_acc(self, loader_tr, device)
-            if loader_te is not None:
-                metric_te = self.perf_metric.cal_acc(self, loader_te, device)
-
-        return metric_tr, metric_te
 
 
 def test_fun(d_dim, zd_dim, device):

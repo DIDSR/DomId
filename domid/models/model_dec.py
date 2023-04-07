@@ -7,10 +7,10 @@ from domainlab.utils.utils_classif import logit2preds_vpic
 
 from domid.compos.cnn_VAE import ConvolutionalDecoder, ConvolutionalEncoder
 from domid.compos.DEC_clustering_layer import DECClusteringLayer
-from domid.utils.perf_cluster import PerfCluster
+from domid.models.a_model_cluster import AModelCluster
 
 
-class ModelDEC(nn.Module):
+class ModelDEC(AModelCluster):
     def __init__(self, zd_dim, d_dim, L, device, i_c, i_h, i_w, args):
         """
         DEC model (Xie et al. 2015 "Unsupervised Deep Embedding for Clustering Analysis") with
@@ -151,23 +151,3 @@ class ModelDEC(nn.Module):
             print(loss)
             self.warmup_beta = warmup_beta
         return loss
-
-    def create_perf_obj(self, task):
-        """
-        Sets up the performance metrics used.
-        """
-        self.perf_metric = PerfCluster(task.dim_y) #PerfMetricClassif(task.dim_y)
-        return self.perf_metric
-
-    def cal_perf_metric(self, loader_tr, device, loader_te=None):
-        """
-        Clustering performance metric on the training and test/validation sets.
-        """
-        metric_te = None
-        metric_tr = None
-        with torch.no_grad():
-            metric_tr = self.perf_metric.cal_acc(self, loader_tr, device)
-            if loader_te is not None:
-                metric_te = self.perf_metric.cal_acc(self, loader_te, device)
-
-        return metric_tr, metric_te
