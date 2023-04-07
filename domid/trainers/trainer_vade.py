@@ -2,13 +2,15 @@ import itertools
 
 import torch
 import torch.optim as optim
-from domainlab.algos.trainers.a_trainer import AbstractTrainer #TrainerClassif
+from domainlab.algos.trainers.a_trainer import \
+    AbstractTrainer  # TrainerClassif
 from domainlab.models.a_model_classif import AModelClassif
-from domid.trainers.pretraining_vade import Pretraining
-from domid.compos.storing import Storing
-from domid.utils.perf_cluster import PerfCluster
+
 from domid.compos.predict_basic import Prediction
+from domid.compos.storing import Storing
 from domid.compos.tensorboard_fun import tensorboard_write
+from domid.trainers.pretraining_vade import Pretraining
+from domid.utils.perf_cluster import PerfCluster
 
 
 class TrainerVADE(AbstractTrainer):#TrainerClassif):

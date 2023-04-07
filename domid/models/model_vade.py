@@ -1,20 +1,21 @@
 import warnings
+
 import numpy as np
+import pandas as pd
 import tensorboardX
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from domainlab.utils.utils_classif import logit2preds_vpic
-from tensorboardX import SummaryWriter
 from domainlab.models.a_model_classif import AModelClassif
-from domid.compos.cnn_VAE import ConvolutionalDecoder, ConvolutionalEncoder
-from domid.compos.linear_VAE import LinearDecoder, LinearEncoder
-
 from domainlab.utils.perf import PerfClassif
 from domainlab.utils.perf_metrics import PerfMetricClassif
-from domid.utils.perf_cluster import PerfCluster
+from domainlab.utils.utils_classif import logit2preds_vpic
 from rich import print as rprint
-import pandas as pd
+from tensorboardX import SummaryWriter
+
+from domid.compos.cnn_VAE import ConvolutionalDecoder, ConvolutionalEncoder
+from domid.compos.linear_VAE import LinearDecoder, LinearEncoder
+from domid.utils.perf_cluster import PerfCluster
 
 
 class ModelVaDE(nn.Module):

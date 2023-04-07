@@ -3,10 +3,11 @@ from domainlab.tasks.utils_task import (DsetDomainVecDecorator, ImSize,
                                         mk_loader, mk_onehot)
 from domainlab.utils.utils_classif import mk_dummy_label_list_str
 from torch.utils.data import random_split
+from torchvision import transforms
 
 from domid.dsets.dset_mnist import DsetMNIST
 
-from torchvision import transforms
+
 class NodeTaskMNIST(NodeTaskMNISTColor10):
     """
     Basic MNIST task where the digits are considered "domains"

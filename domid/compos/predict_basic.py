@@ -1,5 +1,6 @@
-import torch
 import numpy as np
+import torch
+
 from domid.utils.perf_cluster import PerfCluster
 
 

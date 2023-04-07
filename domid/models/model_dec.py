@@ -3,10 +3,11 @@ import tensorboardX
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from domid.compos.DEC_clustering_layer import DECClusteringLayer
-from domid.compos.cnn_VAE import ConvolutionalDecoder, ConvolutionalEncoder
-from domid.utils.perf_cluster import PerfCluster
 from domainlab.utils.utils_classif import logit2preds_vpic
+
+from domid.compos.cnn_VAE import ConvolutionalDecoder, ConvolutionalEncoder
+from domid.compos.DEC_clustering_layer import DECClusteringLayer
+from domid.utils.perf_cluster import PerfCluster
 
 
 class ModelDEC(nn.Module):

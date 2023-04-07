@@ -1,6 +1,7 @@
 import tensorboardX
 import torch
 
+
 def tensorboard_write(writer, model, epoch, lr, warmup_beta, acc_tr, loss, pretraining_finished, tensor_x, inject_tensor):
     writer.add_scalar('learning rate', lr, epoch)
     writer.add_scalar('warmup', warmup_beta, epoch)

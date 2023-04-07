@@ -1,7 +1,8 @@
 import os
-import pandas as pd
-import numpy as np
 import sys
+
+import numpy as np
+import pandas as pd
 
 try:
     path = sys.argv[1]

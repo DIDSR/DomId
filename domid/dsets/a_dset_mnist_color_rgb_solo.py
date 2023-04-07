@@ -4,16 +4,15 @@ Color MNIST with single color
 import abc
 import os
 import struct
+from os.path import exists
 
 import numpy as np
+import pandas as pd
+from domainlab.dsets.utils_data import mk_fun_label2onehot
+from domainlab.utils.utils_class import store_args
 from PIL import Image
 from torch.utils.data import Dataset
 from torchvision import datasets, transforms
-
-from domainlab.dsets.utils_data import mk_fun_label2onehot
-from domainlab.utils.utils_class import store_args
-from os.path import exists
-import pandas as pd
 
 
 class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):

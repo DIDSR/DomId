@@ -1,5 +1,6 @@
-from domid.dsets.a_dset_mnist_color_rgb_solo import ADsetMNISTColorRGBSolo
 from domainlab.dsets.utils_color_palette import default_rgb_palette
+
+from domid.dsets.a_dset_mnist_color_rgb_solo import ADsetMNISTColorRGBSolo
 
 
 class DsetMNISTColorSoloDefault(ADsetMNISTColorRGBSolo):

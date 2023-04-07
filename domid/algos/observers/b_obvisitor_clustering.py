@@ -1,8 +1,9 @@
-from domainlab.algos.observers.b_obvisitor import ObVisitor
-from domid.utils.perf_cluster import PerfCluster
 from domainlab.algos.observers.a_observer import AObVisitor
+from domainlab.algos.observers.b_obvisitor import ObVisitor
 from domainlab.tasks.task_folder_mk import NodeTaskFolderClassNaMismatch
 from domainlab.tasks.task_pathlist import NodeTaskPathListDummy
+
+from domid.utils.perf_cluster import PerfCluster
 
 
 class ObVisitorClustering(ObVisitor):
