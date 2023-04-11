@@ -16,6 +16,7 @@ def node_compiler(args):
 
     dset2 = node.get_dset_by_domain(args, domain)
     ldr = torch.utils.data.DataLoader(dset2[0]) #train set from the task
+
     return ldr
 def test_mnist_length():
     parser = mk_parser_main()
@@ -31,8 +32,6 @@ def test_mnist_length():
             "1",
             "--dpath",
             "zout",
-            "--split",
-            "0.8",
             "--L",
             "5",
             "--prior",
@@ -45,8 +44,12 @@ def test_mnist_length():
         ]
     )
     ldr = node_compiler(args)
-    print(len(ldr))
-    assert len(ldr) > 4000
+    it_ldr = iter(ldr)
+    x, vec_y, inject_tensor, img_id = next(it_ldr)
+    assert x.shape == (1, 3, 32, 32)
+    assert vec_y.shape == (1, 10)
+    assert inject_tensor == []
+    assert len(ldr) == 5958
 def test_mnistcolor10_length():
     parser = mk_parser_main()
     args = parser.parse_args(
@@ -61,8 +64,6 @@ def test_mnistcolor10_length():
             "1",
             "--dpath",
             "zout",
-            "--split",
-            "0.8",
             "--L",
             "5",
             "--prior",
@@ -76,4 +77,9 @@ def test_mnistcolor10_length():
     )
 
     ldr = node_compiler(args)
-    assert len(ldr) <1000
+    it_ldr = iter(ldr)
+    x, vec_y, inject_tensor, img_id = next(it_ldr)
+    assert x.shape == (1, 3, 32, 32)
+    assert vec_y.shape == (1, 10)
+    assert inject_tensor == []
+    assert len(ldr) ==600
