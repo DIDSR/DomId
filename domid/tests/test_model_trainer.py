@@ -345,7 +345,7 @@ def test_MNIST_conditionalOne_train():
             "0",
             "--dim_inject_y",
             "10",
-            "--injected_var",
+            "--inject_var",
             "digit"
         ]
     )
