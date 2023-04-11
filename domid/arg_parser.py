@@ -24,7 +24,7 @@ def mk_parser_main():
                         help="path to the csv file containing the meta data for injection "
                              "(use if the file is not in the dataset folder or is not named dataset.csv)")
     parser.add_argument('--dim_inject_y', type=int, default=0, help="dimension to inject to input of the decoder from annotation")
-    parser.add_argument('--digits_from_mnist', type=int, default=[0, 1, 2, 3, 4, 5,6, 7, 8, 9], help="digits that should be included from mnist dataset")
+    parser.add_argument('--digits_from_mnist', type=int, default=None, help="digits that should be included from mnist dataset")
 
 
     return parser

@@ -75,13 +75,15 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
         self.images = self.images[inds_subset, ::]
         self.labels = self.labels[inds_subset]
 
-        self.wanted_digits = args.digits_from_mnist
-        subindexes = []
-        for wanted in self.wanted_digits:
-            indx = np.where(self.labels == wanted)[0]
-            subindexes += list(indx)
-        self.images = self.images[subindexes, ::]
-        self.labels = self.labels[subindexes]
+        if args.digits_from_mnist:
+            self.wanted_digits = args.digits_from_mnist
+
+            subindexes = []
+            for wanted in self.wanted_digits:
+                indx = np.where(self.labels == wanted)[0]
+                subindexes += list(indx)
+            self.images = self.images[subindexes, ::]
+            self.labels = self.labels[subindexes]
         self._color_imgs_onehot_labels()
         # self.images = self.images[inds_subset, ::]
         # self.labels = self.labels[inds_subset]
