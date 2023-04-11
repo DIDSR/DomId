@@ -67,5 +67,5 @@ class DsetHER2(Dataset):
         else:
             inject_tensor = [] #torch.Tensor([])#, dtype=label.dtype)
 
-        img_id = self.images[idx]
+        img_id = img_loc
         return image, label, inject_tensor, img_id
