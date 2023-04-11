@@ -59,7 +59,7 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
         """
         dpath = os.path.normpath(path)
         flag_train = True
-        if raw_split!="train":
+        if raw_split != "train":
             flag_train = False
         dataset = datasets.MNIST(root=dpath,
                                  train=flag_train,
@@ -106,27 +106,22 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
 
     def __len__(self):
         return len(self.images)
+
     def generate_dataframe(self):
-        if exists(os.path.join(self.path, 'dataframe_mnist.csv')):
-
-            df = pd.read_csv(os.path.join(self.path, 'dataframe_mnist.csv'))
+        save_csv = os.path.join(self.path, 'dataframe_mnist.csv')
+        if exists(save_csv):
+            df = pd.read_csv(save_csv)
         else:
-            df = pd.DataFrame(columns=['image_id', 'color', 'digit' ])
-
+            df = pd.DataFrame(columns=['image_id', 'color', 'digit'])
 
         for i in range(len(self.images)):
-            image_id = str(self.ind_color) + '_' + str(self.color_scheme) + '_' + str(self.labels[i])
+            image_id = "_".join([str(i), str(self.ind_color), str(self.color_scheme), str(self.labels[i])])
             new_row = {'image_id': image_id, 'color': self.ind_color, 'digit': self.labels[i]}
             df.loc[len(df)+1] = new_row
 
-        df.to_csv(os.path.join(self.path, 'dataframe_mnist.csv'), index=False)
+        df.to_csv(save_csv, index=False)
 
         return df
-
-
-
-
-
 
     def _op_color_img(self, image):
         """
