@@ -48,7 +48,7 @@ class ModelVaDE(AModelCluster):
         if self.args.model == "linear":
             self.encoder = LinearEncoder(zd_dim=zd_dim, input_dim=(i_c, i_h, i_w)).to(device)
             self.decoder = LinearDecoder(prior=args.prior, zd_dim=zd_dim, input_dim=(i_c, i_h, i_w)).to(device)
-            if self.dim_inject_domain or self.dim_inject_y:
+            if self.dim_inject_y:
                 warnings.warn("linear model decoder does not support label injection")
         else:
             self.encoder = ConvolutionalEncoder(zd_dim=zd_dim, num_channels=i_c, i_w=i_w, i_h=i_h).to(device)
