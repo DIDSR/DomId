@@ -68,12 +68,26 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
 
         if color_scheme not in ['num', 'back', 'both']:
             raise ValueError("color must be either 'num', 'back' or 'both")
+
         raw_path = os.path.dirname(dataset.raw_folder)
         self._collect_imgs_labels(raw_path, raw_split)
         inds_subset = list(range(0, len(dataset), subset_step))
         self.images = self.images[inds_subset, ::]
         self.labels = self.labels[inds_subset]
+
+        if args.digits_from_mnist:
+            self.wanted_digits = args.digits_from_mnist
+
+            subindexes = []
+            for wanted in self.wanted_digits:
+                indx = np.where(self.labels == wanted)[0]
+                subindexes += list(indx)
+            self.images = self.images[subindexes, ::]
+            self.labels = self.labels[subindexes]
         self._color_imgs_onehot_labels()
+        # self.images = self.images[inds_subset, ::]
+        # self.labels = self.labels[inds_subset]
+        # self._color_imgs_onehot_labels()
 
         self.generate_dataframe()
         self.flag_load_df = True

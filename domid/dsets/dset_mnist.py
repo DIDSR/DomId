@@ -43,7 +43,7 @@ class DsetMNIST(Dataset):
         # dummy class labels (should not be used; included for consistency with DomainLab)
         self.labels = torch.randint(10, (n_img,), dtype=torch.int32)
         self.args = args
-        self.inject_variable = args.injected_var
+        self.inject_variable = args.inject_var
 
     def __len__(self):
         return len(self.images)
