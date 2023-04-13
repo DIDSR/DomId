@@ -53,15 +53,7 @@ class TrainerCluster(AbstractTrainer):#TrainerClassif):
         :param epoch: epoch number
         :return:
         """
-        if self.aname =='vade':
-
-            print("Epoch {}. ELBO loss".format(epoch)) if self.pretraining_finished else print(
-                "Epoch {}. MSE loss".format(epoch)
-            )
-        else:
-            print("Epoch {}. DEC loss".format(epoch)) if self.pretraining_finished else print(
-                "Epoch {}. MSE loss".format(epoch)
-            )
+        print("Epoch {}.".format(epoch)) if self.pretraining_finished else print("Epoch {}. Pretraining.".format(epoch))
 
         self.model.train()
         self.epo_loss_tr = 0
@@ -108,10 +100,7 @@ class TrainerCluster(AbstractTrainer):#TrainerClassif):
                     )
 
                     print("".join(["#"] * 60))
-                    if self.aname =='vade':
-                        print("Epoch {}: Finished pretraining and starting to use ELBO loss.".format(epoch))
-                    else:
-                        print("Epoch {}: Finished pretraining and starting to use DEC loss.".format(epoch))
+                    print("Epoch {}: Finished pretraining and starting to use the full model loss.".format(epoch))
                     print("".join(["#"] * 60))
 
                 loss = self.model.cal_loss(tensor_x, inject_tensor, self.warmup_beta)

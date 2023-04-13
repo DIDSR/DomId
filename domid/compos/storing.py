@@ -14,7 +14,7 @@ class Storing():
         self.acc = []
         self.val_acc = []
         self.val_loss = []
-        self.experiment_name = str(datetime.datetime.now())
+        self.experiment_name = str(datetime.datetime.now()) + "_"  + str(args.task) + "_" + str(args.aname)
 
 
     def storing(self, epoch, accuracy, loss, val_accuracy, val_loss):
