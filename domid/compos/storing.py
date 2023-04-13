@@ -24,30 +24,23 @@ class Storing():
         self.acc.append(accuracy)
         self.val_loss.append(val_loss.detach().cpu().numpy())
         self.val_acc.append(val_accuracy)
-
+        ex_path = "./notebooks/" + self.experiment_name
         if not os.path.exists("./notebooks/"+self.experiment_name):
             print('______Created directory to save result_________')
-            os.mkdir("./notebooks/"+self.experiment_name)
 
-        if epoch%5==0: # FIXME: hardcoded
-            saving_dir = os.path.join("./notebooks",self.experiment_name)
-            with open(saving_dir+"/training_loss.txt", 'w') as output:
-                for row in self.loss:
-                    output.write(str(row) + '\n')
+            os.mkdir(ex_path)
+            df = pd.DataFrame(columns=['epoch', 'accuracy', 'loss', 'val_accuracy', 'val_loss'])
+            df.to_csv(os.path.join(ex_path, 'losses_accuracies.csv'), index=False)
 
-            with open(saving_dir+"/training_accuracy.txt", 'w') as output:
-                for row in self.acc:
-                    output.write(str(row) + '\n')
 
-            with open(saving_dir+"/testing_loss.txt", 'w') as output:
-                for row in self.val_loss:
-                    output.write(str(row) + '\n')
 
-            with open(saving_dir+"/testing_accuracy.txt", 'w') as output:
-                for row in self.val_acc:
-                    output.write(str(row) + '\n')
+        df = pd.read_csv(os.path.join(ex_path, 'losses_accuracies.csv'))
+        saving_dir = os.path.join("./notebooks",self.experiment_name)
+        loss_acc_df = pd.DataFrame({'epoch': epoch, 'loss': loss,'accuracy': accuracy, 'val_loss': val_loss.item(), 'val_accuracy': val_accuracy}, index =[epoch] )
+        df = pd.concat([df, loss_acc_df], join="inner", ignore_index=False)
+        df.to_csv(os.path.join(ex_path, 'losses_accuracies.csv'), index=False)
 
-            pickle.dump(self.args,open(saving_dir+'my_namespace.p','wb'))
+        pickle.dump(self.args,open(os.path.join(saving_dir,'commandline_arguments.p'),'wb'))
 
         
     def saving_model(self, model):
@@ -57,25 +50,23 @@ class Storing():
     def storing_z_space(self, Z, predictions, vec_y_labels, vec_d_labels, image_id_labels):
         
         
-        path ="./notebooks/"+self.experiment_name+"/Z_space.npy"
-        np.save(path, Z)
+        exp_path =os.path.join("./notebooks/",self.experiment_name)
 
-        with open("./notebooks/"+self.experiment_name+"/vec_y_labels.txt", 'w') as output:
-           
-            for row in vec_y_labels:
-                output.write(str(row) + '\n')
-        with open("./notebooks/" + self.experiment_name + "/vec_d_labels.txt", 'w') as output:
+        np.save(os.path.join(exp_path, "Z_space.npy"), Z)
+        pickle.dump(Z, open(os.path.join(exp_path, "Z_space_picle.p"), 'wb'))
 
-            for row in vec_d_labels:
-                output.write(str(row) + '\n')
+        df = pd.DataFrame(columns=['vec_y_labels', 'vec_d_labels', 'predictions', 'image_id_labels'])
+        # df_new = pd.DataFrame([{'vec_y_labels': vec_y_labels, 'vec_d_labels': vec_d_labels,
+        #                         'predictions': predictions, 'image_id_labels': image_id_labels}])
+        # breakpoint()
+        # df = pd.concat([df, df_new],  join="inner" ,ignore_index=False)
+        df['vec_y_labels'] = vec_y_labels
+        df['vec_d_labels'] = vec_d_labels
+        df['predictions'] = predictions
+        df['image_id_labels'] = image_id_labels
+        print(df.head(10))
 
-        with open("./notebooks/"+self.experiment_name+"/predicted_labels.txt", 'w') as output:
-            for row in predictions:
-                output.write(str(row) + '\n')
+        df.to_csv(os.path.join(exp_path, 'clustering_results.csv'), index=False)
 
-        with open("./notebooks/" + self.experiment_name + "/img_id.txt", 'w') as output:
-
-            for row in image_id_labels:
-                output.write(str(row) + '\n')
 
 
