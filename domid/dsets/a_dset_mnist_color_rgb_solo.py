@@ -80,7 +80,9 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
 
             subindexes = []
             for wanted in self.wanted_digits:
-                indx = np.where(self.labels == wanted)[0]
+
+                indx = np.where(self.labels == int(wanted))[0]
+
                 subindexes += list(indx)
             self.images = self.images[subindexes, ::]
             self.labels = self.labels[subindexes]
