@@ -12,7 +12,7 @@ CUDA_VISIBLE_DEVICES=2 python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --ep
 ```
 
 
-# MNIST experiments
+# Colored MNIST experiments: 5 digits, 5 colors
 ```
 # VaDE base result: miccai/DomID/notebooks/2023-03-09 17:29:14.153074/
 CUDA_VISIBLE_DEVICES=0 python main_out.py --te_d 0 --tr_d 0 1 2 3 4 --task=mnistcolor10 --epos=20 --aname=vade --zd_dim=20 --d_dim=5 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=9 --bs 2 --lr 0.005 --split 0.8 --prior Gaus --model cnn
@@ -25,7 +25,7 @@ CUDA_VISIBLE_DEVICES=2 python main_out.py --te_d 0 --tr_d 0 1 2 3 4 --task=mnist
 ```
 
 
-# MNIST (10 digits) miccai experiments  (command line inputs after refactoring to reproduce results)
+# Colored MNIST experiments: 10 digits, 10 colors  (command line inputs after refactoring to reproduce results)
 ```
 # VaDE base result: miccai/DomID/notebooks/2023-03-14 11:23:06.765323/
 poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 5 6 7 8 9 --task=mnistcolor10 --epos=20 --aname=vade --zd_dim=20 --d_dim=10 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=9 --bs 2 --lr 0.0005 --split 0.8 --prior Gaus --model cnn 
@@ -34,7 +34,7 @@ poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 5 6 7 8 9 --task=mnistco
 poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 5 6 7 8 9 --task=mnistcolor10 --epos=20 --aname=vade --zd_dim=20 --d_dim=10 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=10 --bs 2 --lr 0.0005 --split 0.8 --prior Gaus --model cnn --inject_var "color" --dim_inject 10
 
 # DEC base result: miccai/DomID/notebooks/2023-03-09 17:37:02.633794/
-poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 --task=mnistcolor10 --epos=20 --aname=dec --zd_dim=20 --d_dim=10 --apath=domid/algos/builder_dec.py --L=5 --pre_tr=10 --bs 2 --lr 0.00005 --split 0.8 --prior Gaus --model cnn
+poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 5 6 7 8 9 --task=mnistcolor10 --epos=20 --aname=dec --zd_dim=20 --d_dim=10 --apath=domid/algos/builder_dec.py --L=5 --pre_tr=10 --bs 2 --lr 0.00005 --split 0.8 --prior Gaus --model cnn
 ```
 
 
@@ -49,12 +49,11 @@ poetry run python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --epos=50 --anam
 ```
 
 
-# MNIST experiments (command line inputs after refactoring to reproduce results)
+# Colored MNIST experiments: 5 digits, 5 colors (command line inputs after refactoring to reproduce results)
 ```
-poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 --task=mnistcolor10 --epos=20 --aname=vade --zd_dim=20 --d_dim=5 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=9 --bs 2 --lr 0.0005 --split 0.8 --prior Gaus --model cnn
+poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 --task=mnistcolor10 --digits_from_mnist 0 1 2 3 4 --epos=20 --aname=vade --zd_dim=20 --d_dim=5 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=7 --bs 2 --lr 0.005 --split 0.8 --prior Gaus --model cnn
 
-poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 --task=mnistcolor10 --epos=20 --aname=vade --zd_dim=20 --d_dim=5 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=10 --bs 2 --lr 0.0005 --split 0.8 --prior Gaus --model cnn  --dim_inject_y 5 --inject_var "color"
+poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 --task=mnistcolor10 --digits_from_mnist 0 1 2 3 4 --epos=20 --aname=vade --zd_dim=20 --d_dim=5 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=7 --bs 2 --lr 0.005 --split 0.8 --prior Gaus --model cnn  --dim_inject_y 5 --inject_var "color"
 
-poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 --task=mnistcolor10 --epos=20 --aname=dec --zd_dim=20 --d_dim=5 --apath=domid/algos/builder_dec.py --L=5 --pre_tr=10 --bs 2 --lr 0.005 --split 0.8 --prior Gaus --model cnn
+poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 --task=mnistcolor10 --digits_from_mnist 0 1 2 3 4 --epos=20 --aname=dec --zd_dim=20 --d_dim=5 --apath=domid/algos/builder_dec.py --L=5 --pre_tr=10 --bs 2 --lr 0.005 --split 0.8 --prior Gaus --model cnn
 ```
->>>>>>> origin/miccai

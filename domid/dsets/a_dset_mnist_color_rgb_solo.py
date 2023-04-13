@@ -76,14 +76,18 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
         self.labels = self.labels[inds_subset]
 
         if args.digits_from_mnist:
-            self.wanted_digits = args.digits_from_mnist
-
+            self.wanted_digits = [int(w) for w in args.digits_from_mnist]
+            self.wanted_digits = list(set(self.wanted_digits))
             subindexes = []
             for wanted in self.wanted_digits:
+                assert 0 <= wanted <= 9
                 indx = np.where(self.labels == wanted)[0]
                 subindexes += list(indx)
             self.images = self.images[subindexes, ::]
             self.labels = self.labels[subindexes]
+        else:
+            self.wanted_digits = list(range(10))
+
         self._color_imgs_onehot_labels()
         # self.images = self.images[inds_subset, ::]
         # self.labels = self.labels[inds_subset]
@@ -92,6 +96,7 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
         self.generate_dataframe()
         self.flag_load_df = True
         self.inject_variable = inject_variable
+
 
 
     def _collect_imgs_labels(self, path, raw_split):
@@ -122,20 +127,27 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
         return len(self.images)
 
     def generate_dataframe(self):
-        save_csv = os.path.join(self.path, 'dataframe_mnist.csv')
-        if exists(save_csv):
-            df = pd.read_csv(save_csv)
+        df_name = 'dataframe_colored_mnist.csv'
+        self.df_save_path = os.path.join(self.path, df_name)
+        if exists(self.df_save_path):
+            df = pd.read_csv(self.df_save_path)
         else:
             df = pd.DataFrame(columns=['image_id', 'color', 'digit'])
 
         for i in range(len(self.images)):
             image_id = "_".join([str(i), str(self.ind_color), str(self.color_scheme), str(self.labels[i])])
             new_row = {'image_id': image_id, 'color': self.ind_color, 'digit': self.labels[i]}
-            df.loc[len(df)+1] = new_row
-
-        df.to_csv(save_csv, index=False)
-
-        return df
+            # if a row with that image id exists already, replace it; otherwise, add a new row
+            indices = df.loc[df["image_id"] == image_id].index
+            if len(indices) == 1:
+                idx = indices[0]
+                for k, v in new_row.items():
+                    df.loc[idx, k] = v
+            elif len(indices) > 1:
+                raise ValueError("Multiple dataframe rows with the same image_id!")
+            else:
+                df.loc[len(df)+1] = new_row
+        df.to_csv(self.df_save_path, index=False)
 
     def _op_color_img(self, image):
         """
@@ -185,6 +197,17 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
             self.images[i] = self._op_color_img(img)
 
     def __getitem__(self, idx):
+        if self.flag_load_df:
+            self.df = pd.read_csv(self.df_save_path)
+            if self.inject_variable:
+                self.inject_dim = len(self.df[self.inject_variable].unique())
+            self.flag_load_df = False
+
+        image_id = "_".join([str(idx), str(self.ind_color), str(self.color_scheme), str(self.labels[idx])])
+        indices = self.df.loc[self.df["image_id"] == image_id].index
+        assert len(indices) == 1, "invalid image_id"
+        df_idx = indices[0]  # this class is for one domain (i.e., one color), but the dataframe combines all domains, so the index will be different
+
         image = self.images[idx]  # range of pixel: [0,255]
         label = self.labels[idx]
         if self.label_transform is not None:
@@ -194,21 +217,11 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
             for trans in self.list_transforms:
                 image = trans(image)
         image = transforms.ToTensor()(image)  # range of pixel [0,1]
-        if self.flag_load_df:
-            self.df = pd.read_csv(os.path.join(self.path, 'dataframe_mnist.csv'))
-            self.flag_load_df = False
-
 
         if self.inject_variable:
-            self.inject_dim = len(self.df[self.inject_variable].unique())
-            inject_tensor = self.df[self.inject_variable][idx]
-
+            inject_tensor = self.df.loc[df_idx, self.inject_variable]
             inject_tensor = mk_fun_label2onehot(self.inject_dim)(inject_tensor)
-
         else:
             inject_tensor = []
-        image_id = idx
-
-
 
         return image, label, inject_tensor, image_id
