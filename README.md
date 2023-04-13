@@ -100,8 +100,13 @@ clustering validation acc:  0.7568333333333334
 ```
 
 ### DEC model
+To apply a DEC model, that is described in the paper [Xie et al 2017], to MNIST dataset:
 
-- TODO: add documentation
+``` 
+poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 5 6 7 8 9 --task=mnist10 --debug --epos=20 --pre_tr=10 --aname=dec --zd_dim=50 --d_dim=10 --apath=domid/algos/builder_dec.py --model cnn
+```
+Note: there is no conditioning on the labels in the DEC model.
+
 
 ### Custom datasets
 
