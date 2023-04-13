@@ -10,7 +10,7 @@ from tensorboardX import SummaryWriter
 from domid.algos.observers.b_obvisitor_clustering_only import \
     ObVisitorClusteringOnly
 from domid.models.model_dec import ModelDEC
-from domid.trainers.trainer_vade import TrainerVADE
+from domid.trainers.trainer_cluster import TrainerCluster
 
 
 class NodeAlgoBuilderDEC(NodeAlgoBuilder):

@@ -8,13 +8,13 @@ from domainlab.algos.trainers.a_trainer import \
 from domid.compos.predict_basic import Prediction
 from domid.compos.storing import Storing
 from domid.compos.tensorboard_fun import tensorboard_write
-from domid.trainers.pretraining_vade import Pretraining
+from domid.trainers.pretraining_GMM import Pretraining
 from domid.utils.perf_cluster import PerfCluster
 
 
-class TrainerVADE(AbstractTrainer):#TrainerClassif):
+class TrainerCluster(AbstractTrainer):#TrainerClassif):
     def __init__(self, model, task, observer, device, writer, pretrain=True, aconf=None):
-        """FIXME: add description of the parameters
+        """
         :param model: model to train
         :param task: task to train on
         :param observer: observer to notify
@@ -45,7 +45,7 @@ class TrainerVADE(AbstractTrainer):#TrainerClassif):
         self.args = aconf
         self.storage = Storing(self.args)
         self.loader_val = task.loader_val
-
+        self.aname = aconf.aname
 
 
     def tr_epoch(self, epoch):
@@ -53,13 +53,18 @@ class TrainerVADE(AbstractTrainer):#TrainerClassif):
         :param epoch: epoch number
         :return:
         """
+        if self.aname =='vade':
 
-        print("Epoch {}. ELBO loss".format(epoch)) if self.pretraining_finished else print(
-            "Epoch {}. MSE loss".format(epoch)
-        )
+            print("Epoch {}. ELBO loss".format(epoch)) if self.pretraining_finished else print(
+                "Epoch {}. MSE loss".format(epoch)
+            )
+        else:
+            print("Epoch {}. DEC loss".format(epoch)) if self.pretraining_finished else print(
+                "Epoch {}. MSE loss".format(epoch)
+            )
+
         self.model.train()
         self.epo_loss_tr = 0
-        pred_domain =[]
 
         pretrain = Pretraining(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args)
         prediction = Prediction(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args)
@@ -103,7 +108,10 @@ class TrainerVADE(AbstractTrainer):#TrainerClassif):
                     )
 
                     print("".join(["#"] * 60))
-                    print("Epoch {}: Finished pretraining and starting to use ELBO loss.".format(epoch))
+                    if self.aname =='vade':
+                        print("Epoch {}: Finished pretraining and starting to use ELBO loss.".format(epoch))
+                    else:
+                        print("Epoch {}: Finished pretraining and starting to use DEC loss.".format(epoch))
                     print("".join(["#"] * 60))
 
                 loss = self.model.cal_loss(tensor_x, inject_tensor, self.warmup_beta)
@@ -133,18 +141,15 @@ class TrainerVADE(AbstractTrainer):#TrainerClassif):
             pi,
             logits,
         ) = self.model._inference(tensor_x)
-
-        print("pi:")
-        print(pi.cpu().detach().numpy())
-
+        if self.aname =='vade':
+            print("pi:")
+            print(pi.cpu().detach().numpy())
+        #__________________Validation_____________________
         for i, (tensor_x_val, vec_y_val, vec_d_val, *other_vars) in enumerate(self.loader_val):
-            #import pdb; pdb.set_trace()
             if len(other_vars) > 0:
                 inject_tensor_val, img_id_val = other_vars
                 if len(inject_tensor_val)>0:
                     inject_tensor_val = inject_tensor_val.to(self.device)
-
-
             tensor_x_val, vec_y_val, vec_d_val = (
                 tensor_x_val.to(self.device),
                 vec_y_val.to(self.device),

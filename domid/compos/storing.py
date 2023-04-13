@@ -56,15 +56,12 @@ class Storing():
         pickle.dump(Z, open(os.path.join(exp_path, "Z_space_picle.p"), 'wb'))
 
         df = pd.DataFrame(columns=['vec_y_labels', 'vec_d_labels', 'predictions', 'image_id_labels'])
-        # df_new = pd.DataFrame([{'vec_y_labels': vec_y_labels, 'vec_d_labels': vec_d_labels,
-        #                         'predictions': predictions, 'image_id_labels': image_id_labels}])
-        # breakpoint()
-        # df = pd.concat([df, df_new],  join="inner" ,ignore_index=False)
+
         df['vec_y_labels'] = vec_y_labels
         df['vec_d_labels'] = vec_d_labels
         df['predictions'] = predictions
         df['image_id_labels'] = image_id_labels
-        print(df.head(10))
+
 
         df.to_csv(os.path.join(exp_path, 'clustering_results.csv'), index=False)
 

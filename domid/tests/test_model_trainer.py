@@ -6,7 +6,7 @@ from domid.arg_parser import mk_parser_main
 from domid.compos.exp.exp_main import Exp
 from domid.models.model_vade import ModelVaDE
 from domid.tasks.task_mnist import NodeTaskMNIST
-from domid.trainers.trainer_vade import TrainerVADE
+from domid.trainers.trainer_cluster import TrainerCluster
 
 
 def experiment_train(args):
