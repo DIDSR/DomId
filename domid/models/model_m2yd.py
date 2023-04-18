@@ -103,7 +103,7 @@ class ModelXY2D(AModelClassif):
         q_zd, zd_q = self.infer_domain(feat_y_x)
         return q_zd, zd_q, y_hat_logit
 
-    def cal_loss(self, x, y, d=None):
+    def cal_loss(self, x, y, d=None, others=None):
         q_zd, zd_q, y_hat = self.forward(x, y)
         z_con = torch.cat((zd_q, y), dim=1)  # FIXME: pay attention to order
 

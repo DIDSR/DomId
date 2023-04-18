@@ -1,6 +1,6 @@
 import warnings
+
 import numpy as np
-import tensorboardX
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -9,9 +9,10 @@ from tensorboardX import SummaryWriter
 
 from domid.compos.cnn_VAE import ConvolutionalDecoder, ConvolutionalEncoder
 from domid.compos.linear_VAE import LinearDecoder, LinearEncoder
+from domid.models.a_model_cluster import AModelCluster
 
 
-class ModelVaDE(nn.Module):
+class ModelVaDE(AModelCluster):
     def __init__(self, zd_dim, d_dim, device, L, i_c, i_h, i_w, args):
         """
         VaDE model (Jiang et al. 2017 "Variational Deep Embedding:
@@ -39,15 +40,15 @@ class ModelVaDE(nn.Module):
         if self.args.dim_inject_y:
             self.dim_inject_y = self.args.dim_inject_y
 
-        self.dim_inject_domain = 0
-        if self.args.path_to_domain:    # FIXME: one can simply read from the file to find out the injected dimension
-            self.dim_inject_domain = args.d_dim   # FIXME: allow arbitrary domain vector to be injected
+        #self.dim_inject_domain = 0
+        # if self.args.path_to_domain:    # FIXME: one can simply read from the file to find out the injected dimension
+        #     self.dim_inject_domain = args.d_dim   # FIXME: allow arbitrary domain vector to be injected
 
 
         if self.args.model == "linear":
             self.encoder = LinearEncoder(zd_dim=zd_dim, input_dim=(i_c, i_h, i_w)).to(device)
             self.decoder = LinearDecoder(prior=args.prior, zd_dim=zd_dim, input_dim=(i_c, i_h, i_w)).to(device)
-            if self.dim_inject_domain or self.dim_inject_y:
+            if self.dim_inject_y:
                 warnings.warn("linear model decoder does not support label injection")
         else:
             self.encoder = ConvolutionalEncoder(zd_dim=zd_dim, num_channels=i_c, i_w=i_w, i_h=i_h).to(device)
@@ -72,7 +73,7 @@ class ModelVaDE(nn.Module):
         self.mu_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
         self.log_sigma2_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
 
-        self.loss_writter = tensorboardX.SummaryWriter()
+        self.loss_writter = SummaryWriter()
 
     def _inference(self, x):
         """Auxiliary function for inference
@@ -136,7 +137,7 @@ class ModelVaDE(nn.Module):
         else:
             zy = results[2]
 
-
+        #print(results[2].shape, inject_domain.shape, zy.shape)
         x_pro, *_ = self.decoder(zy)
         preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = (r.cpu().detach() for r in results)
         return preds, z_mu, z, log_sigma2_c, probs, x_pro
@@ -150,6 +151,7 @@ class ModelVaDE(nn.Module):
         return self.ELBO_Loss(x, inject_domain, warmup_beta)
 
     def pretrain_loss(self, x, inject_domain):
+    
         Loss = nn.MSELoss()
         #Loss = nn.MSELoss(reduction='sum')
         #Loss = nn.HuberLoss()
@@ -159,9 +161,10 @@ class ModelVaDE(nn.Module):
             zy = torch.cat((z, inject_domain), 1)
         else:
             zy = z
-
         x_pro, *_ = self.decoder(zy)
+        
         loss = Loss(x, x_pro)
+
         return loss
 
     def reconstruction_loss(self, x, x_pro, log_sigma):

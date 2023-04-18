@@ -1,5 +1,4 @@
 import datetime
-import os
 
 from domainlab.algos.zoo_algos import AlgoBuilderChainNodeGetter
 from domainlab.compos.exp.exp_utils import AggWriter

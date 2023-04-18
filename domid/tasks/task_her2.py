@@ -25,7 +25,7 @@ class NodeTaskHER2(NodeTaskDict):
         """
         :return: image size object storing image channels, height, width.
         """
-        return ImSize(3, 128 , 128)  # FIXME should be in sync with transforms
+        return ImSize(3,32 , 32)  # FIXME should be in sync with transforms
 
     def get_list_domains(self):
         """
@@ -60,14 +60,14 @@ class NodeTaskHER2(NodeTaskDict):
         # std = [0.1800, 0.1980, 0.2070]
 
 
-        trans = transforms.Compose([transforms.Resize((128, 128)),
+        trans = transforms.Compose([transforms.Resize((32, 32)),
                                     transforms.RandomHorizontalFlip(),
                                     transforms.RandomVerticalFlip(),
                                     transforms.RandomAutocontrast(0.25),
                                     transforms.RandomAdjustSharpness(2, 0.25),
                                     transforms.ToTensor()])
 
-        dset = DsetHER2(ind_global, args.dpath, args.d_dim, args.path_to_domain, transform=trans)
+        dset = DsetHER2(ind_global, args.dpath, args.d_dim, args.inject_var, transform=trans)
         train_set = dset
         val_set = dset
         # split dset into training and validation sets

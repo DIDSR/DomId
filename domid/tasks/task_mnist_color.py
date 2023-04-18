@@ -1,15 +1,17 @@
 """
 Color MNIST with palette
 """
-from torch.utils.data import random_split
-from torchvision import transforms
 
-from domainlab.dsets.dset_mnist_color_solo_default import \
-    DsetMNISTColorSoloDefault
 from domainlab.dsets.utils_color_palette import default_rgb_palette  # @FIXME
 from domainlab.tasks.b_task import NodeTaskDict
 from domainlab.tasks.utils_task import ImSize
 from domainlab.utils.utils_classif import mk_dummy_label_list_str
+from torch.utils.data import random_split
+from torchvision import transforms
+
+# from domainlab.dsets.dset_mnist_color_solo_default import \
+#     DsetMNISTColorSoloDefault
+from domid.dsets.dset_mnist_color_solo_default import DsetMNISTColorSoloDefault
 
 
 class NodeTaskMNISTColor10(NodeTaskDict):
@@ -51,9 +53,12 @@ class NodeTaskMNISTColor10(NodeTaskDict):
         # be evaluated in if statement, in which case, no validation
         # set will be created. Otherwise, this argument is
         # the split ratio
+
         ind_global = self.get_list_domains().index(na_domain)
         trans = [transforms.Resize((32, 32))]
-        dset = DsetMNISTColorSoloDefault(ind_global, args.dpath, list_transforms=trans)
+
+        dset = DsetMNISTColorSoloDefault(ind_global, args.dpath, inject_variable=args.inject_var,list_transforms=trans, args = args)
+
         train_set = dset
         val_set = dset
         # split dset into training and test

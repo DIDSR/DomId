@@ -85,6 +85,9 @@ from sklearn.metrics import confusion_matrix
 
 class PerfCluster(PerfClassif):
     """Clustering Performance"""
+    def __init__(self,  num_classes):
+        super().__init__()
+        self.cost = np.zeros((num_classes, num_classes), dtype="int")
 
     @classmethod
     def cal_acc(cls, model, loader_te, device, max_batches=None):

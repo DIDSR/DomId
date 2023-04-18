@@ -15,8 +15,9 @@
 # Incase the project was not installed
 import os
 import sys
-import sphinx_material
 from datetime import datetime
+
+import sphinx_material
 
 sys.path.insert(0, os.path.abspath(".."))
 sys.path.insert(0, os.path.abspath("../DomainLab"))
