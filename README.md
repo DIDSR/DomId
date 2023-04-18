@@ -8,16 +8,12 @@ Deep unsupervised clustering algorithms for domain identification.
 
 0. Prerequisites:
     - This Python package uses [Poetry](https://python-poetry.org/) for dependency management and various package development workflows. To install Poetry see: <https://python-poetry.org/docs/#installation>.
-    - A workflow without Poetry is also possible, but it is currently not recommended. For a workflow without Poetry, dependencies can be installed from the `requirements.txt` files in the `DomId` and `DomainLab` folders. Note that in order to run `DomId` without installation via Poetry, you also will have to manually add `DomainLab` to the python path.
+    - A workflow without Poetry is also possible, but it is currently not recommended. For a workflow without Poetry, dependencies can be installed from the `requirements.txt` file.
 1. Clone this repository, e.g.,
 ```
 git clone https://github.com/agisga/DomId.git
 ```
-2. Set up the [DomainLab](https://github.com/marrlab/DomainLab) submodule:
-    - Enter the `DomId` directory, then run the following commands.
-    - `git submodule init`
-    - `git submodule update` to fetch all the data from DomainLab and check out the appropriate commit listed in DomId configuration.
-3. Install `DomId` and `DomainLab` packages as well as all dependencies with:
+3. Install the `DomId` package and all its dependencies with:
 ```
 poetry install
 ```
@@ -103,6 +99,14 @@ clustering validation acc:  0.7568333333333334
  [  0   0   0   0   0   0   0   0   0 341]]
 ```
 
+### DEC model
+To apply a DEC model, that is described in the paper [Xie et al 2017], to MNIST dataset:
+
+``` 
+poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 5 6 7 8 9 --task=mnist10 --debug --epos=20 --pre_tr=10 --aname=dec --zd_dim=50 --d_dim=10 --apath=domid/algos/builder_dec.py --model cnn
+```
+Note: there is no conditioning on the labels in the DEC model.
+
 
 ### Custom datasets
 
@@ -112,21 +116,44 @@ To apply a deep clustering model, such as VaDE, to a custom (e.g., your own) dat
 poetry run python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --debug --epos=30 --aname=vade --zd_dim=250 --d_dim=3 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=10 --dpath "/path/to/HER2/combined_train" --split 0.8 --bs 2 --lr 0.00005 --prio Gaus --model cnn
 ```
 
-### CVaDE model
+### CDVaDE model
 
-The Conditional VaDE model (CVaDE) has been proposed in [Sidulova et al. 2023].
+The Conditionally Decoded VaDE model (CDVaDE) has been proposed in [Sidulova et al. 2023].
 
 *[Sidulova et al. 2023]* Sidulova, Sun, Gossmann, "DEEP UNSUPERVISED CLUSTERING FOR CONDITIONAL IDENTIFICATION OF SUBGROUPS WITHIN A DIGITAL PATHOLOGY IMAGE SET," in review, 2023.
 
 #### Training CVaDE:
+In order to train the CVaDE model, the following command can be used:
 
-- Additional labels (for example previously predicted cluster assignments or known subgroups) that are going to be passed as a conditions should be stored in a `domain_labels.txt` file, and the command line arguments `--path_to_domain` and `--dim_inject_y` should be specified when executing the CVaDE model. Note that the dimensionality of the injected label should correspond to the number of domains in `domain_label.txt`. Note: only one label can be injected per experiment in this way.
-- According to the command line, the pytorch dataset object / data generator will return appropriate additional labels, and in the training process those labels are going to be concatinated to the decoder input.
-- Furthermore, the y label specified in the pytorch dataset class is injected, either as the only conditioning variable or in addition to the labels from `domain_labels.txt`, if `--path_to_domain` and `--dim_inject_y` are set appropriately. That is, two types of "labels" can be passed to the model at the same time to condition the clustering process.
-- Example command line calls are given in `README_paper.md` in this code repository.
+
+- Generate csv file for the dataset, with the following columns: `image_id`, `label`, `domain_label`.
+The `image_id` column should contain the path to the image, the `label` column should contain the label of the image, 
+and the `domain_label` column should contain the domain label of the image. The `domain_label` column is optional,
+and if it is not present, the CVaDE model will be trained without domain labels. 
+Note: that the name of the columns could be different, but the values can only be integers. 
+- The csv file should be stored in the root `data` directory (same as `zd_path`).
+
+- If csv file is in a differente directory the path can be specified in the `--csv_file` command line argument.
+- Injected variable and the dimentions of the injected variable should be specified in the `--inject_var` and `--dim_inject_y` command line argument.
+- The `--inject_var` argument should be a string matching the name of one of the columns in the generated dataframe. 
+- The `--dim_inject_y` argument should be an integer specifying the number of unique values in the column specified in the `--inject_var` argument.
+
+For example, to train the CVaDE model on the Color-MNIST dataset with injection of color labels, the following command can be used:
+
+```
+poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 --task=mnistcolor10 --epos=20 --aname=vade --zd_dim=20 --d_dim=5 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=9 --bs 2 --lr 0.00005 --split 0.8 --prior Gaus --model cnn --inject_var "color" --dim_inject_y 5
+
+```
+For color-MNIST csv file is generated automatically in the `a_dset_mnist_color_rgb_solo.py`. 
+For other datasets, the csv file should be generated manually. 
+
+Assuming that there is a generated csv for HER2 dataset in the `"../HER2/combined_train/"` (note: the code for generating csv for HER2 can be found in `dset` folder), CDVaDE can be trained with the following command:
+The injected variable is the class of the image, and the number of unique values in the class column is 3.
+```
+poetry run python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --epos=20 --aname=vade --zd_dim=20 --d_dim=3 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=9 --bs 2 --lr 0.00005 --split 0.8 --prior Gaus --model cnn --inject_var "class" --dim_inject_y 3 --dpath "../HER2/combined_train/"
+```
 
 ### Simultaneous unsupervised clustering and supervised classification
-
 #### M2YD model
 
 The M2YD model is a rather simple (toy) DL model implemented in `DomId`, that simultaneously performs a supervised classification task (e.g., digit labels in color-MNIST) and an unsupervised clustering task (e.g., cluster the colors in color-MNIST).

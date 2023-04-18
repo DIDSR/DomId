@@ -1,5 +1,6 @@
 import torch
 import torch.utils.data
+
 from domid.arg_parser import mk_parser_main
 from domid.models.model_m2yd import ModelXY2D
 from domid.models.model_vade import ModelVaDE

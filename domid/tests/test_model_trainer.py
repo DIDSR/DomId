@@ -1,5 +1,3 @@
-import os
-import random
 
 from domid.algos.builder_vade import NodeAlgoBuilderVaDE
 from domid.algos.observers.b_obvisitor_clustering_only import \
@@ -8,7 +6,7 @@ from domid.arg_parser import mk_parser_main
 from domid.compos.exp.exp_main import Exp
 from domid.models.model_vade import ModelVaDE
 from domid.tasks.task_mnist import NodeTaskMNIST
-from domid.trainers.trainer_vade import TrainerVADE
+from domid.trainers.trainer_cluster import TrainerCluster
 
 
 def experiment_train(args):
@@ -347,59 +345,61 @@ def test_MNIST_conditionalOne_train():
             "0",
             "--dim_inject_y",
             "10",
+            "--inject_var",
+            "digit"
         ]
     )
     experiment_train(args)
 
 
-def test_MNIST_conditional_train():
-    # create a text file filled with 0s, 1s, and 2s
-    with open("domid/tests/domain_labels.txt", "w") as f:
-        for i in range(14897):
-            fake_label = random.randint(0, 3)
-            f.write(str(fake_label) + "\n")
-
-    parser = mk_parser_main()
-    args = parser.parse_args(
-        [
-            "--te_d",
-            "7",
-            "--tr_d",
-            "0",
-            "1",
-            "2",
-            "--zd_dim",
-            "5",
-            "--d_dim",
-            "3",
-            "--dpath",
-            "zout",
-            "--task",
-            "mnist",
-            "--aname",
-            "vade",
-            "--apath",
-            "domid/algos/builder_vade.py",
-            "--bs",
-            "2",
-            "--split",
-            "0.8",
-            "--L",
-            "5",
-            "--debug",
-            "--nocu",
-            "--model",
-            "cnn",
-            "--prior",
-            "Gaus",
-            "--pre_tr",
-            "0",
-            "--dim_inject_y",
-            "13",
-            "--path_to_domain",
-            "domid/tests/",
-        ]
-    )
-    experiment_train(args)
-    # remove the file after the test
-    os.remove("domid/tests/domain_labels.txt")
+# def test_MNIST_conditional_train():
+#     # create a text file filled with 0s, 1s, and 2s
+#     with open("domid/tests/domain_labels.txt", "w") as f:
+#         for i in range(14897):
+#             fake_label = random.randint(0, 3)
+#             f.write(str(fake_label) + "\n")
+#
+#     parser = mk_parser_main()
+#     args = parser.parse_args(
+#         [
+#             "--te_d",
+#             "7",
+#             "--tr_d",
+#             "0",
+#             "1",
+#             "2",
+#             "--zd_dim",
+#             "5",
+#             "--d_dim",
+#             "3",
+#             "--dpath",
+#             "zout",
+#             "--task",
+#             "mnist",
+#             "--aname",
+#             "vade",
+#             "--apath",
+#             "domid/algos/builder_vade.py",
+#             "--bs",
+#             "2",
+#             "--split",
+#             "0.8",
+#             "--L",
+#             "5",
+#             "--debug",
+#             "--nocu",
+#             "--model",
+#             "cnn",
+#             "--prior",
+#             "Gaus",
+#             "--pre_tr",
+#             "0",
+#             "--dim_inject_y",
+#             "13",
+#             "--path_to_domain",
+#             "domid/tests/",
+#         ]
+#     )
+#     experiment_train(args)
+#     # remove the file after the test
+#     os.remove("domid/tests/domain_labels.txt")
