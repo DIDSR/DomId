@@ -1,10 +1,7 @@
-domid.tasks package
+Tasks for the Datasets
 ===================
 
-Submodules
-----------
-
-domid.tasks.task\_her2 module
+HER2 task (pathology dataset)
 -----------------------------
 
 .. automodule:: domid.tasks.task_her2
@@ -12,7 +9,7 @@ domid.tasks.task\_her2 module
    :undoc-members:
    :show-inheritance:
 
-domid.tasks.task\_mnist module
+MNIST task
 ------------------------------
 
 .. automodule:: domid.tasks.task_mnist
@@ -20,7 +17,7 @@ domid.tasks.task\_mnist module
    :undoc-members:
    :show-inheritance:
 
-domid.tasks.task\_mnist\_color module
+Colored MNIST Task
 -------------------------------------
 
 .. automodule:: domid.tasks.task_mnist_color
@@ -28,7 +25,7 @@ domid.tasks.task\_mnist\_color module
    :undoc-members:
    :show-inheritance:
 
-domid.tasks.zoo\_tasks module
+Custom task
 -----------------------------
 
 .. automodule:: domid.tasks.zoo_tasks
@@ -36,10 +33,3 @@ domid.tasks.zoo\_tasks module
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
-
-.. automodule:: domid.tasks
-   :members:
-   :undoc-members:
-   :show-inheritance:

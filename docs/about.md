@@ -29,4 +29,18 @@ a statistical measure called the Evidence Lower Bound (ELBO).
 arXiv preprint arXiv:1611.05148 (2016).(https://arxiv.org/abs/1611.05148)
 
 [2] Kingma, Diederik P., and Max Welling. "Auto-encoding variational bayes." arXiv preprint arXiv:1312.6114 (2013) (https://arxiv.org/abs/1312.6114) 
+
+
+# CDVaDE Model  Summary 
+ In this package, we also present the CDVaDE model as an expansion to VaDE, referred to as the Conditionally Decoded 
+ Variational Deep Embedding. CDVaDE's generative process is different from VaDE's because it combines extra variables 
+***y*** with the latent representation ***z***. These variables may include class labels or existing subgroup structures 
+ that do not need to be identified. It is expected that these additional variables ***y*** are accessible during both
+ training and testing.
+# DEC Model Summary 
+Deep embedding clustering is a method of unsupervised learning that combines deep neural networks with clustering 
+techniques to discover latent representations of data points. The implementation in this package is aimed to compare
+another state-of-the-art clustering algorithms to the novel CDVaDE one. DEC involves first training a deep neural 
+network to learn a low-dimensional representation of the data, and then using clustering algorithms to group similar 
+data points based on their embeddings. 
 # M2YD Model Summary

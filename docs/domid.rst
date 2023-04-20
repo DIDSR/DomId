@@ -27,10 +27,3 @@ domid.arg\_parser module
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
-
-.. automodule:: domid
-   :members:
-   :undoc-members:
-   :show-inheritance:

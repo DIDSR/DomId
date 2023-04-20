@@ -1,9 +1,6 @@
 domid.tests package
 ===================
 
-Submodules
-----------
-
 domid.tests.test\_domid module
 ------------------------------
 
