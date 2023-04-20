@@ -1,3 +1,5 @@
+The commit hash for the miccai code is: ```f6b98c9fe90f751eedc4bde9672ac68287146126```
+
 
 # HER2 experiments
 ```

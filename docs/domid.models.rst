@@ -1,10 +1,7 @@
-domid.models package
-====================
+Models
+======
 
-Submodules
-----------
-
-domid.models.model\_m2yd module
+m2yd Model
 -------------------------------
 
 .. automodule:: domid.models.model_m2yd
@@ -12,7 +9,7 @@ domid.models.model\_m2yd module
    :undoc-members:
    :show-inheritance:
 
-domid.models.model\_vade module
+VaDE Model and CDVADE Model
 -------------------------------
 
 .. automodule:: domid.models.model_vade
@@ -20,10 +17,11 @@ domid.models.model\_vade module
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
+DEC Model
+-------------------------------
 
-.. automodule:: domid.models
+.. automodule:: domid.models.model_dec
    :members:
    :undoc-members:
    :show-inheritance:
+
