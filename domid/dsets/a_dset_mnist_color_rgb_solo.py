@@ -37,7 +37,7 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
 
     @store_args
     def __init__(self, ind_color, path,
-                 subset_step=1, #100,
+                 subset_step=100,
                  color_scheme="both",
                  label_transform=mk_fun_label2onehot(10),
                  list_transforms=None,
