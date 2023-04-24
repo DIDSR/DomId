@@ -16,12 +16,10 @@ About DomId
 
 The goal of this Python package is to provide a PyTorch-based platform for deep unsupervised clustering and domain identification.
 
-Currently most implemented models are based on the Variational Deep Embedding (VaDE) model, Conditionally Decoded Variational Deep Embedding (CDVaDE) and Deep Embedding Clustering (DEC) and other types of deep clustering models will be added in the future.
-VaDE is trained to learn lower-dimensional representations of images based on a Mixture-of-Gaussians latent space prior distribution while optimizing cluster assignments.
-Examples on multiple datasets are presented at: :doc:`readme_link`.
+Currently implemented models include the Variational Deep Embedding (VaDE) model, Conditionally Decoded Variational Deep Embedding (CDVaDE), Deep Embedding Clustering (DEC). Other deep clustering models will be added in the future.
+For additioonal information see the sections below.
+For basic usage examples see: :doc:`readme_link`.
 
-CDVaDE is an extedended version VaDE model, where decoder part of the model is conditioned on certain variable sassociated with the input.
-To compare performance of VaDE and CDVaDe model, this package also includes state-of-the-art clustering model.
 
 .. toctree::
    :maxdepth: 1
@@ -69,7 +67,7 @@ As the pretraining, training, and performance evaluation metrics are specific to
 Training a Model
 =================
 
-The training process for the model is divided into two components:  Builder, Observer and Trainer.
+The training process for the model is divided into three components:  Builder, Observer and Trainer.
 Builder defines the model architecture and the task that is going to be used for the experiement.
 The Observer is responsible for logging the training and validation losses and metrics, while the Trainer focuses on training the model itself.
 The Observer defines the training and validation losses and metrics, while the Trainer saves the model and experiment results . For more information, please refer to the details provided bel0ow.
