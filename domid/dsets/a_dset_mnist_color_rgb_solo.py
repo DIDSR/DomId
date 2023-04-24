@@ -18,10 +18,9 @@ from torchvision import datasets, transforms
 class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
     """
     Color MNIST with single color
-    1. nominal domains: color palettes/range/spectrum
-    2. subdomains: color(foreground, background)
-    3. structure: each subdomain contains a combination of
-    foreground+background color
+        1. nominal domains: color palettes/range/spectrum
+        2. subdomains: color(foreground, background)
+        3. structure: each subdomain contains a combination of foreground+background color
     """
     @abc.abstractmethod
     def get_foreground_color(self, ind):
@@ -48,13 +47,12 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
         :param ind_color: index of a color palette
         :param path: disk storage directory
         :param color_scheme:
-            num(paint according to number),
-            back(only paint background)
+            num (paint according to number),
+            back (only paint background),
             both (background and foreground)
         :param list_transforms: torch transformations
         :param raw_split: default use the training part of mnist
-        :param flag_rand_color: flag if to randomly paint each image
-        (depreciated)
+        :param flag_rand_color: flag if to randomly paint each image (depreciated)
         :param label_transform:  e.g. index to one hot vector
         """
         dpath = os.path.normpath(path)

@@ -4,6 +4,14 @@ domid.algos package
 Submodules
 ----------
 
+domid.algos.builder\_dec module
+-------------------------------
+
+.. automodule:: domid.algos.builder_dec
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 domid.algos.builder\_m2yd module
 --------------------------------
 

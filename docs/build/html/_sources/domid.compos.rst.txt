@@ -4,6 +4,14 @@ domid.compos package
 Submodules
 ----------
 
+domid.compos.DEC\_clustering\_layer module
+------------------------------------------
+
+.. automodule:: domid.compos.DEC_clustering_layer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 domid.compos.VAE\_blocks module
 -------------------------------
 

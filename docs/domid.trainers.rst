@@ -1,23 +1,29 @@
-Trainers
+domid.trainers package
 ======================
 
+Submodules
+----------
 
-Pretraining
----------------------------------------
-For the VaDE, CDVaDE, and DEC models, pretraining involves initializing the models with an MSE loss function during the first few epochs.
-In addition, a Gaussian mixture model is used to initialize the clusters.
+domid.trainers.pretraining\_GMM module
+--------------------------------------
 
-.. automodule:: domid.trainers.pretraining_vade
+.. automodule:: domid.trainers.pretraining_GMM
    :members:
    :undoc-members:
    :show-inheritance:
 
-Trainer (one epoch)
------------------------------------
-The trainer is designed to run for a single epoch of the training process, during which the model's loss is computed, the neural network's weights are updated, and the outcomes are recorded.
+domid.trainers.trainer\_cluster module
+--------------------------------------
 
-.. automodule:: domid.trainers.trainer_vade
+.. automodule:: domid.trainers.trainer_cluster
    :members:
    :undoc-members:
    :show-inheritance:
 
+Module contents
+---------------
+
+.. automodule:: domid.trainers
+   :members:
+   :undoc-members:
+   :show-inheritance:

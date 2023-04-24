@@ -308,8 +308,6 @@
         </li>
         <li class="md-nav__item"><a href="#training-a-model" class="md-nav__link">Training a Model</a>
         </li>
-        <li class="md-nav__item"><a href="#indices-and-tables" class="md-nav__link">Indices and tables</a>
-        </li>
   </ul>
 </nav>
               </div>
@@ -327,7 +325,9 @@
 <section id="about-domid">
 <h1 id="about-domid">About DomId<a class="headerlink" href="#about-domid" title="Permalink to this heading">¶</a></h1>
 <p>The goal of this Python package is to provide a PyTorch-based platform for deep unsupervised clustering and domain identification.</p>
-<p>Currently most implemented models are based on the Variational Deep Embedding (VaDE) model, but other types of deep clustering models will be added in the future. VaDE is trained to learn lower-dimensional representations of images based on a Mixture-of-Gaussians latent space prior distribution while optimizing cluster assignments. Examples on multiple datasets are presented at: <a class="reference internal" href="readme_link.html"><span class="doc">Introduction</span></a>.</p>
+<p>Currently implemented models include the Variational Deep Embedding (VaDE) model, Conditionally Decoded Variational Deep Embedding (CDVaDE), Deep Embedding Clustering (DEC). Other deep clustering models will be added in the future.
+For additioonal information see the sections below.
+For basic usage examples see: <a class="reference internal" href="readme_link.html"><span class="doc">Introduction</span></a>.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">More information about the models</span></p>
 <ul>
@@ -354,12 +354,14 @@
 </section>
 <section id="composition-and-defining-a-model">
 <h1 id="composition-and-defining-a-model">Composition and Defining a Model<a class="headerlink" href="#composition-and-defining-a-model" title="Permalink to this heading">¶</a></h1>
-<p>Model is built from the building blocks in domid/compos directory. However, the model for the experiment is defined in the domid/models. For more details, see below.</p>
+<p>The detailed architecture of the linear and convolution encoders and decoders can be found in the compos directory, which served as the building blocks for the model. However, it’s important to note that the specific clustering implementations of the models are defined in the domid/models directory. For further information, please refer to the details below…
+As the pretraining, training, and performance evaluation metrics are specific to each model, they have been defined in their respective model modules.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Models</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="domid.compos.html">domid.compos package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="domid.compos.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domid.compos.html#module-domid.compos.DEC_clustering_layer">domid.compos.DEC_clustering_layer module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.compos.html#module-domid.compos.VAE_blocks">domid.compos.VAE_blocks module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.compos.html#module-domid.compos.cnn_VAE">domid.compos.cnn_VAE module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.compos.html#module-domid.compos.linear_VAE">domid.compos.linear_VAE module</a></li>
@@ -372,6 +374,8 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="domid.models.html">domid.models package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="domid.models.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domid.models.html#module-domid.models.a_model_cluster">domid.models.a_model_cluster module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domid.models.html#module-domid.models.model_dec">domid.models.model_dec module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.models.html#module-domid.models.model_m2yd">domid.models.model_m2yd module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.models.html#module-domid.models.model_vade">domid.models.model_vade module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.models.html#module-domid.models">Module contents</a></li>
@@ -382,12 +386,16 @@
 </section>
 <section id="training-a-model">
 <h1 id="training-a-model">Training a Model<a class="headerlink" href="#training-a-model" title="Permalink to this heading">¶</a></h1>
-<p>Training of the model consists of Observer and Trainer.</p>
+<p>The training process for the model is divided into three components:  Builder, Observer and Trainer.
+Builder defines the model architecture and the task that is going to be used for the experiement.
+The Observer is responsible for logging the training and validation losses and metrics, while the Trainer focuses on training the model itself.
+The Observer defines the training and validation losses and metrics, while the Trainer saves the model and experiment results . For more information, please refer to the details provided bel0ow.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Training a Model</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="domid.algos.html">domid.algos package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="domid.algos.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domid.algos.html#module-domid.algos.builder_dec">domid.algos.builder_dec module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.algos.html#module-domid.algos.builder_m2yd">domid.algos.builder_m2yd module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.algos.html#module-domid.algos.builder_vade">domid.algos.builder_vade module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.algos.html#module-domid.algos">Module contents</a></li>
@@ -395,21 +403,13 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="domid.trainers.html">domid.trainers package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="domid.trainers.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="domid.trainers.html#module-domid.trainers.pretraining_vade">domid.trainers.pretraining_vade module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="domid.trainers.html#module-domid.trainers.trainer_vade">domid.trainers.trainer_vade module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domid.trainers.html#module-domid.trainers.pretraining_GMM">domid.trainers.pretraining_GMM module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domid.trainers.html#module-domid.trainers.trainer_cluster">domid.trainers.trainer_cluster module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.trainers.html#module-domid.trainers">Module contents</a></li>
 </ul>
 </li>
 </ul>
 </div>
-</section>
-<section id="indices-and-tables">
-<h1 id="indices-and-tables">Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading">¶</a></h1>
-<ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
-</ul>
 </section>
 
 

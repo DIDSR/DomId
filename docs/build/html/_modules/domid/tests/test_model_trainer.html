@@ -297,9 +297,7 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <h1 id="modules-domid-tests-test-model-trainer--page-root">Source code for domid.tests.test_model_trainer</h1><div class="highlight"><pre>
-<span></span>import os
-import random
-
+<span></span>
 from domid.algos.builder_vade import NodeAlgoBuilderVaDE
 from domid.algos.observers.b_obvisitor_clustering_only import \
     ObVisitorClusteringOnly
@@ -307,7 +305,7 @@ from domid.arg_parser import mk_parser_main
 from domid.compos.exp.exp_main import Exp
 from domid.models.model_vade import ModelVaDE
 from domid.tasks.task_mnist import NodeTaskMNIST
-from domid.trainers.trainer_vade import TrainerVADE
+from domid.trainers.trainer_cluster import TrainerCluster
 
 
 <div class="viewcode-block" id="experiment_train"><a class="viewcode-back" href="../../../domid.tests.html#domid.tests.test_model_trainer.experiment_train">[docs]</a>def experiment_train(args):
@@ -646,62 +644,64 @@ from domid.trainers.trainer_vade import TrainerVADE
             "0",
             "--dim_inject_y",
             "10",
+            "--inject_var",
+            "digit"
         ]
     )
     experiment_train(args)</div>
 
 
-<div class="viewcode-block" id="test_MNIST_conditional_train"><a class="viewcode-back" href="../../../domid.tests.html#domid.tests.test_model_trainer.test_MNIST_conditional_train">[docs]</a>def test_MNIST_conditional_train():
-    # create a text file filled with 0s, 1s, and 2s
-    with open("domid/tests/domain_labels.txt", "w") as f:
-        for i in range(14897):
-            fake_label = random.randint(0, 3)
-            f.write(str(fake_label) + "\n")
-
-    parser = mk_parser_main()
-    args = parser.parse_args(
-        [
-            "--te_d",
-            "7",
-            "--tr_d",
-            "0",
-            "1",
-            "2",
-            "--zd_dim",
-            "5",
-            "--d_dim",
-            "3",
-            "--dpath",
-            "zout",
-            "--task",
-            "mnist",
-            "--aname",
-            "vade",
-            "--apath",
-            "domid/algos/builder_vade.py",
-            "--bs",
-            "2",
-            "--split",
-            "0.8",
-            "--L",
-            "5",
-            "--debug",
-            "--nocu",
-            "--model",
-            "cnn",
-            "--prior",
-            "Gaus",
-            "--pre_tr",
-            "0",
-            "--dim_inject_y",
-            "13",
-            "--path_to_domain",
-            "domid/tests/",
-        ]
-    )
-    experiment_train(args)
-    # remove the file after the test
-    os.remove("domid/tests/domain_labels.txt")</div>
+# def test_MNIST_conditional_train():
+#     # create a text file filled with 0s, 1s, and 2s
+#     with open("domid/tests/domain_labels.txt", "w") as f:
+#         for i in range(14897):
+#             fake_label = random.randint(0, 3)
+#             f.write(str(fake_label) + "\n")
+#
+#     parser = mk_parser_main()
+#     args = parser.parse_args(
+#         [
+#             "--te_d",
+#             "7",
+#             "--tr_d",
+#             "0",
+#             "1",
+#             "2",
+#             "--zd_dim",
+#             "5",
+#             "--d_dim",
+#             "3",
+#             "--dpath",
+#             "zout",
+#             "--task",
+#             "mnist",
+#             "--aname",
+#             "vade",
+#             "--apath",
+#             "domid/algos/builder_vade.py",
+#             "--bs",
+#             "2",
+#             "--split",
+#             "0.8",
+#             "--L",
+#             "5",
+#             "--debug",
+#             "--nocu",
+#             "--model",
+#             "cnn",
+#             "--prior",
+#             "Gaus",
+#             "--pre_tr",
+#             "0",
+#             "--dim_inject_y",
+#             "13",
+#             "--path_to_domain",
+#             "domid/tests/",
+#         ]
+#     )
+#     experiment_train(args)
+#     # remove the file after the test
+#     os.remove("domid/tests/domain_labels.txt")
 </pre></div>
 
           </article>

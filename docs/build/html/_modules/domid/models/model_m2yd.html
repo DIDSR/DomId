@@ -402,7 +402,7 @@ from domid.compos.nn_net import Net_MNIST
         q_zd, zd_q = self.infer_domain(feat_y_x)
         return q_zd, zd_q, y_hat_logit</div>
 
-<div class="viewcode-block" id="ModelXY2D.cal_loss"><a class="viewcode-back" href="../../../domid.models.html#domid.models.model_m2yd.ModelXY2D.cal_loss">[docs]</a>    def cal_loss(self, x, y, d=None):
+<div class="viewcode-block" id="ModelXY2D.cal_loss"><a class="viewcode-back" href="../../../domid.models.html#domid.models.model_m2yd.ModelXY2D.cal_loss">[docs]</a>    def cal_loss(self, x, y, d=None, others=None):
         q_zd, zd_q, y_hat = self.forward(x, y)
         z_con = torch.cat((zd_q, y), dim=1)  # FIXME: pay attention to order
 

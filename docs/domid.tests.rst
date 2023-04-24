@@ -1,6 +1,9 @@
 domid.tests package
 ===================
 
+Submodules
+----------
+
 domid.tests.test\_domid module
 ------------------------------
 
@@ -13,6 +16,14 @@ domid.tests.test\_losses module
 -------------------------------
 
 .. automodule:: domid.tests.test_losses
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+domid.tests.test\_mnist\_dataset module
+---------------------------------------
+
+.. automodule:: domid.tests.test_mnist_dataset
    :members:
    :undoc-members:
    :show-inheritance:
