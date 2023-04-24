@@ -384,6 +384,9 @@ from sklearn.metrics import confusion_matrix
 
 <div class="viewcode-block" id="PerfCluster"><a class="viewcode-back" href="../../../domid.utils.html#domid.utils.perf_cluster.PerfCluster">[docs]</a>class PerfCluster(PerfClassif):
     """Clustering Performance"""
+<div class="viewcode-block" id="PerfCluster.__init__"><a class="viewcode-back" href="../../../domid.utils.html#domid.utils.perf_cluster.PerfCluster.__init__">[docs]</a>    def __init__(self,  num_classes):
+        super().__init__()
+        self.cost = np.zeros((num_classes, num_classes), dtype="int")</div>
 
 <div class="viewcode-block" id="PerfCluster.cal_acc"><a class="viewcode-back" href="../../../domid.utils.html#domid.utils.perf_cluster.PerfCluster.cal_acc">[docs]</a>    @classmethod
     def cal_acc(cls, model, loader_te, device, max_batches=None):

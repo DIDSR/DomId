@@ -23,10 +23,38 @@ Thus, the trained decoder CNN can also be used to generate synthetic images from
 VaDE is optimized using Stochastic Gradient Variational Bayes cite{kingmaAutoEncodingVariationalBayes2013} to maximize
 a statistical measure called the Evidence Lower Bound (ELBO).
 
+
+# CDVaDE Model  Summary 
+
+In this package, we also implement the Conditionally Decoded Variational Deep Embedding (CDVaDE) model [4] as an expansion to VaDE.
+CDVaDE's generative process is different from VaDE's because it combines extra variables 
+***y*** with the latent representation ***z***, as shown in the Figure below.
+These variables may include class labels or existing subgroup structures 
+that do not need to be identified by the clustering algorithm.
+It is expected that these additional variables ***y*** are accessible during both
+ training and testing.
+
 ![methods.png](methods.png)
 
-[1] Jiang, Zhuxi, et al. "Variational deep embedding: An unsupervised and generative approach to clustering." 
-arXiv preprint arXiv:1611.05148 (2016).(https://arxiv.org/abs/1611.05148)
+# DEC Model Summary 
 
-[2] Kingma, Diederik P., and Max Welling. "Auto-encoding variational bayes." arXiv preprint arXiv:1312.6114 (2013) (https://arxiv.org/abs/1312.6114) 
+Deep Embedding Clustering (DEC) [3] is a method of unsupervised learning that combines deep neural networks with clustering 
+techniques to discover latent representations of data points.
+DEC involves training a deep neural 
+network to learn a lower-dimensional representation of the data, and simultaneously optimizing a clustering loss function to group similar 
+data points based on their embeddings. 
+
 # M2YD Model Summary
+
+The M2YD model is implemented as an experimental method, which combines an unsupervised VAE-based clustering neural network with simultaneous training of a neural network for a supervised classification task.
+At the current stage, the method/model is purely experimental (with limited validation), and thus not recommended for practical use, unless you know exactly what you are doing.
+
+# References
+
+[1] Jiang, Zhuxi, et al. "Variational deep embedding: An unsupervised and generative approach to clustering." IJCAI 2017. (<https://arxiv.org/abs/1611.05148>)
+
+[2] Kingma, and Welling. "Auto-encoding variational bayes." ICLR 2013. (<https://arxiv.org/abs/1312.6114>) 
+
+[3] Xie, Girshick, Farhadi. "Unsupervised Deep Embedding for Clustering Analysis" (2016) (<http://arxiv.org/abs/1511.06335>)
+
+[4] Sidulova, Sun, Gossmann, "Deep unsupervised clustering for conditional identification of subgroups within a digital pathology image set," in review, 2023.

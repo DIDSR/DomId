@@ -551,9 +551,8 @@ rest will be used as validation set.
 <dt class="sig sig-object py" id="domid.tasks.task_mnist.NodeTaskMNIST">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">domid.tasks.task_mnist.</span></span><span class="sig-name descname"><span class="pre">NodeTaskMNIST</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">succ</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tasks/task_mnist.html#NodeTaskMNIST"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tasks.task_mnist.NodeTaskMNIST" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">NodeTaskMNISTColor10</span></code></p>
-<p>Basic MNIST task where the digits are considered “domains”
-Based on NodeTaskMNISTColor10 from DomainLab.
-The digits (0, 1, …, 9) are regarded as domains (to be separated by unsupervised clustering).</p>
+<p>Basic MNIST task where the digits are considered “domains”</p>
+<p>The digits (0, 1, …, 9) are regarded as domains (to be separated by unsupervised clustering). Based on NodeTaskMNISTColor10 from DomainLab.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="domid.tasks.task_mnist.NodeTaskMNIST.list_str_y">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">list_str_y</span></span><a class="headerlink" href="#domid.tasks.task_mnist.NodeTaskMNIST.list_str_y" title="Permalink to this definition">¶</a></dt>
@@ -588,17 +587,19 @@ The digits (0, 1, …, 9) are regarded as domains (to be separated by unsupervis
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>args</strong> – command line arguments</p></li>
 <li><p><strong>na_domain</strong> – domain name</p></li>
-<li><p><strong>split</strong> – whether a training/validation split is performed (the</p></li>
-</ul>
-</dd>
-</dl>
-<p>training split portion will be determined by args.split); for test
+<li><p><strong>split</strong> – whether a training/validation split is performed (the
+training split portion will be determined by args.split); for test
 set, no need to split; args.split: by default, split is set to be
 zero which in python can be evaluated in if statement, in which case,
 no separate validation set will be created. Otherwise, this argument
 is the percentage of the data to be used as training set, while the
-rest will be used as validation set.
-:return: training dataset, validation dataset</p>
+rest will be used as validation set.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>training dataset, validation dataset</p>
+</dd>
+</dl>
 </dd></dl>
 </dd></dl>
 <dl class="py function">

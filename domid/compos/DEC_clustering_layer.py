@@ -5,8 +5,8 @@ import torch.nn as nn
 class DECClusteringLayer(nn.Module):
     def __init__(self, n_clusters=10, hidden=10, cluster_centers=None, alpha=1.0, device = 'cpu'):
         """
-         :param n_clusters: The number of clusters.
-         :param hidden: The size of the hidden layer.
+        :param n_clusters: The number of clusters.
+        :param hidden: The size of the hidden layer.
         :param cluster_centers: The initial cluster centers.
         :param alpha: The alpha parameter for the Student's t-distribution.
         :param device: The device to use (e.g. 'cpu', 'cuda').
@@ -22,13 +22,14 @@ class DECClusteringLayer(nn.Module):
         else:
             initial_cluster_centers = cluster_centers
         self.cluster_centers = nn.Parameter(initial_cluster_centers)
+
     def forward(self, x):
         """
         Performs forward propagation on the ClusteringLayer.
         Corresponds to equation (1) from the paper.
 
-        :param x:
-        :return t_dist:The soft cluster assignments.
+        :param x: input tensor of feature representations.
+        :return t_dist: The soft cluster assignments.
         """
 
         norm_squared = torch.sum((x.unsqueeze(1) - self.cluster_centers) ** 2, 2)

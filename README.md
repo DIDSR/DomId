@@ -24,9 +24,7 @@ poetry install
 
 ### VaDE model
 
-The deep unsupervised clustering model VaDE has been proposed in [Jiang et al. 2017].
-
-*[Jiang et al. 2017]* Jiang, Zheng, Tan, Tang, and Zhou, "Variational deep embedding: An unsupervised and generative approach to clustering," in IJCAI, 2017. <http://arxiv.org/abs/1611.05148>
+The deep unsupervised clustering model VaDE has been proposed in [1].
 
 #### Applying VaDE to MNIST
 
@@ -100,7 +98,7 @@ clustering validation acc:  0.7568333333333334
 ```
 
 ### DEC model
-To apply a DEC model, that is described in the paper [Xie et al 2017], to MNIST dataset:
+To apply a DEC model, that is described in the paper [3], to MNIST dataset:
 
 ``` 
 poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 5 6 7 8 9 --task=mnist10 --debug --epos=20 --pre_tr=10 --aname=dec --zd_dim=50 --d_dim=10 --apath=domid/algos/builder_dec.py --model cnn
@@ -118,9 +116,8 @@ poetry run python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --debug --epos=3
 
 ### CDVaDE model
 
-The Conditionally Decoded VaDE model (CDVaDE) has been proposed in [Sidulova et al. 2023].
+The Conditionally Decoded VaDE model (CDVaDE) has been proposed in [4].
 
-*[Sidulova et al. 2023]* Sidulova, Sun, Gossmann, "DEEP UNSUPERVISED CLUSTERING FOR CONDITIONAL IDENTIFICATION OF SUBGROUPS WITHIN A DIGITAL PATHOLOGY IMAGE SET," in review, 2023.
 
 #### Training CVaDE:
 In order to train the CVaDE model, the following command can be used:
@@ -156,9 +153,19 @@ poetry run python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --epos=20 --anam
 ### Simultaneous unsupervised clustering and supervised classification
 #### M2YD model
 
-The M2YD model is a rather simple (toy) DL model implemented in `DomId`, that simultaneously performs a supervised classification task (e.g., digit labels in color-MNIST) and an unsupervised clustering task (e.g., cluster the colors in color-MNIST).
+The M2YD model is an experimental (toy) DL model implemented in `DomId`, that simultaneously performs a supervised classification task (e.g., digit labels in color-MNIST) and an unsupervised clustering task (e.g., cluster the colors in color-MNIST).
 Here is a basic example to run the M2YD model on the Color-MNIST dataset:
 
 ```
 poetry run python main_out.py --te_d 0 1 2 --tr_d 3 4 5 6 7 8 9 --task=mnistcolor10 --debug --epos=10 --aname=m2yd --zd_dim=7 --apath=domid/algos/builder_m2yd.py --gamma_y 1
 ```
+
+# References
+
+[1] Jiang, Zhuxi, et al. "Variational deep embedding: An unsupervised and generative approach to clustering." IJCAI 2017. (<https://arxiv.org/abs/1611.05148>)
+
+[2] Kingma, and Welling. "Auto-encoding variational bayes." ICLR 2013. (<https://arxiv.org/abs/1312.6114>) 
+
+[3] Xie, Girshick, Farhadi. "Unsupervised Deep Embedding for Clustering Analysis" (2016) (<http://arxiv.org/abs/1511.06335>)
+
+[4] Sidulova, Sun, Gossmann, "Deep unsupervised clustering for conditional identification of subgroups within a digital pathology image set," in review, 2023.

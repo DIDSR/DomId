@@ -16,7 +16,10 @@ About DomId
 
 The goal of this Python package is to provide a PyTorch-based platform for deep unsupervised clustering and domain identification.
 
-Currently most implemented models are based on the Variational Deep Embedding (VaDE) model, but other types of deep clustering models will be added in the future. VaDE is trained to learn lower-dimensional representations of images based on a Mixture-of-Gaussians latent space prior distribution while optimizing cluster assignments. Examples on multiple datasets are presented at: :doc:`readme_link`.
+Currently implemented models include the Variational Deep Embedding (VaDE) model, Conditionally Decoded Variational Deep Embedding (CDVaDE), Deep Embedding Clustering (DEC). Other deep clustering models will be added in the future.
+For additioonal information see the sections below.
+For basic usage examples see: :doc:`readme_link`.
+
 
 .. toctree::
    :maxdepth: 1
@@ -50,7 +53,8 @@ Running the code with the custom dataset entails initialization of a Task and a 
 Composition and Defining a Model
 ==================================
 
-Model is built from the building blocks in domid/compos directory. However, the model for the experiment is defined in the domid/models. For more details, see below.
+The detailed architecture of the linear and convolution encoders and decoders can be found in the compos directory, which served as the building blocks for the model. However, it's important to note that the specific clustering implementations of the models are defined in the domid/models directory. For further information, please refer to the details below...
+As the pretraining, training, and performance evaluation metrics are specific to each model, they have been defined in their respective model modules.
 
 .. toctree::
    :maxdepth: 2
@@ -63,7 +67,10 @@ Model is built from the building blocks in domid/compos directory. However, the 
 Training a Model
 =================
 
-Training of the model consists of Observer and Trainer.
+The training process for the model is divided into three components:  Builder, Observer and Trainer.
+Builder defines the model architecture and the task that is going to be used for the experiement.
+The Observer is responsible for logging the training and validation losses and metrics, while the Trainer focuses on training the model itself.
+The Observer defines the training and validation losses and metrics, while the Trainer saves the model and experiment results . For more information, please refer to the details provided bel0ow.
 
 .. toctree::
    :maxdepth: 2
@@ -72,13 +79,6 @@ Training of the model consists of Observer and Trainer.
    domid.algos
    domid.trainers
 
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
 
 
 

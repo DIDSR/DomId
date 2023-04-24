@@ -9,11 +9,9 @@ from domid.dsets.dset_mnist import DsetMNIST
 
 
 class NodeTaskMNIST(NodeTaskMNISTColor10):
-    """
-    Basic MNIST task where the digits are considered "domains"
-    Based on NodeTaskMNISTColor10 from DomainLab.
-    The digits (0, 1, ..., 9) are regarded as domains (to be separated by unsupervised clustering).
+    """Basic MNIST task where the digits are considered "domains"
 
+    The digits (0, 1, ..., 9) are regarded as domains (to be separated by unsupervised clustering). Based on NodeTaskMNISTColor10 from DomainLab.
     """
     @property
     def list_str_y(self):
@@ -43,12 +41,12 @@ class NodeTaskMNIST(NodeTaskMNISTColor10):
         :param args: command line arguments
         :param na_domain: domain name
         :param split: whether a training/validation split is performed (the
-        training split portion will be determined by args.split); for test
-        set, no need to split; args.split: by default, split is set to be
-        zero which in python can be evaluated in if statement, in which case,
-        no separate validation set will be created. Otherwise, this argument
-        is the percentage of the data to be used as training set, while the 
-        rest will be used as validation set.
+            training split portion will be determined by args.split); for test
+            set, no need to split; args.split: by default, split is set to be
+            zero which in python can be evaluated in if statement, in which case,
+            no separate validation set will be created. Otherwise, this argument
+            is the percentage of the data to be used as training set, while the 
+            rest will be used as validation set.
         :return: training dataset, validation dataset
         """
         ratio_split = float(args.split) if split else False

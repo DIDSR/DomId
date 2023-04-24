@@ -309,7 +309,7 @@ from tensorboardX import SummaryWriter
 from domid.algos.observers.b_obvisitor_clustering_only import \
     ObVisitorClusteringOnly
 from domid.models.model_vade import ModelVaDE
-from domid.trainers.trainer_vade import TrainerVADE
+from domid.trainers.trainer_cluster import TrainerCluster
 
 
 <div class="viewcode-block" id="NodeAlgoBuilderVaDE"><a class="viewcode-back" href="../../../domid.algos.html#domid.algos.builder_vade.NodeAlgoBuilderVaDE">[docs]</a>class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
@@ -340,9 +340,10 @@ from domid.trainers.trainer_vade import TrainerVADE
         observer = ObVisitorCleanUp(
             ObVisitorClusteringOnly(exp, MSelOracleVisitor(MSelTrLoss(max_es=args.es)), device))
         writer = SummaryWriter(logdir="debug/"+now)
-        trainer = TrainerVADE(model, task, observer, device, writer, pretrain = pretrain, aconf=args)
+        trainer = TrainerCluster(model, task, observer, device, writer, pretrain = pretrain, aconf=args)
 
         return trainer</div></div>
+
 
 
 <div class="viewcode-block" id="get_node_na"><a class="viewcode-back" href="../../../domid.algos.html#domid.algos.builder_vade.get_node_na">[docs]</a>def get_node_na():

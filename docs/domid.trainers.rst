@@ -4,18 +4,18 @@ domid.trainers package
 Submodules
 ----------
 
-domid.trainers.pretraining\_vade module
----------------------------------------
+domid.trainers.pretraining\_GMM module
+--------------------------------------
 
-.. automodule:: domid.trainers.pretraining_vade
+.. automodule:: domid.trainers.pretraining_GMM
    :members:
    :undoc-members:
    :show-inheritance:
 
-domid.trainers.trainer\_vade module
------------------------------------
+domid.trainers.trainer\_cluster module
+--------------------------------------
 
-.. automodule:: domid.trainers.trainer_vade
+.. automodule:: domid.trainers.trainer_cluster
    :members:
    :undoc-members:
    :show-inheritance:

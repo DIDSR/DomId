@@ -20,6 +20,14 @@ domid.tests.test\_losses module
    :undoc-members:
    :show-inheritance:
 
+domid.tests.test\_mnist\_dataset module
+---------------------------------------
+
+.. automodule:: domid.tests.test_mnist_dataset
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 domid.tests.test\_model\_builder module
 ---------------------------------------
 

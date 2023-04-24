@@ -304,9 +304,11 @@
         </li></ul>
             </nav>
         </li>
+        <li class="md-nav__item"><a href="#dec-model" class="md-nav__link">DEC model</a>
+        </li>
         <li class="md-nav__item"><a href="#custom-datasets" class="md-nav__link">Custom datasets</a>
         </li>
-        <li class="md-nav__item"><a href="#cvade-model" class="md-nav__link">CVaDE model</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#cdvade-model" class="md-nav__link">CDVaDE model</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#training-cvade" class="md-nav__link">Training CVaDE:</a>
         </li></ul>
@@ -321,6 +323,8 @@
             </nav>
         </li></ul>
             </nav>
+        </li>
+        <li class="md-nav__item"><a href="#references" class="md-nav__link">References</a>
         </li></ul>
             </nav>
         </li>
@@ -345,7 +349,7 @@
 <li><p>Prerequisites:</p>
 <ul class="simple">
 <li><p>This Python package uses <a class="reference external" href="https://python-poetry.org/">Poetry</a> for dependency management and various package development workflows. To install Poetry see: <a class="reference external" href="https://python-poetry.org/docs/#installation">https://python-poetry.org/docs/#installation</a>.</p></li>
-<li><p>A workflow without Poetry is also possible, but it is currently not recommended. For a workflow without Poetry, dependencies can be installed from the <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> files in the <code class="docutils literal notranslate"><span class="pre">DomId</span></code> and <code class="docutils literal notranslate"><span class="pre">DomainLab</span></code> folders. Note that in order to run <code class="docutils literal notranslate"><span class="pre">DomId</span></code> without installation via Poetry, you also will have to manually add <code class="docutils literal notranslate"><span class="pre">DomainLab</span></code> to the python path.</p></li>
+<li><p>A workflow without Poetry is also possible, but it is currently not recommended. For a workflow without Poetry, dependencies can be installed from the <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> file.</p></li>
 </ul>
 </li>
 <li><p>Clone this repository, e.g.,</p></li>
@@ -353,15 +357,8 @@
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/agisga/DomId.git
 </pre></div>
 </div>
-<ol class="arabic simple" start="2">
-<li><p>Set up the <a class="reference external" href="https://github.com/marrlab/DomainLab">DomainLab</a> submodule:</p>
-<ul class="simple">
-<li><p>Enter the <code class="docutils literal notranslate"><span class="pre">DomId</span></code> directory, then run the following commands.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">submodule</span> <span class="pre">init</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">submodule</span> <span class="pre">update</span></code> to fetch all the data from DomainLab and check out the appropriate commit listed in DomId configuration.</p></li>
-</ul>
-</li>
-<li><p>Install <code class="docutils literal notranslate"><span class="pre">DomId</span></code> and <code class="docutils literal notranslate"><span class="pre">DomainLab</span></code> packages as well as all dependencies with:</p></li>
+<ol class="arabic simple" start="3">
+<li><p>Install the <code class="docutils literal notranslate"><span class="pre">DomId</span></code> package and all its dependencies with:</p></li>
 </ol>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>poetry install
 </pre></div>
@@ -372,8 +369,7 @@
 <h3 id="usage">Usage<a class="headerlink" href="#usage" title="Permalink to this heading">¶</a></h3>
 <section id="vade-model">
 <h4 id="vade-model">VaDE model<a class="headerlink" href="#vade-model" title="Permalink to this heading">¶</a></h4>
-<p>The deep unsupervised clustering model VaDE has been proposed in [Jiang et al. 2017].</p>
-<p><em>[Jiang et al. 2017]</em> Jiang, Zheng, Tan, Tang, and Zhou, “Variational deep embedding: An unsupervised and generative approach to clustering,” in IJCAI, 2017. <a class="reference external" href="http://arxiv.org/abs/1611.05148">http://arxiv.org/abs/1611.05148</a></p>
+<p>The deep unsupervised clustering model VaDE has been proposed in [1].</p>
 <section id="applying-vade-to-mnist">
 <h5 id="applying-vade-to-mnist">Applying VaDE to MNIST<a class="headerlink" href="#applying-vade-to-mnist" title="Permalink to this heading">¶</a></h5>
 <p>For examle, to cluster digits 0-4 of the MNIST dataset with the VaDE model proposed in [Jiang et al. 2017] using CNN encoder and decoder architectures with a 200-dimensional latent space:</p>
@@ -442,6 +438,14 @@ clustering validation acc:  0.7568333333333334
 </div>
 </section>
 </section>
+<section id="dec-model">
+<h4 id="dec-model">DEC model<a class="headerlink" href="#dec-model" title="Permalink to this heading">¶</a></h4>
+<p>To apply a DEC model, that is described in the paper [3], to MNIST dataset:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 5 6 7 8 9 --task=mnist10 --debug --epos=20 --pre_tr=10 --aname=dec --zd_dim=50 --d_dim=10 --apath=domid/algos/builder_dec.py --model cnn
+</pre></div>
+</div>
+<p>Note: there is no conditioning on the labels in the DEC model.</p>
+</section>
 <section id="custom-datasets">
 <h4 id="custom-datasets">Custom datasets<a class="headerlink" href="#custom-datasets" title="Permalink to this heading">¶</a></h4>
 <p>To apply a deep clustering model, such as VaDE, to a custom (e.g., your own) dataset one needs to define a dataset class and a task class. For example, for the “HER2” dataset used in [Sidulova et al 2023] the respective python files are <code class="docutils literal notranslate"><span class="pre">domid/dsets/dset_her2.py</span></code> and <code class="docutils literal notranslate"><span class="pre">domid/tasks/task_her2.py</span></code>. Finally, the defined new task should be added in the chain defined in <code class="docutils literal notranslate"><span class="pre">domid/tasks/zoo_tasks.py</span></code>. For example, with the defined “HER2” dataset and task, the following command would apply the VaDE model to the “HER2” dataset:</p>
@@ -449,25 +453,43 @@ clustering validation acc:  0.7568333333333334
 </pre></div>
 </div>
 </section>
-<section id="cvade-model">
-<h4 id="cvade-model">CVaDE model<a class="headerlink" href="#cvade-model" title="Permalink to this heading">¶</a></h4>
-<p>The Conditional VaDE model (CVaDE) has been proposed in [Sidulova et al. 2023].</p>
-<p><em>[Sidulova et al. 2023]</em> Sidulova, Sun, Gossmann, “DEEP UNSUPERVISED CLUSTERING FOR CONDITIONAL IDENTIFICATION OF SUBGROUPS WITHIN A DIGITAL PATHOLOGY IMAGE SET,” in review, 2023.</p>
+<section id="cdvade-model">
+<h4 id="cdvade-model">CDVaDE model<a class="headerlink" href="#cdvade-model" title="Permalink to this heading">¶</a></h4>
+<p>The Conditionally Decoded VaDE model (CDVaDE) has been proposed in [4].</p>
 <section id="training-cvade">
 <h5 id="training-cvade">Training CVaDE:<a class="headerlink" href="#training-cvade" title="Permalink to this heading">¶</a></h5>
+<p>In order to train the CVaDE model, the following command can be used:</p>
 <ul class="simple">
-<li><p>Additional labels (for example previously predicted cluster assignments or known subgroups) that are going to be passed as a conditions should be stored in a <code class="docutils literal notranslate"><span class="pre">domain_labels.txt</span></code> file, and the command line arguments <code class="docutils literal notranslate"><span class="pre">--path_to_domain</span></code> and <code class="docutils literal notranslate"><span class="pre">--dim_inject_y</span></code> should be specified when executing the CVaDE model. Note that the dimensionality of the injected label should correspond to the number of domains in <code class="docutils literal notranslate"><span class="pre">domain_label.txt</span></code>. Note: only one label can be injected per experiment in this way.</p></li>
-<li><p>According to the command line, the pytorch dataset object / data generator will return appropriate additional labels, and in the training process those labels are going to be concatinated to the decoder input.</p></li>
-<li><p>Furthermore, the y label specified in the pytorch dataset class is injected, either as the only conditioning variable or in addition to the labels from <code class="docutils literal notranslate"><span class="pre">domain_labels.txt</span></code>, if <code class="docutils literal notranslate"><span class="pre">--path_to_domain</span></code> and <code class="docutils literal notranslate"><span class="pre">--dim_inject_y</span></code> are set appropriately. That is, two types of “labels” can be passed to the model at the same time to condition the clustering process.</p></li>
-<li><p>Example command line calls are given in <code class="docutils literal notranslate"><span class="pre">README_paper.md</span></code> in this code repository.</p></li>
+<li><p>Generate csv file for the dataset, with the following columns: <code class="docutils literal notranslate"><span class="pre">image_id</span></code>, <code class="docutils literal notranslate"><span class="pre">label</span></code>, <code class="docutils literal notranslate"><span class="pre">domain_label</span></code>.
+The <code class="docutils literal notranslate"><span class="pre">image_id</span></code> column should contain the path to the image, the <code class="docutils literal notranslate"><span class="pre">label</span></code> column should contain the label of the image,
+and the <code class="docutils literal notranslate"><span class="pre">domain_label</span></code> column should contain the domain label of the image. The <code class="docutils literal notranslate"><span class="pre">domain_label</span></code> column is optional,
+and if it is not present, the CVaDE model will be trained without domain labels.
+Note: that the name of the columns could be different, but the values can only be integers.</p></li>
+<li><p>The csv file should be stored in the root <code class="docutils literal notranslate"><span class="pre">data</span></code> directory (same as <code class="docutils literal notranslate"><span class="pre">zd_path</span></code>).</p></li>
+<li><p>If csv file is in a differente directory the path can be specified in the <code class="docutils literal notranslate"><span class="pre">--csv_file</span></code> command line argument.</p></li>
+<li><p>Injected variable and the dimentions of the injected variable should be specified in the <code class="docutils literal notranslate"><span class="pre">--inject_var</span></code> and <code class="docutils literal notranslate"><span class="pre">--dim_inject_y</span></code> command line argument.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">--inject_var</span></code> argument should be a string matching the name of one of the columns in the generated dataframe.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">--dim_inject_y</span></code> argument should be an integer specifying the number of unique values in the column specified in the <code class="docutils literal notranslate"><span class="pre">--inject_var</span></code> argument.</p></li>
 </ul>
+<p>For example, to train the CVaDE model on the Color-MNIST dataset with injection of color labels, the following command can be used:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 --task=mnistcolor10 --epos=20 --aname=vade --zd_dim=20 --d_dim=5 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=9 --bs 2 --lr 0.00005 --split 0.8 --prior Gaus --model cnn --inject_var "color" --dim_inject_y 5
+
+</pre></div>
+</div>
+<p>For color-MNIST csv file is generated automatically in the <code class="docutils literal notranslate"><span class="pre">a_dset_mnist_color_rgb_solo.py</span></code>.
+For other datasets, the csv file should be generated manually.</p>
+<p>Assuming that there is a generated csv for HER2 dataset in the <code class="docutils literal notranslate"><span class="pre">"../HER2/combined_train/"</span></code> (note: the code for generating csv for HER2 can be found in <code class="docutils literal notranslate"><span class="pre">dset</span></code> folder), CDVaDE can be trained with the following command:
+The injected variable is the class of the image, and the number of unique values in the class column is 3.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>poetry run python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --epos=20 --aname=vade --zd_dim=20 --d_dim=3 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=9 --bs 2 --lr 0.00005 --split 0.8 --prior Gaus --model cnn --inject_var "class" --dim_inject_y 3 --dpath "../HER2/combined_train/"
+</pre></div>
+</div>
 </section>
 </section>
 <section id="simultaneous-unsupervised-clustering-and-supervised-classification">
 <h4 id="simultaneous-unsupervised-clustering-and-supervised-classification">Simultaneous unsupervised clustering and supervised classification<a class="headerlink" href="#simultaneous-unsupervised-clustering-and-supervised-classification" title="Permalink to this heading">¶</a></h4>
 <section id="m2yd-model">
 <h5 id="m2yd-model">M2YD model<a class="headerlink" href="#m2yd-model" title="Permalink to this heading">¶</a></h5>
-<p>The M2YD model is a rather simple (toy) DL model implemented in <code class="docutils literal notranslate"><span class="pre">DomId</span></code>, that simultaneously performs a supervised classification task (e.g., digit labels in color-MNIST) and an unsupervised clustering task (e.g., cluster the colors in color-MNIST).
+<p>The M2YD model is an experimental (toy) DL model implemented in <code class="docutils literal notranslate"><span class="pre">DomId</span></code>, that simultaneously performs a supervised classification task (e.g., digit labels in color-MNIST) and an unsupervised clustering task (e.g., cluster the colors in color-MNIST).
 Here is a basic example to run the M2YD model on the Color-MNIST dataset:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>poetry run python main_out.py --te_d 0 1 2 --tr_d 3 4 5 6 7 8 9 --task=mnistcolor10 --debug --epos=10 --aname=m2yd --zd_dim=7 --apath=domid/algos/builder_m2yd.py --gamma_y 1
 </pre></div>
@@ -475,6 +497,13 @@ Here is a basic example to run the M2YD model on the Color-MNIST dataset:</p>
 </section>
 </section>
 </section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="references">
+<h2 id="references">References<a class="headerlink" href="#references" title="Permalink to this heading">¶</a></h2>
+<p>[1] Jiang, Zhuxi, et al. “Variational deep embedding: An unsupervised and generative approach to clustering.” IJCAI 2017. (<a class="reference external" href="https://arxiv.org/abs/1611.05148">https://arxiv.org/abs/1611.05148</a>)</p>
+<p>[2] Kingma, and Welling. “Auto-encoding variational bayes.” ICLR 2013. (<a class="reference external" href="https://arxiv.org/abs/1312.6114">https://arxiv.org/abs/1312.6114</a>)</p>
+<p>[3] Xie, Girshick, Farhadi. “Unsupervised Deep Embedding for Clustering Analysis” (2016) (<a class="reference external" href="http://arxiv.org/abs/1511.06335">http://arxiv.org/abs/1511.06335</a>)</p>
+<p>[4] Sidulova, Sun, Gossmann, “Deep unsupervised clustering for conditional identification of subgroups within a digital pathology image set,” in review, 2023.</p>
 </section>
 </section>
 
