@@ -48,6 +48,10 @@ class NodeTaskMNISTColor10(NodeTaskDict):
         be evaluated in if statement, in which case, no validation set will be
         created. Otherwise, this argument is the split ratio
         """
+
+        self.dim_y = len(args.digits_from_mnist)
+        self.dim_d = len(args.tr_d)
+
         ratio_split = float(args.split) if split else False
         # by default, split is set to be zero which in python can
         # be evaluated in if statement, in which case, no validation
@@ -67,3 +71,4 @@ class NodeTaskMNISTColor10(NodeTaskDict):
             val_len = len(dset) - train_len
             train_set, val_set = random_split(dset, [train_len, val_len])
         return train_set, val_set
+

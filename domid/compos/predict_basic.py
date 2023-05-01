@@ -5,14 +5,14 @@ from domid.utils.perf_cluster import PerfCluster
 
 
 class Prediction:
-    def __init__(self, model, device, loader_tr, loader_val, i_h, i_w, args):
+    def __init__(self, model, device, loader_tr, loader_val, i_h, i_w, bs):
         self.loader_tr = loader_tr
         self.loader_val = loader_val
         self.model = model
         self.i_w = i_w
         self.i_h = i_h
         self.device = device
-        self.args = args
+        self.bs = bs
         self.is_inject_domain = False
         # if self.args.dim_inject_y > 0:
         #     self.is_inject_domain = True
@@ -46,7 +46,7 @@ class Prediction:
                     if len(inject_tensor) > 0:
                         inject_tensor = inject_tensor.to(self.device)
 
-                    for ii in range(0, self.args.bs):
+                    for ii in range(0, self.bs):
                         vec_d_labels.append(torch.argmax(vec_d[ii, :]).item())
                         vec_y_labels.append(torch.argmax(vec_y[ii, :]).item())
                         image_id_labels.append(image_id[ii])
