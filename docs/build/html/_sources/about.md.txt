@@ -57,4 +57,4 @@ At the current stage, the method/model is purely experimental (with limited vali
 
 [3] Xie, Girshick, Farhadi. "Unsupervised Deep Embedding for Clustering Analysis" (2016) (<http://arxiv.org/abs/1511.06335>)
 
-[4] Sidulova, Sun, Gossmann, "Deep unsupervised clustering for conditional identification of subgroups within a digital pathology image set," in review, 2023.
+[4] XXXX, "XXXX," in review, 2023.

@@ -297,16 +297,16 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <h1 id="modules-domid-tasks-task-her2--page-root">Source code for domid.tasks.task_her2</h1><div class="highlight"><pre>
-<span></span>from domainlab.tasks.b_task import NodeTaskDict
-from domainlab.tasks.utils_task import ImSize
+<span></span>from domainlab.tasks.utils_task import ImSize
 from domainlab.utils.utils_classif import mk_dummy_label_list_str
 from torch.utils.data import random_split
 from torchvision import transforms
 
+from domid.tasks.b_task_cluster import NodeTaskDictCluster
 from domid.dsets.dset_her2 import DsetHER2
 
 
-<div class="viewcode-block" id="NodeTaskHER2"><a class="viewcode-back" href="../../../domid.tasks.html#domid.tasks.task_her2.NodeTaskHER2">[docs]</a>class NodeTaskHER2(NodeTaskDict):
+<div class="viewcode-block" id="NodeTaskHER2"><a class="viewcode-back" href="../../../domid.tasks.html#domid.tasks.task_her2.NodeTaskHER2">[docs]</a>class NodeTaskHER2(NodeTaskDictCluster):
     """
     HER2 task where the HER2 categories are considered "domains"
 

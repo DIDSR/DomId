@@ -1,7 +1,7 @@
-This is a summary of the steps to reproduce results presented in [Sidulova et al. 2023]. 
+This is a summary of the steps to reproduce results presented in [XXXX 2023]. 
 Base Model experiments are the experiments with no condition applied to the model. 
 
-*[Sidulova et al. 2023]* Sidulova, Sun, Gossmann, "DEEP UNSUPERVISED CLUSTERING FOR CONDITIONAL IDENTIFICATION OF SUBGROUPS WITHIN A DIGITAL PATHOLOGY IMAGE SET," in review, 2023.
+*[XXXX 2023]* XXXX, "XXXX," in review, 2023.
 
 # Base Model Experiments
 
