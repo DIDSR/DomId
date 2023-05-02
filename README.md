@@ -1,6 +1,6 @@
 # Domain Identification (DomId)
 
-![GH Actions CI ](https://github.com/agisga/DomId/actions/workflows/ci.yml/badge.svg)
+![GH Actions CI ](https://github.com/DIDSR/DomId/actions/workflows/ci.yml/badge.svg)
 
 Deep unsupervised clustering algorithms for domain identification.
 
