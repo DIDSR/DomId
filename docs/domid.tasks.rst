@@ -4,6 +4,14 @@ domid.tasks package
 Submodules
 ----------
 
+domid.tasks.b\_task\_cluster module
+-----------------------------------
+
+.. automodule:: domid.tasks.b_task_cluster
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 domid.tasks.task\_her2 module
 -----------------------------
 

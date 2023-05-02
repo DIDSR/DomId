@@ -85,6 +85,7 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
             self.labels = self.labels[subindexes]
         else:
             self.wanted_digits = list(range(10))
+        self.label_transform = mk_fun_label2onehot(len(self.wanted_digits))
 
         self._color_imgs_onehot_labels()
         # self.images = self.images[inds_subset, ::]

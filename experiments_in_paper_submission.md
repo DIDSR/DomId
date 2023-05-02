@@ -1,7 +1,10 @@
-The commit hash for the miccai code is: ```f6b98c9fe90f751eedc4bde9672ac68287146126```
+# Using outdated version of DomId (as used for the paper under review)
+
+- Bellow are the commands used to produce the results in the paper (under review).
+- DomId has been significantly changed since then. The commit hash for the code below is: `f6b98c9fe90f751eedc4bde9672ac68287146126`
 
 
-# HER2 experiments
+## HER2 experiments
 ```
 # VaDE base result: miccai/DomID/notebooks/2023-03-08 09:54:40.881182/
 CUDA_VISIBLE_DEVICES=0 python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --epos=50 --aname=vade --zd_dim=500 --d_dim=3 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=17 --dpath "../../DomId/HER2/combined_train" --bs 4 --prior Gaus --model cnn --lr 0.000005
@@ -14,7 +17,7 @@ CUDA_VISIBLE_DEVICES=2 python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --ep
 ```
 
 
-# Colored MNIST experiments: 5 digits, 5 colors
+## Colored MNIST experiments: 5 digits, 5 colors
 ```
 # VaDE base result: miccai/DomID/notebooks/2023-03-09 17:29:14.153074/
 CUDA_VISIBLE_DEVICES=0 python main_out.py --te_d 0 --tr_d 0 1 2 3 4 --task=mnistcolor10 --epos=20 --aname=vade --zd_dim=20 --d_dim=5 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=9 --bs 2 --lr 0.005 --split 0.8 --prior Gaus --model cnn
@@ -27,7 +30,11 @@ CUDA_VISIBLE_DEVICES=2 python main_out.py --te_d 0 --tr_d 0 1 2 3 4 --task=mnist
 ```
 
 
-# Colored MNIST experiments: 10 digits, 10 colors  (command line inputs after refactoring to reproduce results)
+# After DomId refactoring (recent version of the code)
+
+
+## Colored MNIST experiments: 10 digits, 10 colors  (command line inputs after refactoring to reproduce results)
+
 ```
 # VaDE base result: miccai/DomID/notebooks/2023-03-14 11:23:06.765323/
 poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 5 6 7 8 9 --task=mnistcolor10 --epos=20 --aname=vade --zd_dim=20 --d_dim=10 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=9 --bs 2 --lr 0.0005 --split 0.8 --prior Gaus --model cnn 
@@ -40,7 +47,8 @@ poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 5 6 7 8 9 --task=mnistco
 ```
 
 
-# HER2 experiments (command line inputs after refactoring to reproduce results)
+## HER2 experiments (command line inputs after refactoring to reproduce results)
+
 ```
 poetry run python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --epos=50 --aname=vade --zd_dim=500 --d_dim=3 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=17 --dpath "../../DomId/HER2/combined_train" --bs 4 --prior Gaus --model cnn --lr 0.000005
 
@@ -51,7 +59,8 @@ poetry run python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --epos=50 --anam
 ```
 
 
-# Colored MNIST experiments: 5 digits, 5 colors (command line inputs after refactoring to reproduce results)
+## Colored MNIST experiments: 5 digits, 5 colors (command line inputs after refactoring to reproduce results)
+
 ```
 poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 --task=mnistcolor10 --digits_from_mnist 0 1 2 3 4 --epos=20 --aname=vade --zd_dim=20 --d_dim=5 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=7 --bs 2 --lr 0.005 --split 0.8 --prior Gaus --model cnn
 

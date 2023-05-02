@@ -108,7 +108,7 @@ Note: there is no conditioning on the labels in the DEC model.
 
 ### Custom datasets
 
-To apply a deep clustering model, such as VaDE, to a custom (e.g., your own) dataset one needs to define a dataset class and a task class. For example, for the "HER2" dataset used in [Sidulova et al 2023] the respective python files are `domid/dsets/dset_her2.py` and `domid/tasks/task_her2.py`. Finally, the defined new task should be added in the chain defined in `domid/tasks/zoo_tasks.py`. For example, with the defined "HER2" dataset and task, the following command would apply the VaDE model to the "HER2" dataset:
+To apply a deep clustering model, such as VaDE, to a custom (e.g., your own) dataset one needs to define a dataset class and a task class. For example, for the "HER2" dataset used in [xxxx 2023] the respective python files are `domid/dsets/dset_her2.py` and `domid/tasks/task_her2.py`. Finally, the defined new task should be added in the chain defined in `domid/tasks/zoo_tasks.py`. For example, with the defined "HER2" dataset and task, the following command would apply the VaDE model to the "HER2" dataset:
 
 ```
 poetry run python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --debug --epos=30 --aname=vade --zd_dim=250 --d_dim=3 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=10 --dpath "/path/to/HER2/combined_train" --split 0.8 --bs 2 --lr 0.00005 --prio Gaus --model cnn
@@ -168,4 +168,4 @@ poetry run python main_out.py --te_d 0 1 2 --tr_d 3 4 5 6 7 8 9 --task=mnistcolo
 
 [3] Xie, Girshick, Farhadi. "Unsupervised Deep Embedding for Clustering Analysis" (2016) (<http://arxiv.org/abs/1511.06335>)
 
-[4] Sidulova, Sun, Gossmann, "Deep unsupervised clustering for conditional identification of subgroups within a digital pathology image set," in review, 2023.
+[4] xxxx, "xxxx," in review, 2023.

@@ -448,7 +448,7 @@ clustering validation acc:  0.7568333333333334
 </section>
 <section id="custom-datasets">
 <h4 id="custom-datasets">Custom datasets<a class="headerlink" href="#custom-datasets" title="Permalink to this heading">¶</a></h4>
-<p>To apply a deep clustering model, such as VaDE, to a custom (e.g., your own) dataset one needs to define a dataset class and a task class. For example, for the “HER2” dataset used in [Sidulova et al 2023] the respective python files are <code class="docutils literal notranslate"><span class="pre">domid/dsets/dset_her2.py</span></code> and <code class="docutils literal notranslate"><span class="pre">domid/tasks/task_her2.py</span></code>. Finally, the defined new task should be added in the chain defined in <code class="docutils literal notranslate"><span class="pre">domid/tasks/zoo_tasks.py</span></code>. For example, with the defined “HER2” dataset and task, the following command would apply the VaDE model to the “HER2” dataset:</p>
+<p>To apply a deep clustering model, such as VaDE, to a custom (e.g., your own) dataset one needs to define a dataset class and a task class. For example, for the “HER2” dataset used in [xxxx 2023] the respective python files are <code class="docutils literal notranslate"><span class="pre">domid/dsets/dset_her2.py</span></code> and <code class="docutils literal notranslate"><span class="pre">domid/tasks/task_her2.py</span></code>. Finally, the defined new task should be added in the chain defined in <code class="docutils literal notranslate"><span class="pre">domid/tasks/zoo_tasks.py</span></code>. For example, with the defined “HER2” dataset and task, the following command would apply the VaDE model to the “HER2” dataset:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>poetry run python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --debug --epos=30 --aname=vade --zd_dim=250 --d_dim=3 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=10 --dpath "/path/to/HER2/combined_train" --split 0.8 --bs 2 --lr 0.00005 --prio Gaus --model cnn
 </pre></div>
 </div>
@@ -503,7 +503,7 @@ Here is a basic example to run the M2YD model on the Color-MNIST dataset:</p>
 <p>[1] Jiang, Zhuxi, et al. “Variational deep embedding: An unsupervised and generative approach to clustering.” IJCAI 2017. (<a class="reference external" href="https://arxiv.org/abs/1611.05148">https://arxiv.org/abs/1611.05148</a>)</p>
 <p>[2] Kingma, and Welling. “Auto-encoding variational bayes.” ICLR 2013. (<a class="reference external" href="https://arxiv.org/abs/1312.6114">https://arxiv.org/abs/1312.6114</a>)</p>
 <p>[3] Xie, Girshick, Farhadi. “Unsupervised Deep Embedding for Clustering Analysis” (2016) (<a class="reference external" href="http://arxiv.org/abs/1511.06335">http://arxiv.org/abs/1511.06335</a>)</p>
-<p>[4] Sidulova, Sun, Gossmann, “Deep unsupervised clustering for conditional identification of subgroups within a digital pathology image set,” in review, 2023.</p>
+<p>[4] xxxx, “xxxx,” in review, 2023.</p>
 </section>
 </section>
 
