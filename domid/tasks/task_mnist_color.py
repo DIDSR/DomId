@@ -49,7 +49,10 @@ class NodeTaskMNISTColor10(NodeTaskDict):
         created. Otherwise, this argument is the split ratio
         """
 
-        self.dim_y = len(args.digits_from_mnist)
+        try:
+            self.dim_y = len(args.digits_from_mnist)
+        except TypeError:
+            self.dim_y = 10
         self.dim_d = len(args.tr_d)
 
         ratio_split = float(args.split) if split else False

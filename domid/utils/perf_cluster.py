@@ -90,7 +90,30 @@ class PerfCluster(PerfClassif):
         self.cost = np.zeros((num_classes, num_classes), dtype="int")
 
     @classmethod
-    def cal_acc(cls, model, loader_te, device, max_batches=None):
+    def hungarian_algorithm(clc, cluster_pred_scalar, cluster_true_scalar, cost):
+        """
+        This function takes two arrays as input, encodes any string elements to integers,
+        and applies the Hungarian Algorithm to find the optimal assignment between the two arrays.
+        """
+
+        # if len(np.unique(cluster_pred_scalar)) == len(np.unique(cluster_true_scalar)):
+            # cluster_pred_scalar = [item - 1 for item in cluster_pred_scalar]
+
+
+
+        cost = cost - confusion_matrix(cluster_pred_scalar, cluster_true_scalar,labels=list(range(len(cost))))
+
+        # What is the best permutation?
+        row_ind, col_ind = linear_sum_assignment(cost)
+        # Note that row_ind will be equal to [0, 1, ..., cost.shape[0]] because cost is a square matrix.
+        conf_mat = (-1) * cost[:, col_ind]
+        # Accuracy for best permutation:
+        acc_d = np.diag(conf_mat).sum() / conf_mat.sum()
+
+
+        return acc_d, cost, conf_mat
+    @classmethod
+    def cal_acc(clc, model, loader_te, device, max_batches=None):
         """
         :param model:
         :param loader_te:
@@ -105,35 +128,62 @@ class PerfCluster(PerfClassif):
         if max_batches is None:
             max_batches = len(loader_te)
         list_vec_preds, list_vec_labels = [], []
-        cost = np.zeros((model_local.d_dim, model_local.d_dim), dtype="int")
+        cost_y_s = np.zeros((model_local.d_dim, model_local.d_dim), dtype="int")
+        cost_d_s = np.zeros((model_local.d_dim, model_local.d_dim), dtype="int")
+        conf_mat_y_s = cost_y_s
+        conf_mat_d_s = cost_d_s
+
+        hungarian_acc_y_s =0
+        hungarian_acc_d_s =0
         with torch.no_grad():
-            for i, (x_s, _, d_s, *_) in enumerate(loader_te):
-                x_s, d_s = x_s.to(device), d_s.to(device)
-                pred = model_local.infer_d_v(x_s)
-                # number of predicted clusters can be larger than the number of ground truth clusters
-                assert pred.shape >= d_s.shape
-                # there are d_dim possible predicted clusters
-                assert pred.shape[1] == model_local.d_dim
-
-                cluster_pred_scalar = pred.cpu().numpy().argmax(axis=1)
-                cluster_true_scalar = d_s.cpu().numpy().argmax(axis=1)
-                cost = cost - confusion_matrix(cluster_pred_scalar, cluster_true_scalar,
-                                               labels=list(range(model_local.d_dim)))
-
-                list_vec_preds.append(pred)
-                list_vec_labels.append(d_s)
-                if i > max_batches:
+            for i, (x_s, y_s, d_s, *_) in enumerate(loader_te):
+                if i >= max_batches:
                     break
-                
-        # The domain label are never used in training. so we need to find
-        # correspondence between predicted and true domain indices. See top of
-        # this file for an explanation.
+                x_s, y_s, d_s = x_s.to(device), y_s.to(device), d_s.to(device)
 
-        # What is the best permutation?
-        row_ind, col_ind = linear_sum_assignment(cost)
-        # Note that row_ind will be equal to [0, 1, ..., cost.shape[0]] because cost is a square matrix.
-        conf_mat = (-1)*cost[:, col_ind]
-        # Accuracy for best permutation:
-        acc_d = np.diag(conf_mat).sum() / conf_mat.sum()
+                pred = model_local.infer_d_v(x_s)
 
-        return acc_d, conf_mat
+                if pred.shape[1]==y_s.shape[1]:
+
+                    hungarian_acc_y_s, cost_y_s, conf_mat_y_s = clc.hungarian_algorithm(pred.argmax(axis=1).detach().cpu().numpy(), y_s.argmax(axis=1).detach().cpu().numpy(), cost_y_s)
+                if pred.shape[1]==d_s.shape[1]:
+
+                    hungarian_acc_d_s, cost_d_s, conf_mat_d_s = clc.hungarian_algorithm(pred.argmax(axis=1).detach().cpu().numpy(), d_s.argmax(axis=1).detach().cpu().numpy(), cost_d_s)
+
+
+        return hungarian_acc_y_s, conf_mat_y_s, hungarian_acc_d_s, conf_mat_d_s
+
+        #         x_s, d_s = x_s.to(device), d_s.to(device)
+        #
+        #         pred = model_local.infer_d_v(x_s)
+        #         # number of predicted clusters can be larger than the number of ground truth clusters
+        #         assert pred.shape >= d_s.shape
+        #         # there are d_dim possible predicted clusters
+        #         assert pred.shape[1] == model_local.d_dim
+        #
+        #
+        #
+        #
+        #
+        #         cluster_pred_scalar = pred.cpu().numpy().argmax(axis=1)
+        #         cluster_true_scalar = d_s.cpu().numpy().argmax(axis=1)
+        #         cost = cost - confusion_matrix(cluster_pred_scalar, cluster_true_scalar,
+        #                                        labels=list(range(model_local.d_dim)))
+        #
+        #         list_vec_preds.append(pred)
+        #         list_vec_labels.append(d_s)
+        #         if i > max_batches:
+        #             break
+        #
+        # # The domain label are never used in training. so we need to find
+        # # correspondence between predicted and true domain indices. See top of
+        # # this file for an explanation.
+        #
+        # # What is the best permutation?
+        # row_ind, col_ind = linear_sum_assignment(cost)
+        # # Note that row_ind will be equal to [0, 1, ..., cost.shape[0]] because cost is a square matrix.
+        # conf_mat = (-1)*cost[:, col_ind]
+        # # Accuracy for best permutation:
+        # acc_d = np.diag(conf_mat).sum() / conf_mat.sum()
+        #
+        # return acc_d, conf_mat

@@ -4,6 +4,8 @@ from domainlab.utils.perf import PerfClassif
 from scipy.optimize import linear_sum_assignment
 from sklearn.metrics import confusion_matrix
 from domid.compos.predict_basic import Prediction
+from sklearn.metrics import confusion_matrix
+from scipy.optimize import linear_sum_assignment
 import scipy
 class PerfSimilarity(PerfClassif):
     """Clustering Performance"""
@@ -26,20 +28,29 @@ class PerfSimilarity(PerfClassif):
                 encoded_arr.append(element)
         return encoded_arr
 
-    def hungarian_algorithm(self, arr1, arr2):
+    def hungarian_algorithm(self, cluster_pred_scalar, cluster_true_scalar):
         """
         This function takes two arrays as input, encodes any string elements to integers,
         and applies the Hungarian Algorithm to find the optimal assignment between the two arrays.
         """
 
-        cost_matrix = np.zeros((len(arr1), len(arr2)))
-        for i in range(len(arr1)):
-            for j in range(len(arr2)):
-                cost_matrix[i][j] = abs(arr1[i] - arr2[j])
-        row_ind, col_ind = scipy.optimize.linear_sum_assignment(cost_matrix)
-        optimal_assignments = [(arr1[row_ind[i]], arr2[col_ind[i]]) for i in range(len(row_ind))]
-        breakpoint()
-        return optimal_assignments
+        if len(np.unique(cluster_pred_scalar)) == len(np.unique(cluster_true_scalar)):
+            cluster_pred_scalar = [item - 1 for item in cluster_pred_scalar]
+            cost = np.zeros((len(np.unique(cluster_pred_scalar)), len(np.unique(cluster_pred_scalar))))
+            print(np.unique(cluster_pred_scalar))
+            print(np.unique(cluster_true_scalar))
+
+            cost = cost - confusion_matrix(cluster_pred_scalar, cluster_true_scalar)
+
+            # What is the best permutation?
+            row_ind, col_ind = linear_sum_assignment(cost)
+            # Note that row_ind will be equal to [0, 1, ..., cost.shape[0]] because cost is a square matrix.
+            conf_mat = (-1) * cost[:, col_ind]
+            # Accuracy for best permutation:
+            acc_d = np.diag(conf_mat).sum() / conf_mat.sum()
+        else:
+            acc_d = 0 #FIXME
+        return acc_d
 
   #  @classmethod
     def cal_acc(self, model, loader_tr, loader_val, device, i_w, i_h, max_batches=None):
@@ -63,10 +74,8 @@ class PerfSimilarity(PerfClassif):
             vec_y_labels = self.encode_array(vec_y_labels)
         if vec_d_has_strings:
             vec_d_labels = self.encode_array(vec_d_labels)
-
-
-        hungarian_assignments = self.hungarian_algorithm(vec_y_labels, vec_d_labels)
         breakpoint()
-        sim_vec_d = 0
-        sim_vec_y = 0
+        sim_vec_y = self.hungarian_algorithm(predictions, vec_y_labels)
+        sim_vec_d = self.hungarian_algorithm(predictions, vec_d_labels)
+
         return sim_vec_y, sim_vec_d

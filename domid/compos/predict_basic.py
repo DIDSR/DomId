@@ -82,11 +82,11 @@ class Prediction:
         return input_imgs, z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels
 
     def epoch_tr_acc(self):
-        acc, conf = PerfCluster.cal_acc(self.model, self.loader_tr, self.device, max_batches=None)
+        acc, conf, *_ = PerfCluster.cal_acc(self.model, self.loader_tr, self.device, max_batches=None)
         return acc, conf
 
     def epoch_val_acc(self):
-        acc, conf = PerfCluster.cal_acc(self.model, self.loader_val, self.device, max_batches=None)
+        acc, conf, *_ = PerfCluster.cal_acc(self.model, self.loader_val, self.device, max_batches=None)
 
         return acc, conf
 

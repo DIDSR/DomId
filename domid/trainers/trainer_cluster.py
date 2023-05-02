@@ -2,8 +2,7 @@ import itertools
 
 import torch
 import torch.optim as optim
-from domainlab.algos.trainers.a_trainer import \
-    AbstractTrainer  # TrainerClassif
+from domainlab.algos.trainers.a_trainer import AbstractTrainer
 
 from domid.compos.predict_basic import Prediction
 from domid.compos.storing import Storing
@@ -12,7 +11,7 @@ from domid.trainers.pretraining_GMM import Pretraining
 from domid.utils.perf_cluster import PerfCluster
 
 
-class TrainerCluster(AbstractTrainer):#TrainerClassif):
+class TrainerCluster(AbstractTrainer):
     def __init__(self, model, task, observer, device, writer, pretrain=True, aconf=None):
         """
         :param model: model to train
@@ -23,13 +22,12 @@ class TrainerCluster(AbstractTrainer):#TrainerClassif):
         :param pretrain: whether to pretrain the model with MSE loss
         :param aconf: configuration parameters, including learning rate and pretrain threshold
         """
-        super().__init__(model, task, observer, device, aconf)
+        super().init_business(model, task, observer, device, aconf)
 
         self.pretrain = pretrain
         self.pretraining_finished = not self.pretrain
         self.lr = aconf.lr
         self.warmup_beta = 0.1
-
         if not self.pretraining_finished:
             self.optimizer = optim.Adam(
                 itertools.chain(self.model.encoder.parameters(), self.model.decoder.parameters()), lr=self.lr
@@ -59,7 +57,7 @@ class TrainerCluster(AbstractTrainer):#TrainerClassif):
         self.epo_loss_tr = 0
 
         pretrain = Pretraining(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args)
-        prediction = Prediction(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args)
+        prediction = Prediction(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args.bs)
         acc_tr, _ = prediction.epoch_tr_acc()
         acc_val, _ = prediction.epoch_val_acc()
 

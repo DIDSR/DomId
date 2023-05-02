@@ -32,9 +32,8 @@ class AModelCluster(nn.Module):
             if loader_te is not None:
                 metric_te = self.perf_metric.cal_acc(self, loader_te, device)
 
-        with torch.no_grad():
-            breakpoint()
-            metric_tr = self.perf_metric_similarity.cal_acc(self, loader_tr, loader_te,device, self.i_h, self.i_w)
+        # with torch.no_grad():
+        #     metric_tr = self.perf_metric_similarity.cal_acc(self, loader_tr, loader_te,device, self.i_h, self.i_w)
 
         return metric_tr, metric_te
 
