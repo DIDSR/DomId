@@ -13,27 +13,23 @@ class ObVisitorClusteringOnly(ObVisitor):
 
         print("epoch:", epoch)
         self.epo = epoch
-        # if epoch % self.epo_te == 0:
-        #     acc_tr_pool, conf_mat_tr = PerfCluster.cal_acc(self.host_trainer.model, self.loader_tr, self.device)
-        #     print("pooled train clustering acc: ", acc_tr_pool)
-        #     print(conf_mat_tr)
-        #
-        #     acc_val, conf_mat_val = PerfCluster.cal_acc(self.host_trainer.model, self.loader_val, self.device)
-        #     self.acc_val = acc_val
-        #     print("clustering validation acc: ", acc_val)
-        #     print(conf_mat_val)
-        #self.epo = epoch
         if epoch % self.epo_te == 0:
             metric_tr, metric_te = self.host_trainer.model.cal_perf_metric(
                 self.loader_tr, self.device, self.loader_val) #note the loader is validation, not test dset
             self.metric_te = metric_te
             self.metric_tr = metric_tr
 
-            print("pooled train clustering acc: ", metric_tr[0])
-            print(metric_tr[1])
 
-            print("clustering validation acc: ", metric_te[0])
+            print("pooled train clustering acc: ", metric_tr[2])
+            print(metric_tr[3])
+
+            print("clustering validation acc: ", metric_te[2])
+            print(metric_te[3])
+
+            print("pooled train vec_y correlation: ", metric_tr[0])
             print(metric_te[1])
+
+
 
         self.exp.visitor.save(self.host_trainer.model)
         flag_stop = self.model_sel.if_stop()
