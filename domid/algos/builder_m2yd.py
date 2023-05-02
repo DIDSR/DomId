@@ -16,7 +16,7 @@ class NodeAlgoBuilderM2YD(NodeAlgoBuilder):
         """
         task = exp.task
         args = exp.args
-        device = get_device(args.nocu)
+        device = get_device(args)
         model = ModelXY2D(y_dim=len(task.list_str_y),
                           list_str_y=task.list_str_y,
                           zd_dim=args.zd_dim,

@@ -1,13 +1,13 @@
-from domainlab.tasks.b_task import NodeTaskDict
 from domainlab.tasks.utils_task import ImSize
 from domainlab.utils.utils_classif import mk_dummy_label_list_str
 from torch.utils.data import random_split
 from torchvision import transforms
 
+from domid.tasks.b_task_cluster import NodeTaskDictCluster
 from domid.dsets.dset_her2 import DsetHER2
 
 
-class NodeTaskHER2(NodeTaskDict):
+class NodeTaskHER2(NodeTaskDictCluster):
     """
     HER2 task where the HER2 categories are considered "domains"
 

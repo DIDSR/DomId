@@ -20,7 +20,7 @@ class NodeAlgoBuilderDEC(NodeAlgoBuilder):
         """
         task = exp.task
         args = exp.args
-        device = get_device(args.nocu)
+        device = get_device(args)
 
         zd_dim = args.zd_dim
         d_dim = args.d_dim
@@ -41,7 +41,7 @@ class NodeAlgoBuilderDEC(NodeAlgoBuilder):
         observer = ObVisitorCleanUp(
             ObVisitorClusteringOnly(exp, MSelOracleVisitor(MSelTrLoss(max_es=args.es)), device))
         writer = SummaryWriter(logdir="debug/"+now)
-        trainer = TrainerVADE(model, task, observer, device, writer, pretrain = pretrain, aconf=args)
+        trainer = TrainerCluster(model, task, observer, device, writer, pretrain = pretrain, aconf=args)
 
         return trainer
 

@@ -23,7 +23,8 @@ class TrainerCluster(AbstractTrainer):#TrainerClassif):
         :param pretrain: whether to pretrain the model with MSE loss
         :param aconf: configuration parameters, including learning rate and pretrain threshold
         """
-        super().__init__(model, task, observer, device, aconf)
+        super().__init__()
+        super().init_business(model, task, observer, device, aconf)
 
         self.pretrain = pretrain
         self.pretraining_finished = not self.pretrain
