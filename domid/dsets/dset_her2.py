@@ -61,6 +61,7 @@ class DsetHER2(Dataset):
         img_info = self.df.loc[self.df['img_id'] == self.images[idx]]
         ind_in_df = img_info.index.item()
         label = int(self.df['machine'][ind_in_df]) #machine labels are  {"FD": 0, "H1": 1, "H2": 2, "ND": 3}
+
         label = mk_fun_label2onehot(3)(label)
 
         if self.inject_variable:

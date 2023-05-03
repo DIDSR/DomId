@@ -24,6 +24,8 @@ class NodeTaskDictCluster(NodeTaskDict, NodeTaskDGClassif):
             else:
                 self.wanted_digits = list(range(10))
             self._dim_y = len(self.wanted_digits)
+        else:
+            self._dim_y =3 #FIXME: hardcoded
 
         self.count_domain_class()
 
@@ -44,7 +46,8 @@ class NodeTaskDictCluster(NodeTaskDict, NodeTaskDGClassif):
             self.dict_domain_class_count[key] = dict_class_count
 
     def _count_class_one_hot(self, dset):
-        labels_count = torch.zeros(self.dim_y, dtype=torch.long)
+
+        labels_count = torch.zeros(self.dim_y, dtype=torch.long) #FIXME: hardcoded
         for _, target, *_ in dset:
             labels_count += target.long()
 

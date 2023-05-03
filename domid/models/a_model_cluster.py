@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 
 from domid.utils.perf_cluster import PerfCluster
-from domid.utils.perf_similarity import PerfSimilarity
+from domid.utils.perf_similarity import PerfCorrelation
 
 class AModelCluster(nn.Module):
     """
@@ -13,13 +13,12 @@ class AModelCluster(nn.Module):
         """
         Sets up the performance metrics used.
         """
-
+        self.task = task
         self.perf_metric = PerfCluster(task.dim_y)
 
-        self.i_h = task.isize.h
-        self.i_w = task.isize.w
-        self.perf_metric_similarity = PerfSimilarity()
-        return self.perf_metric, self.perf_metric_similarity
+
+        self.perf_metric_correlation = PerfCorrelation()
+        return self.perf_metric, self.perf_metric_correlation
 
     def cal_perf_metric(self, loader_tr, device, loader_te=None):
         """
@@ -32,9 +31,11 @@ class AModelCluster(nn.Module):
             if loader_te is not None:
                 metric_te = self.perf_metric.cal_acc(self, loader_te, device)
 
-        # with torch.no_grad():
-        #     metric_tr = self.perf_metric_similarity.cal_acc(self, loader_tr, loader_te,device, self.i_h, self.i_w)
+        r_score_tr = None
+        if self.task.get_list_domains() == ['class0', 'class1', 'class2']: #if task ==her2
+            with torch.no_grad():
+                r_score_tr = self.perf_metric_correlation.cal_acc(self, loader_tr, loader_te,device, self.task)
 
-        return metric_tr, metric_te
+        return metric_tr, metric_te, r_score_tr
 
 

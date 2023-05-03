@@ -2,7 +2,7 @@ import numpy as np
 import torch
 
 from domid.utils.perf_cluster import PerfCluster
-
+from domid.utils.perf_similarity import PerfCorrelation
 
 class Prediction:
     def __init__(self, model, device, loader_tr, loader_val, i_h, i_w, bs):
@@ -82,13 +82,18 @@ class Prediction:
         return input_imgs, z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels
 
     def epoch_tr_acc(self):
-        acc, conf, *_ = PerfCluster.cal_acc(self.model, self.loader_tr, self.device, max_batches=None)
-        return acc, conf
+        #hungarian_acc_y_s, conf_mat_y_s, hungarian_acc_d_s, conf_mat_d_s
+        acc_vec_y, conf_y, acc_vec_d, conf_d= PerfCluster.cal_acc(self.model, self.loader_tr, self.device, max_batches=None)
+        return acc_vec_y, conf_y, acc_vec_d, conf_d
 
     def epoch_val_acc(self):
-        acc, conf, *_ = PerfCluster.cal_acc(self.model, self.loader_val, self.device, max_batches=None)
+        acc_vec_y, conf_y, acc_vec_d, conf_d = PerfCluster.cal_acc(self.model, self.loader_val, self.device, max_batches=None)
 
-        return acc, conf
+        return acc_vec_y, conf_y, acc_vec_d, conf_d
+    def epoch_tr_correlation(self):
+
+        correlation = PerfCorrelation.cal_acc(self.model, self.loader_tr, self.device, max_batches=None)
+        return correlation
 
     # def prediction_te(self):
     #     """

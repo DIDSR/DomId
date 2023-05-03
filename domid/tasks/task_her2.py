@@ -20,6 +20,8 @@ class NodeTaskHER2(NodeTaskDictCluster):
         """
         return mk_dummy_label_list_str("dummy", 3)
 
+
+
     @property
     def isize(self):
         """

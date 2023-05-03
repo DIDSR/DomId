@@ -60,8 +60,8 @@ class TrainerCluster(AbstractTrainer):
 
         pretrain = Pretraining(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args)
         prediction = Prediction(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args.bs)
-        acc_tr, _ = prediction.epoch_tr_acc()
-        acc_val, _ = prediction.epoch_val_acc()
+        acc_tr_y, _, acc_tr_d, _ = prediction.epoch_tr_acc()
+        acc_val_y, _, acc_val_d, _ = prediction.epoch_val_acc()
 
         # ___________Define warm-up for ELBO loss_________
         if self.warmup_beta < 1 and self.pretraining_finished:
@@ -156,7 +156,7 @@ class TrainerCluster(AbstractTrainer):
             epoch,
             self.lr,
             self.warmup_beta,
-            acc_tr,
+            acc_tr_y,
             loss,
             self.pretraining_finished,
             tensor_x,
@@ -164,7 +164,7 @@ class TrainerCluster(AbstractTrainer):
         )
 
         # _____storing results and Z space__________
-        self.storage.storing(epoch, acc_tr, self.epo_loss_tr, acc_val, loss_val.sum())
+        self.storage.storing(epoch, acc_tr_y,acc_tr_d, self.epo_loss_tr, acc_val_y, acc_val_d, loss_val.sum())
         if epoch % 2 == 0:
             _, z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels = prediction.mk_prediction()
             #_, Z, domain_labels, machine_labels, image_locs = prediction.mk_prediction()
