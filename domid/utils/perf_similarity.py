@@ -58,7 +58,7 @@ class PerfCorrelation(PerfClassif):
         print(R_values)
         return max(R_values)
     @classmethod
-    def cal_acc(clc, model, loader_tr, loader_val, device, task, max_batches=None):
+    def cal_acc(clc, model, loader_tr, device, max_batches=None):
 
         model.eval()
         model_local = model.to(device)

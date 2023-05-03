@@ -19,11 +19,13 @@ class Storing():
         self.acc_d = []
         self.val_acc_d = []
 
+        self.R_scores = []
+
         self.experiment_name = str(datetime.datetime.now()) + "_"  + str(args.task) + "_" + str(args.aname)
         self.last_epoch = args.epos
 
 
-    def storing(self, epoch, acc_tr_y,acc_tr_d, loss_tr, acc_val_y, acc_val_d, loss_val):
+    def storing(self, epoch, acc_tr_y,acc_tr_d, loss_tr, acc_val_y, acc_val_d, loss_val, R_score):
 
         #arguments = [str(args.aname), str(args.model), str(args.prior), str(args.zd_dim), str(args.te_d), str(args.tr_d), str(args.L), str(args.lr), str(args.bs), str(args.pre_tr), str(args.warmup)]
         self.loss.append(loss_tr)
@@ -36,6 +38,8 @@ class Storing():
 
         self.acc_d.append(acc_tr_d)
         self.val_acc_d.append(acc_val_d)
+
+        self.R_scores.append(R_score)
 
         ex_path = "./notebooks/" + self.experiment_name
         if not os.path.exists("./notebooks/"+self.experiment_name):
@@ -82,17 +86,21 @@ class Storing():
         if os.path.exists("results.csv"):
             results_df = pd.read_csv("results.csv")
         else:
-            results_df = pd.DataFrame(columns=['dataset', 'model', 'seed', 'bs', 'zd_dim', 'lr', 'train_acc', 'test_acc',
-                                               'similarity with vec_y', 'similarity with vec_d',
+            results_df = pd.DataFrame(columns=['dataset', 'model', 'seed', 'bs', 'zd_dim', 'lr', 'train_acc_y', 'test_acc_y',
+                                               'train_acc_d', 'test_acc_d', 'R with scores',
+
                                                'train_loss', 'test_loss','directory'])
             results_df.to_csv("results.csv", index=False)
         if self.last_epoch==epoch:
-            row = [{'dataset': self.args.task, 'model': self.args.aname, 'seed': self.args.seed, 'bs': self.args.bs,
+            row = [{'dataset': self.args.task, 'model': self.args.aname,
+                    'seed': self.args.seed, 'bs': self.args.bs,
                    'zd_dim': self.args.zd_dim,
-                   'lr': self.args.lr,'train_acc': self.acc[-1], 'test_acc': self.val_acc[-1],
-                   'similarity with vec_y': self.args.similarity_with_vec_y,
-                   'similarity with vec_d': self.args.similarity_with_vec_d, 'train_loss': self.loss[-1],
-                   'test_loss': self.val_loss[-1], 'directory': self.experiment_name}]
+                   'lr': self.args.lr,
+                    'train_acc_y': self.acc_y[-1], 'test_acc_y': self.val_acc_y[-1],
+                    'train_acc_d': self.acc_d[-1], 'test_acc_d': self.val_acc_d[-1],
+                    'R with scores': self.R_scores[-1],
+                    'train_loss': self.loss[-1],
+                    'test_loss': self.val_loss[-1], 'directory': self.experiment_name}]
             results_df = results_df.append(row, ignore_index=True)
             results_df.to_csv("results.csv", index=False)
 

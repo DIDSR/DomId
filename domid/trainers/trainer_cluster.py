@@ -62,6 +62,7 @@ class TrainerCluster(AbstractTrainer):
         prediction = Prediction(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args.bs)
         acc_tr_y, _, acc_tr_d, _ = prediction.epoch_tr_acc()
         acc_val_y, _, acc_val_d, _ = prediction.epoch_val_acc()
+        r_score = prediction.epoch_tr_correlation()
 
         # ___________Define warm-up for ELBO loss_________
         if self.warmup_beta < 1 and self.pretraining_finished:
@@ -164,7 +165,7 @@ class TrainerCluster(AbstractTrainer):
         )
 
         # _____storing results and Z space__________
-        self.storage.storing(epoch, acc_tr_y,acc_tr_d, self.epo_loss_tr, acc_val_y, acc_val_d, loss_val.sum())
+        self.storage.storing(epoch, acc_tr_y,acc_tr_d, self.epo_loss_tr, acc_val_y, acc_val_d, loss_val.sum(), r_score)
         if epoch % 2 == 0:
             _, z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels = prediction.mk_prediction()
             #_, Z, domain_labels, machine_labels, image_locs = prediction.mk_prediction()
@@ -175,6 +176,7 @@ class TrainerCluster(AbstractTrainer):
             
 
         flag_stop = self.observer.update(epoch)  # notify observer
+        self.storage.csv_dump(epoch)
         return flag_stop
 
     def before_tr(self):
