@@ -76,26 +76,37 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
         if args.digits_from_mnist:
             self.wanted_digits = [int(w) for w in args.digits_from_mnist]
             self.wanted_digits = list(set(self.wanted_digits))
-            subindexes = []
-            for wanted in self.wanted_digits:
-                assert 0 <= wanted <= 9
-                indx = np.where(self.labels == wanted)[0]
-                subindexes += list(indx)
-            self.images = self.images[subindexes, ::]
-            self.labels = self.labels[subindexes]
+            self.images, self.labels = self._filter_digits(self.images, self.labels)
         else:
             self.wanted_digits = list(range(10))
         self.label_transform = mk_fun_label2onehot(len(self.wanted_digits))
 
         self._color_imgs_onehot_labels()
-        # self.images = self.images[inds_subset, ::]
-        # self.labels = self.labels[inds_subset]
-        # self._color_imgs_onehot_labels()
 
         self.generate_dataframe()
         self.flag_load_df = True
         self.inject_variable = inject_variable
+        if self.inject_variable: self.inject_dim = args.dim_inject_y
 
+    def _filter_digits(self, x, y=None):
+        """
+        :param x: a numpy array or a dataframe to be filtered for inclusion of only those digits specified in self.wanted_digits
+        :param y: digit labels in the same order as the rows of x; if None then x is assumed to have a 'digit' column.
+        :return: filtered x, filtered y
+        """
+        if y is None:
+            assert isinstance(x, pd.DataFrame), "provide a value for y if x is not a pandas dataframe"
+            filtered_x = x[x['digit'].isin(self.wanted_digits)]
+            filtered_y = filtered_x['digit'].values
+        else:
+            subidx = []
+            for wanted in self.wanted_digits:
+                assert 0 <= wanted <= 9
+                idx = np.where(y == wanted)[0]
+                subidx += list(idx)
+            filtered_x = x[subidx]
+            filtered_y = y[subidx]
+        return filtered_x, filtered_y
 
 
     def _collect_imgs_labels(self, path, raw_split):
@@ -198,8 +209,10 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
     def __getitem__(self, idx):
         if self.flag_load_df:
             self.df = pd.read_csv(self.df_save_path)
-            if self.inject_variable:
-                self.inject_dim = len(self.df[self.inject_variable].unique())
+            # only keep the single color of this dataset
+            self.df = self.df[self.df['color'] == self.ind_color]
+            # only keep the digits of this dataset
+            if len(self.wanted_digits) < 10: self.df, _ = self._filter_digits(self.df)
             self.flag_load_df = False
 
         image_id = "_".join([str(idx), str(self.ind_color), str(self.color_scheme), str(self.labels[idx])])

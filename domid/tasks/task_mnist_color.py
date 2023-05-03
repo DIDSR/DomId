@@ -8,8 +8,6 @@ from domainlab.utils.utils_classif import mk_dummy_label_list_str
 from torch.utils.data import random_split
 from torchvision import transforms
 
-# from domainlab.dsets.dset_mnist_color_solo_default import \
-#     DsetMNISTColorSoloDefault
 from domid.dsets.dset_mnist_color_solo_default import DsetMNISTColorSoloDefault
 from domid.tasks.b_task_cluster import NodeTaskDictCluster
 
@@ -18,6 +16,23 @@ class NodeTaskMNISTColor10(NodeTaskDictCluster):
     """
     Use the deafult palette with 10 colors
     """
+    def init_business(self, args):
+        """
+        create a dictionary of datasets
+        """
+        if args.digits_from_mnist:
+            self.wanted_digits = [int(w) for w in args.digits_from_mnist]
+            self.wanted_digits = list(set(self.wanted_digits))
+        else:
+            self.wanted_digits = list(range(10))
+        self._dim_y = len(self.wanted_digits)
+        # note the order of lines: dim_y has to be set before init_business is called
+        super().init_business(args)
+
+    @property
+    def dim_y(self):
+        return self._dim_y
+
     @property
     def list_str_y(self):
         return mk_dummy_label_list_str("digit", self.dim_y)
