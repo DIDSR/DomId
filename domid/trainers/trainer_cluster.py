@@ -62,7 +62,9 @@ class TrainerCluster(AbstractTrainer):
         prediction = Prediction(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args.bs)
         acc_tr_y, _, acc_tr_d, _ = prediction.epoch_tr_acc()
         acc_val_y, _, acc_val_d, _ = prediction.epoch_val_acc()
-        r_score = prediction.epoch_tr_correlation()
+        r_score ='N/A'
+        if self.args.task=='her2':
+            r_score = prediction.epoch_tr_correlation()
 
         # ___________Define warm-up for ELBO loss_________
         if self.warmup_beta < 1 and self.pretraining_finished:

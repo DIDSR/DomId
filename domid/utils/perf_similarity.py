@@ -56,6 +56,7 @@ class PerfCorrelation(PerfClassif):
             r = np.corrcoef(i, true_scores)
             R_values.append(r[0][1])
         print(R_values)
+
         return max(R_values)
     @classmethod
     def cal_acc(clc, model, loader_tr, device, max_batches=None):

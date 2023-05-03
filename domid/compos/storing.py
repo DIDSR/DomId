@@ -91,8 +91,14 @@ class Storing():
 
                                                'train_loss', 'test_loss','directory'])
             results_df.to_csv("results.csv", index=False)
+
+
+        if self.args.inject_var:
+            model_name = 'c'+self.args.aname
+        else:
+            model_name = self.args.aname
         if self.last_epoch==epoch:
-            row = [{'dataset': self.args.task, 'model': self.args.aname,
+            row = [{'dataset': self.args.task, 'model': model_name,
                     'seed': self.args.seed, 'bs': self.args.bs,
                    'zd_dim': self.args.zd_dim,
                    'lr': self.args.lr,
@@ -100,7 +106,7 @@ class Storing():
                     'train_acc_d': self.acc_d[-1], 'test_acc_d': self.val_acc_d[-1],
                     'R with scores': self.R_scores[-1],
                     'train_loss': self.loss[-1],
-                    'test_loss': self.val_loss[-1], 'directory': self.experiment_name}]
+                    'test_loss': self.val_loss[-1].item(), 'directory': self.experiment_name}]
             results_df = results_df.append(row, ignore_index=True)
             results_df.to_csv("results.csv", index=False)
 
