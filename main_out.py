@@ -5,7 +5,7 @@ from domainlab.compos.exp.exp_cuda_seed import set_seed  # reproducibility
 
 from domid.arg_parser import parse_cmd_args
 from domid.compos.exp.exp_main import Exp
-
+import pandas as pd
 torch.cuda.empty_cache()
 import os
 
@@ -18,6 +18,7 @@ if __name__ == "__main__":
     print(args)
     if os.path.exists(os.path.join(args.dpath, 'dataframe_mnist.csv')):
         os.remove(os.path.join(args.dpath, 'dataframe_mnist.csv'))
+
 
     set_seed(args.seed)
     exp = Exp(args=args)

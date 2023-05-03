@@ -2,8 +2,7 @@ import itertools
 
 import torch
 import torch.optim as optim
-from domainlab.algos.trainers.a_trainer import \
-    AbstractTrainer  # TrainerClassif
+from domainlab.algos.trainers.a_trainer import AbstractTrainer
 
 from domid.compos.predict_basic import Prediction
 from domid.compos.storing import Storing
@@ -12,7 +11,7 @@ from domid.trainers.pretraining_GMM import Pretraining
 from domid.utils.perf_cluster import PerfCluster
 
 
-class TrainerCluster(AbstractTrainer):#TrainerClassif):
+class TrainerCluster(AbstractTrainer):
     def __init__(self, model, task, observer, device, writer, pretrain=True, aconf=None):
         """
         :param model: model to train
@@ -23,6 +22,7 @@ class TrainerCluster(AbstractTrainer):#TrainerClassif):
         :param pretrain: whether to pretrain the model with MSE loss
         :param aconf: configuration parameters, including learning rate and pretrain threshold
         """
+
         super().__init__()
         super().init_business(model, task, observer, device, aconf)
 
@@ -30,7 +30,6 @@ class TrainerCluster(AbstractTrainer):#TrainerClassif):
         self.pretraining_finished = not self.pretrain
         self.lr = aconf.lr
         self.warmup_beta = 0.1
-
         if not self.pretraining_finished:
             self.optimizer = optim.Adam(
                 itertools.chain(self.model.encoder.parameters(), self.model.decoder.parameters()), lr=self.lr
@@ -60,9 +59,12 @@ class TrainerCluster(AbstractTrainer):#TrainerClassif):
         self.epo_loss_tr = 0
 
         pretrain = Pretraining(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args)
-        prediction = Prediction(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args)
-        acc_tr, _ = prediction.epoch_tr_acc()
-        acc_val, _ = prediction.epoch_val_acc()
+        prediction = Prediction(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args.bs)
+        acc_tr_y, _, acc_tr_d, _ = prediction.epoch_tr_acc()
+        acc_val_y, _, acc_val_d, _ = prediction.epoch_val_acc()
+        r_score ='N/A'
+        if self.args.task=='her2':
+            r_score = prediction.epoch_tr_correlation()
 
         # ___________Define warm-up for ELBO loss_________
         if self.warmup_beta < 1 and self.pretraining_finished:
@@ -157,7 +159,7 @@ class TrainerCluster(AbstractTrainer):#TrainerClassif):
             epoch,
             self.lr,
             self.warmup_beta,
-            acc_tr,
+            acc_tr_y,
             loss,
             self.pretraining_finished,
             tensor_x,
@@ -165,7 +167,7 @@ class TrainerCluster(AbstractTrainer):#TrainerClassif):
         )
 
         # _____storing results and Z space__________
-        self.storage.storing(epoch, acc_tr, self.epo_loss_tr, acc_val, loss_val.sum())
+        self.storage.storing(epoch, acc_tr_y,acc_tr_d, self.epo_loss_tr, acc_val_y, acc_val_d, loss_val.sum(), r_score)
         if epoch % 2 == 0:
             _, z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels = prediction.mk_prediction()
             #_, Z, domain_labels, machine_labels, image_locs = prediction.mk_prediction()
@@ -176,6 +178,7 @@ class TrainerCluster(AbstractTrainer):#TrainerClassif):
             
 
         flag_stop = self.observer.update(epoch)  # notify observer
+        self.storage.csv_dump(epoch)
         return flag_stop
 
     def before_tr(self):
