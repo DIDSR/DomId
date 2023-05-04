@@ -31,7 +31,7 @@ class ObVisitorClusteringOnly(ObVisitor):
 
             if r_score_tr is not None:
                 print('Correlation with HER2 scores training', r_score_tr)
-                print('Correlation with HER2 scores training', r_score_te)
+                print('Correlation with HER2 scores validation', r_score_te)
 
 
 
