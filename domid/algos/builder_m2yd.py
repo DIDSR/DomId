@@ -27,7 +27,8 @@ class NodeAlgoBuilderM2YD(NodeAlgoBuilder):
                           i_w=task.isize.w)
         observer = ObVisitorCleanUp(
             ObVisitorClustering(exp, MSelOracleVisitor(MSelTrLoss(max_es=args.es)), device))
-        trainer = TrainerBasic(model, task, observer, device, aconf=args)
+        trainer = TrainerBasic()
+        trainer.init_business(model, task, observer, device, args)
         return trainer
 
 
