@@ -63,30 +63,10 @@ def mean_scores_per_experiment(scores, img_locs):
         except:
             "not full path"
 
-        if "s" in image_loc:
-
-            N = len(image_loc) - 4 - 5
-            # print(N, prediction[:N])
-            # print(scores.loc[scores['file name'].str.contains(prediction[:N])])
-            mean_score = scores.loc[
-                scores["file name"].str.contains(image_loc[:N])
-            ].mean(axis=1)
-        if "S" in image_loc:
-
-            N = len(image_loc) - 4 - 5
-            # print(N, prediction[:N])
-            # print(scores.loc[scores['file name'].str.contains(prediction[:N])])
-            mean_score = scores.loc[
-                scores["file name"].str.contains(image_loc[:N])
-            ].mean(axis=1)
-        else:
-            N = len(image_loc) - 6
-            # print('secod case', N, prediction[:N])
-            # print(scores.loc[scores['file name'].str.contains(prediction[:N])])
-            mean_score = scores.loc[
-                scores["file name"].str.contains(image_loc[:N])
-            ].mean(axis=1)
-            # print(mean_score)
+        N = len(image_loc) - 6 #removes the _machine.jpg part from the name of the image
+        mean_score = scores.loc[
+            scores["file name"].str.contains(image_loc[:N])
+        ].mean(axis=1)
         mean_score = float(mean_score)
         # print(mean_score)
         M.append(mean_score)
@@ -110,7 +90,7 @@ if __name__ == "__main__":
         images = os.listdir(folder_path)
         labels = [label_of_the_folder_int] * len(images)
         machine_labels = parse_machine_labels(images)
-        base_path_scores = "../../HER2/"
+        base_path_scores = os.path.join(*path.split('/')[:-1])
         # base_path = "/your/data/location"
 
         scores = pd.read_csv(

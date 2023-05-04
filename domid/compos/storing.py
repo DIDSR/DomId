@@ -19,13 +19,14 @@ class Storing():
         self.acc_d = []
         self.val_acc_d = []
 
-        self.R_scores = []
+        self.r_scores_tr = []
+        self.r_scores_te = []
 
         self.experiment_name = str(datetime.datetime.now()) + "_"  + str(args.task) + "_" + str(args.aname)
         self.last_epoch = args.epos
 
 
-    def storing(self, epoch, acc_tr_y,acc_tr_d, loss_tr, acc_val_y, acc_val_d, loss_val, R_score):
+    def storing(self, epoch, acc_tr_y,acc_tr_d, loss_tr, acc_val_y, acc_val_d, loss_val, r_score_tr, r_score_te):
 
         #arguments = [str(args.aname), str(args.model), str(args.prior), str(args.zd_dim), str(args.te_d), str(args.tr_d), str(args.L), str(args.lr), str(args.bs), str(args.pre_tr), str(args.warmup)]
         self.loss.append(loss_tr)
@@ -39,7 +40,8 @@ class Storing():
         self.acc_d.append(acc_tr_d)
         self.val_acc_d.append(acc_val_d)
 
-        self.R_scores.append(R_score)
+        self.r_scores_tr.append(r_score_tr)
+        self.r_scores_te.append(r_score_te)
 
         ex_path = "./notebooks/" + self.experiment_name
         if not os.path.exists("./notebooks/"+self.experiment_name):
@@ -83,18 +85,18 @@ class Storing():
 
         df.to_csv(os.path.join(exp_path, 'clustering_results.csv'), index=False)
     def csv_dump(self, epoch):
-        if os.path.exists("results.csv"):
-            results_df = pd.read_csv("results.csv")
+        if os.path.exists(os.path.join(self.args.path_to_results, "results.csv")):
+            results_df = pd.read_csv(os.path.join(self.args.path_to_results, "results.csv"))
         else:
             results_df = pd.DataFrame(columns=['dataset', 'model', 'seed', 'bs', 'zd_dim', 'lr', 'train_acc_y', 'test_acc_y',
-                                               'train_acc_d', 'test_acc_d', 'R with scores',
+                                               'train_acc_d', 'test_acc_d', 'R with scores train', 'R with scores test',
 
                                                'train_loss', 'test_loss','directory'])
-            results_df.to_csv("results.csv", index=False)
+            results_df.to_csv(os.path.join(self.args.path_to_results, "results.csv"), index=False)
 
 
         if self.args.inject_var:
-            model_name = 'c'+self.args.aname
+            model_name = 'cd'+self.args.aname
         else:
             model_name = self.args.aname
         if self.last_epoch==epoch:
@@ -104,11 +106,12 @@ class Storing():
                    'lr': self.args.lr,
                     'train_acc_y': self.acc_y[-1], 'test_acc_y': self.val_acc_y[-1],
                     'train_acc_d': self.acc_d[-1], 'test_acc_d': self.val_acc_d[-1],
-                    'R with scores': self.R_scores[-1],
+                    'R with scores train': self.r_scores_tr[-1],
+                    'R with scores test': self.r_scores_te[-1],
                     'train_loss': self.loss[-1],
                     'test_loss': self.val_loss[-1].item(), 'directory': self.experiment_name}]
             results_df = results_df.append(row, ignore_index=True)
-            results_df.to_csv("results.csv", index=False)
+            results_df.to_csv(os.path.join(self.args.path_to_results, "results.csv"), index=False)
 
 
 

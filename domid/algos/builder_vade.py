@@ -24,8 +24,6 @@ class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
         device = get_device(args)
 
 
-        device = get_device(args) #FIXME: nocu is not defined
-        #device = 'cuda'
         zd_dim = args.zd_dim
         d_dim = args.d_dim
         L = args.L

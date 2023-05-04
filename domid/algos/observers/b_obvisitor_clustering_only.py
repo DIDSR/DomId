@@ -14,7 +14,7 @@ class ObVisitorClusteringOnly(ObVisitor):
         print("epoch:", epoch)
         self.epo = epoch
         if epoch % self.epo_te == 0:
-            metric_tr, metric_te, r_score_tr = self.host_trainer.model.cal_perf_metric(
+            metric_tr, metric_te, r_score_tr, r_score_te = self.host_trainer.model.cal_perf_metric(
                 self.loader_tr, self.device, self.loader_val) #note the loader is validation, not test dset
             self.metric_te = metric_te
             self.metric_tr = metric_tr
@@ -30,7 +30,8 @@ class ObVisitorClusteringOnly(ObVisitor):
             print(metric_te[1])
 
             if r_score_tr is not None:
-                print('Correlation with HER2 scores', r_score_tr)
+                print('Correlation with HER2 scores training', r_score_tr)
+                print('Correlation with HER2 scores training', r_score_te)
 
 
 

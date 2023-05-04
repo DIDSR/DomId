@@ -92,8 +92,8 @@ class Prediction:
         return acc_vec_y, conf_y, acc_vec_d, conf_d
     def epoch_tr_correlation(self):
 
-        correlation = PerfCorrelation.cal_acc(self.model, self.loader_tr, self.device, max_batches=None)
-        return correlation
+        correlation_tr, correlation_te = PerfCorrelation.cal_acc(self.model, self.loader_tr, self.device, max_batches=None)
+        return correlation_tr, correlation_te
 
     # def prediction_te(self):
     #     """

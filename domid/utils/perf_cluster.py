@@ -97,11 +97,11 @@ class PerfCluster(PerfClassif):
         """
 
         # if len(np.unique(cluster_pred_scalar)) == len(np.unique(cluster_true_scalar)):
-            # cluster_pred_scalar = [item - 1 for item in cluster_pred_scalar]
+            # clusteqr_pred_scalar = [item - 1 for item in cluster_pred_scalar]
 
 
 
-        cost = cost - confusion_matrix(cluster_pred_scalar, cluster_true_scalar,labels=list(range(len(cost))))
+        cost = cost - confusion_matrix(cluster_pred_scalar, cluster_true_scalar,labels=list(range(cost.shape[0])))
 
         # What is the best permutation?
         row_ind, col_ind = linear_sum_assignment(cost)
@@ -127,7 +127,7 @@ class PerfCluster(PerfClassif):
         model_local = model.to(device)
         if max_batches is None:
             max_batches = len(loader_te)
-        list_vec_preds, list_vec_labels = [], []
+        list_vec_preds, list_vec_y_labels, list_vec_d_labels = [], [], []
         cost_y_s = np.zeros((model_local.d_dim, model_local.d_dim), dtype="int")
         cost_d_s = np.zeros((model_local.d_dim, model_local.d_dim), dtype="int")
         conf_mat_y_s = cost_y_s
@@ -142,13 +142,16 @@ class PerfCluster(PerfClassif):
                 x_s, y_s, d_s = x_s.to(device), y_s.to(device), d_s.to(device)
 
                 pred = model_local.infer_d_v(x_s)
+                list_vec_preds+=pred.argmax(axis=1).detach().cpu().numpy().tolist()
+                list_vec_y_labels+=y_s.argmax(axis=1).detach().cpu().numpy().tolist()
+                list_vec_d_labels+=d_s.argmax(axis=1).detach().cpu().numpy().tolist()
 
-                if pred.shape[1]==y_s.shape[1]:
+            if pred.shape[1]==y_s.shape[1]:
 
-                    hungarian_acc_y_s, cost_y_s, conf_mat_y_s = clc.hungarian_algorithm(pred.argmax(axis=1).detach().cpu().numpy(), y_s.argmax(axis=1).detach().cpu().numpy(), cost_y_s)
-                if pred.shape[1]==d_s.shape[1]:
+                hungarian_acc_y_s, cost_y_s, conf_mat_y_s = clc.hungarian_algorithm(list_vec_preds, list_vec_y_labels, cost_y_s)
+            if pred.shape[1]==d_s.shape[1]:
 
-                    hungarian_acc_d_s, cost_d_s, conf_mat_d_s = clc.hungarian_algorithm(pred.argmax(axis=1).detach().cpu().numpy(), d_s.argmax(axis=1).detach().cpu().numpy(), cost_d_s)
+                hungarian_acc_d_s, cost_d_s, conf_mat_d_s = clc.hungarian_algorithm(list_vec_preds, list_vec_d_labels, cost_d_s)
 
 
         return hungarian_acc_y_s, conf_mat_y_s, hungarian_acc_d_s, conf_mat_d_s
