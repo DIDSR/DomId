@@ -14,18 +14,18 @@ class PerfCorrelation(PerfClassif):
     def __init__(self):
         super().__init__()
 
-    @classmethod
-    def load_csv_for_her2(clc, path):
+
+    def _load_csv_for_her2(self, path):
         """
         This function takes a path to a csv file as input and returns a list of the labels in the file.
         """
 
-        clc.df = pd.read_csv(os.path.join(path, 'dataframe.csv'))
+        self.df = pd.read_csv(os.path.join(path, 'dataframe.csv'))
 
-        return clc.df
+        return self.df
 
-    @classmethod
-    def mean_score_order_match(clc, img_locs, true_scores):
+
+    def _mean_score_order_match(self, img_locs, true_scores):
 
         M = []
         for prediction in img_locs:
@@ -33,8 +33,8 @@ class PerfCorrelation(PerfClassif):
 
         return M
 
-    @classmethod
-    def domain_class_mapping(clc, domain_predictions, true_scores):
+
+    def _domain_class_mapping(self, domain_predictions, true_scores):
         dic1 = {0: 2, 1: 1, 2: 0}
         dic2 = {0: 1, 1: 0, 2: 2}
         dic3 = {0: 2, 1: 0, 2: 1}
@@ -63,7 +63,7 @@ class PerfCorrelation(PerfClassif):
 
         model.eval()
         model_local = model.to(device)
-        df = clc.load_csv_for_her2('../../HER2/combined_train') #FIXME
+        df = clc()._load_csv_for_her2('../../HER2/combined_train') #FIXME
         image_id_labels =[]
         domain_predictions = []
         with torch.no_grad():
@@ -74,7 +74,7 @@ class PerfCorrelation(PerfClassif):
                 pred = model_local.infer_d_v(x_s)
                 domain_predictions+=list(pred.argmax(dim=1).cpu().numpy())
                 image_id_labels+=img_id
-        mean_scores = clc.mean_score_order_match(image_id_labels, df)
-        R_scores = clc.domain_class_mapping(domain_predictions, mean_scores)
+        mean_scores = clc()._mean_score_order_match(image_id_labels, df)
+        R_scores = clc()._domain_class_mapping(domain_predictions, mean_scores)
 
         return R_scores
