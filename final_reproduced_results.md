@@ -241,4 +241,72 @@ pooled train clustering acc (vec_y correlation):  0.10875
  [13 13  8 17  9  5 10 11 14 20]]
  
 ```
+# HER 2 
+## VaDE
 
+```commandline
+poetry run python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --epos=15 --aname=vade --zd_dim=500 --d_dim=3 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=4 --dpath "../../HER2/combined_train" --bs 4 --prior Gaus --model cnn --lr 0.000005
+```
+```
+epoch: 15
+pooled train clustering acc (vec_d correlation):  0.4642857142857143
+[[187  42  38]
+ [ 60 106   3]
+ [117 100  19]]
+clustering validation acc:  0.4583333333333333
+[[186  44  34]
+ [ 60 103   7]
+ [118 101  19]]
+pooled train clustering acc (vec_y correlation):  0.40922619047619047
+[[100  61 103]
+ [ 18  59  93]
+ [ 50  48 140]]
+Correlation with HER2 scores training 0.3636187188749541
+Correlation with HER2 scores validation 0.4149980450323623
+
+```
+
+## CDVaDE
+
+```commandline
+ poetry run python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --epos=15 --aname=vade --zd_dim=500 --d_dim=3 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=4 --dpath "../../HER2/combined_train" --bs 4 --prior Gaus --model cnn --lr 0.000005 --dim_inject_y 3 --inject_var "class"
+```
+```
+epoch: 15
+pooled train clustering acc (vec_d correlation):  0.4538690476190476
+[[  5  88  60]
+ [ 16 112 116]
+ [ 39  48 188]]
+clustering validation acc:  0.46875
+[[  5  89  47]
+ [ 14 108 115]
+ [ 41  51 202]]
+pooled train clustering acc (vec_y correlation):  0.4270833333333333
+[[ 49  76  16]
+ [ 52 135  50]
+ [ 67 125 102]]
+Correlation with HER2 scores training 0.40958702786986895
+Correlation with HER2 scores validation 0.4135975037289631
+```
+<img src="result_images/her2_vade0.png" alt="image" width="128" height="150"> <img src="result_images/her2_cdvade.png" alt="image" width="128" height="150">
+
+| dataset | model  | train_acc_y       | test_acc_y        | train_acc_d       | test_acc_d        | train_loss       | test_loss        | R with scores train | R with scores test |
+|---------|--------|-------------------|-------------------|-------------------|-------------------|------------------|------------------|---------------------|--------------------|
+| her2    | cdvade | 0.421130952380952 | 0.410714285714286 | 0.513392857142857 | 0.514880952380952 | 24274.9782409668 | 253.425643920898 | 0.399222357577121   | 0.375552994731988  |
+| her2    | vade   | 0.425595238095238 | 0.418154761904762 | 0.453869047619048 | 0.447916666666667 | 22727.3095474243 | 115.21866607666  | 0.396636824017515   | 0.388826721494123  |
+
+
+## VaDE (different number of pretraining epochs)
+
+```commandline
+poetry run python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --epos=15 --aname=vade --zd_dim=500 --d_dim=3 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=12 --dpath "../../HER2/combined_train" --bs 4 --prior Gaus --model cnn --lr 0.000005
+```
+<img src="result_images/her2_vade1.png" alt="image" width="128" height="150">
+
+The first two rows are the results of the experiments above, and the last one is modified.
+
+| dataset | model  | train_acc_y       | test_acc_y        | train_acc_d       | test_acc_d        | train_loss       | test_loss        | R with scores train | R with scores test |
+|---------|--------|-------------------|-------------------|-------------------|-------------------|------------------|------------------|---------------------|--------------------|
+| her2    | cdvade | 0.421130952380952 | 0.410714285714286 | 0.513392857142857 | 0.514880952380952 | 24274.9782409668 | 253.425643920898 | 0.399222357577121   | 0.375552994731988  |
+| her2    | vade   | 0.425595238095238 | 0.418154761904762 | 0.453869047619048 | 0.447916666666667 | 22727.3095474243 | 115.21866607666  | 0.396636824017515   | 0.388826721494123  |
+| her2    | vade   | 0.410714285714286 | 0.404761904761905 | 0.473214285714286 | 0.494047619047619 | 22028.3210411072 | 149.957138061523 | 0.438361904651605   | 0.452394076973467  |
