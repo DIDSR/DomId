@@ -169,7 +169,7 @@ class TrainerCluster(AbstractTrainer):
 
         # _____storing results and Z space__________
         self.storage.storing(epoch, acc_tr_y,acc_tr_d, self.epo_loss_tr, acc_val_y, acc_val_d, loss_val.sum(), r_score_tr, r_score_te)
-        if epoch % 2 == 0:
+        if epoch % 1 == 0 and epoch> 0:
             _, z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels = prediction.mk_prediction()
             #_, Z, domain_labels, machine_labels, image_locs = prediction.mk_prediction()
 

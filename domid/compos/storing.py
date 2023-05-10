@@ -21,8 +21,11 @@ class Storing():
 
         self.r_scores_tr = []
         self.r_scores_te = []
+        model_name = str(args.aname)
+        if args.dim_inject_y>0:
+            model_name = 'cd'+str(args.aname)
 
-        self.experiment_name = str(datetime.datetime.now()) + "_"  + str(args.task) + "_" + str(args.aname)
+        self.experiment_name = str(datetime.datetime.now()) + "_"  + str(args.task) + "_" + model_name
         self.last_epoch = args.epos
 
 
