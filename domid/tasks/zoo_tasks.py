@@ -9,6 +9,7 @@ from torchvision import transforms
 from domid.tasks.task_her2 import NodeTaskHER2
 from domid.tasks.task_mnist import NodeTaskMNIST
 from domid.tasks.task_mnist_color import NodeTaskMNISTColor10
+from domid.tasks.task_usps import NodeTaskUSPS
 
 path_this_file = os.path.dirname(os.path.realpath(__file__))
 
@@ -36,6 +37,8 @@ class TaskChainNodeGetter(object):
         chain = NodeTaskMNIST(succ=chain)
 
         chain = NodeTaskHER2(succ=chain)
+
+        chain = NodeTaskUSPS(succ=chain)
 
         chain = mk_task_folder(extensions={"caltech": "jpg", "sun": "jpg", "labelme": "jpg"},
                                list_str_y=["chair", "car"],
