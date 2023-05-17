@@ -24,7 +24,7 @@ class NodeTaskUSPS(NodeTaskDictCluster):
         """
         :return: image size object storing image channels, height, width.
         """
-        return ImSize(3, 32, 32)
+        return ImSize(3, 16, 16)
 
     def get_list_domains(self):
         """
@@ -53,7 +53,7 @@ class NodeTaskUSPS(NodeTaskDictCluster):
         # be evaluated in if statement, in which case, no validation
         # set will be created. Otherwise, this argument is
         # the split ratio
-        trans = [transforms.Resize((32, 32)), transforms.ToTensor()]
+        trans = [transforms.Resize((16, 16)), transforms.ToTensor()]
         ind_global = self.get_list_domains().index(na_domain)
         dset = DsetUSPS( digit= ind_global, args = args, list_transforms=trans)
         train_set = dset

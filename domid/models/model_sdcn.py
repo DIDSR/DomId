@@ -14,57 +14,8 @@ from domid.compos.GNN_layer import GNNLayer
 from domid.compos.linear_AE import LinearAE
 from domid.compos.GNN import GNN
 
-
+import scipy.sparse as sp
 class ModelSDCN(AModelCluster):
-
-
-    # def __init__(self, n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3,
-    #              n_input, n_z, n_clusters, v=1):
-    #     super(ModelSDCN, self).__init__()
-    #
-    #     # autoencoder for intra information
-    #     self.ae_encoder = LinearEncoder()
-    #     self.ae_decoder = LinearDecoder()
-    #
-    #     self.encoder = LinearEncoder(zd_dim=zd_dim, input_dim=(i_c, i_h, i_w)).to(device)
-    #     self.decoder = LinearDecoder(prior=args.prior, zd_dim=zd_dim, input_dim=(i_c, i_h, i_w)).to(device)
-    #
-    #     self.ae.load_state_dict(torch.load(args.pretrain_path, map_location='cpu'))
-    #
-    #     # GCN for inter information
-    #     self.gnn_1 = GNNLayer(n_input, n_enc_1)
-    #     self.gnn_2 = GNNLayer(n_enc_1, n_enc_2)
-    #     self.gnn_3 = GNNLayer(n_enc_2, n_enc_3)
-    #     self.gnn_4 = GNNLayer(n_enc_3, n_z)
-    #     self.gnn_5 = GNNLayer(n_z, n_clusters)
-    #
-    #     # cluster layer
-    #     self.cluster_layer = nn.Parameter(torch.Tensor(n_clusters, n_z))
-    #     torch.nn.init.xavier_normal_(self.cluster_layer.data)
-    #
-    #     # degree
-    #     self.v = v
-    #
-    # def forward(self, x, adj):
-    #     # DNN Module
-    #     x_bar, tra1, tra2, tra3, z = self.ae(x)
-    #
-    #     sigma = 0.5
-    #
-    #     # GCN Module
-    #     h = self.gnn_1(x, adj)
-    #     h = self.gnn_2((1 - sigma) * h + sigma * tra1, adj)
-    #     h = self.gnn_3((1 - sigma) * h + sigma * tra2, adj)
-    #     h = self.gnn_4((1 - sigma) * h + sigma * tra3, adj)
-    #     h = self.gnn_5((1 - sigma) * h + sigma * z, adj, active=False)
-    #     predict = F.softmax(h, dim=1)
-    #
-    #     # Dual Self-supervised Module
-    #     q = 1.0 / (1.0 + torch.sum(torch.pow(z.unsqueeze(1) - self.cluster_layer, 2), 2) / self.v)
-    #     q = q.pow((self.v + 1.0) / 2.0)
-    #     q = (q.t() / torch.sum(q, 1)).t()
-    #
-    #     return x_bar, q, predict, z
     def __init__(self, zd_dim, d_dim, device, L, i_c, i_h, i_w, args):
 
         super(ModelSDCN, self).__init__()
@@ -76,7 +27,7 @@ class ModelSDCN(AModelCluster):
         self.loss_epoch = 0
 
         self.dim_inject_y = 0
-
+        self.adj = self.load_graph()
         if self.args.dim_inject_y:
             self.dim_inject_y = self.args.dim_inject_y
 
@@ -88,63 +39,78 @@ class ModelSDCN(AModelCluster):
         self.cluster_layer = nn.Parameter(torch.Tensor(n_clusters, n_z))
         self.linearAE =  LinearAE(n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3,n_input, n_z)
         self.gnn = GNN(n_input, n_enc_1, n_enc_2, n_enc_3, n_z, n_clusters)
+
         self.v = 1
 
+    def normalize(self, mx): #FIXME move to utils
+        """Row-normalize sparse matrix"""
+        rowsum = np.array(mx.sum(1))
+        r_inv = np.power(rowsum, -1).flatten()
+        r_inv[np.isinf(r_inv)] = 0.
+        r_mat_inv = sp.diags(r_inv)
+        mx = r_mat_inv.dot(mx)
+        return mx
 
-        # if self.args.model == "linear":
-        #     self.encoder = LinearEncoder(zd_dim=zd_dim, input_dim=(i_c, i_h, i_w)).to(device)
-        #     self.decoder = LinearDecoder(prior=args.prior, zd_dim=zd_dim, input_dim=(i_c, i_h, i_w)).to(device)
-        #     if self.dim_inject_y:
-        #         warnings.warn("linear model decoder does not support label injection")
-        # else:
-        #     self.encoder = ConvolutionalEncoder(zd_dim=zd_dim, num_channels=i_c, i_w=i_w, i_h=i_h).to(device)
-        #     self.decoder = ConvolutionalDecoder(
-        #         prior=args.prior,
-        #         zd_dim=zd_dim,  # 50
-        #         domain_dim=self.dim_inject_y,  #
-        #         # domain_dim=self.dim_inject_y,
-        #         h_dim=self.encoder.h_dim,
-        #         num_channels=i_c
-        #     ).to(device)
-        # print(self.encoder)
-        # print(self.decoder)
-        # self.log_pi = nn.Parameter(
-        #     torch.FloatTensor(
-        #         self.d_dim,
-        #     )
-        #     .fill_(1.0 / self.d_dim)
-        #     .log(),
-        #     requires_grad=True,
-        # )
-        # self.mu_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
-        # self.log_sigma2_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
-        #
-        # self.loss_writter = SummaryWriter()
+    def sparse_mx_to_torch_sparse_tensor(self, sparse_mx): #FIXME move to utils
+        """Convert a scipy sparse matrix to a torch sparse tensor."""
+        sparse_mx = sparse_mx.tocoo().astype(np.float32)
+        indices = torch.from_numpy(
+            np.vstack((sparse_mx.row, sparse_mx.col)).astype(np.int64))
+        values = torch.from_numpy(sparse_mx.data)
+        shape = torch.Size(sparse_mx.shape)
+        return torch.sparse.FloatTensor(indices, values, shape)
+    def load_graph(self, dataset='usps'): #FIXME create a grpah for the dataset? and move to utils
+
+        path = '../graph/{}10_graph.txt'.format(dataset)
+
+        data = np.loadtxt('../data/{}.txt'.format(dataset))
+        n, _ = data.shape
+
+        idx = np.array([i for i in range(n)], dtype=np.int32)
+        idx_map = {j: i for i, j in enumerate(idx)}
+        edges_unordered = np.genfromtxt(path, dtype=np.int32)
+        edges = np.array(list(map(idx_map.get, edges_unordered.flatten())),
+                         dtype=np.int32).reshape(edges_unordered.shape)
+        adj = sp.coo_matrix((np.ones(edges.shape[0]), (edges[:, 0], edges[:, 1])),
+                            shape=(n, n), dtype=np.float32)
+
+        # build symmetric adjacency matrix
+        adj = adj + adj.T.multiply(adj.T > adj) - adj.multiply(adj.T > adj)
+        adj = adj + sp.eye(adj.shape[0])
+        adj = self.normalize(adj)
+        adj = self.sparse_mx_to_torch_sparse_tensor(adj)
+
+        return adj
 
 
     def _inference(self, x):
 
 
         #z_mu, z_sigma2_log = self.encoder(x)
+        breakpoint()
+        x = x.view(x.size(0), -1)
         x_bar, tra1, tra2, tra3, z = self.linearAE(x)
-        adj = 'this should be a graph'
-        h = self.gnn(x, adj, tra1, tra2, tra3, z)
+
+        h = self.gnn(x, self.adj, tra1, tra2, tra3, z)
         predict = F.softmax(h, dim=1)
 
         # Dual Self-supervised Module
         q = 1.0 / (1.0 + torch.sum(torch.pow(z.unsqueeze(1) - self.cluster_layer, 2), 2) / self.v)
         q = q.pow((self.v + 1.0) / 2.0)
         q = (q.t() / torch.sum(q, 1)).t()
+        q = (q.t() / torch.sum(q, 1)).t()
 
-        preds_c = predict
+        logits = predict
         probs_c = q
         z_mu =z
+
         z_sigma2_log = z
         mu_c = self.cluster_layer
         log_sigma2_c = self.v
 
 
-
+        pi = self.v
+        preds_c , *_ = logit2preds_vpic(logits)
 
         return preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits
 
@@ -185,7 +151,7 @@ class ModelSDCN(AModelCluster):
 
 
     def cal_loss(self, x, inject_domain, warmup_beta):
-        x_bar, q, pred, _ = self._inference(x, adj)
+        x_bar, q, pred, _ = self._inference(x, self.adj)
         q = q.data
         p = self.target_distribution(q)
 
@@ -195,7 +161,7 @@ class ModelSDCN(AModelCluster):
 
         loss = 0.1 * kl_loss + 0.01 * ce_loss + re_loss
 
-        return
+        return loss
 
     def pretrain_loss(self, x, inject_domain):
 
