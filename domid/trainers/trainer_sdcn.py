@@ -151,18 +151,18 @@ class TrainerCluster(AbstractTrainer):
             else:
                 loss_val = self.model.cal_loss(tensor_x_val, inject_tensor_val, self.warmup_beta)
 
-        tensorboard_write(
-            self.writer,
-            self.model,
-            epoch,
-            self.lr,
-            self.warmup_beta,
-            acc_tr_y,
-            loss,
-            self.pretraining_finished,
-            tensor_x,
-            inject_tensor,
-        )
+        # tensorboard_write(
+        #     self.writer,
+        #     self.model,
+        #     epoch,
+        #     self.lr,
+        #     self.warmup_beta,
+        #     acc_tr_y,
+        #     loss,
+        #     self.pretraining_finished,
+        #     tensor_x,
+        #     inject_tensor,
+        # )
 
         # _____storing results and Z space__________
         self.storage.storing(epoch, acc_tr_y, acc_tr_d, self.epo_loss_tr, acc_val_y, acc_val_d, loss_val.sum(),

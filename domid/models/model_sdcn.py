@@ -11,7 +11,7 @@ from domid.compos.cnn_VAE import ConvolutionalDecoder, ConvolutionalEncoder
 from domid.compos.linear_VAE import LinearDecoder, LinearEncoder
 from domid.models.a_model_cluster import AModelCluster
 from domid.compos.GNN_layer import GNNLayer
-from domid.compos.linear_AE import LinearAE
+from domid.compos.linear_AE import LinearEncoderAE, LinearDecoderAE
 from domid.compos.GNN import GNN
 
 import scipy.sparse as sp
@@ -27,7 +27,7 @@ class ModelSDCN(AModelCluster):
         self.loss_epoch = 0
 
         self.dim_inject_y = 0
-        self.adj = self.load_graph()
+        self.adj = self.load_graph().to(self.device)
         if self.args.dim_inject_y:
             self.dim_inject_y = self.args.dim_inject_y
 
@@ -37,10 +37,21 @@ class ModelSDCN(AModelCluster):
         n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3, = 500, 500, 2000, 2000, 500, 500,
 
         self.cluster_layer = nn.Parameter(torch.Tensor(n_clusters, n_z))
-        self.linearAE =  LinearAE(n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3,n_input, n_z)
-        self.gnn = GNN(n_input, n_enc_1, n_enc_2, n_enc_3, n_z, n_clusters)
+        self.encoder =  LinearEncoderAE(n_enc_1, n_enc_2, n_enc_3,n_input, n_z)
+        self.decoder = LinearDecoderAE(n_dec_1, n_dec_2, n_dec_3, n_input, n_z)
+        self.gnn_model = GNN(n_input, n_enc_1, n_enc_2, n_enc_3, n_z, n_clusters)
 
-        self.v = 1
+        self.v = torch.Tensor(1).to(self.device)
+        self.log_pi = nn.Parameter(
+            torch.FloatTensor(
+                self.d_dim,
+            )
+            .fill_(1.0 / self.d_dim)
+            .log(),
+            requires_grad=True,
+        )
+        self.mu_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
+        self.log_sigma2_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
 
     def normalize(self, mx): #FIXME move to utils
         """Row-normalize sparse matrix"""
@@ -59,9 +70,9 @@ class ModelSDCN(AModelCluster):
         values = torch.from_numpy(sparse_mx.data)
         shape = torch.Size(sparse_mx.shape)
         return torch.sparse.FloatTensor(indices, values, shape)
-    def load_graph(self, dataset='usps'): #FIXME create a grpah for the dataset? and move to utils
+    def load_graph(self, dataset='usps_custom'): #FIXME create a grpah for the dataset? and move to utils
 
-        path = '../graph/{}10_graph.txt'.format(dataset)
+        path = '../graph/{}_graph.txt'.format(dataset)
 
         data = np.loadtxt('../data/{}.txt'.format(dataset))
         n, _ = data.shape
@@ -87,11 +98,14 @@ class ModelSDCN(AModelCluster):
 
 
         #z_mu, z_sigma2_log = self.encoder(x)
-        breakpoint()
-        x = x.view(x.size(0), -1)
-        x_bar, tra1, tra2, tra3, z = self.linearAE(x)
 
-        h = self.gnn(x, self.adj, tra1, tra2, tra3, z)
+        x = x.view(x.size(0), -1)
+        tra1, tra2, tra3, z = self.encoder(x)
+
+        x_bar = self.decoder(z)
+
+        h = self.gnn_model(x, self.adj, tra1, tra2, tra3, z)
+
         predict = F.softmax(h, dim=1)
 
         # Dual Self-supervised Module
@@ -105,11 +119,12 @@ class ModelSDCN(AModelCluster):
         z_mu =z
 
         z_sigma2_log = z
-        mu_c = self.cluster_layer
-        log_sigma2_c = self.v
+        self.mu_c = self.cluster_layer
+        mu_c = self.mu_c
+        log_sigma2_c = self.log_sigma2_c
 
 
-        pi = self.v
+        pi = self.log_pi
         preds_c , *_ = logit2preds_vpic(logits)
 
         return preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits
@@ -137,6 +152,8 @@ class ModelSDCN(AModelCluster):
 
         # print(results[2].shape, inject_domain.shape, zy.shape)
         x_pro, *_ = self.decoder(zy)
+
+
         preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = (r.cpu().detach() for r in results)
         return preds, z_mu, z, log_sigma2_c, probs, x_pro
     def kl_loss(self, q, p):
@@ -168,8 +185,9 @@ class ModelSDCN(AModelCluster):
         Loss = nn.MSELoss()
         # Loss = nn.MSELoss(reduction='sum')
         # Loss = nn.HuberLoss()
-        z_mu, z_sigma2_log = self.encoder(x)
-        z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
+        x = x.view(x.size(0), -1)
+        tra1, tra2, tra3, z = self.encoder(x)
+
         if len(inject_domain) > 0:
             zy = torch.cat((z, inject_domain), 1)
         else:
