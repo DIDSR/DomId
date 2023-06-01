@@ -69,7 +69,7 @@ pooled train clustering acc (vec_y correlation):  0.44655172413793104
 
 ```
 
-# DEC
+## DEC
 ```commandline
 poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 --task=mnistcolor10 --digits_from_mnist 0 1 2 3 4 --epos=20 --aname=dec --zd_dim=20 --d_dim=5 --apath=domid/algos/builder_dec.py --L=5 --pre_tr=10 --bs 2 --lr 0.0005 --split 0.8 --prior Gaus --model cnn
 ```
@@ -99,7 +99,7 @@ pooled train clustering acc (vec_y correlation):  0.20862068965517241
 ```
 
 # MNIST 10 digits and 10 colors
-# VaDE 
+## VaDE 
 
 ```commandline
 poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 5 6 7 8 9 --task=mnistcolor10 --epos=20 --aname=vade --zd_dim=20 --d_dim=10 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=9 --bs 2 --lr 0.0005 --split 0.8 --prior Gaus --model cnn

@@ -45,4 +45,4 @@ class LinearDecoderAE(nn.Module):
         dec_h3 = F.relu(self.dec_3(dec_h2))
         x_bar = self.x_bar_layer(dec_h3)
 
-        return x_bar
+        return x_bar, [], [] #FIXME dec and vade have more outputs than sdcn

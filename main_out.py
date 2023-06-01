@@ -16,6 +16,8 @@ if __name__ == "__main__":
     print('python version', sys.version)
     args = parse_cmd_args()
     print(args)
+
+    assert len(args.tr_d) == args.d_dim
     if os.path.exists(os.path.join(args.dpath, 'dataframe_mnist.csv')):
         os.remove(os.path.join(args.dpath, 'dataframe_mnist.csv'))
 

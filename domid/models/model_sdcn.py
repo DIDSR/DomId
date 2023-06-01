@@ -37,6 +37,9 @@ class ModelSDCN(AModelCluster):
         n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3, = 500, 500, 2000, 2000, 500, 500,
 
         self.cluster_layer = nn.Parameter(torch.Tensor(n_clusters, n_z))
+        torch.nn.init.xavier_normal_(self.cluster_layer.data)
+
+
         self.encoder =  LinearEncoderAE(n_enc_1, n_enc_2, n_enc_3,n_input, n_z)
         self.decoder = LinearDecoderAE(n_dec_1, n_dec_2, n_dec_3, n_input, n_z)
         self.gnn_model = GNN(n_input, n_enc_1, n_enc_2, n_enc_3, n_z, n_clusters)
@@ -101,8 +104,7 @@ class ModelSDCN(AModelCluster):
 
         x = x.view(x.size(0), -1)
         tra1, tra2, tra3, z = self.encoder(x)
-
-        x_bar = self.decoder(z)
+        x_bar, *_ = self.decoder(z)
 
         h = self.gnn_model(x, self.adj, tra1, tra2, tra3, z)
 
@@ -110,9 +112,11 @@ class ModelSDCN(AModelCluster):
 
         # Dual Self-supervised Module
         q = 1.0 / (1.0 + torch.sum(torch.pow(z.unsqueeze(1) - self.cluster_layer, 2), 2) / self.v)
-        q = q.pow((self.v + 1.0) / 2.0)
-        q = (q.t() / torch.sum(q, 1)).t()
-        q = (q.t() / torch.sum(q, 1)).t()
+        # #FIXME q converges to nan
+        # q = q.pow((self.v + 1.0) / 2.0)
+        # print(q)
+        # q = (q.t() / torch.sum(q, 1)).t() #transposes dimensions 0 and 1.
+        # q = (q.t() / torch.sum(q, 1)).t()
 
         logits = predict
         probs_c = q
@@ -128,6 +132,13 @@ class ModelSDCN(AModelCluster):
         preds_c , *_ = logit2preds_vpic(logits)
 
         return preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits
+
+    def inference_pretraining(self, x, inject_tensor):
+        x = x.view(x.size(0), -1)
+        tra1, tra2, tra3, z = self.encoder(x)
+
+        x_bar, *_ = self.decoder(z)
+        return x_bar, z
 
     def infer_d_v(self, x):
         """
@@ -168,12 +179,18 @@ class ModelSDCN(AModelCluster):
 
 
     def cal_loss(self, x, inject_domain, warmup_beta):
-        x_bar, q, pred, _ = self._inference(x, self.adj)
+        x = x.view(x.size(0), -1)
+        preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits= self._inference(x)
+
+        pred = logits
+        q = probs_c
+        x_bar, *_ = self.decoder(z)
         q = q.data
         p = self.target_distribution(q)
 
         kl_loss = self.kl_loss(q.log(), p)
         ce_loss = self.kl_loss(pred.log(), p)
+
         re_loss = F.mse_loss(x, x_bar)
 
         loss = 0.1 * kl_loss + 0.01 * ce_loss + re_loss
@@ -185,6 +202,7 @@ class ModelSDCN(AModelCluster):
         Loss = nn.MSELoss()
         # Loss = nn.MSELoss(reduction='sum')
         # Loss = nn.HuberLoss()
+
         x = x.view(x.size(0), -1)
         tra1, tra2, tra3, z = self.encoder(x)
 
@@ -192,7 +210,7 @@ class ModelSDCN(AModelCluster):
             zy = torch.cat((z, inject_domain), 1)
         else:
             zy = z
-        x_pro, *_ = self.decoder(zy)
+        x_pro, *_ = self.decoder(zy) #FIXME account for different number of outputs from decoder
 
         loss = Loss(x, x_pro)
 
