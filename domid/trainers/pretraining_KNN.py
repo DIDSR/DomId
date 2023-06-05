@@ -6,6 +6,7 @@ from sklearn.mixture import GaussianMixture
 from sklearn.neighbors import KNeighborsClassifier
 from scipy.optimize import linear_sum_assignment
 from sklearn.metrics import confusion_matrix
+from sklearn.cluster import KMeans
 class Pretraining():
     def __init__(self, model, device, loader_tr, loader_val, i_h, i_w, args):
         """
@@ -39,7 +40,8 @@ class Pretraining():
 
         num_img = len(self.loader_tr.dataset)
         Z = np.zeros((num_img, self.model.zd_dim))
-
+        X_pro = torch.zeros((num_img, 3*16*16))
+        X = torch.zeros((num_img, 3*16*16))
         counter = 0
         with torch.no_grad():
             for tensor_x, vec_y, vec_d, *other_vars in self.loader_tr:
@@ -57,13 +59,20 @@ class Pretraining():
                 x_pro, z= self.model.inference_pretraining(tensor_x, inject_tensor)
                 z = z.detach().cpu().numpy()  # [batch_size, zd_dim]
                 Z[counter:counter + z.shape[0], :] = z
+                X_pro[counter:counter + z.shape[0], :] = x_pro.detach().cpu()
+                X[counter:counter + z.shape[0], :] = tensor_x.detach().cpu().reshape(tensor_x.shape[0], -1)
                 counter += z.shape[0]
 
 
-        targets = torch.argmax(vec_y, 1).detach().cpu().numpy() #FIXME: move inside for loop
-        knn_model = KNeighborsClassifier(n_neighbors=self.args.d_dim).fit(Z, targets)
-        predictions = knn_model.predict(Z)
+        cos_sim = torch.nn.CosineSimilarity(dim=1, eps=1e-6)
+        accuracy = cos_sim(X, X_pro)
+        targets = torch.argmax(vec_y, dim=1).cpu().numpy()
 
+        kmeans = KMeans(n_clusters=self.args.d_dim, n_init=20)
+
+        predictions = kmeans.fit_predict(Z)
+
+        self.model.cluster_layer.data = torch.tensor(kmeans.cluster_centers_).to(self.device)
 
 
         cost_matrix = np.zeros((self.args.d_dim, self.args.d_dim,))
@@ -72,6 +81,7 @@ class Pretraining():
         row_ind, col_ind = linear_sum_assignment(cost_matrix)
         conf_mat = (-1) * cost_matrix[:, col_ind]
         acc_d = np.diag(conf_mat).sum() / conf_mat.sum()
-        print('KNN accuracy: ', acc_d)
+        print('K Means accuracy: ', acc_d)
+        print('AE Cosine Similarity', accuracy.mean().item())
 
         return predictions

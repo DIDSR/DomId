@@ -1,5 +1,6 @@
 import tensorboardX
 import torch
+import numpy as np
 
 
 def tensorboard_write(writer, model, epoch, lr, warmup_beta, acc_tr, loss, pretraining_finished, tensor_x, inject_tensor):
@@ -12,8 +13,18 @@ def tensorboard_write(writer, model, epoch, lr, warmup_beta, acc_tr, loss, pretr
         writer.add_scalar('Training acc', acc_tr, epoch)
         writer.add_scalar('Loss', loss, epoch)
 
-    preds, z_mu, z, _, _, x_pro = model.infer_d_v_2(tensor_x,inject_tensor)
-    name = "Output of the decoder" + str(epoch)
+    if not pretraining_finished:
+        x_pro, *_ = model.inference_pretraining(tensor_x, inject_tensor)
+        name = "Output of the decoder pretraining"
+
+    else:
+        preds, z_mu, z, _, _, x_pro = model.infer_d_v_2(tensor_x,inject_tensor)
+        name = "Output of the decoder training"
+
+    if len(x_pro.shape) != 4:
+        N = int(np.sqrt(x_pro.shape[1]/3))
+        x_pro= torch.reshape(x_pro, (x_pro.shape[0], 3, N, N))
+
     imgs = torch.cat((tensor_x[0:8, :, :, :], x_pro[0:8, :, :, :],), 0)
     # mse = torch.nn.MSELoss()#(dim=1, eps=1e-08)
     # sample1 = tensor_x[0, :, :, :].flatten().unsqueeze(0)

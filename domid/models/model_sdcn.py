@@ -36,7 +36,7 @@ class ModelSDCN(AModelCluster):
         n_input = i_c * i_h * i_w
         n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3, = 500, 500, 2000, 2000, 500, 500,
 
-        self.cluster_layer = nn.Parameter(torch.Tensor(n_clusters, n_z))
+        self.cluster_layer = nn.Parameter(torch.Tensor(zd_dim, d_dim))
         torch.nn.init.xavier_normal_(self.cluster_layer.data)
 
 
@@ -44,7 +44,7 @@ class ModelSDCN(AModelCluster):
         self.decoder = LinearDecoderAE(n_dec_1, n_dec_2, n_dec_3, n_input, n_z)
         self.gnn_model = GNN(n_input, n_enc_1, n_enc_2, n_enc_3, n_z, n_clusters)
 
-        self.v = torch.Tensor(1).to(self.device)
+        self.v = 1.0
         self.log_pi = nn.Parameter(
             torch.FloatTensor(
                 self.d_dim,
@@ -111,12 +111,11 @@ class ModelSDCN(AModelCluster):
         predict = F.softmax(h, dim=1)
 
         # Dual Self-supervised Module
-        q = 1.0 / (1.0 + torch.sum(torch.pow(z.unsqueeze(1) - self.cluster_layer, 2), 2) / self.v)
+        q = 1.0 / (1.0 + torch.sum(torch.pow(z.unsqueeze(1) - self.cluster_layer, 2), 2))/ self.v
         # #FIXME q converges to nan
-        # q = q.pow((self.v + 1.0) / 2.0)
-        # print(q)
-        # q = (q.t() / torch.sum(q, 1)).t() #transposes dimensions 0 and 1.
-        # q = (q.t() / torch.sum(q, 1)).t()
+        q = q.pow((self.v+ 1.0) / 2.0)
+        q = (q.t() / torch.sum(q, 1)).t() #transposes dimensions 0 and 1.
+        q = (q.t() / torch.sum(q, 1)).t()
 
         logits = predict
         probs_c = q
@@ -180,6 +179,7 @@ class ModelSDCN(AModelCluster):
 
     def cal_loss(self, x, inject_domain, warmup_beta):
         x = x.view(x.size(0), -1)
+        breakpoint()
         preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits= self._inference(x)
 
         pred = logits
