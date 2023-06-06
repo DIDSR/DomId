@@ -38,7 +38,7 @@ class ModelSDCN(AModelCluster):
         n_input = i_c * i_h * i_w
         n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3, = 500, 500, 2000, 2000, 500, 500,
 
-        self.cluster_layer = nn.Parameter(torch.Tensor(zd_dim, d_dim))
+        self.cluster_layer = nn.Parameter(torch.Tensor(self.d_dim, self.zd_dim))
         torch.nn.init.xavier_normal_(self.cluster_layer.data)
 
 
@@ -103,20 +103,20 @@ class ModelSDCN(AModelCluster):
 
         x = x.view(x.size(0), -1)
         tra1, tra2, tra3, z = self.encoder(x)
-        x_bar, *_ = self.decoder(z)
+        # x_bar, *_ = self.decoder(z)
 
         h = self.gnn_model(x, self.adj, tra1, tra2, tra3, z)
 
 
 
 
-        plt.figure(figsize=(5,10))
-        plt.imshow(h[:50, :].detach().numpy())
-
-        plt.colorbar()
-
-        self.counter+=1
-        plt.savefig('trash/h'+str(self.counter)+'.png')
+        # plt.figure(figsize=(5,10))
+        # plt.imshow(h[:50, :].detach().numpy())
+        #
+        # plt.colorbar()
+        #
+        # self.counter+=1
+        # plt.savefig('trash/h'+str(self.counter)+'.png')
 
 
 
@@ -146,7 +146,7 @@ class ModelSDCN(AModelCluster):
 
         pi = self.log_pi
 
-        preds_c, probs_c, *_ = logit2preds_vpic(logits)
+        preds_c, probs_c, *_ = logit2preds_vpic(logits) #probs_c is F.softmax(logit, dim=1)
 
         return preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits
 
