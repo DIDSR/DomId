@@ -15,6 +15,8 @@ from domid.compos.linear_AE import LinearEncoderAE, LinearDecoderAE
 from domid.compos.GNN import GNN
 
 import scipy.sparse as sp
+import matplotlib.pyplot as plt
+
 class ModelSDCN(AModelCluster):
     def __init__(self, zd_dim, d_dim, device, L, i_c, i_h, i_w, args):
 
@@ -55,7 +57,7 @@ class ModelSDCN(AModelCluster):
         )
         self.mu_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
         self.log_sigma2_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
-
+        self.counter= 0
     def normalize(self, mx): #FIXME move to utils
         """Row-normalize sparse matrix"""
         rowsum = np.array(mx.sum(1))
@@ -99,36 +101,52 @@ class ModelSDCN(AModelCluster):
 
     def _inference(self, x):
 
-
-        #z_mu, z_sigma2_log = self.encoder(x)
-
         x = x.view(x.size(0), -1)
         tra1, tra2, tra3, z = self.encoder(x)
         x_bar, *_ = self.decoder(z)
 
         h = self.gnn_model(x, self.adj, tra1, tra2, tra3, z)
 
-        predict = F.softmax(h, dim=1)
+
+
+
+        plt.figure(figsize=(5,10))
+        plt.imshow(h[:50, :].detach().numpy())
+
+        plt.colorbar()
+
+        self.counter+=1
+        plt.savefig('trash/h'+str(self.counter)+'.png')
+
+
+
+
+        #predict = F.softmax(h, dim=1)
 
         # Dual Self-supervised Module
+
         q = 1.0 / (1.0 + torch.sum(torch.pow(z.unsqueeze(1) - self.cluster_layer, 2), 2))/ self.v
-        # #FIXME q converges to nan
+        # FIXME q converges to nan
         q = q.pow((self.v+ 1.0) / 2.0)
         q = (q.t() / torch.sum(q, 1)).t() #transposes dimensions 0 and 1.
         q = (q.t() / torch.sum(q, 1)).t()
 
-        logits = predict
-        probs_c = q
+        logits = q
+
+
+
         z_mu =z
 
-        z_sigma2_log = z
+        z_sigma2_log = z #FIXME is not used in SDCN (variance from the encoder in VaDE)
         self.mu_c = self.cluster_layer
-        mu_c = self.mu_c
-        log_sigma2_c = self.log_sigma2_c
+
+        mu_c = self.mu_c # FIXME is not used in SDCN
+        log_sigma2_c = self.log_sigma2_c # FIXME is not used in SDCN
 
 
         pi = self.log_pi
-        preds_c , *_ = logit2preds_vpic(logits)
+
+        preds_c, probs_c, *_ = logit2preds_vpic(logits)
 
         return preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits
 
@@ -179,23 +197,31 @@ class ModelSDCN(AModelCluster):
 
     def cal_loss(self, x, inject_domain, warmup_beta):
         x = x.view(x.size(0), -1)
-        breakpoint()
+
         preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits= self._inference(x)
 
-        pred = logits
-        q = probs_c
+        q = logits
+        pred = probs_c
         x_bar, *_ = self.decoder(z)
         q = q.data
         p = self.target_distribution(q)
 
-        kl_loss = self.kl_loss(q.log(), p)
-        ce_loss = self.kl_loss(pred.log(), p)
+        kl_loss = F.kl_div(q.log(), p, reduction='batchmean')
+        #
+        ce_loss = F.kl_div(pred.log(), p, reduction='batchmean')
+        # kl_loss = self.kl_loss(q.log(), p)
+        # ce_loss = self.kl_loss(pred.log(), p)
+
+
+        # kl_loss = 0
+        #ce_loss = 0
 
         re_loss = F.mse_loss(x, x_bar)
 
         loss = 0.1 * kl_loss + 0.01 * ce_loss + re_loss
+        print('reconstruction loss', re_loss, 'kl_loss', kl_loss, 'ce_loss', ce_loss)
 
-        return loss
+        return loss.type(torch.double)
 
     def pretrain_loss(self, x, inject_domain):
 

@@ -22,18 +22,10 @@ class DsetUSPS(Dataset):
         dpath = os.path.normpath(args.dpath)
         dataset = datasets.USPS(root=dpath, train=True, download=True, transform=list_transforms)
         self.images = dataset.data[torch.Tensor(dataset.targets) == digit]
-
-
-        if subset_step == 1 and args.debug:
-            # used to speed up the unit tests
-            subset_step = 100
-        inds_subset = list(range(0, self.images.shape[0], subset_step))
-        self.images = self.images[inds_subset]
-        n_img = self.images.shape[0]
-
         self.labels = dataset.targets
         self.args = args
         self.inject_variable = args.inject_var
+
     def __len__(self):
         return len(self.images)
 

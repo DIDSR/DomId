@@ -106,7 +106,7 @@ class TrainerCluster(AbstractTrainer):
 
                 loss = self.model.cal_loss(tensor_x, inject_tensor, self.warmup_beta)
 
-            #loss = loss.sum()
+            loss = loss.sum()
 
             loss.backward()
             self.optimizer.step()
