@@ -30,7 +30,7 @@ class GraphConstructor():
         mx = r_mat_inv.dot(mx)
         return mx
     def construct_graph(self, dataset, method='heat'):
-        breakpoint()
+
         topk = 10
         features, label = self.get_features_labels(dataset)
         #fname = '../graph/usps_custom_graph.txt'
@@ -65,9 +65,7 @@ class GraphConstructor():
                     pass
                 else:
                     if label[vv] != label[i]:
-                        print("vv: ", vv, "i: ", i, "label[vv]: ", label[vv], "label[i]: ", label[i])
                         counter = counter+1
-        #
                     A[i, vv] = vv
                     graph_txt.append([i, vv])
 

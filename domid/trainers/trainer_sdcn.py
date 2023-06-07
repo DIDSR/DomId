@@ -44,7 +44,7 @@ class TrainerCluster(AbstractTrainer):
         self.storage = Storing(self.args)
         self.loader_val = task.loader_val
         self.aname = aconf.aname
-        breakpoint()
+
         self.model.adj = GraphConstructor().construct_graph(self.loader_tr).to(self.device)
 
     def tr_epoch(self, epoch):
@@ -108,9 +108,12 @@ class TrainerCluster(AbstractTrainer):
                 loss = self.model.cal_loss(tensor_x, inject_tensor, self.warmup_beta)
 
             loss = loss.sum()
-
-            loss.backward()
-            self.optimizer.step()
+            try:
+                loss.backward()
+                self.optimizer.step()
+            except:
+                print("Error in backward")
+                continue
             self.epo_loss_tr += loss.cpu().detach().item()
             # FIXME: devide #  number of samples in the HER notebook
 

@@ -47,16 +47,16 @@ class ModelSDCN(AModelCluster):
         self.gnn_model = GNN(n_input, n_enc_1, n_enc_2, n_enc_3, n_z, n_clusters)
 
         self.v = 1.0
-        self.log_pi = nn.Parameter(
-            torch.FloatTensor(
-                self.d_dim,
-            )
-            .fill_(1.0 / self.d_dim)
-            .log(),
-            requires_grad=True,
-        )
-        self.mu_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
-        self.log_sigma2_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
+        # self.log_pi = nn.Parameter(
+        #     torch.FloatTensor(
+        #         self.d_dim,
+        #     )
+        #     .fill_(1.0 / self.d_dim)
+        #     .log(),
+        #     requires_grad=True,
+        # )
+        # self.mu_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
+        # self.log_sigma2_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
         self.counter= 0
 
 
@@ -64,59 +64,34 @@ class ModelSDCN(AModelCluster):
 
 
     def _inference(self, x):
-
         x = x.view(x.size(0), -1)
         tra1, tra2, tra3, z = self.encoder(x)
-        # x_bar, *_ = self.decoder(z)
-
         h = self.gnn_model(x, self.adj, tra1, tra2, tra3, z)
-
-
-
-
-        # plt.figure(figsize=(5,10))
-        # plt.imshow(h[:50, :].detach().numpy())
-        #
-        # plt.colorbar()
-        #
-        # self.counter+=1
-        # plt.savefig('trash/h'+str(self.counter)+'.png')
-
-
-
-
-        #predict = F.softmax(h, dim=1)
+        probs_c_ = F.softmax(h, dim=1) #[batch_size, n_clusters] (batch_zise==number of samples)
 
         # Dual Self-supervised Module
-
         q = 1.0 / (1.0 + torch.sum(torch.pow(z.unsqueeze(1) - self.cluster_layer, 2), 2))/ self.v
-        # FIXME q converges to nan
         q = q.pow((self.v+ 1.0) / 2.0)
-        q = (q.t() / torch.sum(q, 1)).t() #transposes dimensions 0 and 1.
         q = (q.t() / torch.sum(q, 1)).t()
+        q = (q.t() / torch.sum(q, 1)).t() # [batch_size, n_clusters]
 
         logits = q
 
 
 
-        z_mu =z
-
-        z_sigma2_log = z #FIXME is not used in SDCN (variance from the encoder in VaDE)
-        self.mu_c = self.cluster_layer
-
-        mu_c = self.mu_c # FIXME is not used in SDCN
-        log_sigma2_c = self.log_sigma2_c # FIXME is not used in SDCN
-
-
-        pi = self.log_pi
+        z_mu =torch.mean(z, dim=0)#is not used in SDCN (variance from the encoder in VaDE)
+        z_sigma2_log = torch.std(z, dim=0) #is not used in SDCN (variance from the encoder in VaDE)
+        pi = torch.Tensor([0]) #is not used in SDCN (variance from the encoder in VaDE)
 
         preds_c, probs_c, *_ = logit2preds_vpic(logits) #probs_c is F.softmax(logit, dim=1)
 
-        return preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits
+        return preds_c, probs_c, z, z_mu, z_sigma2_log, z_mu, z_sigma2_log, pi, logits
 
     def inference_pretraining(self, x, inject_tensor):
-        x = x.view(x.size(0), -1)
-        tra1, tra2, tra3, z = self.encoder(x)
+        # x = x.view(x.size(0), -1)
+        # tra1, tra2, tra3, z = self.encoder(x)
+        _, _, z, *_ = self._inference(x)
+
 
         x_bar, *_ = self.decoder(z)
         return x_bar, z
@@ -168,10 +143,11 @@ class ModelSDCN(AModelCluster):
 
         kl_loss = F.kl_div(q.log(), p, reduction='batchmean')
         ce_loss = F.kl_div(pred.log(), p, reduction='batchmean')
-        re_loss = F.mse_loss(x, x_bar)
+        re_loss = F.mse_loss(x, x_bar).type(torch.double)
 
         loss = 0.1 * kl_loss + 0.01 * ce_loss + re_loss
         print('reconstruction loss', re_loss, 'kl_loss', kl_loss, 'ce_loss', ce_loss)
+        print('loss', loss)
 
         return loss.type(torch.double)
 
