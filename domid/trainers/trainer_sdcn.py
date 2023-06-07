@@ -9,8 +9,7 @@ from domid.compos.storing import Storing
 from domid.compos.tensorboard_fun import tensorboard_write
 from domid.trainers.pretraining_KMeans import Pretraining
 from domid.utils.perf_cluster import PerfCluster
-
-
+from domid.dsets.make_graph import GraphConstructor
 class TrainerCluster(AbstractTrainer):
     def __init__(self, model, task, observer, device, writer, pretrain=True, aconf=None):
         """
@@ -45,6 +44,8 @@ class TrainerCluster(AbstractTrainer):
         self.storage = Storing(self.args)
         self.loader_val = task.loader_val
         self.aname = aconf.aname
+        breakpoint()
+        self.model.adj = GraphConstructor().construct_graph(self.loader_tr).to(self.device)
 
     def tr_epoch(self, epoch):
         """

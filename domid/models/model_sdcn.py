@@ -29,7 +29,7 @@ class ModelSDCN(AModelCluster):
         self.loss_epoch = 0
 
         self.dim_inject_y = 0
-        self.adj = self.load_graph().to(self.device)
+
         if self.args.dim_inject_y:
             self.dim_inject_y = self.args.dim_inject_y
 
@@ -58,45 +58,9 @@ class ModelSDCN(AModelCluster):
         self.mu_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
         self.log_sigma2_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
         self.counter= 0
-    def normalize(self, mx): #FIXME move to utils
-        """Row-normalize sparse matrix"""
-        rowsum = np.array(mx.sum(1))
-        r_inv = np.power(rowsum, -1).flatten()
-        r_inv[np.isinf(r_inv)] = 0.
-        r_mat_inv = sp.diags(r_inv)
-        mx = r_mat_inv.dot(mx)
-        return mx
 
-    def sparse_mx_to_torch_sparse_tensor(self, sparse_mx): #FIXME move to utils
-        """Convert a scipy sparse matrix to a torch sparse tensor."""
-        sparse_mx = sparse_mx.tocoo().astype(np.float32)
-        indices = torch.from_numpy(
-            np.vstack((sparse_mx.row, sparse_mx.col)).astype(np.int64))
-        values = torch.from_numpy(sparse_mx.data)
-        shape = torch.Size(sparse_mx.shape)
-        return torch.sparse.FloatTensor(indices, values, shape)
-    def load_graph(self, dataset='usps_custom'): #FIXME create a grpah for the dataset? and move to utils
 
-        path = '../graph/{}_graph.txt'.format(dataset)
 
-        data = np.loadtxt('../data/{}.txt'.format(dataset))
-        n, _ = data.shape
-
-        idx = np.array([i for i in range(n)], dtype=np.int32)
-        idx_map = {j: i for i, j in enumerate(idx)}
-        edges_unordered = np.genfromtxt(path, dtype=np.int32)
-        edges = np.array(list(map(idx_map.get, edges_unordered.flatten())),
-                         dtype=np.int32).reshape(edges_unordered.shape)
-        adj = sp.coo_matrix((np.ones(edges.shape[0]), (edges[:, 0], edges[:, 1])),
-                            shape=(n, n), dtype=np.float32)
-
-        # build symmetric adjacency matrix
-        adj = adj + adj.T.multiply(adj.T > adj) - adj.multiply(adj.T > adj)
-        adj = adj + sp.eye(adj.shape[0])
-        adj = self.normalize(adj)
-        adj = self.sparse_mx_to_torch_sparse_tensor(adj)
-
-        return adj
 
 
     def _inference(self, x):
@@ -184,11 +148,7 @@ class ModelSDCN(AModelCluster):
 
         preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = (r.cpu().detach() for r in results)
         return preds, z_mu, z, log_sigma2_c, probs, x_pro
-    def kl_loss(self, q, p):
-        """
-        Compute the KL divergence between two distributions.
-        """
-        return F.kl_div(q, p, reduction='batchmean')
+
 
     def target_distribution(self, q):
         weight = q ** 2 / q.sum(0)
@@ -207,15 +167,7 @@ class ModelSDCN(AModelCluster):
         p = self.target_distribution(q)
 
         kl_loss = F.kl_div(q.log(), p, reduction='batchmean')
-        #
         ce_loss = F.kl_div(pred.log(), p, reduction='batchmean')
-        # kl_loss = self.kl_loss(q.log(), p)
-        # ce_loss = self.kl_loss(pred.log(), p)
-
-
-        # kl_loss = 0
-        #ce_loss = 0
-
         re_loss = F.mse_loss(x, x_bar)
 
         loss = 0.1 * kl_loss + 0.01 * ce_loss + re_loss

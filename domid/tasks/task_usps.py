@@ -34,7 +34,7 @@ class NodeTaskUSPS(NodeTaskDictCluster):
         """
         return mk_dummy_label_list_str("digit", 10)
 
-    def get_dset_by_domain(self, args, na_domain, split=True):
+    def get_dset_by_domain(self, args, na_domain, split=False):
         """Get a dataset by digit
 
         :param args: command line arguments

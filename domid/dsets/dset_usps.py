@@ -20,11 +20,17 @@ class DsetUSPS(Dataset):
     def __init__(self, digit,args, subset_step=1, list_transforms=None):
 
         dpath = os.path.normpath(args.dpath)
-        dataset = datasets.USPS(root=dpath, train=True, download=True, transform=list_transforms)
-        self.images = dataset.data[torch.Tensor(dataset.targets) == digit]
-        self.labels = dataset.targets
+        self.digit = digit
+        self.dataset = datasets.USPS(root=dpath, train=True, download=True, transform=list_transforms)
+
+        self.images = self.dataset.data[torch.Tensor(self.dataset.targets) == digit]
+
+        self.labels = self.dataset.targets
         self.args = args
         self.inject_variable = args.inject_var
+    def get_original_indicies(self):
+        return (torch.Tensor(self.dataset.targets) == self.digit).nonzero().flatten()
+
 
     def __len__(self):
         return len(self.images)
