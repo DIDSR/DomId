@@ -96,9 +96,6 @@ class PerfCluster(PerfClassif):
         and applies the Hungarian Algorithm to find the optimal assignment between the two arrays.
         """
 
-        # if len(np.unique(cluster_pred_scalar)) == len(np.unique(cluster_true_scalar)):
-            # clusteqr_pred_scalar = [item - 1 for item in cluster_pred_scalar]
-
 
 
         cost = cost - confusion_matrix(cluster_pred_scalar, cluster_true_scalar,labels=list(range(cost.shape[0])))
@@ -155,38 +152,3 @@ class PerfCluster(PerfClassif):
 
 
         return hungarian_acc_y_s, conf_mat_y_s, hungarian_acc_d_s, conf_mat_d_s
-
-        #         x_s, d_s = x_s.to(device), d_s.to(device)
-        #
-        #         pred = model_local.infer_d_v(x_s)
-        #         # number of predicted clusters can be larger than the number of ground truth clusters
-        #         assert pred.shape >= d_s.shape
-        #         # there are d_dim possible predicted clusters
-        #         assert pred.shape[1] == model_local.d_dim
-        #
-        #
-        #
-        #
-        #
-        #         cluster_pred_scalar = pred.cpu().numpy().argmax(axis=1)
-        #         cluster_true_scalar = d_s.cpu().numpy().argmax(axis=1)
-        #         cost = cost - confusion_matrix(cluster_pred_scalar, cluster_true_scalar,
-        #                                        labels=list(range(model_local.d_dim)))
-        #
-        #         list_vec_preds.append(pred)
-        #         list_vec_labels.append(d_s)
-        #         if i > max_batches:
-        #             break
-        #
-        # # The domain label are never used in training. so we need to find
-        # # correspondence between predicted and true domain indices. See top of
-        # # this file for an explanation.
-        #
-        # # What is the best permutation?
-        # row_ind, col_ind = linear_sum_assignment(cost)
-        # # Note that row_ind will be equal to [0, 1, ..., cost.shape[0]] because cost is a square matrix.
-        # conf_mat = (-1)*cost[:, col_ind]
-        # # Accuracy for best permutation:
-        # acc_d = np.diag(conf_mat).sum() / conf_mat.sum()
-        #
-        # return acc_d, conf_mat

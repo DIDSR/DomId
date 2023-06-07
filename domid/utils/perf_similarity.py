@@ -8,7 +8,7 @@ from scipy.optimize import linear_sum_assignment
 import scipy
 import os
 import pandas as pd
-class PerfCorrelation(PerfClassif):
+class PerfCorrelationHER2(PerfClassif):
     """Clustering Performance"""
 
     def __init__(self):

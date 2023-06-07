@@ -30,8 +30,21 @@ class Storing():
 
 
     def storing(self, epoch, acc_tr_y,acc_tr_d, loss_tr, acc_val_y, acc_val_d, loss_val, r_score_tr, r_score_te):
+        """
+        This function stores results for one epoch in csv files and command line arguments in the pkl file.
 
-        #arguments = [str(args.aname), str(args.model), str(args.prior), str(args.zd_dim), str(args.te_d), str(args.tr_d), str(args.L), str(args.lr), str(args.bs), str(args.pre_tr), str(args.warmup)]
+        :param epoch: epoch number
+        :param acc_tr_y: training accuracy between predictions and vec_y labels for training set for one epoch
+        :param acc_tr_d: training accuracy between predictions and vec_d labels for training set for one epoch
+        :param loss_tr: training loss for one epoch
+        :param acc_val_y: validation accuracy between predictions and vec_y labels for validation set for one epoch
+        :param acc_val_d: validation accuracy between predictions and vec_d labels for validation set for one epoch
+        :param loss_val: validation loss for one epoch
+        :param r_score_tr: Pearson correlation coefficient between predictions and vec_y labels for training set for one epoch (only used for HER2)
+        :param r_score_te: Pearson correlation coefficient between predictions and vec_y labels for test set for one epoch (only used for HER2)
+
+        """
+
         self.loss.append(loss_tr)
         self.val_loss.append(loss_val)
 
@@ -67,11 +80,22 @@ class Storing():
 
         
     def saving_model(self, model):
+        """
+        This function saves the model in a pth file. This checkpoint is called every other epoch.
+        """
         path_dict ="./notebooks/"+self.experiment_name+'/model_dict.pth'
         torch.save(model.state_dict(), path_dict)
 
     def storing_z_space(self, Z, predictions, vec_y_labels, vec_d_labels, image_id_labels):
-        
+        """
+        This function stores the Z space and the predictions in a csv file after the last epoch.
+
+        :param Z: Z space of the model
+        :param predictions: predictions of the model in Z space
+        :param vec_y_labels: vec_y labels corresponding to the predictions
+        :param vec_d_labels: vec_d labels corresponding to the predictions
+        :param image_id_labels: image_id labels corresponding to the predictions
+        """
         
         exp_path =os.path.join("./notebooks/",self.experiment_name)
 
@@ -88,6 +112,10 @@ class Storing():
 
         df.to_csv(os.path.join(exp_path, 'clustering_results.csv'), index=False)
     def csv_dump(self, epoch):
+        """
+        This function stores the results of the experiment in a csv file which accumulates results for multiple
+        experiments.
+        """
         if os.path.exists(os.path.join(self.args.path_to_results, "results.csv")):
             results_df = pd.read_csv(os.path.join(self.args.path_to_results, "results.csv"))
         else:
