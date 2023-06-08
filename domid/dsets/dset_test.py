@@ -13,7 +13,7 @@ from torchvision import datasets, transforms
 
 
 
-class DsetUSPS(Dataset):
+class DsetTest(Dataset):
 
 
     @store_args
@@ -21,17 +21,14 @@ class DsetUSPS(Dataset):
 
         dpath = os.path.normpath(args.dpath)
         self.digit = digit
-        self.dataset = datasets.USPS(root=dpath, train=True, download=True, transform=list_transforms)
 
-        self.images = self.dataset.data[torch.Tensor(self.dataset.targets) == digit]
 
-        all_labels = torch.Tensor(self.dataset.targets)
-        self.labels = all_labels[torch.Tensor(self.dataset.targets) == digit].to(dtype=torch.long)
+        self.images = torch.load(os.path.join(dpath, 'images.pt'))
+        self.labels = torch.load(os.path.join(dpath, 'labels.pt')).squeeze(1)
+
+
         self.args = args
         self.inject_variable = args.inject_var
-    def get_original_indicies(self):
-        return (torch.Tensor(self.dataset.targets) == self.digit).nonzero().flatten()
-
 
     def __len__(self):
         return len(self.images)
@@ -39,14 +36,14 @@ class DsetUSPS(Dataset):
     def __getitem__(self, idx):
         #img_loc = os.path.join(self.img_dir, self.images[idx])
         image = self.images[idx]
-        image = Image.fromarray(image)
-        image = image.convert("RGB")
+        # image = Image.fromarray(image)
+        # image = image.convert("RGB")
 
-        if self.list_transforms is not None:
-            for trans in self.list_transforms:
-                image = trans(image)
-        else:
-            image = transforms.ToTensor()(image)
+        # if self.list_transforms is not None:
+        #     for trans in self.list_transforms:
+        #         image = trans(image)
+        # else:
+        #     image = transforms.ToTensor()(image)
 
 
 

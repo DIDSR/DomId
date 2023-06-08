@@ -66,8 +66,9 @@ class ModelSDCN(AModelCluster):
     def _inference(self, x):
         x = x.view(x.size(0), -1)
         tra1, tra2, tra3, z = self.encoder(x)
+
         h = self.gnn_model(x, self.adj, tra1, tra2, tra3, z)
-        probs_c_ = F.softmax(h, dim=1) #[batch_size, n_clusters] (batch_zise==number of samples)
+        probs_c = F.softmax(h, dim=1) #[batch_size, n_clusters] (batch_zise==number of samples)
 
         # Dual Self-supervised Module
         q = 1.0 / (1.0 + torch.sum(torch.pow(z.unsqueeze(1) - self.cluster_layer, 2), 2))/ self.v
@@ -75,7 +76,7 @@ class ModelSDCN(AModelCluster):
         q = (q.t() / torch.sum(q, 1)).t()
         q = (q.t() / torch.sum(q, 1)).t() # [batch_size, n_clusters]
 
-        logits = q
+        logits = q.type(torch.float32)
 
 
 
@@ -83,7 +84,7 @@ class ModelSDCN(AModelCluster):
         z_sigma2_log = torch.std(z, dim=0) #is not used in SDCN (variance from the encoder in VaDE)
         pi = torch.Tensor([0]) #is not used in SDCN (variance from the encoder in VaDE)
 
-        preds_c, probs_c, *_ = logit2preds_vpic(logits) #probs_c is F.softmax(logit, dim=1)
+        preds_c, probs_c_, *_ = logit2preds_vpic(logits) #probs_c is F.softmax(logit, dim=1)
 
         return preds_c, probs_c, z, z_mu, z_sigma2_log, z_mu, z_sigma2_log, pi, logits
 
@@ -143,7 +144,7 @@ class ModelSDCN(AModelCluster):
 
         kl_loss = F.kl_div(q.log(), p, reduction='batchmean')
         ce_loss = F.kl_div(pred.log(), p, reduction='batchmean')
-        re_loss = F.mse_loss(x, x_bar).type(torch.double)
+        re_loss = F.mse_loss(x, x_bar)
 
         loss = 0.1 * kl_loss + 0.01 * ce_loss + re_loss
         print('reconstruction loss', re_loss, 'kl_loss', kl_loss, 'ce_loss', ce_loss)

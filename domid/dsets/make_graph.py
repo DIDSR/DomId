@@ -17,10 +17,11 @@ class GraphConstructor():
 
         for tensor_x, vec_y, vec_d, *other_vars in dataset:
             X[counter:(counter+vec_y.shape[0]), :]=tensor_x.view(tensor_x.size(0), -1)
+
             labels[counter:(counter+vec_y.shape[0]), 0]=torch.argmax(vec_y, dim=1)
             counter+=vec_y.shape[0]
 
-        return X, labels
+        return X.type(torch.float32), labels.type(torch.int32)
     def normalize(self, mx): #FIXME move to utils
         """Row-normalize sparse matrix"""
         rowsum = np.array(mx.sum(1))
@@ -32,6 +33,7 @@ class GraphConstructor():
     def construct_graph(self, dataset, method='heat'):
 
         topk = 10
+
         features, label = self.get_features_labels(dataset)
         #fname = '../graph/usps_custom_graph.txt'
 
@@ -74,7 +76,7 @@ class GraphConstructor():
 
         idx = np.array([i for i in range(n)], dtype=np.int32)
         idx_map = {j: i for i, j in enumerate(idx)}
-        edges_unordered = np.array(graph_txt) #features #np.genfromtxt(path, dtype=np.int32)
+        edges_unordered = np.array(graph_txt,  dtype=np.int32) #features #np.genfromtxt(path, dtype=np.int32)
         edges = np.array(list(map(idx_map.get, edges_unordered.flatten())),
                          dtype=np.int32).reshape(edges_unordered.shape)
         adj = sp.coo_matrix((np.ones(edges.shape[0]), (edges[:, 0], edges[:, 1])),
@@ -82,6 +84,7 @@ class GraphConstructor():
 
         # build symmetric adjacency matrix
         adj = adj + adj.T.multiply(adj.T > adj) - adj.multiply(adj.T > adj)
+
         adj = adj + sp.eye(adj.shape[0])
         adj = self.normalize(adj)
         adj = self.sparse_mx_to_torch_sparse_tensor(adj)

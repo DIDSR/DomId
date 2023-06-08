@@ -15,9 +15,11 @@ class GNNLayer(Module):
         torch.nn.init.xavier_uniform_(self.weight)
 
     def forward(self, features, adj, active=True):
+
         support = torch.mm(features, self.weight)
         output = torch.spmm(adj, support)
         if active:
             output = F.relu(output)
+
         return output
 

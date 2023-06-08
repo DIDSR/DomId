@@ -108,12 +108,10 @@ class TrainerCluster(AbstractTrainer):
                 loss = self.model.cal_loss(tensor_x, inject_tensor, self.warmup_beta)
 
             loss = loss.sum()
-            try:
-                loss.backward()
-                self.optimizer.step()
-            except:
-                print("Error in backward")
-                continue
+
+            loss.backward()
+            self.optimizer.step()
+
             self.epo_loss_tr += loss.cpu().detach().item()
             # FIXME: devide #  number of samples in the HER notebook
 
