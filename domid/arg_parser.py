@@ -25,6 +25,7 @@ def mk_parser_main():
                              "(use if the file is not in the dataset folder or is not named dataset.csv)")
     parser.add_argument('--dim_inject_y', type=int, default=0, help="dimension to inject to input of the decoder from annotation")
     parser.add_argument('--digits_from_mnist', nargs='*', type=int, default=None, help="digits that should be included from mnist dataset")
+    parser.add_argument('--path_to_results', type=str, default='./', help="path to the results csv file")
 
 
     return parser

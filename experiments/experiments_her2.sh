@@ -1,0 +1,3 @@
+ poetry run python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --epos=15 --aname=vade --zd_dim=500 --d_dim=3 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=12 --dpath "../../HER2/combined_train" --bs 4 --prior Gaus --model cnn --lr 0.000005
+ poetry run python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --epos=15 --aname=vade --zd_dim=500 --d_dim=3 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=12 --dpath "../../HER2/combined_train" --bs 4 --prior Gaus --model cnn --lr 0.000005 --dim_inject_y 3 --inject_var "class"
+ poetry run python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --epos=15 --aname=dec --zd_dim=500 --d_dim=3 --apath=domid/algos/builder_dec.py --L=5 --pre_tr=12 --dpath "../../HER2/combined_train" --bs 4 --prior Gaus --model cnn --lr 0.000005
