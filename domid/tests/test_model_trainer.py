@@ -1,7 +1,5 @@
-
 from domid.algos.builder_vade import NodeAlgoBuilderVaDE
-from domid.algos.observers.b_obvisitor_clustering_only import \
-    ObVisitorClusteringOnly
+from domid.algos.observers.b_obvisitor_clustering_only import ObVisitorClusteringOnly
 from domid.arg_parser import mk_parser_main
 from domid.compos.exp.exp_main import Exp
 from domid.models.model_vade import ModelVaDE
@@ -346,7 +344,7 @@ def test_MNIST_conditionalOne_train():
             "--dim_inject_y",
             "10",
             "--inject_var",
-            "digit"
+            "digit",
         ]
     )
     experiment_train(args)

@@ -22,7 +22,7 @@ def run(path):
 
         mean = torch.zeros(3)
         std = torch.zeros(3)
-        print('==> Computing mean and std..')
+        print("==> Computing mean and std..")
         for inputs, targets in dataloader:
             for i in range(3):
                 mean[i] += inputs[:, i, :, :].mean()
@@ -38,25 +38,24 @@ def run2(path):
     data_transforms = transforms.Compose([transforms.ToTensor()])
     image_datasets = datasets.ImageFolder(os.path.join(data_dir), data_transforms)
     dataloader = torch.utils.data.DataLoader(image_datasets, batch_size=1, shuffle=True, num_workers=8)
-    print('==> Computing mean and std..')
+    print("==> Computing mean and std..")
     channels_sum = torch.zeros(3)
     channels_squared_sum = torch.zeros(3)
     num_batches = 0
     for imgs, targets in dataloader:
 
-
         channels_sum += imgs.mean((0, 2, 3))
-        channels_squared_sum += (imgs ** 2).mean((0, 2, 3))
+        channels_squared_sum += (imgs**2).mean((0, 2, 3))
         num_batches += 1
 
     mean = channels_sum / num_batches
-    var = (channels_squared_sum / num_batches - mean ** 2)
+    var = channels_squared_sum / num_batches - mean**2
     std = torch.sqrt(var)
     print(mean)
     print(std)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     args = parse_cmd_args()
     args.dpath
     run2(args.dpath)

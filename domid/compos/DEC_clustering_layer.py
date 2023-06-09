@@ -3,7 +3,7 @@ import torch.nn as nn
 
 
 class DECClusteringLayer(nn.Module):
-    def __init__(self, n_clusters=10, hidden=10, cluster_centers=None, alpha=1.0, device = 'cpu'):
+    def __init__(self, n_clusters=10, hidden=10, cluster_centers=None, alpha=1.0, device="cpu"):
         """
         :param n_clusters: The number of clusters.
         :param hidden: The size of the hidden layer.
@@ -17,7 +17,7 @@ class DECClusteringLayer(nn.Module):
         self.hidden = hidden
 
         if cluster_centers is None:
-            initial_cluster_centers = torch.zeros(self.n_clusters, self.hidden,dtype=torch.float).to(device)
+            initial_cluster_centers = torch.zeros(self.n_clusters, self.hidden, dtype=torch.float).to(device)
             nn.init.xavier_uniform_(initial_cluster_centers)
         else:
             initial_cluster_centers = cluster_centers
@@ -36,5 +36,5 @@ class DECClusteringLayer(nn.Module):
         numerator = 1.0 / (1.0 + (norm_squared / self.alpha))
         power = float(self.alpha + 1) / 2
         numerator = numerator**power
-        t_dist = (numerator.t() / torch.sum(numerator, 1)).t() #soft assignment using t-distribution
+        t_dist = (numerator.t() / torch.sum(numerator, 1)).t()  # soft assignment using t-distribution
         return t_dist

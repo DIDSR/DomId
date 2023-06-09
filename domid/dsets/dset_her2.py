@@ -18,7 +18,15 @@ class DsetHER2(Dataset):
     """
 
     @store_args
-    def __init__(self, class_num, path, d_dim, inject_variable=None, metadata_path=None, transform=None):
+    def __init__(
+        self,
+        class_num,
+        path,
+        d_dim,
+        inject_variable=None,
+        metadata_path=None,
+        transform=None,
+    ):
         """
         :param class_num: a integer value from 0 to 2, only images of this class will be kept. Note: that actual classes are from 1-3 (therefore, 1 is added in line 28)
         :param path: path to data storage directory (typically passed through args.dpath)
@@ -39,7 +47,7 @@ class DsetHER2(Dataset):
         self.inject_variable = inject_variable
         # if self.inject_variable is not None:
         if metadata_path is None:
-            self.df = pd.read_csv(os.path.join(path, 'dataframe.csv'))
+            self.df = pd.read_csv(os.path.join(path, "dataframe.csv"))
         else:
             self.df = pd.read_csv(metadata_path)
         if self.inject_variable is not None:
@@ -58,19 +66,19 @@ class DsetHER2(Dataset):
             self.transform = transforms.ToTensor()
         image = self.transform(image)
 
-        img_info = self.df.loc[self.df['img_id'] == self.images[idx]]
+        img_info = self.df.loc[self.df["img_id"] == self.images[idx]]
         ind_in_df = img_info.index.item()
-        label = int(self.df['machine'][ind_in_df]) #machine labels are  {"FD": 0, "H1": 1, "H2": 1, "ND": 3}
+        label = int(self.df["machine"][ind_in_df])  # machine labels are  {"FD": 0, "H1": 1, "H2": 1, "ND": 3}
 
         label = mk_fun_label2onehot(3)(label)
 
         if self.inject_variable:
-            img_info = self.df.loc[self.df['img_id'] == self.images[idx]]
+            img_info = self.df.loc[self.df["img_id"] == self.images[idx]]
             ind_in_df = img_info.index.item()
-            inject_tensor = int(self.df[self.inject_variable][ind_in_df])-1
+            inject_tensor = int(self.df[self.inject_variable][ind_in_df]) - 1
             inject_tensor = mk_fun_label2onehot(self.u_inject_tensor)(inject_tensor)
         else:
-            inject_tensor = [] #torch.Tensor([])#, dtype=label.dtype)
+            inject_tensor = []  # torch.Tensor([])#, dtype=label.dtype)
 
         img_id = img_loc
         return image, label, inject_tensor, img_id

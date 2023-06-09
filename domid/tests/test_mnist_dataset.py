@@ -6,6 +6,7 @@ from domid.models.model_vade import ModelVaDE
 from domid.tasks.task_mnist import NodeTaskMNIST
 from domid.tasks.task_mnist_color import NodeTaskMNISTColor10
 
+
 def node_compiler(args):
     if args.task == "mnist":
         node = NodeTaskMNIST()
@@ -15,9 +16,11 @@ def node_compiler(args):
         domain = "rgb_31_119_180"
 
     dset2 = node.get_dset_by_domain(args, domain)
-    ldr = torch.utils.data.DataLoader(dset2[0]) #train set from the task
+    ldr = torch.utils.data.DataLoader(dset2[0])  # train set from the task
 
     return ldr
+
+
 def test_mnist_length():
     parser = mk_parser_main()
     args = parser.parse_args(
@@ -25,8 +28,7 @@ def test_mnist_length():
             "--te_d",
             "7",
             "--tr_d",
-            "1"
-            "--zd_dim",
+            "1" "--zd_dim",
             "5",
             "--d_dim",
             "1",
@@ -39,8 +41,7 @@ def test_mnist_length():
             "--model",
             "linear",
             "--task",
-            "mnist"
-
+            "mnist",
         ]
     )
     ldr = node_compiler(args)
@@ -50,6 +51,8 @@ def test_mnist_length():
     assert vec_y.shape == (1, 10)
     assert inject_tensor == []
     assert len(ldr) == 5958
+
+
 def test_mnistcolor10_length():
     parser = mk_parser_main()
     args = parser.parse_args(
@@ -71,8 +74,7 @@ def test_mnistcolor10_length():
             "--model",
             "linear",
             "--task",
-            "mnistcolor10"
-
+            "mnistcolor10",
         ]
     )
 
@@ -82,4 +84,4 @@ def test_mnistcolor10_length():
     assert x.shape == (1, 3, 32, 32)
     assert vec_y.shape == (1, 10)
     assert inject_tensor == []
-    assert len(ldr) ==600
+    assert len(ldr) == 600

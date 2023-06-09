@@ -13,10 +13,7 @@ def model_compiler(args, model):
     ldr = torch.utils.data.DataLoader(dset2[0])
 
     for i, (tensor_x, vec_y, *_) in enumerate(ldr):
-        if (
-            model.__class__.__name__ == "ModelVaDECNN"
-            or model.__class__.__name__ == "ModelVaDE"
-        ):
+        if model.__class__.__name__ == "ModelVaDECNN" or model.__class__.__name__ == "ModelVaDE":
             (
                 preds_c,
                 probs_c,

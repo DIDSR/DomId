@@ -2,8 +2,9 @@ import torch
 import torch.distributions as dist
 import torch.nn as nn
 import torch.nn.functional as F
-from domainlab.compos.vae.compos.decoder_concat_vec_reshape_conv_gated_conv import \
-    DecoderConcatLatentFCReshapeConvGatedConv
+from domainlab.compos.vae.compos.decoder_concat_vec_reshape_conv_gated_conv import (
+    DecoderConcatLatentFCReshapeConvGatedConv,
+)
 from domainlab.compos.vae.compos.encoder import LSEncoderDense
 from domainlab.models.a_model_classif import AModelClassif
 from domainlab.utils.utils_class import store_args
@@ -43,8 +44,19 @@ class ModelXY2D(AModelClassif):
     """
 
     @store_args
-    def __init__(self, list_str_y, y_dim, zd_dim, gamma_y, device,
-                 i_c, i_h, i_w, dim_feat_x=10, list_str_d=None):
+    def __init__(
+        self,
+        list_str_y,
+        y_dim,
+        zd_dim,
+        gamma_y,
+        device,
+        i_c,
+        i_h,
+        i_w,
+        dim_feat_x=10,
+        list_str_d=None,
+    ):
         """
         :param y_dim: classification task class-label dimension
         :param zd_dim: dimension of latent variable $z_d$ dimension
@@ -55,15 +67,12 @@ class ModelXY2D(AModelClassif):
         self.infer_y_from_x = Net_MNIST(y_dim, self.i_h)
         self.feat_x2concat_y = Net_MNIST(self.dim_feat_x, self.i_h)
         # FIXME: shall we share parameters between infer_y_from_x and self.feat_x2concat_y?
-        self.infer_domain = LSEncoderDense(z_dim=self.zd_dim,
-                                           dim_input=self.dim_feat_x+self.y_dim)
+        self.infer_domain = LSEncoderDense(z_dim=self.zd_dim, dim_input=self.dim_feat_x + self.y_dim)
         self.gamma_y = gamma_y
         # LN: location scale encoder
         self.decoder = DecoderConcatLatentFCReshapeConvGatedConv(
-            z_dim=zd_dim+y_dim,
-            i_c=self.i_c,
-            i_w=self.i_w,
-            i_h=self.i_h)
+            z_dim=zd_dim + y_dim, i_c=self.i_c, i_w=self.i_w, i_h=self.i_h
+        )
 
     def cal_logit_y(self, tensor_x):
         """
@@ -118,18 +127,24 @@ class ModelXY2D(AModelClassif):
         # FIXME: use analytical expression since using sampling to estimate KL divergence is high variance
         _, y_target = y.max(dim=1)  # y is the observed class label, not the cluster label!
         lc_y = F.cross_entropy(y_hat, y_target, reduction="none")
-        loss = nll \
-               - zd_p_minus_zd_q \
-               + self.gamma_y * lc_y
+        loss = nll - zd_p_minus_zd_q + self.gamma_y * lc_y
         return loss.mean()
 
 
-
 def test_fun():
-    model = ModelXY2D(y_dim=10, zd_dim=8, gamma_y=3500, device=torch.device("cpu"), i_c=3, i_h=28, i_w=28)
+    model = ModelXY2D(
+        y_dim=10,
+        zd_dim=8,
+        gamma_y=3500,
+        device=torch.device("cpu"),
+        i_c=3,
+        i_h=28,
+        i_w=28,
+    )
     device = torch.device("cpu")
     x = torch.rand(2, 3, 28, 28)
     import numpy as np
+
     a = np.zeros((2, 10))
     a = np.double(a)
     a[0, 1] = 1.0

@@ -35,8 +35,10 @@ class Net_MNIST(nn.Module):
         x = self.fc3(x)
         return x
 
+
 def test_Net_MNIST():
     import torch
+
     x = torch.rand(2, 3, 28, 28)
     model = Net_MNIST(2, 28)
     model(x)
