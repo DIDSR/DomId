@@ -186,8 +186,8 @@ class TrainerCluster(AbstractTrainer):
         """
         check the performance of randomly initialized weight
         """
-        acc = PerfCluster.cal_acc(self.model, self.loader_tr, self.device)  # FIXME change tr to te
-        print("before training, model accuracy:", acc)
+        metric_tr = PerfCluster.cal_acc(self.model, self.loader_tr, self.device)  # FIXME change tr to te
+        print("before training, model accuracy (vs. domain):", metric_tr[3])
 
     def post_tr(self):
         print("training is done")

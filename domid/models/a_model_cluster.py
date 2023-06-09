@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 
 from domid.utils.perf_cluster import PerfCluster
-from domid.utils.perf_similarity import PerfCorrelationHER2
+
 
 class AModelCluster(nn.Module):
     """
@@ -14,9 +14,7 @@ class AModelCluster(nn.Module):
         Sets up the performance metrics used.
         """
         self.task = task
-        self.perf_metric = PerfCluster(task.dim_y)
-
-
+        self.perf_metric = PerfCluster()
 
         return self.perf_metric
 
