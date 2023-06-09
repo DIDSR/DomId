@@ -415,6 +415,8 @@
 <li class="toctree-l4"><a class="reference internal" href="domid.compos.html#domid.compos.predict_basic.Prediction.mk_prediction"><code class="docutils literal notranslate"><span class="pre">Prediction.mk_prediction()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="domid.compos.html#domid.compos.predict_basic.Prediction.epoch_tr_acc"><code class="docutils literal notranslate"><span class="pre">Prediction.epoch_tr_acc()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="domid.compos.html#domid.compos.predict_basic.Prediction.epoch_val_acc"><code class="docutils literal notranslate"><span class="pre">Prediction.epoch_val_acc()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="domid.compos.html#domid.compos.predict_basic.Prediction.epoch_tr_correlation"><code class="docutils literal notranslate"><span class="pre">Prediction.epoch_tr_correlation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="domid.compos.html#domid.compos.predict_basic.Prediction.epoch_val_correlation"><code class="docutils literal notranslate"><span class="pre">Prediction.epoch_val_correlation()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -425,6 +427,7 @@
 <li class="toctree-l4"><a class="reference internal" href="domid.compos.html#domid.compos.storing.Storing.storing"><code class="docutils literal notranslate"><span class="pre">Storing.storing()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="domid.compos.html#domid.compos.storing.Storing.saving_model"><code class="docutils literal notranslate"><span class="pre">Storing.saving_model()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="domid.compos.html#domid.compos.storing.Storing.storing_z_space"><code class="docutils literal notranslate"><span class="pre">Storing.storing_z_space()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="domid.compos.html#domid.compos.storing.Storing.csv_dump"><code class="docutils literal notranslate"><span class="pre">Storing.csv_dump()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -473,10 +476,12 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="domid.dsets.html#module-domid.dsets.dset_usps">domid.dsets.dset_usps module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.dsets.html#module-domid.dsets.generate_dataset_dataframe_her2">domid.dsets.generate_dataset_dataframe_her2 module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="domid.dsets.html#domid.dsets.generate_dataset_dataframe_her2.get_jpg_folders"><code class="docutils literal notranslate"><span class="pre">get_jpg_folders()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="domid.dsets.html#domid.dsets.generate_dataset_dataframe_her2.total_count_images"><code class="docutils literal notranslate"><span class="pre">total_count_images()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="domid.dsets.html#domid.dsets.generate_dataset_dataframe_her2.parse_machine_labels"><code class="docutils literal notranslate"><span class="pre">parse_machine_labels()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="domid.dsets.html#domid.dsets.generate_dataset_dataframe_her2.mean_scores_per_experiment"><code class="docutils literal notranslate"><span class="pre">mean_scores_per_experiment()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="domid.dsets.html#module-domid.dsets">Module contents</a></li>
@@ -539,12 +544,7 @@
 <li class="toctree-l1"><a class="reference internal" href="domid.tasks.html">domid.tasks package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="domid.tasks.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.tasks.html#module-domid.tasks.b_task_cluster">domid.tasks.b_task_cluster module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="domid.tasks.html#domid.tasks.b_task_cluster.NodeTaskDictCluster"><code class="docutils literal notranslate"><span class="pre">NodeTaskDictCluster</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="domid.tasks.html#domid.tasks.b_task_cluster.NodeTaskDictCluster.init_business"><code class="docutils literal notranslate"><span class="pre">NodeTaskDictCluster.init_business()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="domid.tasks.html#domid.tasks.b_task_cluster.NodeTaskDictCluster.dim_y"><code class="docutils literal notranslate"><span class="pre">NodeTaskDictCluster.dim_y</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="domid.tasks.html#domid.tasks.b_task_cluster.NodeTaskDictCluster.count_domain_class"><code class="docutils literal notranslate"><span class="pre">NodeTaskDictCluster.count_domain_class()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="domid.tasks.html#domid.tasks.b_task_cluster.NodeTaskDictCluster"><code class="docutils literal notranslate"><span class="pre">NodeTaskDictCluster</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="domid.tasks.html#module-domid.tasks.task_her2">domid.tasks.task_her2 module</a><ul>
@@ -553,6 +553,7 @@
 <li class="toctree-l4"><a class="reference internal" href="domid.tasks.html#domid.tasks.task_her2.NodeTaskHER2.isize"><code class="docutils literal notranslate"><span class="pre">NodeTaskHER2.isize</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="domid.tasks.html#domid.tasks.task_her2.NodeTaskHER2.get_list_domains"><code class="docutils literal notranslate"><span class="pre">NodeTaskHER2.get_list_domains()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="domid.tasks.html#domid.tasks.task_her2.NodeTaskHER2.get_dset_by_domain"><code class="docutils literal notranslate"><span class="pre">NodeTaskHER2.get_dset_by_domain()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="domid.tasks.html#domid.tasks.task_her2.NodeTaskHER2.calc_corr"><code class="docutils literal notranslate"><span class="pre">NodeTaskHER2.calc_corr()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="domid.tasks.html#domid.tasks.task_her2.test_fun"><code class="docutils literal notranslate"><span class="pre">test_fun()</span></code></a></li>
@@ -571,6 +572,8 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="domid.tasks.html#module-domid.tasks.task_mnist_color">domid.tasks.task_mnist_color module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="domid.tasks.html#domid.tasks.task_mnist_color.NodeTaskMNISTColor10"><code class="docutils literal notranslate"><span class="pre">NodeTaskMNISTColor10</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="domid.tasks.html#domid.tasks.task_mnist_color.NodeTaskMNISTColor10.init_business"><code class="docutils literal notranslate"><span class="pre">NodeTaskMNISTColor10.init_business()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="domid.tasks.html#domid.tasks.task_mnist_color.NodeTaskMNISTColor10.dim_y"><code class="docutils literal notranslate"><span class="pre">NodeTaskMNISTColor10.dim_y</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="domid.tasks.html#domid.tasks.task_mnist_color.NodeTaskMNISTColor10.list_str_y"><code class="docutils literal notranslate"><span class="pre">NodeTaskMNISTColor10.list_str_y</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="domid.tasks.html#domid.tasks.task_mnist_color.NodeTaskMNISTColor10.isize"><code class="docutils literal notranslate"><span class="pre">NodeTaskMNISTColor10.isize</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="domid.tasks.html#domid.tasks.task_mnist_color.NodeTaskMNISTColor10.get_list_domains"><code class="docutils literal notranslate"><span class="pre">NodeTaskMNISTColor10.get_list_domains()</span></code></a></li>
@@ -579,6 +582,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="domid.tasks.html#module-domid.tasks.task_usps">domid.tasks.task_usps module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.tasks.html#module-domid.tasks.zoo_tasks">domid.tasks.zoo_tasks module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="domid.tasks.html#domid.tasks.zoo_tasks.TaskChainNodeGetter"><code class="docutils literal notranslate"><span class="pre">TaskChainNodeGetter</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="domid.tasks.html#domid.tasks.zoo_tasks.TaskChainNodeGetter.__init__"><code class="docutils literal notranslate"><span class="pre">TaskChainNodeGetter.__init__()</span></code></a></li>
@@ -665,7 +669,16 @@
 <li class="toctree-l2"><a class="reference internal" href="domid.utils.html#module-domid.utils.perf_cluster">domid.utils.perf_cluster module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="domid.utils.html#domid.utils.perf_cluster.PerfCluster"><code class="docutils literal notranslate"><span class="pre">PerfCluster</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="domid.utils.html#domid.utils.perf_cluster.PerfCluster.__init__"><code class="docutils literal notranslate"><span class="pre">PerfCluster.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="domid.utils.html#domid.utils.perf_cluster.PerfCluster.hungarian_algorithm"><code class="docutils literal notranslate"><span class="pre">PerfCluster.hungarian_algorithm()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="domid.utils.html#domid.utils.perf_cluster.PerfCluster.cal_acc"><code class="docutils literal notranslate"><span class="pre">PerfCluster.cal_acc()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="domid.utils.html#module-domid.utils.perf_similarity">domid.utils.perf_similarity module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="domid.utils.html#domid.utils.perf_similarity.PerfCorrelationHER2"><code class="docutils literal notranslate"><span class="pre">PerfCorrelationHER2</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="domid.utils.html#domid.utils.perf_similarity.PerfCorrelationHER2.__init__"><code class="docutils literal notranslate"><span class="pre">PerfCorrelationHER2.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="domid.utils.html#domid.utils.perf_similarity.PerfCorrelationHER2.cal_acc"><code class="docutils literal notranslate"><span class="pre">PerfCorrelationHER2.cal_acc()</span></code></a></li>
 </ul>
 </li>
 </ul>

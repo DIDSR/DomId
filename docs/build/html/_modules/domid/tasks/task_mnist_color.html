@@ -307,8 +307,6 @@ from domainlab.utils.utils_classif import mk_dummy_label_list_str
 from torch.utils.data import random_split
 from torchvision import transforms
 
-# from domainlab.dsets.dset_mnist_color_solo_default import \
-#     DsetMNISTColorSoloDefault
 from domid.dsets.dset_mnist_color_solo_default import DsetMNISTColorSoloDefault
 from domid.tasks.b_task_cluster import NodeTaskDictCluster
 
@@ -317,6 +315,23 @@ from domid.tasks.b_task_cluster import NodeTaskDictCluster
     """
     Use the deafult palette with 10 colors
     """
+<div class="viewcode-block" id="NodeTaskMNISTColor10.init_business"><a class="viewcode-back" href="../../../domid.tasks.html#domid.tasks.task_mnist_color.NodeTaskMNISTColor10.init_business">[docs]</a>    def init_business(self, args):
+        """
+        create a dictionary of datasets
+        """
+        if args.digits_from_mnist:
+            self.wanted_digits = [int(w) for w in args.digits_from_mnist]
+            self.wanted_digits = list(set(self.wanted_digits))
+        else:
+            self.wanted_digits = list(range(10))
+        self._dim_y = len(self.wanted_digits)
+        # note the order of lines: dim_y has to be set before init_business is called
+        super().init_business(args)</div>
+
+    @property
+    def dim_y(self):
+        return self._dim_y
+
     @property
     def list_str_y(self):
         return mk_dummy_label_list_str("digit", self.dim_y)
@@ -347,6 +362,9 @@ from domid.tasks.b_task_cluster import NodeTaskDictCluster
         be evaluated in if statement, in which case, no validation set will be
         created. Otherwise, this argument is the split ratio
         """
+
+
+
         ratio_split = float(args.split) if split else False
         # by default, split is set to be zero which in python can
         # be evaluated in if statement, in which case, no validation
@@ -366,6 +384,7 @@ from domid.tasks.b_task_cluster import NodeTaskDictCluster
             val_len = len(dset) - train_len
             train_set, val_set = random_split(dset, [train_len, val_len])
         return train_set, val_set</div></div>
+
 </pre></div>
 
           </article>

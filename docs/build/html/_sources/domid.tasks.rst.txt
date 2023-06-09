@@ -36,6 +36,14 @@ domid.tasks.task\_mnist\_color module
    :undoc-members:
    :show-inheritance:
 
+domid.tasks.task\_usps module
+-----------------------------
+
+.. automodule:: domid.tasks.task_usps
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 domid.tasks.zoo\_tasks module
 -----------------------------
 

@@ -115,15 +115,14 @@ class PerfCluster(PerfClassif):
         :param model:
         :param loader_te:
         :param device: for final test, GPU can be used
-        :param max_batches:
-                maximum number of iteration for data loader, used to
-                probe performance with less computation burden.
-                default None, which means to traverse the whole dataset
+        :param max_batches: maximum number of iteration for data loader, used to
+        probe performance with less computation burden.
+        default None, which means to traverse the whole dataset
         :return:
-                accuracy (clusters vs. y),
-                confusion matrix (clusters vs. y),
-                accuracy (clusters vs. d),
-                confusion matrix (clusters vs. d)
+        - accuracy (clusters vs. y),
+        - confusion matrix (clusters vs. y),
+        - accuracy (clusters vs. d),
+        - confusion matrix (clusters vs. d)
         """
         model.eval()
         model_local = model.to(device)

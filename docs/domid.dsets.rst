@@ -36,6 +36,14 @@ domid.dsets.dset\_mnist\_color\_solo\_default module
    :undoc-members:
    :show-inheritance:
 
+domid.dsets.dset\_usps module
+-----------------------------
+
+.. automodule:: domid.dsets.dset_usps
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 domid.dsets.generate\_dataset\_dataframe\_her2 module
 -----------------------------------------------------
 
