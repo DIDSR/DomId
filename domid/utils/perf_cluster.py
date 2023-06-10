@@ -113,6 +113,7 @@ class PerfCluster(PerfClassif):
         as well as against the class labels (y). Compute the two respective
         confusion matrices and overall accuracy measurements (after finding
         the optimal matching with the cluster labels).
+
         :param model:
         :param loader_te:
         :param device: for final test, GPU can be used
