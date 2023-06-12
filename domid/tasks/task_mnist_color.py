@@ -16,6 +16,7 @@ class NodeTaskMNISTColor10(NodeTaskDictCluster):
     """
     Use the deafult palette with 10 colors
     """
+
     def init_business(self, args):
         """
         create a dictionary of datasets
@@ -48,7 +49,7 @@ class NodeTaskMNISTColor10(NodeTaskDictCluster):
         2. better use method than property so new domains can be added
         """
         list_domains = []
-        for rgb_list in default_rgb_palette:   # 10 colors
+        for rgb_list in default_rgb_palette:  # 10 colors
             domain = "_".join([str(c) for c in rgb_list])
             domain = "rgb_" + domain
             list_domains.append(domain)
@@ -64,8 +65,6 @@ class NodeTaskMNISTColor10(NodeTaskDictCluster):
         created. Otherwise, this argument is the split ratio
         """
 
-
-
         ratio_split = float(args.split) if split else False
         # by default, split is set to be zero which in python can
         # be evaluated in if statement, in which case, no validation
@@ -75,7 +74,13 @@ class NodeTaskMNISTColor10(NodeTaskDictCluster):
         ind_global = self.get_list_domains().index(na_domain)
         trans = [transforms.Resize((32, 32))]
 
-        dset = DsetMNISTColorSoloDefault(ind_global, args.dpath, inject_variable=args.inject_var,list_transforms=trans, args = args)
+        dset = DsetMNISTColorSoloDefault(
+            ind_global,
+            args.dpath,
+            inject_variable=args.inject_var,
+            list_transforms=trans,
+            args=args,
+        )
 
         train_set = dset
         val_set = dset
@@ -85,4 +90,3 @@ class NodeTaskMNISTColor10(NodeTaskDictCluster):
             val_len = len(dset) - train_len
             train_set, val_set = random_split(dset, [train_len, val_len])
         return train_set, val_set
-

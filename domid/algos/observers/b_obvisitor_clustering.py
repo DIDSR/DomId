@@ -7,24 +7,19 @@ class ObVisitorClustering(ObVisitor):
     """
     Observer + Visitor pattern for clustering algorithms
     """
+
     def update(self, epoch):
         print("epoch:", epoch)
         self.epo = epoch
         if epoch % self.epo_te == 0:
-            _, _, acc_tr_pool, conf_mat_tr = PerfCluster.cal_acc(
-                self.host_trainer.model, self.loader_tr, self.device
-            )
+            _, _, acc_tr_pool, conf_mat_tr = PerfCluster.cal_acc(self.host_trainer.model, self.loader_tr, self.device)
             print("pooled train clustering acc: ", acc_tr_pool)
             print(conf_mat_tr)
 
-            _, _, acc_val, conf_mat_val = PerfCluster.cal_acc(
-                self.host_trainer.model, self.loader_val, self.device
-            )
+            _, _, acc_val, conf_mat_val = PerfCluster.cal_acc(self.host_trainer.model, self.loader_val, self.device)
             self.acc_val = acc_val
             print("clustering validation acc: ", acc_val)
             print(conf_mat_val)
-
-
 
         return super().update(epoch)
 

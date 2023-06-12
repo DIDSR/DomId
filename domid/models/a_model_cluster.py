@@ -33,12 +33,10 @@ class AModelCluster(nn.Module):
         r_score_te = None
         # if self.task.get_list_domains() == ['class0', 'class1', 'class2']: #if task ==her2
 
-        if hasattr(self.task, 'calc_corr'):
+        if hasattr(self.task, "calc_corr"):
             r_score_tr, r_score_te = self.task.calc_corr(self, loader_tr, loader_te, device)
             # with torch.no_grad():
             #     r_score_tr = self.perf_metric_correlation.cal_acc(self, loader_tr,device)
             #     r_score_te = self.perf_metric_correlation.cal_acc(self, loader_te, device)
 
         return metric_tr, metric_te, r_score_tr, r_score_te
-
-

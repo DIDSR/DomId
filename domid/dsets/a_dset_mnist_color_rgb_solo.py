@@ -22,6 +22,7 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
         2. subdomains: color(foreground, background)
         3. structure: each subdomain contains a combination of foreground+background color
     """
+
     @abc.abstractmethod
     def get_foreground_color(self, ind):
         raise NotImplementedError
@@ -35,14 +36,19 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
         raise NotImplementedError
 
     @store_args
-    def __init__(self, ind_color, path,
-                 subset_step=100,
-                 color_scheme="both",
-                 label_transform=mk_fun_label2onehot(10),
-                 list_transforms=None,
-                 raw_split='train',
-                 flag_rand_color=False,
-                 inject_variable= None, args = None):
+    def __init__(
+        self,
+        ind_color,
+        path,
+        subset_step=100,
+        color_scheme="both",
+        label_transform=mk_fun_label2onehot(10),
+        list_transforms=None,
+        raw_split="train",
+        flag_rand_color=False,
+        inject_variable=None,
+        args=None,
+    ):
         """
         :param ind_color: index of a color palette
         :param path: disk storage directory
@@ -59,12 +65,9 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
         flag_train = True
         if raw_split != "train":
             flag_train = False
-        dataset = datasets.MNIST(root=dpath,
-                                 train=flag_train,
-                                 download=True,
-                                 transform=transforms.ToTensor())
+        dataset = datasets.MNIST(root=dpath, train=flag_train, download=True, transform=transforms.ToTensor())
 
-        if color_scheme not in ['num', 'back', 'both']:
+        if color_scheme not in ["num", "back", "both"]:
             raise ValueError("color must be either 'num', 'back' or 'both")
 
         raw_path = os.path.dirname(dataset.raw_folder)
@@ -86,7 +89,8 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
         self.generate_dataframe()
         self.flag_load_df = True
         self.inject_variable = inject_variable
-        if self.inject_variable: self.inject_dim = args.dim_inject_y
+        if self.inject_variable:
+            self.inject_dim = args.dim_inject_y
 
     def _filter_digits(self, x, y=None):
         """
@@ -96,8 +100,8 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
         """
         if y is None:
             assert isinstance(x, pd.DataFrame), "provide a value for y if x is not a pandas dataframe"
-            filtered_x = x[x['digit'].isin(self.wanted_digits)]
-            filtered_y = filtered_x['digit'].values
+            filtered_x = x[x["digit"].isin(self.wanted_digits)]
+            filtered_y = filtered_x["digit"].values
         else:
             subidx = []
             for wanted in self.wanted_digits:
@@ -108,27 +112,25 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
             filtered_y = y[subidx]
         return filtered_x, filtered_y
 
-
     def _collect_imgs_labels(self, path, raw_split):
         """
         :param path:
         :param raw_split:
         """
-        if raw_split == 'train':
-            fimages = os.path.join(path, 'raw', 'train-images-idx3-ubyte')
-            flabels = os.path.join(path, 'raw', 'train-labels-idx1-ubyte')
+        if raw_split == "train":
+            fimages = os.path.join(path, "raw", "train-images-idx3-ubyte")
+            flabels = os.path.join(path, "raw", "train-labels-idx1-ubyte")
         else:
-            fimages = os.path.join(path, 'raw', 't10k-images-idx3-ubyte')
-            flabels = os.path.join(path, 'raw', 't10k-labels-idx1-ubyte')
+            fimages = os.path.join(path, "raw", "t10k-images-idx3-ubyte")
+            flabels = os.path.join(path, "raw", "t10k-labels-idx1-ubyte")
 
         # Load images
-        with open(fimages, 'rb') as f_h:
+        with open(fimages, "rb") as f_h:
             _, _, rows, cols = struct.unpack(">IIII", f_h.read(16))
-            self.images = np.fromfile(f_h, dtype=np.uint8).reshape(
-                -1, rows, cols)
+            self.images = np.fromfile(f_h, dtype=np.uint8).reshape(-1, rows, cols)
 
         # Load labels
-        with open(flabels, 'rb') as f_h:
+        with open(flabels, "rb") as f_h:
             struct.unpack(">II", f_h.read(8))
             self.labels = np.fromfile(f_h, dtype=np.int8)
         self.images = np.tile(self.images[:, :, :, np.newaxis], 3)
@@ -137,16 +139,27 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
         return len(self.images)
 
     def generate_dataframe(self):
-        df_name = 'dataframe_colored_mnist.csv'
+        df_name = "dataframe_colored_mnist.csv"
         self.df_save_path = os.path.join(self.path, df_name)
         if exists(self.df_save_path):
             df = pd.read_csv(self.df_save_path)
         else:
-            df = pd.DataFrame(columns=['image_id', 'color', 'digit'])
+            df = pd.DataFrame(columns=["image_id", "color", "digit"])
 
         for i in range(len(self.images)):
-            image_id = "_".join([str(i), str(self.ind_color), str(self.color_scheme), str(self.labels[i])])
-            new_row = {'image_id': image_id, 'color': self.ind_color, 'digit': self.labels[i]}
+            image_id = "_".join(
+                [
+                    str(i),
+                    str(self.ind_color),
+                    str(self.color_scheme),
+                    str(self.labels[i]),
+                ]
+            )
+            new_row = {
+                "image_id": image_id,
+                "color": self.ind_color,
+                "digit": self.labels[i],
+            }
             # if a row with that image id exists already, replace it; otherwise, add a new row
             indices = df.loc[df["image_id"] == image_id].index
             if len(indices) == 1:
@@ -156,7 +169,7 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
             elif len(indices) > 1:
                 raise ValueError("Multiple dataframe rows with the same image_id!")
             else:
-                df.loc[len(df)+1] = new_row
+                df.loc[len(df) + 1] = new_row
         df.to_csv(self.df_save_path, index=False)
 
     def _op_color_img(self, image):
@@ -168,7 +181,7 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
 
             c_f = self.get_foreground_color(np.random.randint(0, self.get_num_colors()))
             c_b = 0
-            if self.color_scheme == 'both':
+            if self.color_scheme == "both":
                 count = 0
                 while True:
                     c_b = self.get_background_color(np.random.randint(0, self.get_num_colors()))
@@ -177,25 +190,22 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
                         # is not equal to foreground
                         break
         else:
-            if self.color_scheme == 'num':
+            if self.color_scheme == "num":
                 # domain and class label has perfect mutual information:
                 # assign color
                 # according to their class (0,10)
                 c_f = self.get_foreground_color(self.ind_color)
-                c_b = np.array([0]*3)
-            elif self.color_scheme == 'back':  # only paint background
-                c_f = np.array([0]*3)
+                c_b = np.array([0] * 3)
+            elif self.color_scheme == "back":  # only paint background
+                c_f = np.array([0] * 3)
                 c_b = self.get_background_color(self.ind_color)
 
             else:  # paint both background and foreground
                 c_f = self.get_foreground_color(self.ind_color)
                 c_b = self.get_background_color(self.ind_color)
-        image[:, :, 0] = image[:, :, 0] / 255 * c_f[0] + \
-            (255 - image[:, :, 0]) / 255 * c_b[0]
-        image[:, :, 1] = image[:, :, 1] / 255 * c_f[1] + \
-            (255 - image[:, :, 1]) / 255 * c_b[1]
-        image[:, :, 2] = image[:, :, 2] / 255 * c_f[2] + \
-            (255 - image[:, :, 2]) / 255 * c_b[2]
+        image[:, :, 0] = image[:, :, 0] / 255 * c_f[0] + (255 - image[:, :, 0]) / 255 * c_b[0]
+        image[:, :, 1] = image[:, :, 1] / 255 * c_f[1] + (255 - image[:, :, 1]) / 255 * c_b[1]
+        image[:, :, 2] = image[:, :, 2] / 255 * c_f[2] + (255 - image[:, :, 2]) / 255 * c_b[2]
         return image
 
     def _color_imgs_onehot_labels(self):
@@ -210,21 +220,31 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
         if self.flag_load_df:
             self.df = pd.read_csv(self.df_save_path)
             # only keep the single color of this dataset
-            self.df = self.df[self.df['color'] == self.ind_color]
+            self.df = self.df[self.df["color"] == self.ind_color]
             # only keep the digits of this dataset
-            if len(self.wanted_digits) < 10: self.df, _ = self._filter_digits(self.df)
+            if len(self.wanted_digits) < 10:
+                self.df, _ = self._filter_digits(self.df)
             self.flag_load_df = False
 
-        image_id = "_".join([str(idx), str(self.ind_color), str(self.color_scheme), str(self.labels[idx])])
+        image_id = "_".join(
+            [
+                str(idx),
+                str(self.ind_color),
+                str(self.color_scheme),
+                str(self.labels[idx]),
+            ]
+        )
         indices = self.df.loc[self.df["image_id"] == image_id].index
         assert len(indices) == 1, "invalid image_id"
-        df_idx = indices[0]  # this class is for one domain (i.e., one color), but the dataframe combines all domains, so the index will be different
+        df_idx = indices[
+            0
+        ]  # this class is for one domain (i.e., one color), but the dataframe combines all domains, so the index will be different
 
         image = self.images[idx]  # range of pixel: [0,255]
         label = self.labels[idx]
         if self.label_transform is not None:
             label = self.label_transform(label)
-        image = Image.fromarray(image)   # numpy array 28*28*3 -> 3*28*28
+        image = Image.fromarray(image)  # numpy array 28*28*3 -> 3*28*28
         if self.list_transforms is not None:
             for trans in self.list_transforms:
                 image = trans(image)

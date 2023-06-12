@@ -5,7 +5,15 @@ from domid.compos.VAE_blocks import UnFlatten, get_output_shape
 
 
 class ConvolutionalEncoder(nn.Module):
-    def __init__(self, zd_dim, num_channels=3, num_filters=[32, 64, 128], i_w=28, i_h=28, k = [3, 3, 3]):
+    def __init__(
+        self,
+        zd_dim,
+        num_channels=3,
+        num_filters=[32, 64, 128],
+        i_w=28,
+        i_h=28,
+        k=[3, 3, 3],
+    ):
         """
         VAE Encoder
 
@@ -17,11 +25,19 @@ class ConvolutionalEncoder(nn.Module):
         :param k: list of kernel sizes for each convolutional layer
         """
         super(ConvolutionalEncoder, self).__init__()
-        modules =[]
+        modules = []
         num_filters = [num_channels] + num_filters
         for i in range(len(num_filters) - 1):
-            
-            modules.append(nn.Conv2d(num_filters[i], num_filters[i + 1], kernel_size=k[i], stride=2, padding=1))
+
+            modules.append(
+                nn.Conv2d(
+                    num_filters[i],
+                    num_filters[i + 1],
+                    kernel_size=k[i],
+                    stride=2,
+                    padding=1,
+                )
+            )
             modules.append(nn.BatchNorm2d(num_filters[i + 1]))
             modules.append(nn.LeakyReLU())
         modules.append(nn.Flatten())
@@ -42,7 +58,16 @@ class ConvolutionalEncoder(nn.Module):
 
 
 class ConvolutionalDecoder(nn.Module):
-    def __init__(self, prior, zd_dim, domain_dim, h_dim, num_channels=3, num_filters=[32, 64, 128], k = [4, 4, 4]):  # , 256, 512, 1024]):
+    def __init__(
+        self,
+        prior,
+        zd_dim,
+        domain_dim,
+        h_dim,
+        num_channels=3,
+        num_filters=[32, 64, 128],
+        k=[4, 4, 4],
+    ):  # , 256, 512, 1024]):
         """
         VAE Decoder
 
@@ -52,23 +77,38 @@ class ConvolutionalDecoder(nn.Module):
         :param num_filters: list of number of filters for each convolutional layer, given in *reverse* order
         :param k: list of kernel sizes for each convolutional layer
         """
-        #FIXME kernel size as an input from comand line? different for HER2 and MNIST
+        # FIXME kernel size as an input from comand line? different for HER2 and MNIST
         super(ConvolutionalDecoder, self).__init__()
         self.prior = prior
         self.num_channels = num_channels
-        self.linear = nn.Linear(zd_dim+domain_dim, h_dim)
+        self.linear = nn.Linear(zd_dim + domain_dim, h_dim)
         self.sigmoid_layer = nn.Sigmoid()
         self.unflat = UnFlatten(num_filters[-1])
-        
+
         num_filters = [num_channels] + num_filters
         num_filters.reverse()
         modules = []
         for i in range(len(num_filters) - 2):
             modules.append(
-                nn.ConvTranspose2d(num_filters[i], num_filters[i + 1], kernel_size=k[i], stride=2, padding=1))
+                nn.ConvTranspose2d(
+                    num_filters[i],
+                    num_filters[i + 1],
+                    kernel_size=k[i],
+                    stride=2,
+                    padding=1,
+                )
+            )
             modules.append(nn.BatchNorm2d(num_filters[i + 1]))
             modules.append(nn.LeakyReLU())
-        modules.append(nn.ConvTranspose2d(num_filters[-2], num_channels * 2, kernel_size=k[-1], stride=2, padding=1))
+        modules.append(
+            nn.ConvTranspose2d(
+                num_filters[-2],
+                num_channels * 2,
+                kernel_size=k[-1],
+                stride=2,
+                padding=1,
+            )
+        )
         self.decod = nn.Sequential(*modules)
 
     def forward(self, z):
@@ -81,11 +121,11 @@ class ConvolutionalDecoder(nn.Module):
         z = self.unflat(z)
         x_decoded = self.decod(z)
 
-        if self.prior =='Bern':
-            x_pro = self.sigmoid_layer(x_decoded[:, 0:self.num_channels, :, :])
+        if self.prior == "Bern":
+            x_pro = self.sigmoid_layer(x_decoded[:, 0 : self.num_channels, :, :])
         else:
-            x_pro = x_decoded[:, 0:self.num_channels, :, :]
+            x_pro = x_decoded[:, 0 : self.num_channels, :, :]
 
-        log_sigma = x_decoded[:, self.num_channels:, :, :]
+        log_sigma = x_decoded[:, self.num_channels :, :, :]
 
         return x_pro, log_sigma
