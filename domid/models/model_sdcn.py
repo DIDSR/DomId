@@ -73,7 +73,8 @@ class ModelSDCN(AModelCluster):
         tra1, tra2, tra3, z = self.encoder(x)
 
         h = self.gnn_model(x, self.adj, tra1, tra2, tra3, z)
-        probs_c = F.softmax(h, dim=1) #[batch_size, n_clusters] (batch_zise==number of samples)
+        probs_c = F.softmax(h, dim=1) #[batch_size, n_clusters] (batch_zise==number of samples) same as preds in the code
+        # and p is calculated using preds and target distribution.
 
         # Dual Self-supervised Module
         q = 1.0 / (1.0 + torch.sum(torch.pow(z.unsqueeze(1) - self.cluster_layer, 2), 2))/ self.v
@@ -83,7 +84,7 @@ class ModelSDCN(AModelCluster):
 
 
 
-        logits = q.type(torch.float32)
+        logits = q.type(torch.float32) #q in the paper and code
 
         self.local_tb.add_histogram('p', probs_c.flatten(), self.counter)
         self.local_tb.add_histogram('q', q.flatten(), self.counter)
