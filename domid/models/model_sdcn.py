@@ -16,6 +16,7 @@ from domid.compos.GNN import GNN
 
 import scipy.sparse as sp
 import matplotlib.pyplot as plt
+import os
 
 class ModelSDCN(AModelCluster):
     def __init__(self, zd_dim, d_dim, device, L, i_c, i_h, i_w, args):
@@ -59,6 +60,9 @@ class ModelSDCN(AModelCluster):
         # self.mu_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
         # self.log_sigma2_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
         self.counter= 0
+        self.q_activation = torch.zeros((10, 100))
+        ex = 'ex2'
+        self.local_tb = SummaryWriter(log_dir=os.path.join('local_tb',ex ))
 
 
 
@@ -81,6 +85,9 @@ class ModelSDCN(AModelCluster):
 
         logits = q.type(torch.float32)
 
+        self.local_tb.add_histogram('p', probs_c.flatten(), self.counter)
+        self.local_tb.add_histogram('q', q.flatten(), self.counter)
+        self.local_tb.add_histogram('pred', probs_c.flatten(), self.counter)
 
 
         z_mu =torch.mean(z, dim=0)#is not used in SDCN (variance from the encoder in VaDE)
@@ -141,7 +148,23 @@ class ModelSDCN(AModelCluster):
         x = x.view(x.size(0), -1)
 
         preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits= self._inference(x)
-        breakpoint()
+
+
+        plt.imshow(logits[600:650, :].detach().numpy())
+        plt.colorbar()
+
+        path = './trash/'
+        plt.savefig(path+'q'+str(self.counter)+'.png')
+        plt.close()
+
+        self.q_activation[:, self.counter] = torch.mean(logits, dim=0)
+
+        plt.imshow(self.q_activation.detach().numpy())
+        plt.ylabel('logits')
+        plt.xlabel('epoch')
+        plt.colorbar()
+        plt.savefig(path+'Q_activation.png')
+        plt.close()
 
         q = logits
         pred = probs_c
@@ -158,9 +181,14 @@ class ModelSDCN(AModelCluster):
         re_loss = F.mse_loss(x, x_bar)
 
         loss = 0.1 * kl_loss + 0.01 * ce_loss + re_loss
+
+        self.local_tb.add_scalar('kl_loss', kl_loss, self.counter)
+        self.local_tb.add_scalar('ce_loss', ce_loss, self.counter)
+        self.local_tb.add_scalar('re_loss', re_loss, self.counter)
+
         print('reconstruction loss', re_loss, 'kl_loss', kl_loss, 'ce_loss', ce_loss)
         print('loss', loss)
-
+        self.counter+=1
         return loss.type(torch.double)
 
     def pretrain_loss(self, x, inject_domain):
