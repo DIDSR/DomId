@@ -40,8 +40,8 @@ class Pretraining():
 
         num_img = len(self.loader_tr.dataset)
         Z = np.zeros((num_img, self.model.zd_dim))
-        X_pro = torch.zeros((num_img, 3*16*16))
-        X = torch.zeros((num_img, 3*16*16))
+        X_pro = torch.zeros((num_img, 1*self.i_h*self.i_w ))
+        X = torch.zeros((num_img, 1*self.i_h*self.i_w ))
         counter = 0
         with torch.no_grad():
             for tensor_x, vec_y, vec_d, *other_vars in self.loader_tr:
@@ -57,8 +57,8 @@ class Pretraining():
                 )
 
                 x_pro, z= self.model.inference_pretraining(tensor_x, inject_tensor)
-                z = z.detach().cpu().numpy()  # [batch_size, zd_dim]
-                Z[counter:counter + z.shape[0], :] = z
+                z_ = z.detach().cpu().numpy()  # [batch_size, zd_dim]
+                Z[counter:counter + z.shape[0], :] = z_
                 X_pro[counter:counter + z.shape[0], :] = x_pro.detach().cpu()
                 X[counter:counter + z.shape[0], :] = tensor_x.detach().cpu().reshape(tensor_x.shape[0], -1)
                 counter += z.shape[0]
@@ -66,11 +66,11 @@ class Pretraining():
 
         cos_sim = torch.nn.CosineSimilarity(dim=1, eps=1e-6)
         accuracy = cos_sim(X, X_pro)
-        targets = torch.argmax(vec_y, dim=1).cpu().numpy()
+        targets = torch.argmax(vec_d, dim=1).cpu().numpy()
 
         kmeans = KMeans(n_clusters=self.args.d_dim, n_init=20)
 
-        predictions = kmeans.fit_predict(Z)
+        predictions = kmeans.fit_predict(z.data.cpu().numpy())
 
         self.model.cluster_layer.data = torch.tensor(kmeans.cluster_centers_).to(self.device)
 

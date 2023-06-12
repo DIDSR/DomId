@@ -10,7 +10,7 @@ import scipy.sparse as sp
 class GraphConstructor():
     def get_features_labels(self, dataset):
         num_img =  len(dataset.dataset)
-        X = torch.zeros((num_img, 3 * 16 * 16))
+        X = torch.zeros((num_img, 1 * 16 * 16))
         labels = torch.zeros((num_img, 1))
 
         counter = 0
@@ -30,7 +30,7 @@ class GraphConstructor():
         r_mat_inv = sp.diags(r_inv)
         mx = r_mat_inv.dot(mx)
         return mx
-    def construct_graph(self, dataset, method='heat'):
+    def construct_graph(self, dataset, method='ncos'):
 
         topk = 10
 

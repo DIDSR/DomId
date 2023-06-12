@@ -24,7 +24,7 @@ class TrainerCluster(AbstractTrainer):
 
         super().__init__()
         super().init_business(model, task, observer, device, aconf)
-
+        print(model)
         self.pretrain = pretrain
         self.pretraining_finished = not self.pretrain
         self.lr = aconf.lr
@@ -58,6 +58,7 @@ class TrainerCluster(AbstractTrainer):
         self.epo_loss_tr = 0
 
         pretrain = Pretraining(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args)
+
         # prediction = Prediction(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w,
         #                         self.args.bs)
         # acc_tr_y, _, acc_tr_d, _ = prediction.epoch_tr_acc()
@@ -155,18 +156,18 @@ class TrainerCluster(AbstractTrainer):
         #     else:
         #         loss_val = self.model.cal_loss(tensor_x_val, inject_tensor_val, self.warmup_beta)
         acc_tr_y = 0
-        tensorboard_write(
-            self.writer,
-            self.model,
-            epoch,
-            self.lr,
-            self.warmup_beta,
-            acc_tr_y,
-            loss,
-            self.pretraining_finished,
-            tensor_x,
-            inject_tensor,
-        )
+        # tensorboard_write(
+        #     self.writer,
+        #     self.model,
+        #     epoch,
+        #     self.lr,
+        #     self.warmup_beta,
+        #     acc_tr_y,
+        #     loss,
+        #     self.pretraining_finished,
+        #     tensor_x,
+        #     inject_tensor,
+        # )
 
         # _____storing results and Z space__________
         #self.storage.storing(epoch, acc_tr_y, acc_tr_d, self.epo_loss_tr, acc_val_y, acc_val_d, loss_val.sum(),

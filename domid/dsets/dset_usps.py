@@ -40,13 +40,14 @@ class DsetUSPS(Dataset):
         #img_loc = os.path.join(self.img_dir, self.images[idx])
         image = self.images[idx]
         image = Image.fromarray(image)
-        image = image.convert("RGB")
+        # image = image.convert("RGB")
 
         if self.list_transforms is not None:
             for trans in self.list_transforms:
                 image = trans(image)
         else:
             image = transforms.ToTensor()(image)
+
 
 
 

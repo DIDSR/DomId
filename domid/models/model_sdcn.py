@@ -44,6 +44,7 @@ class ModelSDCN(AModelCluster):
 
         self.encoder =  LinearEncoderAE(n_enc_1, n_enc_2, n_enc_3,n_input, n_z)
         self.decoder = LinearDecoderAE(n_dec_1, n_dec_2, n_dec_3, n_input, n_z)
+
         self.gnn_model = GNN(n_input, n_enc_1, n_enc_2, n_enc_3, n_z, n_clusters)
 
         self.v = 1.0
@@ -74,7 +75,9 @@ class ModelSDCN(AModelCluster):
         q = 1.0 / (1.0 + torch.sum(torch.pow(z.unsqueeze(1) - self.cluster_layer, 2), 2))/ self.v
         q = q.pow((self.v+ 1.0) / 2.0)
         q = (q.t() / torch.sum(q, 1)).t()
-        q = (q.t() / torch.sum(q, 1)).t() # [batch_size, n_clusters]
+        print(self.cluster_layer[0, :3])
+
+
 
         logits = q.type(torch.float32)
 
@@ -84,15 +87,18 @@ class ModelSDCN(AModelCluster):
         z_sigma2_log = torch.std(z, dim=0) #is not used in SDCN (variance from the encoder in VaDE)
         pi = torch.Tensor([0]) #is not used in SDCN (variance from the encoder in VaDE)
 
+        # preds_c = torch.argmax(logits, dim=1)
+        # preds_c = F.one_hot(preds_c, num_classes=self.d_dim)
+
         preds_c, probs_c_, *_ = logit2preds_vpic(logits) #probs_c is F.softmax(logit, dim=1)
 
         return preds_c, probs_c, z, z_mu, z_sigma2_log, z_mu, z_sigma2_log, pi, logits
 
     def inference_pretraining(self, x, inject_tensor):
-        # x = x.view(x.size(0), -1)
-        # tra1, tra2, tra3, z = self.encoder(x)
-        _, _, z, *_ = self._inference(x)
-
+        x = x.view(x.size(0), -1)
+        tra1, tra2, tra3, z = self.encoder(x)
+        # _, _, z, *_ = self._inference(x)
+        #
 
         x_bar, *_ = self.decoder(z)
         return x_bar, z
@@ -135,15 +141,20 @@ class ModelSDCN(AModelCluster):
         x = x.view(x.size(0), -1)
 
         preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits= self._inference(x)
+        breakpoint()
 
         q = logits
         pred = probs_c
         x_bar, *_ = self.decoder(z)
         q = q.data
-        p = self.target_distribution(q)
 
-        kl_loss = F.kl_div(q.log(), p, reduction='batchmean')
-        ce_loss = F.kl_div(pred.log(), p, reduction='batchmean')
+        if self.counter==0:
+            self.p = self.target_distribution(q)
+            self.counter+=1
+
+
+        kl_loss = F.kl_div(q.log(), self.p, reduction='batchmean')
+        ce_loss = F.kl_div(pred.log(), self.p, reduction='batchmean')
         re_loss = F.mse_loss(x, x_bar)
 
         loss = 0.1 * kl_loss + 0.01 * ce_loss + re_loss
@@ -168,6 +179,7 @@ class ModelSDCN(AModelCluster):
         x_pro, *_ = self.decoder(zy) #FIXME account for different number of outputs from decoder
 
         loss = Loss(x, x_pro)
+        loss = F.mse_loss(x, x_pro)
 
         return loss
 

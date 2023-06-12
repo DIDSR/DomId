@@ -24,7 +24,7 @@ class NodeTaskUSPS(NodeTaskDictCluster):
         """
         :return: image size object storing image channels, height, width.
         """
-        return ImSize(3, 16, 16)
+        return ImSize(1, 16, 16)
 
     def get_list_domains(self):
         """

@@ -25,7 +25,7 @@ class DsetTest(Dataset):
 
         self.images = torch.load(os.path.join(dpath, 'images.pt'))
         self.labels = torch.load(os.path.join(dpath, 'labels.pt')).squeeze(1)
-
+        self.images = self.images[self.labels == digit]
 
         self.args = args
         self.inject_variable = args.inject_var
