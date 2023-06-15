@@ -57,6 +57,5 @@ class DsetUSPS(Dataset):
         label = mk_fun_label2onehot(10)(label)
         inject_tensor = []
 
-        img_id = 0
-
+        img_id = label
         return image, label, inject_tensor, img_id

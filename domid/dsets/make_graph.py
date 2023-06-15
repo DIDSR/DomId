@@ -16,7 +16,7 @@ class GraphConstructor():
         counter = 0
 
         for tensor_x, vec_y, vec_d, *other_vars in dataset:
-            X[counter:(counter+vec_y.shape[0]), :]=tensor_x.view(tensor_x.size(0), -1)
+            X[counter:(counter+vec_y.shape[0]), :]=torch.reshape(tensor_x, (tensor_x.shape[0], tensor_x.shape[1]*tensor_x.shape[2]*tensor_x.shape[3]))
 
             labels[counter:(counter+vec_y.shape[0]), 0]=torch.argmax(vec_y, dim=1)
             counter+=vec_y.shape[0]
@@ -32,7 +32,7 @@ class GraphConstructor():
         return mx
     def construct_graph(self, dataset, method='ncos'):
 
-        topk = 10
+        topk = 3
 
         features, label = self.get_features_labels(dataset)
         #fname = '../graph/usps_custom_graph.txt'

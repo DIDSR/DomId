@@ -73,45 +73,62 @@ class TrainerCluster(AbstractTrainer):
             self.warmup_beta = self.warmup_beta + 0.01
 
         # _____________one training epoch: start_______________________
-        for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
+        if epoch < self.thres and not self.pretraining_finished:
+            for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
 
-            if len(other_vars) > 0:
-                inject_tensor, image_id = other_vars
-                if len(inject_tensor) > 0:
-                    inject_tensor = inject_tensor.to(self.device)
+                if len(other_vars) > 0:
+                    inject_tensor, image_id = other_vars
+                    if len(inject_tensor) > 0:
+                        inject_tensor = inject_tensor.to(self.device)
 
-            tensor_x, vec_y, vec_d = (
-                tensor_x.to(self.device),
-                vec_y.to(self.device),
-                vec_d.to(self.device),
-            )
-            self.optimizer.zero_grad()
+                tensor_x, vec_y, vec_d = (
+                    tensor_x.to(self.device),
+                    vec_y.to(self.device),
+                    vec_d.to(self.device),
+                )
+                self.optimizer.zero_grad()
 
             # __________________Pretrain/ELBO loss____________
-            if epoch < self.thres and not self.pretraining_finished:
+
                 loss = pretrain.pretrain_loss(tensor_x, inject_tensor)
-            else:
-                if not self.pretraining_finished:
-                    self.pretraining_finished = True
-                    # reset the optimizer
+                loss = loss.sum()
 
-                    self.optimizer = optim.Adam(
-                        self.model.parameters(),
-                        lr=self.lr,
-                        betas=(0.5, 0.9),
-                        weight_decay=0.0001,
-                    )
+                loss.backward()
+                self.optimizer.step()
+        else:
+            if not self.pretraining_finished:
+                self.pretraining_finished = True
+                # reset the optimizer
 
-                    print("".join(["#"] * 60))
-                    print("Epoch {}: Finished pretraining and starting to use the full model loss.".format(epoch))
-                    print("".join(["#"] * 60))
+                self.optimizer = optim.Adam(
+                    self.model.parameters(),
+                    lr=self.lr,
+                    # betas=(0.5, 0.9),
+                    # weight_decay=0.0001,
+                )
 
-                loss = self.model.cal_loss(tensor_x, inject_tensor, self.warmup_beta)
+                print("".join(["#"] * 60))
+                print("Epoch {}: Finished pretraining and starting to use the full model loss.".format(epoch))
+                print("".join(["#"] * 60))
+                unbatched_tensor_x = torch.cat([tensor_x for tensor_x, _, _, *_ in self.loader_tr], dim=0)
+                unbatched_vec_y = torch.cat([vec_y for _, vec_y, _, *_ in self.loader_tr], dim=0)
+                unbatched_vec_d = torch.cat([vec_d for _, _, vec_d, *other_vars in self.loader_tr], dim=0)
 
-            loss = loss.sum()
+                if len(other_vars) > 0:
+                    unbatched_inject_tensor = torch.cat([inject_tensor for _, _, _, inject_tensor, *_ in self.loader_tr], dim=0)
+                    unbatched_image_id = torch.cat([image_id for _, _, _, _, image_id, *_ in self.loader_tr], dim=0)
 
-            loss.backward()
-            self.optimizer.step()
+
+
+                loss = self.model.calculate_loss(unbatched_tensor_x, unbatched_inject_tensor)
+                loss = loss.sum()
+
+                loss.backward()
+                self.optimizer.step()
+
+
+
+
 
             self.epo_loss_tr += loss.cpu().detach().item()
             # FIXME: devide #  number of samples in the HER notebook
@@ -134,7 +151,7 @@ class TrainerCluster(AbstractTrainer):
         #     mu_c,
         #     log_sigma2_c,
         #     pi,
-        #     logits,
+        #     logits,f
         # ) = self.model._inference(tensor_x)
         if self.aname == 'vade':
             print("pi:")

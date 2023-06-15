@@ -17,7 +17,8 @@ from domid.compos.GNN import GNN
 import scipy.sparse as sp
 import matplotlib.pyplot as plt
 import os
-
+from sklearn.cluster import KMeans
+from datetime import datetime
 class ModelSDCN(AModelCluster):
     def __init__(self, zd_dim, d_dim, device, L, i_c, i_h, i_w, args):
 
@@ -61,7 +62,7 @@ class ModelSDCN(AModelCluster):
         # self.log_sigma2_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
         self.counter= 0
         self.q_activation = torch.zeros((10, 100))
-        ex = 'ex2'
+        ex = datetime.now().strftime("%H:%M")
         self.local_tb = SummaryWriter(log_dir=os.path.join('local_tb',ex ))
 
 
@@ -69,11 +70,21 @@ class ModelSDCN(AModelCluster):
 
 
     def _inference(self, x):
-        x = x.view(x.size(0), -1)
+
+        if self.counter>1:
+            preds_c, probs_c, z, z_mu, z_sigma2_log, z_mu, z_sigma2_log, pi, logits = self.inference_sdcn(x)
+        else:
+            preds_c, probs_c, z, z_mu, z_sigma2_log, z_mu, z_sigma2_log, pi, logits = self.inference_pretraining(x)
+
+
+        return preds_c, probs_c, z, z_mu, z_sigma2_log, z_mu, z_sigma2_log, pi, logits
+    def inference_sdcn(self, x, inject_tensor=None):
+
+        x = torch.reshape(x, (x.shape[0], x.shape[1]*x.shape[2]*x.shape[3]))
         tra1, tra2, tra3, z = self.encoder(x)
 
         h = self.gnn_model(x, self.adj, tra1, tra2, tra3, z)
-        probs_c = F.softmax(h, dim=1) #[batch_size, n_clusters] (batch_zise==number of samples) same as preds in the code
+        probs_c = F.softmax(h, dim=1) # [batch_size, n_clusters] (batch_zise==number of samples) same as preds in the code
         # and p is calculated using preds and target distribution.
 
         # Dual Self-supervised Module
@@ -85,31 +96,46 @@ class ModelSDCN(AModelCluster):
 
 
         logits = q.type(torch.float32) #q in the paper and code
+        if self.counter>2:
+            self.local_tb.add_histogram('p', probs_c.flatten(), self.counter)
+            self.local_tb.add_histogram('q', q.flatten(), self.counter)
+            self.local_tb.add_histogram('pred', probs_c.flatten(), self.counter)
+            self.local_tb.add_histogram('h', h.flatten(), self.counter)
+            self.local_tb.add_histogram('z', z.flatten(), self.counter)
 
-        self.local_tb.add_histogram('p', probs_c.flatten(), self.counter)
-        self.local_tb.add_histogram('q', q.flatten(), self.counter)
-        self.local_tb.add_histogram('pred', probs_c.flatten(), self.counter)
 
-
-        z_mu =torch.mean(z, dim=0)#is not used in SDCN (variance from the encoder in VaDE)
-        z_sigma2_log = torch.std(z, dim=0) #is not used in SDCN (variance from the encoder in VaDE)
-        pi = torch.Tensor([0]) #is not used in SDCN (variance from the encoder in VaDE)
+        z_mu =torch.mean(z, dim=0) # is not used in SDCN (variance from the encoder in VaDE)
+        z_sigma2_log = torch.std(z, dim=0) # is not used in SDCN (variance from the encoder in VaDE)
+        pi = torch.Tensor([0]) # is not used in SDCN (variance from the encoder in VaDE)
 
         # preds_c = torch.argmax(logits, dim=1)
         # preds_c = F.one_hot(preds_c, num_classes=self.d_dim)
 
-        preds_c, probs_c_, *_ = logit2preds_vpic(logits) #probs_c is F.softmax(logit, dim=1)
+        preds_c, probs_c_, *_ = logit2preds_vpic(logits) # probs_c is F.softmax(logit, dim=1)
 
         return preds_c, probs_c, z, z_mu, z_sigma2_log, z_mu, z_sigma2_log, pi, logits
 
-    def inference_pretraining(self, x, inject_tensor):
-        x = x.view(x.size(0), -1)
+    def inference_pretraining(self, x, inject_tensor=None):
+        x = torch.reshape(x, (x.shape[0], x.shape[1]*x.shape[2]*x.shape[3]))
         tra1, tra2, tra3, z = self.encoder(x)
         # _, _, z, *_ = self._inference(x)
-        #
 
+        kmeans = KMeans(n_clusters=self.args.d_dim, n_init=20)
+
+        predictions = kmeans.fit_predict(z.detach().cpu().numpy())
         x_bar, *_ = self.decoder(z)
-        return x_bar, z
+
+
+        z_mu = torch.mean(z, dim=0)
+        z_sigma2_log = torch.std(z, dim=0)
+        pi = torch.Tensor([0])
+        breakpoint()
+        logits = kmeans.fit_transform(z.detach().cpu().numpy()).to(self.device)
+
+
+        preds_c,probs_c, *_ = logit2preds_vpic(logits)
+
+        return preds_c, probs_c, z, z_mu, z_sigma2_log, z_mu, z_sigma2_log, pi, logits
 
     def infer_d_v(self, x):
         """
@@ -146,7 +172,7 @@ class ModelSDCN(AModelCluster):
 
 
     def cal_loss(self, x, inject_domain, warmup_beta):
-        x = x.view(x.size(0), -1)
+
 
         preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits= self._inference(x)
 
@@ -179,7 +205,7 @@ class ModelSDCN(AModelCluster):
 
         kl_loss = F.kl_div(q.log(), self.p, reduction='batchmean')
         ce_loss = F.kl_div(pred.log(), self.p, reduction='batchmean')
-        re_loss = F.mse_loss(x, x_bar)
+        re_loss = F.mse_loss(x.reshape(x.shape[0], -1), x_bar)
 
         loss = 0.1 * kl_loss + 0.01 * ce_loss + re_loss
 
@@ -198,7 +224,7 @@ class ModelSDCN(AModelCluster):
         # Loss = nn.MSELoss(reduction='sum')
         # Loss = nn.HuberLoss()
 
-        x = x.view(x.size(0), -1)
+        x = torch.reshape(x, (x.shape[0], x.shape[1]*x.shape[2]*x.shape[3]))
         tra1, tra2, tra3, z = self.encoder(x)
 
         if len(inject_domain) > 0:

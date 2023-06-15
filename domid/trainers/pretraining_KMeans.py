@@ -70,18 +70,11 @@ class Pretraining():
 
         kmeans = KMeans(n_clusters=self.args.d_dim, n_init=20)
 
-        predictions = kmeans.fit_predict(z.data.cpu().numpy())
+        predictions = kmeans.fit_predict(Z)
 
         self.model.cluster_layer.data = torch.tensor(kmeans.cluster_centers_).to(self.device)
 
-
-        cost_matrix = np.zeros((self.args.d_dim, self.args.d_dim,))
-
-        cost_matrix = cost_matrix - confusion_matrix(predictions, targets, labels=list(range(cost_matrix.shape[0])))
-        row_ind, col_ind = linear_sum_assignment(cost_matrix)
-        conf_mat = (-1) * cost_matrix[:, col_ind]
-        acc_d = np.diag(conf_mat).sum() / conf_mat.sum()
-        print('K Means accuracy: ', acc_d)
+        predictions = kmeans.labels_
         print('AE Cosine Similarity', accuracy.mean().item())
 
         return predictions
