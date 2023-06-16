@@ -129,13 +129,13 @@ class ModelSDCN(AModelCluster):
         z_mu = torch.mean(z, dim=0)
         z_sigma2_log = torch.std(z, dim=0)
         pi = torch.Tensor([0])
-        breakpoint()
-        logits = kmeans.fit_transform(z.detach().cpu().numpy()).to(self.device)
+
+        logits = torch.Tensor(kmeans.fit_transform(z.detach().cpu().numpy())).to(self.device)
 
 
         preds_c,probs_c, *_ = logit2preds_vpic(logits)
 
-        return preds_c, probs_c, z, z_mu, z_sigma2_log, z_mu, z_sigma2_log, pi, logits
+        return preds_c, probs_c, z, z_mu, z_sigma2_log, x_bar, z_sigma2_log, pi, logits
 
     def infer_d_v(self, x):
         """
@@ -171,34 +171,17 @@ class ModelSDCN(AModelCluster):
         return (weight.t() / weight.sum(1)).t()
 
 
-    def cal_loss(self, x, inject_domain, warmup_beta):
-
+    def cal_loss(self, x, inject_domain, warmup_beta=None):
 
         preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits= self._inference(x)
-
-
-        plt.imshow(logits[600:650, :].detach().numpy())
-        plt.colorbar()
-
-        path = './trash/'
-        plt.savefig(path+'q'+str(self.counter)+'.png')
-        plt.close()
-
-        self.q_activation[:, self.counter] = torch.mean(logits, dim=0)
-
-        plt.imshow(self.q_activation.detach().numpy())
-        plt.ylabel('logits')
-        plt.xlabel('epoch')
-        plt.colorbar()
-        plt.savefig(path+'Q_activation.png')
-        plt.close()
-
+        # logits is q in the paper
+        # probs_c is pred in the code
         q = logits
         pred = probs_c
         x_bar, *_ = self.decoder(z)
         q = q.data
 
-        if self.counter==0:
+        if self.counter==1:
             self.p = self.target_distribution(q)
             self.counter+=1
 
