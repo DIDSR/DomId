@@ -14,16 +14,12 @@ def tensorboard_write(writer, model, epoch, lr, warmup_beta, acc_tr, loss, pretr
         writer.add_scalar('Loss', loss, epoch)
 
     if not pretraining_finished:
-        x_pro, *_ = model.inference_pretraining(tensor_x, inject_tensor)
         name = "Output of the decoder pretraining"
-
     else:
-        preds, z_mu, z, _, _, x_pro = model.infer_d_v_2(tensor_x,inject_tensor)
         name = "Output of the decoder training"
 
-    if len(x_pro.shape) != 4:
-        N = int(np.sqrt(x_pro.shape[1]/3))
-        x_pro= torch.reshape(x_pro, (x_pro.shape[0], 3, N, N))
+    preds, z_mu, z, _, _, x_pro = model.infer_d_v_2(tensor_x, inject_tensor)
+    x_pro= torch.reshape(x_pro, (x_pro.shape[0], tensor_x.shape[1], tensor_x.shape[2], tensor_x.shape[3]))
 
     imgs = torch.cat((tensor_x[0:8, :, :, :], x_pro[0:8, :, :, :],), 0)
     # mse = torch.nn.MSELoss()#(dim=1, eps=1e-08)

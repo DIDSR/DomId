@@ -52,7 +52,6 @@ class TrainerCluster(AbstractTrainer):
         :param epoch: epoch number
         :return:
         """
-        print('Training/Validation Dataloader length: {}/{}'.format(len(self.loader_tr), len(self.loader_val)))
         print("Epoch {}.".format(epoch)) if self.pretraining_finished else print("Epoch {}. Pretraining.".format(epoch))
 
         self.model.train()
@@ -72,70 +71,46 @@ class TrainerCluster(AbstractTrainer):
         # ___________Define warm-up for ELBO loss_________
         if self.warmup_beta < 1 and self.pretraining_finished:
             self.warmup_beta = self.warmup_beta + 0.01
-
         # _____________one training epoch: start_______________________
-        if epoch < self.thres and not self.pretraining_finished:
-            for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
+        for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
 
-                if len(other_vars) > 0:
-                    inject_tensor, image_id = other_vars
-                    if len(inject_tensor) > 0:
-                        inject_tensor = inject_tensor.to(self.device)
+            if len(other_vars) > 0:
+                inject_tensor, image_id = other_vars
+                if len(inject_tensor) > 0:
+                    inject_tensor = inject_tensor.to(self.device)
 
-                tensor_x, vec_y, vec_d = (
-                    tensor_x.to(self.device),
-                    vec_y.to(self.device),
-                    vec_d.to(self.device),
-                )
-                self.optimizer.zero_grad()
+            tensor_x, vec_y, vec_d = (
+                tensor_x.to(self.device),
+                vec_y.to(self.device),
+                vec_d.to(self.device),
+            )
+            self.optimizer.zero_grad()
 
             # __________________Pretrain/ELBO loss____________
+            if epoch < self.thres and not self.pretraining_finished:
+                    loss = pretrain.pretrain_loss(tensor_x, inject_tensor)
+            else:
+                if not self.pretraining_finished:
+                    self.pretraining_finished = True
+                    # reset the optimizer
+                    self.model.counter =1
+                    self.optimizer = optim.Adam(
+                        self.model.parameters(),
+                        lr=self.lr,
+                        # betas=(0.5, 0.9),
+                        # weight_decay=0.0001,
+                    )
 
-                loss = pretrain.pretrain_loss(tensor_x, inject_tensor)
-                loss = loss.sum()
+                    print("".join(["#"] * 60))
+                    print("Epoch {}: Finished pretraining and starting to use the full model loss.".format(epoch))
+                    print("".join(["#"] * 60))
 
-                loss.backward()
-                self.optimizer.step()
-        else:
-            if not self.pretraining_finished:
-                self.pretraining_finished = True
-                # reset the optimizer
-                self.model.counter =1
-                self.optimizer = optim.Adam(
-                    self.model.parameters(),
-                    lr=self.lr,
-                    # betas=(0.5, 0.9),
-                    # weight_decay=0.0001,
-                )
-
-                print("".join(["#"] * 60))
-                print("Epoch {}: Finished pretraining and starting to use the full model loss.".format(epoch))
-                print("".join(["#"] * 60))
-            unbatched_tensor_x = torch.cat([tensor_x for tensor_x, _, _, *_ in self.loader_tr], dim=0).to(self.device)
-            unbatched_vec_y = torch.cat([vec_y for _, vec_y, _, *_ in self.loader_tr], dim=0).to(self.device)
-            unbatched_vec_d = torch.cat([vec_d for _, _, vec_d, *_ in self.loader_tr], dim=0).to(self.device)
-
-            if len(next(iter(self.loader_tr))) > 3:
-                try:
-                    unbatched_inject_tensor = torch.cat([inject_tensor for _, _, _, inject_tensor, *_ in self.loader_tr], dim=0)
-                except:
-                    unbatched_inject_tensor = torch.Tensor([]).to(self.device)
-                unbatched_image_id = torch.cat([image_id for _, _, _, _,image_id in self.loader_tr], dim=0).to(self.device)
-
-
-
-
-            loss = self.model.cal_loss(unbatched_tensor_x, unbatched_inject_tensor)
+                loss = self.model.cal_loss(tensor_x,inject_tensor)
 
             loss = loss.sum()
-
             loss.backward()
             self.optimizer.step()
-
-
-
-
-        self.epo_loss_tr += loss.cpu().detach().item()
+            self.epo_loss_tr += loss.cpu().detach().item()
             # FIXME: devide #  number of samples in the HER notebook
 
         # after one epoch (all batches), GMM is calculated again and pi, mu_c
@@ -178,18 +153,18 @@ class TrainerCluster(AbstractTrainer):
         #     else:
         #         loss_val = self.model.cal_loss(tensor_x_val, inject_tensor_val, self.warmup_beta)
         acc_tr_y = 0
-        # tensorboard_write(
-        #     self.writer,
-        #     self.model,
-        #     epoch,
-        #     self.lr,
-        #     self.warmup_beta,
-        #     acc_tr_y,
-        #     loss,
-        #     self.pretraining_finished,
-        #     tensor_x,
-        #     inject_tensor,
-        # )
+        tensorboard_write(
+            self.writer,
+            self.model,
+            epoch,
+            self.lr,
+            self.warmup_beta,
+            acc_tr_y,
+            loss,
+            self.pretraining_finished,
+            tensor_x,
+            inject_tensor,
+        )
 
         # _____storing results and Z space__________
         #self.storage.storing(epoch, acc_tr_y, acc_tr_d, self.epo_loss_tr, acc_val_y, acc_val_d, loss_val.sum(),

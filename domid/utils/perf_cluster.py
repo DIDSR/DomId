@@ -135,41 +135,24 @@ class PerfCluster(PerfClassif):
 
         hungarian_acc_y_s =0
         hungarian_acc_d_s =0
-        try:
-            with torch.no_grad():
-                for i, (x_s, y_s, d_s, *_) in enumerate(loader_te):
-                    if i >= max_batches:
-                        break
-                    x_s, y_s, d_s = x_s.to(device), y_s.to(device), d_s.to(device)
 
-                    pred = model_local.infer_d_v(x_s)
-                    list_vec_preds+=pred.argmax(axis=1).detach().cpu().numpy().tolist()
-                    list_vec_y_labels+=y_s.argmax(axis=1).detach().cpu().numpy().tolist()
-                    list_vec_d_labels+=d_s.argmax(axis=1).detach().cpu().numpy().tolist()
+        with torch.no_grad():
+            for i, (x_s, y_s, d_s, *_) in enumerate(loader_te):
+                if i >= max_batches:
+                    break
+                x_s, y_s, d_s = x_s.to(device), y_s.to(device), d_s.to(device)
 
-                if pred.shape[1]==y_s.shape[1]:
+                pred = model_local.infer_d_v(x_s)
+                list_vec_preds+=pred.argmax(axis=1).detach().cpu().numpy().tolist()
+                list_vec_y_labels+=y_s.argmax(axis=1).detach().cpu().numpy().tolist()
+                list_vec_d_labels+=d_s.argmax(axis=1).detach().cpu().numpy().tolist()
 
-                    hungarian_acc_y_s, cost_y_s, conf_mat_y_s = clc.hungarian_algorithm(list_vec_preds, list_vec_y_labels, cost_y_s)
-                if pred.shape[1]==d_s.shape[1]:
+            if pred.shape[1]==y_s.shape[1]:
 
-                    hungarian_acc_d_s, cost_d_s, conf_mat_d_s = clc.hungarian_algorithm(list_vec_preds, list_vec_d_labels, cost_d_s)
-        except:
-            unbatched_x = torch.cat([tensor_x for tensor_x, _, _, *_ in loader_te], dim=0).to(device)
-            unbatched_y = torch.cat([tensor_y for _, tensor_y, _, *_ in loader_te], dim=0).to(device)
-            unbatched_d = torch.cat([tensor_d for _, _, tensor_d, *_ in loader_te], dim=0).to(device)
+                hungarian_acc_y_s, cost_y_s, conf_mat_y_s = clc.hungarian_algorithm(list_vec_preds, list_vec_y_labels, cost_y_s)
+            if pred.shape[1]==d_s.shape[1]:
 
-            pred = model_local.infer_d_v(unbatched_x)
-
-            list_vec_preds += pred.argmax(axis=1).detach().cpu().numpy().tolist()
-            list_vec_y_labels += unbatched_y.argmax(axis=1).detach().cpu().numpy().tolist()
-            list_vec_d_labels += unbatched_d.argmax(axis=1).detach().cpu().numpy().tolist()
-            if pred.shape[1] == y_s.shape[1]:
-                hungarian_acc_y_s, cost_y_s, conf_mat_y_s = clc.hungarian_algorithm(list_vec_preds, list_vec_y_labels,
-                                                                                    cost_y_s)
-            if pred.shape[1] == d_s.shape[1]:
-                hungarian_acc_d_s, cost_d_s, conf_mat_d_s = clc.hungarian_algorithm(list_vec_preds, list_vec_d_labels,
-                                                                                    cost_d_s)
-
+                hungarian_acc_d_s, cost_d_s, conf_mat_d_s = clc.hungarian_algorithm(list_vec_preds, list_vec_d_labels, cost_d_s)
 
 
         return hungarian_acc_y_s, conf_mat_y_s, hungarian_acc_d_s, conf_mat_d_s

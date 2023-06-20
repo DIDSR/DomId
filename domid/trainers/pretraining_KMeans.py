@@ -56,7 +56,7 @@ class Pretraining():
                     vec_d.to(self.device),
                 )
 
-                preds_c, probs_c, z, z_mu, z_sigma2_log, x_pro, z_sigma2_log, pi, logits= self.model.inference_pretraining(tensor_x, inject_tensor)
+                preds, z_mu, z, log_sigma2_c, probs, x_pro= self.model.infer_d_v_2(tensor_x, inject_tensor)
                 z_ = z.detach().cpu().numpy()  # [batch_size, zd_dim]
                 Z[counter:counter + z.shape[0], :] = z_
                 X_pro[counter:counter + z.shape[0], :] = x_pro.detach().cpu()

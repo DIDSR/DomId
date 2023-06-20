@@ -181,9 +181,9 @@ class ModelSDCN(AModelCluster):
         x_bar, *_ = self.decoder(z)
         q = q.data
 
-        if self.counter==1:
-            self.p = self.target_distribution(q)
-            self.counter+=1
+        # if self.counter==1:
+        self.p = self.target_distribution(q)
+        self.counter+=1
 
 
         kl_loss = F.kl_div(q.log(), self.p, reduction='batchmean')
