@@ -26,6 +26,7 @@ def mk_parser_main():
     parser.add_argument('--dim_inject_y', type=int, default=0, help="dimension to inject to input of the decoder from annotation")
     parser.add_argument('--digits_from_mnist', nargs='*', type=int, default=None, help="digits that should be included from mnist dataset")
     parser.add_argument('--path_to_results', type=str, default='./', help="path to the results csv file")
+    parser.add_argument('pre_tr_weight_path', type=str, default='./notebooks/2023-06-21 17:52:45.488874_usps_ae/', help="path to the pre-trained weights")
 
 
     return parser

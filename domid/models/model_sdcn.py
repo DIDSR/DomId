@@ -46,10 +46,8 @@ class ModelSDCN(AModelCluster):
 
         self.encoder =  LinearEncoderAE(n_enc_1, n_enc_2, n_enc_3,n_input, n_z)
         self.decoder = LinearDecoderAE(n_dec_1, n_dec_2, n_dec_3, n_input, n_z)
-        # path = './notebooks/2023-06-21 12:39:54.269541_usps_ae/'
-        path = './notebooks/2023-06-21 17:52:45.488874_usps_ae/'
-        self.encoder.load_state_dict(torch.load(path + 'encoder.pt', map_location=self.device))
-        self.decoder.load_state_dict(torch.load(path + 'decoder.pt', map_location=self.device))
+        self.encoder.load_state_dict(torch.load(self.args.pre_tr_weight_path + 'encoder.pt', map_location=self.device))
+        self.decoder.load_state_dict(torch.load(self.args.pre_tr_weight_path + 'decoder.pt', map_location=self.device))
 
 
         self.gnn_model = GNN(n_input, n_enc_1, n_enc_2, n_enc_3, n_z, n_clusters)
