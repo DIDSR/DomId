@@ -40,8 +40,6 @@ class Pretraining():
 
         num_img = len(self.loader_tr.dataset)
         Z = np.zeros((num_img, self.model.zd_dim))
-        X_pro = torch.zeros((num_img, 1*self.i_h*self.i_w ))
-        X = torch.zeros((num_img, 1*self.i_h*self.i_w ))
         counter = 0
         with torch.no_grad():
             for tensor_x, vec_y, vec_d, *other_vars in self.loader_tr:
@@ -59,22 +57,12 @@ class Pretraining():
                 preds, z_mu, z, log_sigma2_c, probs, x_pro= self.model.infer_d_v_2(tensor_x, inject_tensor)
                 z_ = z.detach().cpu().numpy()  # [batch_size, zd_dim]
                 Z[counter:counter + z.shape[0], :] = z_
-                X_pro[counter:counter + z.shape[0], :] = x_pro.detach().cpu()
-                X[counter:counter + z.shape[0], :] = tensor_x.detach().cpu().reshape(tensor_x.shape[0], -1)
-                counter += z.shape[0]
 
 
-        cos_sim = torch.nn.CosineSimilarity(dim=1, eps=1e-6)
-        accuracy = cos_sim(X, X_pro)
-        targets = torch.argmax(vec_d, dim=1).cpu().numpy()
+
 
         kmeans = KMeans(n_clusters=self.args.d_dim, n_init=20)
-
         predictions = kmeans.fit_predict(Z)
-
         self.model.cluster_layer.data = torch.tensor(kmeans.cluster_centers_).to(self.device)
-
-        predictions = kmeans.labels_
-        print('AE Cosine Similarity', accuracy.mean().item())
 
         return predictions

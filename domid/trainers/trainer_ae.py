@@ -64,9 +64,9 @@ class TrainerCluster(AbstractTrainer):
         acc_val_y, _, acc_val_d, _ = prediction.epoch_val_acc()
         r_score_tr = 'None'
         r_score_te = 'None'
-        # if self.args.task == 'her2':
-        #     r_score_tr = prediction.epoch_tr_correlation()
-        #     r_score_te = prediction.epoch_val_correlation()  # validation set is used as a test set
+        if self.args.task == 'her2':
+            r_score_tr = prediction.epoch_tr_correlation()
+            r_score_te = prediction.epoch_val_correlation()  # validation set is used as a test set
         # ___________Define warm-up for ELBO loss_________
         if self.warmup_beta < 1 and self.pretraining_finished:
             self.warmup_beta = self.warmup_beta + 0.01

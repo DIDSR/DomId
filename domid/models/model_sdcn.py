@@ -46,7 +46,7 @@ class ModelSDCN(AModelCluster):
 
         self.encoder =  LinearEncoderAE(n_enc_1, n_enc_2, n_enc_3,n_input, n_z)
         self.decoder = LinearDecoderAE(n_dec_1, n_dec_2, n_dec_3, n_input, n_z)
-        path = './notebooks/2023-06-21 12:39:54.269541_usps_ae/'
+        # path = './notebooks/2023-06-21 12:39:54.269541_usps_ae/'
         path = './notebooks/2023-06-21 17:52:45.488874_usps_ae/'
         self.encoder.load_state_dict(torch.load(path + 'encoder.pt', map_location=self.device))
         self.decoder.load_state_dict(torch.load(path + 'decoder.pt', map_location=self.device))
@@ -55,16 +55,6 @@ class ModelSDCN(AModelCluster):
         self.gnn_model = GNN(n_input, n_enc_1, n_enc_2, n_enc_3, n_z, n_clusters)
 
         self.v = 1.0
-        # self.log_pi = nn.Parameter(
-        #     torch.FloatTensor(
-        #         self.d_dim,
-        #     )
-        #     .fill_(1.0 / self.d_dim)
-        #     .log(),
-        #     requires_grad=True,
-        # )
-        # self.mu_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
-        # self.log_sigma2_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
         self.counter= 0
         self.q_activation = torch.zeros((10, 100))
         ex = datetime.now().strftime("%H:%M")
@@ -106,7 +96,7 @@ class ModelSDCN(AModelCluster):
         # preds_c = torch.argmax(logits, dim=1)
         # preds_c = F.one_hot(preds_c, num_classes=self.d_dim)
 
-        preds_c, probs_c_, *_ = logit2preds_vpic(logits) # probs_c is F.softmax(logit, dim=1)
+        preds_c, *_ = logit2preds_vpic(logits) # probs_c is F.softmax(logit, dim=1)
 
         return preds_c, probs_c, z, z_mu, z_sigma2_log, z_mu, z_sigma2_log, pi, logits
 
@@ -178,11 +168,6 @@ class ModelSDCN(AModelCluster):
         return loss.type(torch.double)
 
     def pretrain_loss(self, x, inject_domain):
-
-        Loss = nn.MSELoss()
-        # Loss = nn.MSELoss(reduction='sum')
-        # Loss = nn.HuberLoss()
-
         x = torch.reshape(x, (x.shape[0], x.shape[1]*x.shape[2]*x.shape[3]))
         tra1, tra2, tra3, z = self.encoder(x)
 
@@ -192,7 +177,7 @@ class ModelSDCN(AModelCluster):
             zy = z
         x_pro, *_ = self.decoder(zy) #FIXME account for different number of outputs from decoder
 
-        loss = Loss(x, x_pro)
+
         loss = F.mse_loss(x, x_pro)
 
         return loss

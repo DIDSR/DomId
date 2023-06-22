@@ -49,56 +49,7 @@ class ModelAE(AModelCluster):
         self.decoder = LinearDecoderAE(n_dec_1, n_dec_2, n_dec_3, n_input, n_z)
 
         self.counter= 0
-        # ex = datetime.now().strftime("%H:%M")
-        # self.local_tb = SummaryWriter(log_dir=os.path.join('local_tb',ex ))
 
-
-
-    # def _inference(self, x):
-    #
-    #     if self.counter>1:
-    #         preds_c, probs_c, z, z_mu, z_sigma2_log, z_mu, z_sigma2_log, pi, logits = self.inference_sdcn(x)
-    #     else:
-    #         preds_c, probs_c, z, z_mu, z_sigma2_log, z_mu, z_sigma2_log, pi, logits = self.inference_pretraining(x)
-    #
-    #
-    #     return preds_c, probs_c, z, z_mu, z_sigma2_log, z_mu, z_sigma2_log, pi, logits
-    # def inference_sdcn(self, x, inject_tensor=None):
-    #
-    #     x = torch.reshape(x, (x.shape[0], x.shape[1]*x.shape[2]*x.shape[3]))
-    #     tra1, tra2, tra3, z = self.encoder(x)
-    #
-    #     h = self.gnn_model(x, self.adj, tra1, tra2, tra3, z)
-    #     probs_c = F.softmax(h, dim=1) # [batch_size, n_clusters] (batch_zise==number of samples) same as preds in the code
-    #     # and p is calculated using preds and target distribution.
-    #
-    #     # Dual Self-supervised Module
-    #     q = 1.0 / (1.0 + torch.sum(torch.pow(z.unsqueeze(1) - self.cluster_layer, 2), 2))/ self.v
-    #     q = q.pow((self.v+ 1.0) / 2.0)
-    #     q = (q.t() / torch.sum(q, 1)).t()
-    #     print(self.cluster_layer[0, :3])
-    #
-    #
-    #
-    #     logits = q.type(torch.float32) #q in the paper and code
-    #     if self.counter>2:
-    #         self.local_tb.add_histogram('p', probs_c.flatten(), self.counter)
-    #         self.local_tb.add_histogram('q', q.flatten(), self.counter)
-    #         self.local_tb.add_histogram('pred', probs_c.flatten(), self.counter)
-    #         self.local_tb.add_histogram('h', h.flatten(), self.counter)
-    #         self.local_tb.add_histogram('z', z.flatten(), self.counter)
-    #
-    #
-    #     z_mu =torch.mean(z, dim=0) # is not used in SDCN (variance from the encoder in VaDE)
-    #     z_sigma2_log = torch.std(z, dim=0) # is not used in SDCN (variance from the encoder in VaDE)
-    #     pi = torch.Tensor([0]) # is not used in SDCN (variance from the encoder in VaDE)
-    #
-    #     # preds_c = torch.argmax(logits, dim=1)
-    #     # preds_c = F.one_hot(preds_c, num_classes=self.d_dim)
-    #
-    #     preds_c, probs_c_, *_ = logit2preds_vpic(logits) # probs_c is F.softmax(logit, dim=1)
-    #
-    #     return preds_c, probs_c, z, z_mu, z_sigma2_log, z_mu, z_sigma2_log, pi, logits
 
     def _inference(self, x, inject_tensor=None):
         x = torch.reshape(x, (x.shape[0], x.shape[1]*x.shape[2]*x.shape[3]))
@@ -153,7 +104,6 @@ class ModelAE(AModelCluster):
 
     def pretrain_loss(self, x, inject_domain):
         x = torch.reshape(x, (x.shape[0], x.shape[1]*x.shape[2]*x.shape[3]))
-        #x = x.view(x, (x.shape[0], x.shape[1]*x.shape[2]*x.shape[3]))
         *_, z = self.encoder(x)
 
         if len(inject_domain) > 0:
@@ -169,17 +119,17 @@ class ModelAE(AModelCluster):
 
 
 
-# def test_fun(d_dim, zd_dim, device):
-#     device = torch.device("cpu")
-#     model = ModelVaDE(d_dim=d_dim, zd_dim=zd_dim, device=device)
-#     x = torch.rand(2, 3, 28, 28)
-#     import numpy as np
-#
-#     a = np.zeros((2, 10))
-#     a = np.double(a)
-#     a[0, 1] = 1.0
-#     a[1, 8] = 1.0
-#     a
-#     y = torch.tensor(a, dtype=torch.float)
-#     model(x, y)
-#     model.cal_loss(x)
+def test_fun(d_dim, zd_dim, device):
+    device = torch.device("cpu")
+    model = ModelAE(d_dim=d_dim, zd_dim=zd_dim, device=device)
+    x = torch.rand(2, 3, 28, 28)
+    import numpy as np
+
+    a = np.zeros((2, 10))
+    a = np.double(a)
+    a[0, 1] = 1.0
+    a[1, 8] = 1.0
+    a
+    y = torch.tensor(a, dtype=torch.float)
+    model(x, y)
+    model.cal_loss(x)
