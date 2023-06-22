@@ -46,6 +46,11 @@ class ModelSDCN(AModelCluster):
 
         self.encoder =  LinearEncoderAE(n_enc_1, n_enc_2, n_enc_3,n_input, n_z)
         self.decoder = LinearDecoderAE(n_dec_1, n_dec_2, n_dec_3, n_input, n_z)
+        path = './notebooks/2023-06-21 12:39:54.269541_usps_ae/'
+        path = './notebooks/2023-06-21 17:52:45.488874_usps_ae/'
+        self.encoder.load_state_dict(torch.load(path + 'encoder.pt', map_location=self.device))
+        self.decoder.load_state_dict(torch.load(path + 'decoder.pt', map_location=self.device))
+
 
         self.gnn_model = GNN(n_input, n_enc_1, n_enc_2, n_enc_3, n_z, n_clusters)
 
@@ -69,16 +74,8 @@ class ModelSDCN(AModelCluster):
 
 
 
-    def _inference(self, x):
 
-        if self.counter>1:
-            preds_c, probs_c, z, z_mu, z_sigma2_log, z_mu, z_sigma2_log, pi, logits = self.inference_sdcn(x)
-        else:
-            preds_c, probs_c, z, z_mu, z_sigma2_log, z_mu, z_sigma2_log, pi, logits = self.inference_pretraining(x)
-
-
-        return preds_c, probs_c, z, z_mu, z_sigma2_log, z_mu, z_sigma2_log, pi, logits
-    def inference_sdcn(self, x, inject_tensor=None):
+    def _inference(self, x, inject_tensor=None):
 
         x = torch.reshape(x, (x.shape[0], x.shape[1]*x.shape[2]*x.shape[3]))
         tra1, tra2, tra3, z = self.encoder(x)
@@ -91,17 +88,15 @@ class ModelSDCN(AModelCluster):
         q = 1.0 / (1.0 + torch.sum(torch.pow(z.unsqueeze(1) - self.cluster_layer, 2), 2))/ self.v
         q = q.pow((self.v+ 1.0) / 2.0)
         q = (q.t() / torch.sum(q, 1)).t()
-        print(self.cluster_layer[0, :3])
-
 
 
         logits = q.type(torch.float32) #q in the paper and code
-        if self.counter>2:
-            self.local_tb.add_histogram('p', probs_c.flatten(), self.counter)
-            self.local_tb.add_histogram('q', q.flatten(), self.counter)
-            self.local_tb.add_histogram('pred', probs_c.flatten(), self.counter)
-            self.local_tb.add_histogram('h', h.flatten(), self.counter)
-            self.local_tb.add_histogram('z', z.flatten(), self.counter)
+
+
+        self.local_tb.add_histogram('q', q.flatten(), self.counter)
+        self.local_tb.add_histogram('pred', probs_c.flatten(), self.counter)
+        self.local_tb.add_histogram('h', h.flatten(), self.counter)
+        self.local_tb.add_histogram('z', z.flatten(), self.counter)
 
 
         z_mu =torch.mean(z, dim=0) # is not used in SDCN (variance from the encoder in VaDE)
@@ -115,27 +110,7 @@ class ModelSDCN(AModelCluster):
 
         return preds_c, probs_c, z, z_mu, z_sigma2_log, z_mu, z_sigma2_log, pi, logits
 
-    def inference_pretraining(self, x, inject_tensor=None):
-        x = torch.reshape(x, (x.shape[0], x.shape[1]*x.shape[2]*x.shape[3]))
-        tra1, tra2, tra3, z = self.encoder(x)
-        # _, _, z, *_ = self._inference(x)
 
-        kmeans = KMeans(n_clusters=self.args.d_dim, n_init=20)
-
-        predictions = kmeans.fit_predict(z.detach().cpu().numpy())
-        x_bar, *_ = self.decoder(z)
-
-
-        z_mu = torch.mean(z, dim=0)
-        z_sigma2_log = torch.std(z, dim=0)
-        pi = torch.Tensor([0])
-
-        logits = torch.Tensor(kmeans.fit_transform(z.detach().cpu().numpy())).to(self.device)
-
-
-        preds_c,probs_c, *_ = logit2preds_vpic(logits)
-
-        return preds_c, probs_c, z, z_mu, z_sigma2_log, x_bar, z_sigma2_log, pi, logits
 
     def infer_d_v(self, x):
         """
@@ -181,13 +156,14 @@ class ModelSDCN(AModelCluster):
         x_bar, *_ = self.decoder(z)
         q = q.data
 
+
         # if self.counter==1:
-        self.p = self.target_distribution(q)
-        self.counter+=1
+        p = self.target_distribution(q)
 
+        self.local_tb.add_histogram('p', p, self.counter)
 
-        kl_loss = F.kl_div(q.log(), self.p, reduction='batchmean')
-        ce_loss = F.kl_div(pred.log(), self.p, reduction='batchmean')
+        kl_loss = F.kl_div(q.log(), p, reduction='batchmean')
+        ce_loss = F.kl_div(pred.log(), p, reduction='batchmean')
         re_loss = F.mse_loss(x.reshape(x.shape[0], -1), x_bar)
 
         loss = 0.1 * kl_loss + 0.01 * ce_loss + re_loss

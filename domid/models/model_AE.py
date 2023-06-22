@@ -52,6 +52,8 @@ class ModelAE(AModelCluster):
         # ex = datetime.now().strftime("%H:%M")
         # self.local_tb = SummaryWriter(log_dir=os.path.join('local_tb',ex ))
 
+
+
     # def _inference(self, x):
     #
     #     if self.counter>1:
@@ -105,11 +107,12 @@ class ModelAE(AModelCluster):
 
         kmeans = KMeans(n_clusters=self.args.d_dim, n_init=20)
 
-        predictions = kmeans.fit_predict(z.detach().cpu().numpy())
+        kmeans.fit_predict(z.detach().cpu().numpy())
         x_bar, *_ = self.decoder(z)
         z_mu = torch.mean(z, dim=0)
         z_sigma2_log = torch.std(z, dim=0)
         pi = torch.Tensor([0])
+        predictions = kmeans.labels_
         preds_c = mk_fun_label2onehot(10)(predictions)
         logits = torch.Tensor(kmeans.fit_transform(z.detach().cpu().numpy())).to(self.device)
         _,probs_c, *_ = logit2preds_vpic(logits)
@@ -138,8 +141,6 @@ class ModelAE(AModelCluster):
             zy = torch.cat((results[2], inject_domain), 1)
         else:
             zy = results[2]
-
-        # print(results[2].shape, inject_domain.shape, zy.shape)
         x_pro, *_ = self.decoder(zy)
 
 
@@ -151,10 +152,9 @@ class ModelAE(AModelCluster):
         return loss
 
     def pretrain_loss(self, x, inject_domain):
-
-        Loss = nn.MSELoss()
         x = torch.reshape(x, (x.shape[0], x.shape[1]*x.shape[2]*x.shape[3]))
-        tra1, tra2, tra3, z = self.encoder(x)
+        #x = x.view(x, (x.shape[0], x.shape[1]*x.shape[2]*x.shape[3]))
+        *_, z = self.encoder(x)
 
         if len(inject_domain) > 0:
             zy = torch.cat((z, inject_domain), 1)
@@ -162,7 +162,7 @@ class ModelAE(AModelCluster):
             zy = z
         x_pro, *_ = self.decoder(zy) #FIXME account for different number of outputs from decoder
 
-        loss = Loss(x, x_pro)
+        loss = F.mse_loss(x_pro, x)
 
         return loss
 

@@ -16,6 +16,7 @@ class LinearEncoderAE(nn.Module):
         self.z_layer = nn.Linear(n_enc_3, n_z)
 
 
+
     def forward(self, x):
         enc_h1 = F.relu(self.enc_1(x))
         enc_h2 = F.relu(self.enc_2(enc_h1))

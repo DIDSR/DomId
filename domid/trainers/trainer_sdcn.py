@@ -3,11 +3,12 @@ import itertools
 import torch
 import torch.optim as optim
 from domainlab.algos.trainers.a_trainer import AbstractTrainer
-
+import os
 from domid.compos.predict_basic import Prediction
-from domid.compos.storing import Storing
+from domid.utils.storing import Storing
 from domid.compos.tensorboard_fun import tensorboard_write
 from domid.trainers.pretraining_KMeans import Pretraining
+from domid.trainers.pretraining_sdcn import Pretraining
 from domid.utils.perf_cluster import PerfCluster
 from domid.dsets.make_graph import GraphConstructor
 class TrainerCluster(AbstractTrainer):
@@ -59,12 +60,11 @@ class TrainerCluster(AbstractTrainer):
 
         pretrain = Pretraining(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args)
 
-        # prediction = Prediction(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w,
-        #                         self.args.bs)
-        # acc_tr_y, _, acc_tr_d, _ = prediction.epoch_tr_acc()
-        # acc_val_y, _, acc_val_d, _ = prediction.epoch_val_acc()
-        # r_score_tr = 'None'
-        # r_score_te = 'None'
+        prediction = Prediction(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args.bs)
+        acc_tr_y, _, acc_tr_d, _ = prediction.epoch_tr_acc()
+        acc_val_y, _, acc_val_d, _ = prediction.epoch_val_acc()
+        r_score_tr = 'None'
+        r_score_te = 'None'
         # if self.args.task == 'her2':
         #     r_score_tr = prediction.epoch_tr_correlation()
         #     r_score_te = prediction.epoch_val_correlation()  # validation set is used as a test set
@@ -74,6 +74,7 @@ class TrainerCluster(AbstractTrainer):
         # _____________one training epoch: start_______________________
         for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
 
+            print('shape', tensor_x.shape)
             if len(other_vars) > 0:
                 inject_tensor, image_id = other_vars
                 if len(inject_tensor) > 0:
@@ -88,7 +89,7 @@ class TrainerCluster(AbstractTrainer):
 
             # __________________Pretrain/ELBO loss____________
             if epoch < self.thres and not self.pretraining_finished:
-                    loss = pretrain.pretrain_loss(tensor_x, inject_tensor)
+                loss = pretrain.pretrain_loss(tensor_x, inject_tensor)
             else:
                 if not self.pretraining_finished:
                     self.pretraining_finished = True
@@ -106,6 +107,7 @@ class TrainerCluster(AbstractTrainer):
                     print("".join(["#"] * 60))
 
                 loss = self.model.cal_loss(tensor_x,inject_tensor)
+            print('loss', loss)
 
             loss = loss.sum()
             loss.backward()
@@ -117,42 +119,28 @@ class TrainerCluster(AbstractTrainer):
         # will get updated via this line.
         # name convention: mu_c is the mean for the Gaussian mixture cluster,
         # but mu alone means mean for decoded pixel
+
         if not self.pretraining_finished:
             pretrain.model_fit()
 
 
-        # only z and pi needed
-        # (
-        #     preds_c,
-        #     probs_c,
-        #     z,
-        #     z_mu,
-        #     z_sigma2_log,
-        #     mu_c,
-        #     log_sigma2_c,
-        #     pi,
-        #     logits,f
-        # ) = self.model._inference(tensor_x)
-        if self.aname == 'vade':
-            print("pi:")
-            print(pi.cpu().detach().numpy())
-        # __________________Validation_____________________
-        # for i, (tensor_x_val, vec_y_val, vec_d_val, *other_vars) in enumerate(self.loader_val):
-        #     if len(other_vars) > 0:
-        #         inject_tensor_val, img_id_val = other_vars
-        #         if len(inject_tensor_val) > 0:
-        #             inject_tensor_val = inject_tensor_val.to(self.device)
-        #     tensor_x_val, vec_y_val, vec_d_val = (
-        #         tensor_x_val.to(self.device),
-        #         vec_y_val.to(self.device),
-        #         vec_d_val.to(self.device),
-        #     )
-        #
-        #     if epoch < self.thres and not self.pretraining_finished:
-        #         loss_val = pretrain.pretrain_loss(tensor_x_val, inject_tensor_val)
-        #     else:
-        #         loss_val = self.model.cal_loss(tensor_x_val, inject_tensor_val, self.warmup_beta)
-        acc_tr_y = 0
+        #__________________Validation_____________________
+        for i, (tensor_x_val, vec_y_val, vec_d_val, *other_vars) in enumerate(self.loader_val):
+            if len(other_vars) > 0:
+                inject_tensor_val, img_id_val = other_vars
+                if len(inject_tensor_val) > 0:
+                    inject_tensor_val = inject_tensor_val.to(self.device)
+            tensor_x_val, vec_y_val, vec_d_val = (
+                tensor_x_val.to(self.device),
+                vec_y_val.to(self.device),
+                vec_d_val.to(self.device),
+            )
+
+            if epoch < self.thres and not self.pretraining_finished:
+                loss_val = pretrain.pretrain_loss(tensor_x_val, inject_tensor_val)
+            else:
+                loss_val = self.model.cal_loss(tensor_x_val, inject_tensor_val, self.warmup_beta)
+
         tensorboard_write(
             self.writer,
             self.model,
@@ -167,15 +155,15 @@ class TrainerCluster(AbstractTrainer):
         )
 
         # _____storing results and Z space__________
-        #self.storage.storing(epoch, acc_tr_y, acc_tr_d, self.epo_loss_tr, acc_val_y, acc_val_d, loss_val.sum(),
-                             # r_score_tr, r_score_te)
-        # if epoch % 2 == 0:
-        #     _, z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels = prediction.mk_prediction()
-        #     # _, Z, domain_labels, machine_labels, image_locs = prediction.mk_prediction()
-        #
-        #     self.storage.storing_z_space(z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels)
-        # if epoch % 10 == 0:
-        #     self.storage.saving_model(self.model)
+        self.storage.storing(epoch, acc_tr_y, acc_tr_d, self.epo_loss_tr, acc_val_y, acc_val_d, loss_val,
+                             r_score_tr, r_score_te)
+        if epoch % 2 == 0:
+            _, z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels = prediction.mk_prediction()
+            # _, Z, domain_labels, machine_labels, image_locs = prediction.mk_prediction()
+
+            self.storage.storing_z_space(z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels)
+        if epoch % 2 == 0:
+            self.storage.saving_model(self.model)
 
         flag_stop = self.observer.update(epoch)  # notify observer
         #self.storage.csv_dump(epoch)

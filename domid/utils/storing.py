@@ -64,8 +64,10 @@ class Storing():
 
         
     def saving_model(self, model):
-        path_dict ="./notebooks/"+self.experiment_name+'/model_dict.pth'
-        torch.save(model.state_dict(), path_dict)
+        path_dict ="./notebooks/"+self.experiment_name
+
+        torch.save(model.encoder.state_dict(), path_dict+'/encoder.pt')
+        torch.save(model.decoder.state_dict(), path_dict+'/decoder.pt')
 
     def storing_z_space(self, Z, predictions, vec_y_labels, vec_d_labels, image_id_labels):
         
