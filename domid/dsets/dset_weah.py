@@ -13,7 +13,7 @@ import pandas as pd
 
 class DsetWEAH(Dataset):
     """
-    Dataset of HER2 stained digital microscopy images.
+    Dataset of WEAH stained digital microscopy images.
     As currently implemented, the subdomains are the HER2 diagnostic classes 1, 2, and 3.
     There are also 4 data collection site/machine combinations.
     """

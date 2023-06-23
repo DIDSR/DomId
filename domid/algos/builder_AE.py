@@ -27,9 +27,8 @@ class NodeAlgoBuilderAE(NodeAlgoBuilder):
         zd_dim = args.zd_dim
         d_dim = args.d_dim
         L = args.L
-        pretrain = False
-        if args.pre_tr>0:
-            pretrain = True
+
+        pretrain = args.pre_tr>0
 
         now = 'zd_dim_'+str(zd_dim)+'_lr_'+str(args.lr)+'_'+str(datetime.datetime.now())
         model = ModelAE(zd_dim=zd_dim,

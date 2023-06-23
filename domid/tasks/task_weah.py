@@ -12,17 +12,12 @@ import numpy as np
 
 
 class NodeTaskWEAH(NodeTaskDict):
-    """
-    Basic MNIST task where the digits are considered "domains"
-    Based on NodeTaskMNISTColor10 from DomainLab.
-    The digits (0, 1, ..., 9) are regarded as domains (to be separated by unsupervised clustering).
 
-    """
 
     @property
     def list_str_y(self):
         """
-        MNIST task has no labels (digits are considered domains)
+        WEAH task has no labels (digits are considered domains)
         """
         return mk_dummy_label_list_str("dummy", 4)
 

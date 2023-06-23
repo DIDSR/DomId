@@ -13,9 +13,8 @@ class GNN(Module):
         self.gnn_3 = GNNLayer(n_enc_2, n_enc_3)
         self.gnn_4 = GNNLayer(n_enc_3, n_z)
         self.gnn_5 = GNNLayer(n_z, n_clusters)
-    def forward(self, x, adj, tra1, tra2, tra3, z):
+    def forward(self, x, adj, tra1, tra2, tra3, z, sigma = 0.5):
         h = self.gnn_1(x, adj)
-        sigma = 0.5
         h = self.gnn_2((1 - sigma) * h + sigma * tra1, adj)
         h = self.gnn_3((1 - sigma) * h + sigma * tra2, adj)
         h = self.gnn_4((1 - sigma) * h + sigma * tra3, adj)

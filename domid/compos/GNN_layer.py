@@ -14,12 +14,12 @@ class GNNLayer(Module):
         self.weight = Parameter(torch.FloatTensor(in_features, out_features))
         torch.nn.init.xavier_uniform_(self.weight)
 
-    def forward(self, features, adj, active=True):
+    def forward(self, features, adj, activation=F.relu()):
 
         support = torch.mm(features, self.weight)
         output = torch.spmm(adj, support)
-        if active:
-            output = F.relu(output)
+
+        output = activation(output)
 
         return output
 

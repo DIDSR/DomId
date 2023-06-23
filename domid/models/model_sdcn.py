@@ -66,9 +66,9 @@ class ModelSDCN(AModelCluster):
     def _inference(self, x, inject_tensor=None):
 
         x = torch.reshape(x, (x.shape[0], x.shape[1]*x.shape[2]*x.shape[3]))
-        tra1, tra2, tra3, z = self.encoder(x)
+        enc_h1, enc_h2, enc_h3, z = self.encoder(x)
 
-        h = self.gnn_model(x, self.adj, tra1, tra2, tra3, z)
+        h = self.gnn_model(x, self.adj, enc_h1, enc_h2, enc_h3, z)
         probs_c = F.softmax(h, dim=1) # [batch_size, n_clusters] (batch_zise==number of samples) same as preds in the code
         # and p is calculated using preds and target distribution.
 
@@ -167,7 +167,7 @@ class ModelSDCN(AModelCluster):
 
     def pretrain_loss(self, x, inject_domain):
         x = torch.reshape(x, (x.shape[0], x.shape[1]*x.shape[2]*x.shape[3]))
-        tra1, tra2, tra3, z = self.encoder(x)
+        enc_h1, enc_h2, enc_h3, z = self.encoder(x)
 
         if len(inject_domain) > 0:
             zy = torch.cat((z, inject_domain), 1)
