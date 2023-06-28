@@ -45,7 +45,7 @@ class TrainerCluster(AbstractTrainer):
         self.loader_val = task.loader_tr
         self.aname = aconf.aname
 
-        self.model.adj = GraphConstructor().construct_graph(self.loader_tr).to(self.device)
+        #self.model.adj = GraphConstructor().construct_graph(self.loader_tr).to(self.device)
 
     def tr_epoch(self, epoch):
         """
@@ -83,7 +83,7 @@ class TrainerCluster(AbstractTrainer):
                 vec_d.to(self.device),
             )
             self.optimizer.zero_grad()
-
+       
             # __________________Pretrain/ELBO loss____________
             if epoch < self.thres and not self.pretraining_finished:
                 loss = pretrain.pretrain_loss(tensor_x, inject_tensor)

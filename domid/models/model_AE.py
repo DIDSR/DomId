@@ -35,7 +35,7 @@ class ModelAE(AModelCluster):
 
         if self.args.dim_inject_y:
             self.dim_inject_y = self.args.dim_inject_y
-
+  
         n_clusters = d_dim
         n_z = zd_dim
         n_input = i_c * i_h * i_w
@@ -43,7 +43,7 @@ class ModelAE(AModelCluster):
 
         self.cluster_layer = nn.Parameter(torch.Tensor(self.d_dim, self.zd_dim))
         torch.nn.init.xavier_normal_(self.cluster_layer.data)
-
+        import pdb; pdb.set_trace()
 
         self.encoder =  LinearEncoderAE(n_enc_1, n_enc_2, n_enc_3,n_input, n_z)
         self.decoder = LinearDecoderAE(n_dec_1, n_dec_2, n_dec_3, n_input, n_z)
@@ -64,7 +64,7 @@ class ModelAE(AModelCluster):
         z_sigma2_log = torch.std(z, dim=0)
         pi = torch.Tensor([0])
         predictions = kmeans.labels_
-        preds_c = mk_fun_label2onehot(10)(predictions)
+        preds_c = mk_fun_label2onehot(self.d_dim)(predictions)
         logits = torch.Tensor(kmeans.fit_transform(z.detach().cpu().numpy())).to(self.device)
         _,probs_c, *_ = logit2preds_vpic(logits)
         # preds_c: One hot encoded tensor of the predicted cluster assignment (shape: [batch_size, self.d_dim]).

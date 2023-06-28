@@ -140,6 +140,7 @@ class PerfCluster(PerfClassif):
             for i, (x_s, y_s, d_s, *_) in enumerate(loader_te):
                 if i >= max_batches:
                     break
+      
                 x_s, y_s, d_s = x_s.to(device), y_s.to(device), d_s.to(device)
 
                 pred = model_local.infer_d_v(x_s)

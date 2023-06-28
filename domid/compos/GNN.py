@@ -18,6 +18,6 @@ class GNN(Module):
         h = self.gnn_2((1 - sigma) * h + sigma * tra1, adj)
         h = self.gnn_3((1 - sigma) * h + sigma * tra2, adj)
         h = self.gnn_4((1 - sigma) * h + sigma * tra3, adj)
-        h = self.gnn_5((1 - sigma) * h + sigma * z, adj, active=False)
+        h = self.gnn_5((1 - sigma) * h + sigma * z, adj, activation=False)
 
         return h

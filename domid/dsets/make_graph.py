@@ -8,18 +8,29 @@ from torchvision import datasets, transforms
 import torch
 import scipy.sparse as sp
 class GraphConstructor():
+    def parse_name(self, name):
+        sub_num = name.split('-')[1]
+        region = name.split('_')[-3]
+        return sub_num+'_'+region
+        
+        
     def get_features_labels(self, dataset):
-        num_img =  len(dataset.dataset)
-        X = torch.zeros((num_img, 1 * 16 * 16))
-        labels = torch.zeros((num_img, 1))
-
+        num_batches = len(dataset)
+        num_img,i_c, i_w, i_h =next(iter(dataset))[0].shape
+        X = torch.zeros((num_batches, num_img, i_c * i_w * i_h))
+        labels = torch.zeros((num_batches, num_img, 1))
+        patch_id =[]
         counter = 0
-
-        for tensor_x, vec_y, vec_d, *other_vars in dataset:
-            X[counter:(counter+vec_y.shape[0]), :]=torch.reshape(tensor_x, (tensor_x.shape[0], tensor_x.shape[1]*tensor_x.shape[2]*tensor_x.shape[3]))
-
-            labels[counter:(counter+vec_y.shape[0]), 0]=torch.argmax(vec_y, dim=1)
-            counter+=vec_y.shape[0]
+        for tensor_x, vec_y, vec_d, inj_tensor, img_ids in dataset:
+            X[counter, :, :]=torch.reshape(tensor_x, (tensor_x.shape[0], tensor_x.shape[1]*tensor_x.shape[2]*tensor_x.shape[3]))
+            idxs = [self.parse_name(img_id) for img_id in img_ids]
+            #ids = [name.split('_')[0][]]
+            # patch num img_id.split('_')[-1][:-4]
+            # region img_id.split('_')[-3]
+            # sub num img_id.split('_')[1].split('-')[-2]
+            patch_id += idxs
+            labels[counter, :, 0]=torch.argmax(vec_d, dim=1)
+            counter+=1
 
         return X.type(torch.float32), labels.type(torch.int32)
     def normalize(self, mx): #FIXME move to utils
@@ -30,16 +41,7 @@ class GraphConstructor():
         r_mat_inv = sp.diags(r_inv)
         mx = r_mat_inv.dot(mx)
         return mx
-    def construct_graph(self, dataset, method='ncos'):
-
-        topk = 3
-
-        features, label = self.get_features_labels(dataset)
-        #fname = '../graph/usps_custom_graph.txt'
-
-        num =  features.shape[0]
-        dist = None
-
+    def distance_calc(self, features, labels, topk=10, method='ncos'):
         if method == 'heat':
             dist = -0.5 * pair(features) ** 2
             dist = np.exp(dist)
@@ -50,33 +52,31 @@ class GraphConstructor():
             features[features > 0] = 1
             features = normalize(features, axis=1, norm='l1')
             dist = np.dot(features, features.T)
-
+            
         inds = []
         for i in range(dist.shape[0]):
             ind = np.argpartition(dist[i, :], -(topk+1))[-(topk+1):]
             inds.append(ind)
-
-        #f = open(fname, 'w')
-        counter = 0
-        A = np.zeros_like(dist)
-        graph_txt =[] # np.zeros((num, 2))
+            
+        A = np.zeros_like(dist) 
+        connection_pairs = []   
         for i, v in enumerate(inds):
             mutual_knn = False
             for vv in v:
                 if vv == i:
                     pass
                 else:
-                    if label[vv] != label[i]:
+                    if labels[vv] != labels[i]:
                         counter = counter+1
                     A[i, vv] = vv
-                    graph_txt.append([i, vv])
+                    connection_pairs.append([i, vv])
 
-
-        n, _ = features.shape
-
+        return dist, inds, connection_pairs
+    def mk_adj_mat(self, n, connection_pairs):
+        
         idx = np.array([i for i in range(n)], dtype=np.int32)
         idx_map = {j: i for i, j in enumerate(idx)}
-        edges_unordered = np.array(graph_txt,  dtype=np.int32) #features #np.genfromtxt(path, dtype=np.int32)
+        edges_unordered = np.array(connection_pairs,  dtype=np.int32) #features #np.genfromtxt(path, dtype=np.int32)
         edges = np.array(list(map(idx_map.get, edges_unordered.flatten())),
                          dtype=np.int32).reshape(edges_unordered.shape)
         adj = sp.coo_matrix((np.ones(edges.shape[0]), (edges[:, 0], edges[:, 1])),
@@ -87,11 +87,31 @@ class GraphConstructor():
 
         adj = adj + sp.eye(adj.shape[0])
         adj = self.normalize(adj)
-        adj = self.sparse_mx_to_torch_sparse_tensor(adj)
-        # f.close()
-        print(counter)
-        print('error rate: {}'.format(counter / (num * topk)))
         return adj
+
+    
+    def construct_graph(self, dataset):
+        import pdb; pdb.set_trace()
+        adj_matricies = []
+        features, labels = self.get_features_labels(dataset)
+        batch_num = features.shape[0]
+        num_features =  features.shape[1]
+        distance_batches = np.zeros((batch_num, num_features, num_features))
+        topk = 10
+        for i in range(0, batch_num):
+            dist, inds, connection_pairs = self.distance_calc(features[i, :, :], labels[i, :], topk = topk)
+            # distance_batches[i, :] = dist
+            adj_mat = self.mk_adj_mat(num_features, connection_pairs)
+            adj_matricies.append(adj_mat)
+            
+            
+
+       
+        #adj = self.sparse_mx_to_torch_sparse_tensor(adj)
+        # # f.close()
+        # print(counter)
+        # print('error rate: {}'.format(counter / (num_features * topk)))
+        return adj_matricies
     def sparse_mx_to_torch_sparse_tensor(self, sparse_mx): #FIXME move to utils
         """Convert a scipy sparse matrix to a torch sparse tensor."""
         sparse_mx = sparse_mx.tocoo().astype(np.float32)

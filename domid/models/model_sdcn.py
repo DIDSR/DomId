@@ -68,7 +68,7 @@ class ModelSDCN(AModelCluster):
         x = torch.reshape(x, (x.shape[0], x.shape[1]*x.shape[2]*x.shape[3]))
         enc_h1, enc_h2, enc_h3, z = self.encoder(x)
 
-        h = self.gnn_model(x, self.adj, enc_h1, enc_h2, enc_h3, z)
+        h = self.gnn_model(x, self.adj.to(self.device), enc_h1, enc_h2, enc_h3, z)
         probs_c = F.softmax(h, dim=1) # [batch_size, n_clusters] (batch_zise==number of samples) same as preds in the code
         # and p is calculated using preds and target distribution.
 

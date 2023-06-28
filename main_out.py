@@ -1,4 +1,6 @@
 import sys
+sys.path.insert(0,'/home/mariia.sidulova/scdn/DomId')
+sys.path.insert(0, '/home/mariia.sidulova/scdn/DomId/DomainLab')
 
 import torch
 from domainlab.compos.exp.exp_cuda_seed import set_seed  # reproducibility

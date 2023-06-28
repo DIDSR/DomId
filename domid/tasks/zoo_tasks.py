@@ -10,8 +10,8 @@ from domid.tasks.task_her2 import NodeTaskHER2
 from domid.tasks.task_mnist import NodeTaskMNIST
 from domid.tasks.task_mnist_color import NodeTaskMNISTColor10
 from domid.tasks.task_usps import NodeTaskUSPS
-from domid.tasks.task_test import NodeTaskTest
-from domid.task.task_weah import NodeTaskWEAH
+from domid.tasks.task_unittest import NodeTaskUnitTest
+from domid.tasks.task_weah import NodeTaskWEAH
 
 path_this_file = os.path.dirname(os.path.realpath(__file__))
 
@@ -42,7 +42,7 @@ class TaskChainNodeGetter(object):
 
         chain = NodeTaskUSPS(succ=chain)
 
-        chain = NodeTaskTest(succ=chain)
+        chain = NodeTaskUnitTest(succ=chain)
 
         chain = NodeTaskWEAH(succ=chain)
 

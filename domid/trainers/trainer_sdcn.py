@@ -1,5 +1,5 @@
 import itertools
-
+import numpy as np
 import torch
 import torch.optim as optim
 from domainlab.algos.trainers.a_trainer import AbstractTrainer
@@ -45,8 +45,19 @@ class TrainerCluster(AbstractTrainer):
         self.storage = Storing(self.args)
         self.loader_val = task.loader_tr
         self.aname = aconf.aname
-
-        self.model.adj = GraphConstructor().construct_graph(self.loader_tr).to(self.device)
+        import pdb; pdb.set_trace()
+        self.adj_matricies = GraphConstructor().construct_graph(self.loader_tr) #.to(self.device)
+        self.model.adj =  self.sparse_mx_to_torch_sparse_tensor(self.adj_matricies[0])
+        
+        
+    def sparse_mx_to_torch_sparse_tensor(self, sparse_mx): #FIXME move to utils
+        """Convert a scipy sparse matrix to a torch sparse tensor."""
+        sparse_mx = sparse_mx.tocoo().astype(np.float32)
+        indices = torch.from_numpy(
+            np.vstack((sparse_mx.row, sparse_mx.col)).astype(np.int64))
+        values = torch.from_numpy(sparse_mx.data)
+        shape = torch.Size(sparse_mx.shape)
+        return torch.sparse.FloatTensor(indices, values, shape)
 
     def tr_epoch(self, epoch):
         """
@@ -59,7 +70,6 @@ class TrainerCluster(AbstractTrainer):
         self.epo_loss_tr = 0
 
         pretrain = Pretraining(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args)
-
         prediction = Prediction(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args.bs)
         acc_tr_y, _, acc_tr_d, _ = prediction.epoch_tr_acc()
         acc_val_y, _, acc_val_d, _ = prediction.epoch_val_acc()
@@ -73,7 +83,7 @@ class TrainerCluster(AbstractTrainer):
             self.warmup_beta = self.warmup_beta + 0.01
         # _____________one training epoch: start_______________________
         for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
-
+            self.model.adj =  self.sparse_mx_to_torch_sparse_tensor(self.adj_matricies[i])#.to(self.device)
             print('shape', tensor_x.shape)
             if len(other_vars) > 0:
                 inject_tensor, image_id = other_vars

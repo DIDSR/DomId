@@ -27,6 +27,7 @@ class DsetWEAH(Dataset):
         :param path_to_domain: if inject previously predicted domain labels, the path needs to be specified.domain_labels.txt must be inside the directory, containing to-be-injected labels.
         :param transform: torch transformations
         """
+ 
         self.dpath = args.dpath
         self.img_dir = args.dpath  # os.path.join(path, "class" + str(class_num + 1) + "jpg")
         self.images = path  # os.listdir(self.img_dir)
@@ -35,7 +36,8 @@ class DsetWEAH(Dataset):
         self.total_imgs = len(self.images)
         self.path_to_domain = path_to_domain
         self.d_dim = args.d_dim
-        self.df = pd.read_csv('../dset_WEAH.csv')
+   
+        self.df = pd.read_csv('../../dset_WEAH.csv')
 
     def __len__(self):
         return len(self.images)
@@ -43,6 +45,7 @@ class DsetWEAH(Dataset):
     def __getitem__(self, idx):
         # print(self.images[idx])
         # print(self.images[idx])
+        #import pdb; pdb.set_trace()
         img_loc = os.path.join(self.dpath, self.images[idx][:12], self.images[idx])
 
         # print(img_loc)
@@ -53,16 +56,18 @@ class DsetWEAH(Dataset):
                 image = trans(image)
 
         image = transforms.ToTensor()(image)
-        # label = mk_fun_label2onehot(3)(self.class_num) #FIXME: responded and non responded
+        label = mk_fun_label2onehot(2)(self.class_num)
+
+        #FIXME: responded and non responded
         # A_FDA, A_NIH, H1, H2
 
         # print(p.read_csv('../dset_WEAH.csv'))
         resp_label = int(self.df.loc[self.df['path'] == self.images[idx]]['resp'])
-        cah_label = int(self.df.loc[self.df['path'] == self.images[idx]]['CAH'])
-        label = torch.cat((mk_fun_label2onehot(2)(resp_label), mk_fun_label2onehot(2)(cah_label)), 0)
+#         cah_label = int(self.df.loc[self.df['path'] == self.images[idx]]['CAH'])
+#         #label = torch.cat((mk_fun_label2onehot(2)(resp_label), mk_fun_label2onehot(2)(cah_label)), 0)
 
-        BMI = self.df.loc[(self.df['path'] == self.images[idx])]['BMI']  # BMIinstead of machine
-        BMI = int(BMI)
+#         BMI = self.df.loc[(self.df['path'] == self.images[idx])]['BMI']  # BMIinstead of machine
+#         BMI = int(BMI)
 
         if self.path_to_domain:
             domain = np.loadtxt(os.path.join(self.path_to_domain, 'domain_labels.txt'))[idx]
@@ -72,5 +77,8 @@ class DsetWEAH(Dataset):
         else:
             domain = []
         # print('label', label)
-
-        return image, label, BMI, img_loc, domain
+        inject_tensor = []
+        label = mk_fun_label2onehot(2)(resp_label)
+        img_id = img_loc
+       
+        return image, label, inject_tensor, img_id
