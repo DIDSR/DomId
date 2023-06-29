@@ -6,12 +6,11 @@ import torch.nn as nn
 import torch.nn.functional as F
 from domainlab.utils.utils_classif import logit2preds_vpic
 from tensorboardX import SummaryWriter
-
-from domid.compos.cnn_VAE import ConvolutionalDecoder, ConvolutionalEncoder
 from domid.compos.linear_VAE import LinearDecoder, LinearEncoder
 from domid.models.a_model_cluster import AModelCluster
 from domid.compos.GNN_layer import GNNLayer
 from domid.compos.linear_AE import LinearEncoderAE, LinearDecoderAE
+from domid.compos.cnn_AE import ConvolutionalDecoder, ConvolutionalEncoder
 from domid.compos.GNN import GNN
 
 import scipy.sparse as sp
@@ -43,17 +42,29 @@ class ModelAE(AModelCluster):
 
         self.cluster_layer = nn.Parameter(torch.Tensor(self.d_dim, self.zd_dim))
         torch.nn.init.xavier_normal_(self.cluster_layer.data)
-        import pdb; pdb.set_trace()
-
-        self.encoder =  LinearEncoderAE(n_enc_1, n_enc_2, n_enc_3,n_input, n_z)
-        self.decoder = LinearDecoderAE(n_dec_1, n_dec_2, n_dec_3, n_input, n_z)
+        
+        if self.args.model == "linear":
+            self.encoder =  LinearEncoderAE(n_enc_1, n_enc_2, n_enc_3,n_input, n_z)
+            self.decoder = LinearDecoderAE(n_dec_1, n_dec_2, n_dec_3, n_input, n_z)
+            
+        else:
+            self.encoder = ConvolutionalEncoder(zd_dim=zd_dim, num_channels=i_c, i_w=i_w, i_h=i_h).to(device)
+            self.decoder = ConvolutionalDecoder(
+                prior=args.prior,
+                zd_dim=zd_dim, #50
+                domain_dim=self.dim_inject_y, #
+                #domain_dim=self.dim_inject_y,
+                h_dim=self.encoder.h_dim,
+                num_channels=i_c
+            ).to(device)
 
         self.counter= 0
 
 
     def _inference(self, x, inject_tensor=None):
-        x = torch.reshape(x, (x.shape[0], x.shape[1]*x.shape[2]*x.shape[3]))
-        tra1, tra2, tra3, z = self.encoder(x)
+        if self.args.model == "linear":
+            x = torch.reshape(x, (x.shape[0], x.shape[1]*x.shape[2]*x.shape[3]))
+        enc_h1, enc_h2, enc_h3, z = self.encoder(x)
         # _, _, z, *_ = self._inference(x)
 
         kmeans = KMeans(n_clusters=self.args.d_dim, n_init=20)
@@ -103,7 +114,8 @@ class ModelAE(AModelCluster):
         return loss
 
     def pretrain_loss(self, x, inject_domain):
-        x = torch.reshape(x, (x.shape[0], x.shape[1]*x.shape[2]*x.shape[3]))
+        if self.args.model == "linear":
+            x = torch.reshape(x, (x.shape[0], x.shape[1]*x.shape[2]*x.shape[3]))
         *_, z = self.encoder(x)
 
         if len(inject_domain) > 0:

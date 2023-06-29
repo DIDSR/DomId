@@ -18,11 +18,11 @@ if __name__ == "__main__":
     print('python version', sys.version)
     args = parse_cmd_args()
     print(args)
-    try:
-        assert len(args.tr_d) == args.d_dim
-    except AssertionError:
-        print("The number of training domains does not match the dimension of the domain space.")
-        sys.exit(1)
+    # try:
+    #     assert len(args.tr_d) == args.d_dim
+    # except AssertionError:
+    #     print("The number of training domains does not match the dimension of the domain space.")
+    #     sys.exit(1)
 
 
 

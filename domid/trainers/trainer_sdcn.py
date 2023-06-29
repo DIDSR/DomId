@@ -45,7 +45,6 @@ class TrainerCluster(AbstractTrainer):
         self.storage = Storing(self.args)
         self.loader_val = task.loader_tr
         self.aname = aconf.aname
-        import pdb; pdb.set_trace()
         self.adj_matricies = GraphConstructor().construct_graph(self.loader_tr) #.to(self.device)
         self.model.adj =  self.sparse_mx_to_torch_sparse_tensor(self.adj_matricies[0])
         
@@ -84,7 +83,7 @@ class TrainerCluster(AbstractTrainer):
         # _____________one training epoch: start_______________________
         for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
             self.model.adj =  self.sparse_mx_to_torch_sparse_tensor(self.adj_matricies[i])#.to(self.device)
-            print('shape', tensor_x.shape)
+
             if len(other_vars) > 0:
                 inject_tensor, image_id = other_vars
                 if len(inject_tensor) > 0:
@@ -117,7 +116,7 @@ class TrainerCluster(AbstractTrainer):
                     print("".join(["#"] * 60))
 
                 loss = self.model.cal_loss(tensor_x,inject_tensor)
-            print('loss', loss)
+            # print('loss', loss)
 
             loss = loss.sum()
             loss.backward()

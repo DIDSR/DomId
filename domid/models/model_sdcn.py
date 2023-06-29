@@ -117,6 +117,7 @@ class ModelSDCN(AModelCluster):
         """
         results = self._inference(x)
         if len(inject_domain) > 0:
+            
             zy = torch.cat((results[2], inject_domain), 1)
         else:
             zy = results[2]
@@ -160,8 +161,8 @@ class ModelSDCN(AModelCluster):
         self.local_tb.add_scalar('ce_loss', ce_loss, self.counter)
         self.local_tb.add_scalar('re_loss', re_loss, self.counter)
 
-        print('reconstruction loss', re_loss, 'kl_loss', kl_loss, 'ce_loss', ce_loss)
-        print('loss', loss)
+#         print('reconstruction loss', re_loss, 'kl_loss', kl_loss, 'ce_loss', ce_loss)
+#         print('loss', loss)
         self.counter+=1
         return loss.type(torch.double)
 

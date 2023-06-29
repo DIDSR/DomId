@@ -19,16 +19,22 @@ class GraphConstructor():
         num_img,i_c, i_w, i_h =next(iter(dataset))[0].shape
         X = torch.zeros((num_batches, num_img, i_c * i_w * i_h))
         labels = torch.zeros((num_batches, num_img, 1))
-        patch_id =[]
+
         counter = 0
         for tensor_x, vec_y, vec_d, inj_tensor, img_ids in dataset:
+
             X[counter, :, :]=torch.reshape(tensor_x, (tensor_x.shape[0], tensor_x.shape[1]*tensor_x.shape[2]*tensor_x.shape[3]))
-            idxs = [self.parse_name(img_id) for img_id in img_ids]
+            dir_values = [path.split('/')[2] for path in img_ids]
+            try:
+                assert len(set(dir_values))<2
+            except AssertionError:
+                print("The batch contains patches from different slides")
+                sys.exit(1)
             #ids = [name.split('_')[0][]]
             # patch num img_id.split('_')[-1][:-4]
             # region img_id.split('_')[-3]
             # sub num img_id.split('_')[1].split('-')[-2]
-            patch_id += idxs
+
             labels[counter, :, 0]=torch.argmax(vec_d, dim=1)
             counter+=1
 
@@ -91,7 +97,6 @@ class GraphConstructor():
 
     
     def construct_graph(self, dataset):
-        import pdb; pdb.set_trace()
         adj_matricies = []
         features, labels = self.get_features_labels(dataset)
         batch_num = features.shape[0]

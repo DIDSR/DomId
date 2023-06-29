@@ -56,7 +56,7 @@ class DsetWEAH(Dataset):
                 image = trans(image)
 
         image = transforms.ToTensor()(image)
-        label = mk_fun_label2onehot(2)(self.class_num)
+        #label = mk_fun_label2onehot(2)(self.class_num)
 
         #FIXME: responded and non responded
         # A_FDA, A_NIH, H1, H2

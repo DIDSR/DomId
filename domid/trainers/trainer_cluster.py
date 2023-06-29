@@ -108,7 +108,7 @@ class TrainerCluster(AbstractTrainer):
                     print("".join(["#"] * 60))
 
                 loss = self.model.cal_loss(tensor_x, inject_tensor, self.warmup_beta)
-            print(loss)
+
 
             loss = loss.sum()
             loss.backward()
