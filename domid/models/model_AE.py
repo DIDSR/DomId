@@ -123,7 +123,7 @@ class ModelAE(AModelCluster):
         else:
             zy = z
         x_pro, *_ = self.decoder(zy) #FIXME account for different number of outputs from decoder
-
+      
         loss = F.mse_loss(x_pro, x)
 
         return loss

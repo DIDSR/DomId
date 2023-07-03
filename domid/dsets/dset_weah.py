@@ -62,9 +62,14 @@ class DsetWEAH(Dataset):
         # A_FDA, A_NIH, H1, H2
 
         # print(p.read_csv('../dset_WEAH.csv'))
+    
         resp_label = int(self.df.loc[self.df['path'] == self.images[idx]]['resp'])
-#         cah_label = int(self.df.loc[self.df['path'] == self.images[idx]]['CAH'])
-#         #label = torch.cat((mk_fun_label2onehot(2)(resp_label), mk_fun_label2onehot(2)(cah_label)), 0)
+        cah_label = int(self.df.loc[self.df['path'] == self.images[idx]]['ann'])
+
+        label_dict = {'01':0, '02':1, '11':2,'12':3}
+        encod_label = label_dict[str(resp_label)+str(cah_label)]
+        
+        #label = torch.cat((mk_fun_label2onehot(2)(resp_label), mk_fun_label2onehot(2)(cah_label)), 0)
 
 #         BMI = self.df.loc[(self.df['path'] == self.images[idx])]['BMI']  # BMIinstead of machine
 #         BMI = int(BMI)
@@ -77,8 +82,8 @@ class DsetWEAH(Dataset):
         else:
             domain = []
         # print('label', label)
+        label = mk_fun_label2onehot(4)(encod_label)
         inject_tensor = []
-        label = mk_fun_label2onehot(2)(resp_label)
         img_id = img_loc
        
         return image, label, inject_tensor, img_id

@@ -20,14 +20,14 @@ class NodeTaskWEAH(NodeTaskDictCluster):
         """
         WEAH task has no labels (digits are considered domains)
         """
-        return mk_dummy_label_list_str("dummy", 2)
+        return mk_dummy_label_list_str("dummy", 4)
 
     @property
     def isize(self):
         """
         :return: image size object storing image channels, height, width.
         """
-        return ImSize(3, 128, 128)
+        return ImSize(3, 64, 64)
 
     def get_list_domains(self):
         """
@@ -63,7 +63,7 @@ class NodeTaskWEAH(NodeTaskDictCluster):
         #mask = df['resp'].values == ind_global  # response (0 o 1)
         img_paths = np.array(mask['path'])  # [:400]
  
-        trans = [transforms.Resize((128, 128))]
+        trans = [transforms.Resize((64, 64))]
         dset = DsetWEAH(class_num=ind_global, path=img_paths, args=args, transform=trans)
         train_set = dset
         val_set = dset

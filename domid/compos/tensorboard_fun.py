@@ -19,7 +19,8 @@ def tensorboard_write(writer, model, epoch, lr, warmup_beta, acc_tr, loss, pretr
         name = "Output of the decoder training"
 
     preds, z_mu, z, _, _, x_pro = model.infer_d_v_2(tensor_x, inject_tensor)
-    x_pro= torch.reshape(x_pro, (x_pro.shape[0], tensor_x.shape[1], tensor_x.shape[2], tensor_x.shape[3]))
+    if len(x_pro.shape)<3:
+        x_pro= torch.reshape(x_pro, (x_pro.shape[0], tensor_x.shape[1], tensor_x.shape[2], tensor_x.shape[3]))
 
     imgs = torch.cat((tensor_x[0:8, :, :, :], x_pro[0:8, :, :, :],), 0)
     # mse = torch.nn.MSELoss()#(dim=1, eps=1e-08)

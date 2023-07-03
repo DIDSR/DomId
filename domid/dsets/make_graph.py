@@ -65,7 +65,8 @@ class GraphConstructor():
             inds.append(ind)
             
         A = np.zeros_like(dist) 
-        connection_pairs = []   
+        connection_pairs = []  
+        counter =0
         for i, v in enumerate(inds):
             mutual_knn = False
             for vv in v:

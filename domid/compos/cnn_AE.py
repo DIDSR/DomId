@@ -84,8 +84,8 @@ class ConvolutionalDecoder(nn.Module):
         """
         :param z: latent space representation
         :return x_pro: reconstructed data, which is assumed to have 3 channels, but the channels are assumed to be equal to each other.
-        :return x_log_sigma2: log-variance of the reconstructed data
         """
+       
         z = self.linear(z)
         z = self.unflat(z)
         x_decoded = self.decod(z)
@@ -95,4 +95,4 @@ class ConvolutionalDecoder(nn.Module):
         else:
             x_pro = x_decoded[:, 0:self.num_channels, :, :]
 
-        return x_pro
+        return x_pro, []

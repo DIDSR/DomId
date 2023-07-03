@@ -77,7 +77,6 @@ class ConvolutionalDecoder(nn.Module):
         :return x_pro: reconstructed data, which is assumed to have 3 channels, but the channels are assumed to be equal to each other.
         :return x_log_sigma2: log-variance of the reconstructed data
         """
-        import pdb pdb.set_trace()
         z = self.linear(z)
         z = self.unflat(z)
         x_decoded = self.decod(z)

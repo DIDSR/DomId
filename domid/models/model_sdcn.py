@@ -7,7 +7,7 @@ import torch.nn.functional as F
 from domainlab.utils.utils_classif import logit2preds_vpic
 from tensorboardX import SummaryWriter
 
-from domid.compos.cnn_VAE import ConvolutionalDecoder, ConvolutionalEncoder
+from domid.compos.cnn_AE import ConvolutionalDecoder, ConvolutionalEncoder
 from domid.compos.linear_VAE import LinearDecoder, LinearEncoder
 from domid.models.a_model_cluster import AModelCluster
 from domid.compos.GNN_layer import GNNLayer
@@ -38,14 +38,30 @@ class ModelSDCN(AModelCluster):
         n_clusters = d_dim
         n_z = zd_dim
         n_input = i_c * i_h * i_w
-        n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3, = 500, 500, 2000, 2000, 500, 500,
+   
 
         self.cluster_layer = nn.Parameter(torch.Tensor(self.d_dim, self.zd_dim))
         torch.nn.init.xavier_normal_(self.cluster_layer.data)
 
 
-        self.encoder =  LinearEncoderAE(n_enc_1, n_enc_2, n_enc_3,n_input, n_z)
-        self.decoder = LinearDecoderAE(n_dec_1, n_dec_2, n_dec_3, n_input, n_z)
+        if self.args.model == "linear":
+            self.encoder =  LinearEncoderAE(n_enc_1, n_enc_2, n_enc_3,n_input, n_z)
+            self.decoder = LinearDecoderAE(n_dec_1, n_dec_2, n_dec_3, n_input, n_z)
+            n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3, = 500, 500, 2000, 2000, 500, 500,
+            
+        else:
+            self.encoder = ConvolutionalEncoder(zd_dim=zd_dim, num_channels=i_c, i_w=i_w, i_h=i_h).to(device)
+            self.decoder = ConvolutionalDecoder(
+                prior=args.prior,
+                zd_dim=zd_dim, #50
+                domain_dim=self.dim_inject_y, #
+                #domain_dim=self.dim_inject_y,
+                h_dim=self.encoder.h_dim,
+                num_channels=i_c
+            ).to(device)
+            n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3, = 32**2*32, 16**2*64, 8**2*128, 8**2*128, 16**2*64, 32**2*32
+            print(n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3)
+        import pdb; pdb.set_trace()
         self.encoder.load_state_dict(torch.load(self.args.pre_tr_weight_path + 'encoder.pt', map_location=self.device))
         self.decoder.load_state_dict(torch.load(self.args.pre_tr_weight_path + 'decoder.pt', map_location=self.device))
 
@@ -64,8 +80,8 @@ class ModelSDCN(AModelCluster):
 
 
     def _inference(self, x, inject_tensor=None):
-
-        x = torch.reshape(x, (x.shape[0], x.shape[1]*x.shape[2]*x.shape[3]))
+        if self.args.model == "linear":
+            x = torch.reshape(x, (x.shape[0], x.shape[1]*x.shape[2]*x.shape[3]))
         enc_h1, enc_h2, enc_h3, z = self.encoder(x)
 
         h = self.gnn_model(x, self.adj.to(self.device), enc_h1, enc_h2, enc_h3, z)
@@ -144,16 +160,19 @@ class ModelSDCN(AModelCluster):
         pred = probs_c
         x_bar, *_ = self.decoder(z)
         q = q.data
-
+        
 
         # if self.counter==1:
         p = self.target_distribution(q)
 
         self.local_tb.add_histogram('p', p, self.counter)
+        
+        if self.args.model == "linear":
+            x = torch.reshape(x, (x.shape[0], x.shape[1]*x.shape[2]*x.shape[3]))
 
         kl_loss = F.kl_div(q.log(), p, reduction='batchmean')
         ce_loss = F.kl_div(pred.log(), p, reduction='batchmean')
-        re_loss = F.mse_loss(x.reshape(x.shape[0], -1), x_bar)
+        re_loss = F.mse_loss(x, x_bar)
 
         loss = 0.1 * kl_loss + 0.01 * ce_loss + re_loss
 
@@ -167,7 +186,8 @@ class ModelSDCN(AModelCluster):
         return loss.type(torch.double)
 
     def pretrain_loss(self, x, inject_domain):
-        x = torch.reshape(x, (x.shape[0], x.shape[1]*x.shape[2]*x.shape[3]))
+        if self.args.model == "linear":
+            x = torch.reshape(x, (x.shape[0], x.shape[1]*x.shape[2]*x.shape[3]))
         enc_h1, enc_h2, enc_h3, z = self.encoder(x)
 
         if len(inject_domain) > 0:
