@@ -61,7 +61,7 @@ class ModelSDCN(AModelCluster):
             ).to(device)
             n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3, = 32**2*32, 16**2*64, 8**2*128, 8**2*128, 16**2*64, 32**2*32
             print(n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3)
-        import pdb; pdb.set_trace()
+
         self.encoder.load_state_dict(torch.load(self.args.pre_tr_weight_path + 'encoder.pt', map_location=self.device))
         self.decoder.load_state_dict(torch.load(self.args.pre_tr_weight_path + 'decoder.pt', map_location=self.device))
 
@@ -73,6 +73,7 @@ class ModelSDCN(AModelCluster):
         self.q_activation = torch.zeros((10, 100))
         ex = datetime.now().strftime("%H:%M")
         self.local_tb = SummaryWriter(log_dir=os.path.join('local_tb',ex ))
+        self.batch_zero = True
 
 
 
@@ -96,11 +97,11 @@ class ModelSDCN(AModelCluster):
 
         logits = q.type(torch.float32) #q in the paper and code
 
-
-        self.local_tb.add_histogram('q', q.flatten(), self.counter)
-        self.local_tb.add_histogram('pred', probs_c.flatten(), self.counter)
-        self.local_tb.add_histogram('h', h.flatten(), self.counter)
-        self.local_tb.add_histogram('z', z.flatten(), self.counter)
+        if self.batch_zero:
+            self.local_tb.add_histogram('q', q.flatten(), self.counter)
+            self.local_tb.add_histogram('pred', probs_c.flatten(), self.counter)
+            self.local_tb.add_histogram('h', h.flatten(), self.counter)
+            self.local_tb.add_histogram('z', z.flatten(), self.counter)
 
 
         z_mu =torch.mean(z, dim=0) # is not used in SDCN (variance from the encoder in VaDE)
@@ -175,10 +176,11 @@ class ModelSDCN(AModelCluster):
         re_loss = F.mse_loss(x, x_bar)
 
         loss = 0.1 * kl_loss + 0.01 * ce_loss + re_loss
-
-        self.local_tb.add_scalar('kl_loss', kl_loss, self.counter)
-        self.local_tb.add_scalar('ce_loss', ce_loss, self.counter)
-        self.local_tb.add_scalar('re_loss', re_loss, self.counter)
+        if self.batch_zero:
+            self.local_tb.add_scalar('kl_loss', kl_loss, self.counter)
+            self.local_tb.add_scalar('ce_loss', ce_loss, self.counter)
+            self.local_tb.add_scalar('re_loss', re_loss, self.counter)
+            self.batch_zero = False
 
 #         print('reconstruction loss', re_loss, 'kl_loss', kl_loss, 'ce_loss', ce_loss)
 #         print('loss', loss)

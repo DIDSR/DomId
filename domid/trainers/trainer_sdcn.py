@@ -83,6 +83,8 @@ class TrainerCluster(AbstractTrainer):
         # _____________one training epoch: start_______________________
         for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
             self.model.adj =  self.sparse_mx_to_torch_sparse_tensor(self.adj_matricies[i])#.to(self.device)
+            if i==0:
+                self.model.batch_zero = True
 
             if len(other_vars) > 0:
                 inject_tensor, image_id = other_vars
