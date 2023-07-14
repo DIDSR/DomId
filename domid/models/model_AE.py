@@ -29,7 +29,7 @@ class ModelAE(AModelCluster):
         self.L = L
         self.args = args
         self.loss_epoch = 0
-
+        self.batch_zero = True
         self.dim_inject_y = 0
 
         if self.args.dim_inject_y:
@@ -59,7 +59,19 @@ class ModelAE(AModelCluster):
             ).to(device)
 
         self.counter= 0
-
+        ex = str(datetime.now()) #.strftime("%H:%M")
+        self.local_tb = SummaryWriter(log_dir=os.path.join('local_tb',ex ))
+        
+    def distance_between_clusters(self, cluster_layer):
+        
+        pairwise_dist = torch.zeros(cluster_layer.shape[0], cluster_layer.shape[0])
+        for i in range(0, cluster_layer.shape[0]):
+            for j in range(0,cluster_layer.shape[0]):
+                pairwise_dist[i,j] = torch.cdist(cluster_layer[i, :].unsqueeze(0).unsqueeze(0), cluster_layer[j, :].unsqueeze(0).unsqueeze(0))
+        return pairwise_dist
+                
+                
+        
 
     def _inference(self, x, inject_tensor=None):
         if self.args.model == "linear":
@@ -78,9 +90,28 @@ class ModelAE(AModelCluster):
         preds_c = mk_fun_label2onehot(self.d_dim)(predictions)
         logits = torch.Tensor(kmeans.fit_transform(z.detach().cpu().numpy())).to(self.device)
         _,probs_c, *_ = logit2preds_vpic(logits)
+        cluster_layer = torch.tensor(kmeans.cluster_centers_)
+        
+      
         # preds_c: One hot encoded tensor of the predicted cluster assignment (shape: [batch_size, self.d_dim]).
         # probs_c: Tensor of the predicted cluster probabilities; this is q(c|x) per eq. (16) or gamma_c in eq. (12) (shape: [batch_size, self.d_dim]).
         # logits: Tensor where each column contains the log-probability p(c)p(z|c) for cluster c=0,...,self.d_dim-1 (shape: [batch_size, self.d_dim])
+        if self.batch_zero:
+            self.local_tb.add_histogram('clustering_layer', cluster_layer.flatten(), self.counter)
+            print('batch_zero')
+            d = self.distance_between_clusters(cluster_layer)
+            self.batch_zero = False
+            print(d)
+            
+            plt.imshow(d)
+            plt.colorbar()
+            plt.title('Epoch '+str(self.counter))
+            plt.show()
+            plt.savefig('./local_tb/AE_epoch_'+str(self.counter)+'.png')
+            
+            self.counter+=1
+            plt.close()
+        
         return preds_c, probs_c, z, z_mu, z_sigma2_log, x_bar, z_sigma2_log, pi, logits
 
     def infer_d_v(self, x):

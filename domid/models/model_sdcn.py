@@ -59,7 +59,7 @@ class ModelSDCN(AModelCluster):
                 h_dim=self.encoder.h_dim,
                 num_channels=i_c
             ).to(device)
-            n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3, = 32**2*32, 16**2*64, 8**2*128, 8**2*128, 16**2*64, 32**2*32
+            n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3, = int((i_w/2)**2*32), int((i_w/4)**2*64), int((i_w/8)**2*128), int((i_w/8)**2*128), int((i_w/4)**2*64), int((i_w/2)**2*32)
             print(n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3)
 
         self.encoder.load_state_dict(torch.load(self.args.pre_tr_weight_path + 'encoder.pt', map_location=self.device))
@@ -71,13 +71,19 @@ class ModelSDCN(AModelCluster):
         self.v = 1.0
         self.counter= 0
         self.q_activation = torch.zeros((10, 100))
-        ex = datetime.now().strftime("%H:%M")
+        ex = str(datetime.now())
         self.local_tb = SummaryWriter(log_dir=os.path.join('local_tb',ex ))
         self.batch_zero = True
 
 
 
-
+    def distance_between_clusters(self, cluster_layer):
+        
+        pairwise_dist = torch.zeros(cluster_layer.shape[0], cluster_layer.shape[0])
+        for i in range(0, cluster_layer.shape[0]):
+            for j in range(0,cluster_layer.shape[0]):
+                pairwise_dist[i,j] = torch.cdist(cluster_layer[i, :].unsqueeze(0).unsqueeze(0), cluster_layer[j, :].unsqueeze(0).unsqueeze(0))
+        return pairwise_dist
 
 
     def _inference(self, x, inject_tensor=None):
@@ -96,8 +102,12 @@ class ModelSDCN(AModelCluster):
 
 
         logits = q.type(torch.float32) #q in the paper and code
+        
+        
+        
 
         if self.batch_zero:
+            self.local_tb.add_histogram('clustering_layer', self.cluster_layer.flatten(), self.counter)
             self.local_tb.add_histogram('q', q.flatten(), self.counter)
             self.local_tb.add_histogram('pred', probs_c.flatten(), self.counter)
             self.local_tb.add_histogram('h', h.flatten(), self.counter)
@@ -112,6 +122,16 @@ class ModelSDCN(AModelCluster):
         # preds_c = F.one_hot(preds_c, num_classes=self.d_dim)
 
         preds_c, *_ = logit2preds_vpic(logits) # probs_c is F.softmax(logit, dim=1)
+        if self.batch_zero:
+            d = self.distance_between_clusters(self.cluster_layer.detach().cpu())
+            self.batch_zero = False
+          
+            plt.imshow(d)
+            plt.colorbar()
+            plt.title('Epoch '+str(self.counter))
+            plt.show()
+            plt.savefig('./local_tb/SDCN_epoch_'+str(self.counter)+'.png')
+            plt.close()
 
         return preds_c, probs_c, z, z_mu, z_sigma2_log, z_mu, z_sigma2_log, pi, logits
 
@@ -184,7 +204,7 @@ class ModelSDCN(AModelCluster):
 
 #         print('reconstruction loss', re_loss, 'kl_loss', kl_loss, 'ce_loss', ce_loss)
 #         print('loss', loss)
-        self.counter+=1
+            self.counter+=1
         return loss.type(torch.double)
 
     def pretrain_loss(self, x, inject_domain):

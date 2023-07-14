@@ -72,6 +72,9 @@ class TrainerCluster(AbstractTrainer):
             self.warmup_beta = self.warmup_beta + 0.01
         # _____________one training epoch: start_______________________
         for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
+            if i ==0:
+                self.model.batch_zero = True
+                
             if len(other_vars) > 0:
                 inject_tensor, image_id = other_vars
                 if len(inject_tensor) > 0:

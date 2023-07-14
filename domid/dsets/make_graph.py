@@ -7,6 +7,9 @@ from torch.utils.data import Dataset
 from torchvision import datasets, transforms
 import torch
 import scipy.sparse as sp
+import networkx as nx
+import matplotlib.pyplot as plt
+
 class GraphConstructor():
     def parse_name(self, name):
         sub_num = name.split('-')[1]
@@ -24,12 +27,13 @@ class GraphConstructor():
         for tensor_x, vec_y, vec_d, inj_tensor, img_ids in dataset:
 
             X[counter, :, :]=torch.reshape(tensor_x, (tensor_x.shape[0], tensor_x.shape[1]*tensor_x.shape[2]*tensor_x.shape[3]))
-            dir_values = [path.split('/')[2] for path in img_ids]
-            try:
-                assert len(set(dir_values))<2
-            except AssertionError:
-                print("The batch contains patches from different slides")
-                sys.exit(1)
+            if isinstance(img_ids, str):
+                dir_values = [path.split('/')[2] for path in img_ids]
+                try:
+                    assert len(set(dir_values))<2
+                except AssertionError:
+                    print("The batch contains patches from different slides")
+                    sys.exit(1)
             #ids = [name.split('_')[0][]]
             # patch num img_id.split('_')[-1][:-4]
             # region img_id.split('_')[-3]
@@ -86,6 +90,8 @@ class GraphConstructor():
         edges_unordered = np.array(connection_pairs,  dtype=np.int32) #features #np.genfromtxt(path, dtype=np.int32)
         edges = np.array(list(map(idx_map.get, edges_unordered.flatten())),
                          dtype=np.int32).reshape(edges_unordered.shape)
+        
+        
         adj = sp.coo_matrix((np.ones(edges.shape[0]), (edges[:, 0], edges[:, 1])),
                             shape=(n, n), dtype=np.float32)
 
@@ -95,9 +101,30 @@ class GraphConstructor():
         adj = adj + sp.eye(adj.shape[0])
         adj = self.normalize(adj)
         return adj
+    
+    def plot_graph(self, edges, labels, bs):
+        import pdb; pdb.set_trace()
+        num_nodes = len(edges)
+        
+        # for i in range(num_nodes):
+        #     for j in range(i + 1, num_nodes):  # Exclude diagonal and symmetric entries
+        #         if adjacency_matrix[i, j] != 0:
+        #             edges.append((i, j))
+        ed= [(edge[0], edge[1]) for edge in edges]
+        #labels = {0: '0', 1: '1', 2: '2', 3: '3', 4:'4', 5:'5', 6:'6'}
+        labels_color= {0:'blue', 1:'navy', 2:'green',3:'yellow', 4:'orange', 5: 'peach' }
+        graph = nx.Graph(ed)
+        node_colors = [labels_color[labels[node]] if labels[node]>1 else 'purple' for node in graph.nodes()]
+        pos = nx.spring_layout(graph)  # Specify the layout for node positions
+        nx.draw_networkx(graph, pos=pos, node_color=node_colors, with_labels=True)
+        plt.show()
+        plt.savefig("../../graph_bs_"+str(bs)+".png")
+        plt.close()
+
 
     
     def construct_graph(self, dataset):
+        import pdb; pdb.set_trace()
         adj_matricies = []
         features, labels = self.get_features_labels(dataset)
         batch_num = features.shape[0]
@@ -109,6 +136,8 @@ class GraphConstructor():
             # distance_batches[i, :] = dist
             adj_mat = self.mk_adj_mat(num_features, connection_pairs)
             adj_matricies.append(adj_mat)
+            pdb.set_trace()
+            self.plot_graph(connection_pairs, labels[i, :], i)
             
             
 

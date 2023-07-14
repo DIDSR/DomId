@@ -3,7 +3,7 @@ Command line arguments
 """
 
 from domainlab import arg_parser
-
+import numpy as np
 
 def mk_parser_main():
     """
@@ -27,6 +27,7 @@ def mk_parser_main():
     parser.add_argument('--digits_from_mnist', nargs='*', type=int, default=None, help="digits that should be included from mnist dataset")
     parser.add_argument('--path_to_results', type=str, default='./', help="path to the results csv file")
     parser.add_argument('--pre_tr_weight_path', type=str, default='./notebooks/2023-06-21 17:52:45.488874_usps_ae/', help="path to the pre-trained weights")
+    parser.add_argument('--tr_d_range', nargs='*', default=None, help = 'range of the trained subjects')
 
 
     return parser
@@ -37,4 +38,8 @@ def parse_cmd_args():
     """
     parser = mk_parser_main()
     args = parser.parse_args()
+    if args.tr_d_range is not None:
+        tr_d_range = np.arange(int(args.tr_d_range[0]), int(args.tr_d_range[1]), 1)
+        tr_d_range = [str(i) for i in tr_d_range]
+        setattr(args, 'tr_d',list(tr_d_range) )
     return args

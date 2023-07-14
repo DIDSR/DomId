@@ -66,7 +66,7 @@ class DsetWEAH(Dataset):
         resp_label = int(self.df.loc[self.df['path'] == self.images[idx]]['resp'])
         cah_label = int(self.df.loc[self.df['path'] == self.images[idx]]['ann'])
 
-        label_dict = {'01':0, '02':1, '11':2,'12':3}
+        label_dict = {'01':0, '02':1, '11':2,'12':3, '03':4, '13': 5}
         encod_label = label_dict[str(resp_label)+str(cah_label)]
         
         #label = torch.cat((mk_fun_label2onehot(2)(resp_label), mk_fun_label2onehot(2)(cah_label)), 0)
@@ -82,7 +82,7 @@ class DsetWEAH(Dataset):
         else:
             domain = []
         # print('label', label)
-        label = mk_fun_label2onehot(4)(encod_label)
+        label = mk_fun_label2onehot(6)(encod_label)
         inject_tensor = []
         img_id = img_loc
        

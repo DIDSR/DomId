@@ -20,7 +20,7 @@ class NodeTaskWEAH(NodeTaskDictCluster):
         """
         WEAH task has no labels (digits are considered domains)
         """
-        return mk_dummy_label_list_str("dummy", 4)
+        return mk_dummy_label_list_str("dummy", 6)
 
     @property
     def isize(self):
@@ -35,7 +35,7 @@ class NodeTaskWEAH(NodeTaskDictCluster):
 
         :return: list of domain names
         """
-        return mk_dummy_label_list_str("digit", 10)
+        return mk_dummy_label_list_str("digit", 22)
 
     def get_dset_by_domain(self, args, na_domain, split=True):
         """Get a dataset by digit
@@ -59,7 +59,7 @@ class NodeTaskWEAH(NodeTaskDictCluster):
         dpath = args.dpath  # png_files/32, 16))]  # , transforms.ToTensor()]
         ind_global = self.get_list_domains().index(na_domain)
         df = pd.read_csv('../../dset_WEAH.csv')
-        mask = df[df['path'].str.contains('aperio-00'+str(ind_global+1))]
+        mask = df[df['subject']==ind_global]
         #mask = df['resp'].values == ind_global  # response (0 o 1)
         img_paths = np.array(mask['path'])  # [:400]
  
