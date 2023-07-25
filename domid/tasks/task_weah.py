@@ -35,7 +35,7 @@ class NodeTaskWEAH(NodeTaskDictCluster):
 
         :return: list of domain names
         """
-        return mk_dummy_label_list_str("digit", 22)
+        return mk_dummy_label_list_str("digit", 70)
 
     def get_dset_by_domain(self, args, na_domain, split=True):
         """Get a dataset by digit

@@ -122,16 +122,16 @@ class ModelSDCN(AModelCluster):
         # preds_c = F.one_hot(preds_c, num_classes=self.d_dim)
 
         preds_c, *_ = logit2preds_vpic(logits) # probs_c is F.softmax(logit, dim=1)
-        if self.batch_zero:
-            d = self.distance_between_clusters(self.cluster_layer.detach().cpu())
-            self.batch_zero = False
+#         if self.batch_zero:
+#             d = self.distance_between_clusters(self.cluster_layer.detach().cpu())
+#             self.batch_zero = False
           
-            plt.imshow(d)
-            plt.colorbar()
-            plt.title('Epoch '+str(self.counter))
-            plt.show()
-            plt.savefig('./local_tb/SDCN_epoch_'+str(self.counter)+'.png')
-            plt.close()
+#             plt.imshow(d)
+#             plt.colorbar()
+#             plt.title('Epoch '+str(self.counter))
+#             plt.show()
+#             plt.savefig('./local_tb/SDCN_epoch_'+str(self.counter)+'.png')
+#             plt.close()
 
         return preds_c, probs_c, z, z_mu, z_sigma2_log, z_mu, z_sigma2_log, pi, logits
 

@@ -9,6 +9,7 @@ import torch
 import scipy.sparse as sp
 import networkx as nx
 import matplotlib.pyplot as plt
+import pickle
 
 class GraphConstructor():
     def parse_name(self, name):
@@ -22,7 +23,7 @@ class GraphConstructor():
         num_img,i_c, i_w, i_h =next(iter(dataset))[0].shape
         X = torch.zeros((num_batches, num_img, i_c * i_w * i_h))
         labels = torch.zeros((num_batches, num_img, 1))
-
+        region_labels = [] #torch.zeros((num_batches, num_img,1))
         counter = 0
         for tensor_x, vec_y, vec_d, inj_tensor, img_ids in dataset:
 
@@ -39,10 +40,17 @@ class GraphConstructor():
             # region img_id.split('_')[-3]
             # sub num img_id.split('_')[1].split('-')[-2]
 
-            labels[counter, :, 0]=torch.argmax(vec_d, dim=1)
+            labels[counter, :, 0]=torch.argmax(vec_y, dim=1)
+            try:
+                regions = [img_id.split('/')[-1].split('_')[4] for img_id in img_ids]
+                region_labels.append(regions) #, dtype=torch.string)
+            except:
+                regions=[]
+                region_labels.append(regions)
+                
             counter+=1
 
-        return X.type(torch.float32), labels.type(torch.int32)
+        return X.type(torch.float32), labels.type(torch.int32), region_labels
     def normalize(self, mx): #FIXME move to utils
         """Row-normalize sparse matrix"""
         rowsum = np.array(mx.sum(1))
@@ -51,7 +59,8 @@ class GraphConstructor():
         r_mat_inv = sp.diags(r_inv)
         mx = r_mat_inv.dot(mx)
         return mx
-    def distance_calc(self, features, labels, topk=10, method='ncos'):
+    
+    def distance_calc(self, features, method = 'ncos'):
         if method == 'heat':
             dist = -0.5 * pair(features) ** 2
             dist = np.exp(dist)
@@ -62,24 +71,40 @@ class GraphConstructor():
             features[features > 0] = 1
             features = normalize(features, axis=1, norm='l1')
             dist = np.dot(features, features.T)
-            
+        return dist
+    
+    
+    def connection_calc(self, features, labels, region_labels, topk=10,method='ncos'):
+        if len(region_labels)>0:
+            # region_labels = np.array(region_labels)
+            # sorted_indices = np.argsort(region_labels)
+            # features = features[sorted_indices, :]
+            # labels = labels[sorted_indices, :]
+            # region_labels = region_labels[sorted_indices]
+            features=np.array_split(features, 4)    
+            dist = []
+            for feat in features:
+                d = self.distance_calc(feat)
+                dist.append(d)
+        else:
+            dist = self.distance_calc(features)
+        
+        connection_pairs = [] 
         inds = []
-        for i in range(dist.shape[0]):
-            ind = np.argpartition(dist[i, :], -(topk+1))[-(topk+1):]
-            inds.append(ind)
-            
-        A = np.zeros_like(dist) 
-        connection_pairs = []  
         counter =0
+        for region in dist:
+            for i in range(region.shape[0]):
+                ind = np.argpartition(region[i, :], -(topk+1))[-(topk+1):]
+                ind = ind+np.ones(len(ind))*counter*region.shape[0]
+                ind = ind.astype(np.int32)
+                inds.append(ind) #each patch's 10 connections
+            counter+=1
+
         for i, v in enumerate(inds):
-            mutual_knn = False
             for vv in v:
                 if vv == i:
                     pass
                 else:
-                    if labels[vv] != labels[i]:
-                        counter = counter+1
-                    A[i, vv] = vv
                     connection_pairs.append([i, vv])
 
         return dist, inds, connection_pairs
@@ -88,10 +113,11 @@ class GraphConstructor():
         idx = np.array([i for i in range(n)], dtype=np.int32)
         idx_map = {j: i for i, j in enumerate(idx)}
         edges_unordered = np.array(connection_pairs,  dtype=np.int32) #features #np.genfromtxt(path, dtype=np.int32)
-        edges = np.array(list(map(idx_map.get, edges_unordered.flatten())),
-                         dtype=np.int32).reshape(edges_unordered.shape)
-        
-        
+        edges_mapped = [idx_map.get(val, -1) for val in edges_unordered.flatten()]
+        if -1 in edges_mapped:
+            print("Error: Some keys in edges_unordered do not exist in idx_map.")
+        else:
+            edges = np.array(edges_mapped, dtype=np.int32).reshape(edges_unordered.shape)
         adj = sp.coo_matrix((np.ones(edges.shape[0]), (edges[:, 0], edges[:, 1])),
                             shape=(n, n), dtype=np.float32)
 
@@ -103,7 +129,7 @@ class GraphConstructor():
         return adj
     
     def plot_graph(self, edges, labels, bs):
-        import pdb; pdb.set_trace()
+        
         num_nodes = len(edges)
         
         # for i in range(num_nodes):
@@ -124,20 +150,34 @@ class GraphConstructor():
 
     
     def construct_graph(self, dataset):
-        import pdb; pdb.set_trace()
+        
         adj_matricies = []
-        features, labels = self.get_features_labels(dataset)
+        features, labels, region_labels = self.get_features_labels(dataset)
         batch_num = features.shape[0]
         num_features =  features.shape[1]
-        distance_batches = np.zeros((batch_num, num_features, num_features))
+        #distance_batches = np.zeros((batch_num, num_features, num_features))
         topk = 10
+
         for i in range(0, batch_num):
-            dist, inds, connection_pairs = self.distance_calc(features[i, :, :], labels[i, :], topk = topk)
+            dist, inds, connection_pairs = self.connection_calc(features[i, :, :], labels[i, :],region_labels[i], topk = topk)
+            connect_path = "../../connection_pairs_"+str(i)+".pkl" 
+            feat_path = "../../features_"+str(i)+".pkl"
+            label_path = "../../labels_"+str(i)+".pkl"
+            with open(connect_path, "wb") as file:
+                pickle.dump(connection_pairs, file)
+                
+            with open(feat_path, "wb") as file:
+                pickle.dump(features[i, :, :], file)
+                
+            with open(label_path, "wb") as file:
+                pickle.dump(labels[i, :], file)
+            
+
             # distance_batches[i, :] = dist
             adj_mat = self.mk_adj_mat(num_features, connection_pairs)
             adj_matricies.append(adj_mat)
-            pdb.set_trace()
-            self.plot_graph(connection_pairs, labels[i, :], i)
+#             pdb.set_trace()
+#             self.plot_graph(connection_pairs, labels[i, :], i)
             
             
 

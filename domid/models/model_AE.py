@@ -96,21 +96,21 @@ class ModelAE(AModelCluster):
         # preds_c: One hot encoded tensor of the predicted cluster assignment (shape: [batch_size, self.d_dim]).
         # probs_c: Tensor of the predicted cluster probabilities; this is q(c|x) per eq. (16) or gamma_c in eq. (12) (shape: [batch_size, self.d_dim]).
         # logits: Tensor where each column contains the log-probability p(c)p(z|c) for cluster c=0,...,self.d_dim-1 (shape: [batch_size, self.d_dim])
-        if self.batch_zero:
-            self.local_tb.add_histogram('clustering_layer', cluster_layer.flatten(), self.counter)
-            print('batch_zero')
-            d = self.distance_between_clusters(cluster_layer)
-            self.batch_zero = False
-            print(d)
+#         if self.batch_zero:
+#             self.local_tb.add_histogram('clustering_layer', cluster_layer.flatten(), self.counter)
+#             print('batch_zero')
+#             d = self.distance_between_clusters(cluster_layer)
+#             self.batch_zero = False
+#             print(d)
             
-            plt.imshow(d)
-            plt.colorbar()
-            plt.title('Epoch '+str(self.counter))
-            plt.show()
-            plt.savefig('./local_tb/AE_epoch_'+str(self.counter)+'.png')
+#             plt.imshow(d)
+#             plt.colorbar()
+#             plt.title('Epoch '+str(self.counter))
+#             plt.show()
+#             plt.savefig('./local_tb/AE_epoch_'+str(self.counter)+'.png')
             
-            self.counter+=1
-            plt.close()
+#             self.counter+=1
+#             plt.close()
         
         return preds_c, probs_c, z, z_mu, z_sigma2_log, x_bar, z_sigma2_log, pi, logits
 
