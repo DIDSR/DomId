@@ -74,7 +74,8 @@ class GraphConstructor():
         return dist
     
     
-    def connection_calc(self, features, labels, region_labels, topk=10,method='ncos'):
+    def connection_calc(self, features, labels, region_labels, topk=10,method='heat'):
+        dist = []
         if len(region_labels)>0:
             # region_labels = np.array(region_labels)
             # sorted_indices = np.argsort(region_labels)
@@ -82,12 +83,12 @@ class GraphConstructor():
             # labels = labels[sorted_indices, :]
             # region_labels = region_labels[sorted_indices]
             features=np.array_split(features, 4)    
-            dist = []
+    
             for feat in features:
                 d = self.distance_calc(feat)
                 dist.append(d)
         else:
-            dist = self.distance_calc(features)
+            dist.append(self.distance_calc(features))
         
         connection_pairs = [] 
         inds = []
