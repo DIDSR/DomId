@@ -179,7 +179,12 @@ class ModelSDCN(AModelCluster):
         # probs_c is pred in the code
         q = logits
         pred = probs_c
-        x_bar, *_ = self.decoder(z)
+        if len(inject_domain) > 0:
+            
+            zy = torch.cat((z, inject_domain), 1)
+        else:
+            zy = z
+        x_bar, *_ = self.decoder(zy)
         q = q.data
         
 

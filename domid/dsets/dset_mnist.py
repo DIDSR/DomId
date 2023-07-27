@@ -21,7 +21,7 @@ class DsetMNIST(Dataset):
     """
 
     @store_args
-    def __init__(self, digit, args, subset_step=1, list_transforms=None,raw_split="train"):
+    def __init__(self, digit, args, subset_step=100, list_transforms=None,raw_split="train"):
         """
         :param digit: a integer value from 0 to 9; only images of this digit will be kept.
         :param path: disk storage directory

@@ -74,6 +74,7 @@ class ModelAE(AModelCluster):
         
 
     def _inference(self, x, inject_tensor=None):
+
         if self.args.model == "linear":
             x = torch.reshape(x, (x.shape[0], x.shape[1]*x.shape[2]*x.shape[3]))
         enc_h1, enc_h2, enc_h3, z = self.encoder(x)
@@ -82,7 +83,7 @@ class ModelAE(AModelCluster):
         kmeans = KMeans(n_clusters=self.args.d_dim, n_init=20)
 
         kmeans.fit_predict(z.detach().cpu().numpy())
-        x_bar, *_ = self.decoder(z)
+        #x_bar, *_ = self.decoder(z)
         z_mu = torch.mean(z, dim=0)
         z_sigma2_log = torch.std(z, dim=0)
         pi = torch.Tensor([0])
@@ -112,7 +113,7 @@ class ModelAE(AModelCluster):
 #             self.counter+=1
 #             plt.close()
         
-        return preds_c, probs_c, z, z_mu, z_sigma2_log, x_bar, z_sigma2_log, pi, logits
+        return preds_c, probs_c, z, z_mu, z_sigma2_log, z_mu, z_sigma2_log, pi, logits
 
     def infer_d_v(self, x):
         """
