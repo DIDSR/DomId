@@ -45,9 +45,10 @@ class ModelSDCN(AModelCluster):
 
 
         if self.args.model == "linear":
+            n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3, = 500, 500, 2000, 2000, 500, 500,
             self.encoder =  LinearEncoderAE(n_enc_1, n_enc_2, n_enc_3,n_input, n_z)
             self.decoder = LinearDecoderAE(n_dec_1, n_dec_2, n_dec_3, n_input, n_z)
-            n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3, = 500, 500, 2000, 2000, 500, 500,
+
             
         else:
             self.encoder = ConvolutionalEncoder(zd_dim=zd_dim, num_channels=i_c, i_w=i_w, i_h=i_h).to(device)
@@ -71,10 +72,13 @@ class ModelSDCN(AModelCluster):
         self.v = 1.0
         self.counter= 0
         self.q_activation = torch.zeros((10, 100))
-        ex = str(datetime.now())
-        self.local_tb = SummaryWriter(log_dir=os.path.join('local_tb',ex ))
-        self.batch_zero = True
+        # ex = str(datetime.now())
+        # self.local_tb = SummaryWriter(log_dir=os.path.join('local_tb',ex ))
+        # self.batch_zero = True
 
+        self.kl_loss_running = 0
+        self.re_loss_running = 0
+        self.ce_loss_running = 0
 
 
     def distance_between_clusters(self, cluster_layer):
@@ -106,12 +110,12 @@ class ModelSDCN(AModelCluster):
         
         
 
-        if self.batch_zero:
-            self.local_tb.add_histogram('clustering_layer', self.cluster_layer.flatten(), self.counter)
-            self.local_tb.add_histogram('q', q.flatten(), self.counter)
-            self.local_tb.add_histogram('pred', probs_c.flatten(), self.counter)
-            self.local_tb.add_histogram('h', h.flatten(), self.counter)
-            self.local_tb.add_histogram('z', z.flatten(), self.counter)
+        # if self.batch_zero:
+        #     self.local_tb.add_histogram('clustering_layer', self.cluster_layer.flatten(), self.counter)
+        #     self.local_tb.add_histogram('q', q.flatten(), self.counter)
+        #     self.local_tb.add_histogram('pred', probs_c.flatten(), self.counter)
+        #     self.local_tb.add_histogram('h', h.flatten(), self.counter)
+        #     self.local_tb.add_histogram('z', z.flatten(), self.counter)
 
 
         z_mu =torch.mean(z, dim=0) # is not used in SDCN (variance from the encoder in VaDE)
@@ -121,7 +125,7 @@ class ModelSDCN(AModelCluster):
         # preds_c = torch.argmax(logits, dim=1)
         # preds_c = F.one_hot(preds_c, num_classes=self.d_dim)
 
-        preds_c, *_ = logit2preds_vpic(logits) # probs_c is F.softmax(logit, dim=1)
+        preds_c, *_ = logit2preds_vpic(probs_c) # probs_c is F.softmax(logit, dim=1)
 #         if self.batch_zero:
 #             d = self.distance_between_clusters(self.cluster_layer.detach().cpu())
 #             self.batch_zero = False
@@ -201,16 +205,24 @@ class ModelSDCN(AModelCluster):
         re_loss = F.mse_loss(x, x_bar)
 
         loss = 0.1 * kl_loss + 0.01 * ce_loss + re_loss
-        if self.batch_zero:
-            self.local_tb.add_scalar('kl_loss', kl_loss, self.counter)
-            self.local_tb.add_scalar('ce_loss', ce_loss, self.counter)
-            self.local_tb.add_scalar('re_loss', re_loss, self.counter)
-            self.batch_zero = False
+
+        self.kl_loss_running = kl_loss
+        self.ce_loss_running = ce_loss
+        self.re_loss_running = re_loss
+
+        # if self.batch_zero:
+        #     self.local_tb.add_scalar('kl_loss', kl_loss, self.counter)
+        #     self.local_tb.add_scalar('ce_loss', ce_loss, self.counter)
+        #     self.local_tb.add_scalar('re_loss', re_loss, self.counter)
+        #     self.batch_zero = False
 
 #         print('reconstruction loss', re_loss, 'kl_loss', kl_loss, 'ce_loss', ce_loss)
 #         print('loss', loss)
-            self.counter+=1
+#             self.counter+=1
         return loss.type(torch.double)
+    def cal_loss_for_tensorboard(self):
+        return self.kl_loss_running, self.ce_loss_running, self.re_loss_running
+
 
     def pretrain_loss(self, x, inject_domain):
         if self.args.model == "linear":

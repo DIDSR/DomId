@@ -3,7 +3,7 @@ import torch
 import numpy as np
 
 
-def tensorboard_write(writer, model, epoch, lr, warmup_beta, acc_tr, loss, pretraining_finished, tensor_x, inject_tensor):
+def tensorboard_write(writer, model, epoch, lr, warmup_beta, acc_tr, loss, pretraining_finished, tensor_x, inject_tensor, other_info=None):
     writer.add_scalar('learning rate', lr, epoch)
     writer.add_scalar('warmup', warmup_beta, epoch)
     if not pretraining_finished:
@@ -17,6 +17,13 @@ def tensorboard_write(writer, model, epoch, lr, warmup_beta, acc_tr, loss, pretr
         name = "Output of the decoder pretraining"
     else:
         name = "Output of the decoder training"
+
+    if other_info is not None and epoch>3:
+        kl_total, ce_total, re_total = other_info
+        writer.add_scalar('KL', kl_total, epoch)
+        writer.add_scalar('CE', ce_total, epoch)
+        writer.add_scalar('RE', re_total, epoch)
+
 
     preds, z_mu, z, _, _, x_pro = model.infer_d_v_2(tensor_x, inject_tensor)
     if len(x_pro.shape)<3:

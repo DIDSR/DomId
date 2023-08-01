@@ -74,6 +74,9 @@ class TrainerCluster(AbstractTrainer):
         acc_val_y, _, acc_val_d, _ = prediction.epoch_val_acc()
         r_score_tr = 'None'
         r_score_te = 'None'
+        kl_total = 0
+        ce_total = 0
+        re_total = 0
         if self.args.task == 'her2':
             r_score_tr = prediction.epoch_tr_correlation()
             r_score_te = prediction.epoch_val_correlation()  # validation set is used as a test set
@@ -90,7 +93,7 @@ class TrainerCluster(AbstractTrainer):
                 inject_tensor, image_id = other_vars
                 if len(inject_tensor) > 0:
                     inject_tensor = inject_tensor.to(self.device)
-
+            print('i_' + str(i), image_id[:2], vec_y.argmax(dim=1).unique(), vec_d.argmax(dim=1).unique())
             tensor_x, vec_y, vec_d = (
                 tensor_x.to(self.device),
                 vec_y.to(self.device),
@@ -125,6 +128,11 @@ class TrainerCluster(AbstractTrainer):
             self.optimizer.step()
             self.epo_loss_tr += loss.cpu().detach().item()
             # FIXME: devide #  number of samples in the HER notebook
+
+            kl_batch, ce_batch, re_batch = self.model.cal_loss_for_tensorboard()
+            kl_total += kl_batch
+            ce_total += ce_batch
+            re_total += re_batch
 
         # after one epoch (all batches), GMM is calculated again and pi, mu_c
         # will get updated via this line.
@@ -163,7 +171,8 @@ class TrainerCluster(AbstractTrainer):
             self.pretraining_finished,
             tensor_x,
             inject_tensor,
-        )
+        other_info = (kl_total, ce_total, re_total))
+
 
         # _____storing results and Z space__________
         self.storage.storing(epoch, acc_tr_y, acc_tr_d, self.epo_loss_tr, acc_val_y, acc_val_d, loss_val,

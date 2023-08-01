@@ -28,19 +28,19 @@ class GraphConstructor():
         for tensor_x, vec_y, vec_d, inj_tensor, img_ids in dataset:
 
             X[counter, :, :]=torch.reshape(tensor_x, (tensor_x.shape[0], tensor_x.shape[1]*tensor_x.shape[2]*tensor_x.shape[3]))
-            if isinstance(img_ids, str):
-                dir_values = [path.split('/')[2] for path in img_ids]
-                try:
-                    assert len(set(dir_values))<2
-                except AssertionError:
-                    print("The batch contains patches from different slides")
-                    sys.exit(1)
+            # if isinstance(img_ids, str):
+            #     dir_values = [path.split('/')[2] for path in img_ids]
+            #     try:
+            #         assert len(set(dir_values))<2
+            #     except AssertionError:
+            #         print("The batch contains patches from different slides")
+            #         sys.exit(1)
             #ids = [name.split('_')[0][]]
             # patch num img_id.split('_')[-1][:-4]
             # region img_id.split('_')[-3]
             # sub num img_id.split('_')[1].split('-')[-2]
 
-            labels[counter, :, 0]=torch.argmax(vec_y, dim=1)
+            labels[counter, :, 0]=torch.argmax(vec_d, dim=1)
             try:
                 regions = [img_id.split('/')[-1].split('_')[4] for img_id in img_ids]
                 region_labels.append(regions) #, dtype=torch.string)
