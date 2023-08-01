@@ -60,7 +60,7 @@ class GraphConstructor():
         mx = r_mat_inv.dot(mx)
         return mx
     
-    def distance_calc(self, features, method = 'ncos'):
+    def distance_calc(self, features, method = 'heat'):
         if method == 'heat':
             dist = -0.5 * pair(features) ** 2
             dist = np.exp(dist)

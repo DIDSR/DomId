@@ -93,7 +93,7 @@ class TrainerCluster(AbstractTrainer):
                 inject_tensor, image_id = other_vars
                 if len(inject_tensor) > 0:
                     inject_tensor = inject_tensor.to(self.device)
-            print('i_' + str(i), image_id[:2], vec_y.argmax(dim=1).unique(), vec_d.argmax(dim=1).unique())
+            print('i_' + str(i), vec_y.argmax(dim=1).unique(), vec_d.argmax(dim=1).unique())
             tensor_x, vec_y, vec_d = (
                 tensor_x.to(self.device),
                 vec_y.to(self.device),

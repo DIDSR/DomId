@@ -27,7 +27,6 @@ class DsetWEAH(Dataset):
         :param path_to_domain: if inject previously predicted domain labels, the path needs to be specified.domain_labels.txt must be inside the directory, containing to-be-injected labels.
         :param transform: torch transformations
         """
- 
         self.dpath = args.dpath
         self.img_dir = args.dpath  # os.path.join(path, "class" + str(class_num + 1) + "jpg")
         self.images = path  # os.listdir(self.img_dir)
@@ -46,7 +45,7 @@ class DsetWEAH(Dataset):
         # print(self.images[idx])
         # print(self.images[idx])
         #import pdb; pdb.set_trace()
-        img_loc = os.path.join(self.dpath, self.images[idx][:12], self.images[idx])
+        img_loc = os.path.join(self.dpath, self.images[idx])
 
         # print(img_loc)
         image = Image.open(img_loc)

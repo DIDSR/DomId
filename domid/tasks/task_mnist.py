@@ -60,6 +60,7 @@ class NodeTaskMNIST(NodeTaskMNISTColor10):
         train_set = dset
         val_set = dset
         # split dset into training and validation sets
+        
         if ratio_split:
             train_len = int(len(dset) * ratio_split)
             val_len = len(dset) - train_len

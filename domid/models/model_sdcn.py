@@ -125,7 +125,7 @@ class ModelSDCN(AModelCluster):
         # preds_c = torch.argmax(logits, dim=1)
         # preds_c = F.one_hot(preds_c, num_classes=self.d_dim)
 
-        preds_c, *_ = logit2preds_vpic(probs_c) # probs_c is F.softmax(logit, dim=1)
+        preds_c, *_ = logit2preds_vpic(h) # probs_c is F.softmax(logit, dim=1)
 #         if self.batch_zero:
 #             d = self.distance_between_clusters(self.cluster_layer.detach().cpu())
 #             self.batch_zero = False
@@ -195,7 +195,7 @@ class ModelSDCN(AModelCluster):
         # if self.counter==1:
         p = self.target_distribution(q)
 
-        self.local_tb.add_histogram('p', p, self.counter)
+        # self.local_tb.add_histogram('p', p, self.counter)
         
         if self.args.model == "linear":
             x = torch.reshape(x, (x.shape[0], x.shape[1]*x.shape[2]*x.shape[3]))

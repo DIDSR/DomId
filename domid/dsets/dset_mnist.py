@@ -37,7 +37,7 @@ class DsetMNIST(Dataset):
         # if subset_step == 1 and args.debug:
         #     # used to speed up the unit tests
         #     subset_step = 100
-        inds_subset = list(range(0, self.images.shape[0], subset_step))
+        inds_subset = list(range(0, self.images.shape[0], subset_step))[:500]
         self.images = self.images[inds_subset]
         n_img = self.images.shape[0]
         # dummy class labels (should not be used; included for consistency with DomainLab)
