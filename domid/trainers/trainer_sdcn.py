@@ -45,7 +45,15 @@ class TrainerCluster(AbstractTrainer):
         self.storage = Storing(self.args)
         self.loader_val = task.loader_tr
         self.aname = aconf.aname
-        self.adj_matricies = GraphConstructor().construct_graph(self.loader_tr) #.to(self.device)
+        if 'mnist' in self.args.task:
+            self.graph_method = 'heat'
+        if 'weah' in self.args.task:
+            self.graph_method = 'patch_distance'
+        if self.args.graph_method is not None:
+            self.graph_method =args.graph_method
+        assert self.graph_method, "Graph calculation methos should be specified"
+        print('Graph calculation method is', self.graph_method)  
+        self.adj_matricies = GraphConstructor().construct_graph(self.loader_tr, self.graph_method) #.to(self.device)
         self.model.adj =  self.sparse_mx_to_torch_sparse_tensor(self.adj_matricies[0])
         
         
