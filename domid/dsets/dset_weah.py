@@ -36,7 +36,7 @@ class DsetWEAH(Dataset):
         self.path_to_domain = path_to_domain
         self.d_dim = args.d_dim
    
-        self.df = pd.read_csv('../../dset_WEAH.csv')
+        self.df = pd.read_csv(args.meta_data_csv)
 
     def __len__(self):
         return len(self.images)

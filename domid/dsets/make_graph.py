@@ -11,7 +11,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import pickle
 
-class GraphConstructor():
+class GraphConstructor():        
     def parse_name(self, name):
         sub_num = name.split('-')[1]
         region = name.split('_')[-3]
@@ -49,18 +49,18 @@ class GraphConstructor():
         mx = r_mat_inv.dot(mx)
         return mx
     
-    def distance_calc(self, features,coordinates=None, method = 'heat'):
-        if method == 'heat':
+    def distance_calc(self, features, graph_method, coordinates=None):
+        if graph_method == 'heat':
             dist = -0.5 * pair(features) ** 2
             dist = np.exp(dist)
-        elif method == 'cos':
+        elif graph_method == 'cos':
             features[features > 0] = 1
             dist = np.dot(features, features.T)
-        elif method == 'ncos':
+        elif graph_method == 'ncos':
             features[features > 0] = 1
             features = normalize(features, axis=1, norm='l1')
             dist = np.dot(features, features.T)
-        elif method=='patch_distance':
+        elif graph_method=='patch_distance':
             num_coords = len(coordinates)
             dist = np.zeros((num_coords, num_coords))
 
@@ -72,10 +72,9 @@ class GraphConstructor():
         return dist
     
     
-    def connection_calc(self, features, labels, region_labels, topk=7,method='heat'):
+    def connection_calc(self, features, labels, region_labels,graph_method, topk=7):
         dist = []
         if len(region_labels)>0:
-            method='patch_distance'
             # region_labels = np.array(region_labels)
             # sorted_indices = np.argsort(region_labels)
             # features = features[sorted_indices, :]
@@ -85,7 +84,7 @@ class GraphConstructor():
             features=np.array_split(features, 3)    
             coordinates = np.array_split(coordinates,3)
             for feat,coord in zip(features, coordinates):
-                d = self.distance_calc(feat, coord, method)
+                d = self.distance_calc(feat, graph_method, coord)
                 dist.append(d)
         else:
             dist.append(self.distance_calc(features))
@@ -151,7 +150,7 @@ class GraphConstructor():
 
 
     
-    def construct_graph(self, dataset):
+    def construct_graph(self, dataset, graph_method):
         
         adj_matricies = []
         features, labels, region_labels = self.get_features_labels(dataset)
@@ -161,7 +160,7 @@ class GraphConstructor():
         topk = 7
 
         for i in range(0, batch_num):
-            dist, inds, connection_pairs = self.connection_calc(features[i, :, :], labels[i, :],region_labels[i], topk = topk)
+            dist, inds, connection_pairs = self.connection_calc(features[i, :, :], labels[i, :],region_labels[i], graph_method, topk = topk)
             connect_path = "../../graph_vis_data/connection_pairs_"+str(i)+".pkl" 
             feat_path = "../../graph_vis_data/features_"+str(i)+".pkl"
             label_path = "../../graph_vis_data/labels_"+str(i)+".pkl"

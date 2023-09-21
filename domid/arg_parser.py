@@ -28,6 +28,7 @@ def mk_parser_main():
     parser.add_argument('--path_to_results', type=str, default='./', help="path to the results csv file")
     parser.add_argument('--pre_tr_weight_path', type=str, default='./notebooks/2023-06-21 17:52:45.488874_usps_ae/', help="path to the pre-trained weights")
     parser.add_argument('--tr_d_range', nargs='*', default=None, help = 'range of the trained subjects')
+    parser.add_argument('--graph_method', type = str, default=None, help='graph calculation method can be specified for SDCN')
 
 
     return parser
