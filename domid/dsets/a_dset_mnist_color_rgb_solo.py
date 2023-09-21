@@ -5,7 +5,7 @@ import abc
 import os
 import struct
 from os.path import exists
-
+import torch
 import numpy as np
 import pandas as pd
 from domainlab.dsets.utils_data import mk_fun_label2onehot
@@ -205,6 +205,7 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
         for i in range(self.images.shape[0]):  # 60k*28*28*3
             img = self.images[i]  # size: 28*28*3 instead of 3*28*28
             self.images[i] = self._op_color_img(img)
+            
 
     def __getitem__(self, idx):
         if self.flag_load_df:
@@ -214,9 +215,11 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
             # only keep the digits of this dataset
             if len(self.wanted_digits) < 10: self.df, _ = self._filter_digits(self.df)
             self.flag_load_df = False
-
+        if isinstance(idx, torch.Tensor):
+            idx = idx.item()
         image_id = "_".join([str(idx), str(self.ind_color), str(self.color_scheme), str(self.labels[idx])])
         indices = self.df.loc[self.df["image_id"] == image_id].index
+
         assert len(indices) == 1, "invalid image_id"
         df_idx = indices[0]  # this class is for one domain (i.e., one color), but the dataframe combines all domains, so the index will be different
 

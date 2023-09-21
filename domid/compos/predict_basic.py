@@ -29,6 +29,7 @@ class Prediction:
 
         num_img = len(self.loader_tr.dataset)  # FIXME: this returns sample size + 1 for some reason
         z_proj = np.zeros((num_img, self.model.zd_dim))
+        prob_proj = np.zeros((num_img, self.model.d_dim))
         input_imgs = np.zeros((num_img, 3, self.i_h, self.i_w))
 
         image_id_labels = []
@@ -61,7 +62,7 @@ class Prediction:
                 )
 
 
-                preds, z_mu, z, *_ = self.model.infer_d_v_2(tensor_x, inject_tensor)
+                preds, z_mu, z, log_sigma2_c, probs, x_pro = self.model.infer_d_v_2(tensor_x, inject_tensor)
                 z = z.detach().cpu().numpy()  # [batch_size, zd_dim]
                 # if z.shape[0] == 1:
                 #     input_imgs[counter, :, :, :] = tensor_x.cpu().detach().numpy()
@@ -73,6 +74,8 @@ class Prediction:
                     #pdb.set_trace()
                 input_imgs[counter : counter + z.shape[0], :, :, :] = tensor_x.cpu().detach().numpy()
                 z_proj[counter : counter + z.shape[0], :] = z
+                prob_proj[counter : counter + z.shape[0], :] = probs
+                
 
                 preds = preds.detach().cpu()
                 #domain_labels[counter : counter + z.shape[0], 0] = torch.argmax(preds, 1) + 1

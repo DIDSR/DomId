@@ -48,15 +48,15 @@ class Storing():
             print('______Created directory to save result_________')
 
             os.mkdir(ex_path)
-            df = pd.DataFrame(columns=['epoch', 'accuracy', 'loss', 'val_accuracy', 'val_loss'])
+            df = pd.DataFrame(columns=['epoch','loss', 'accuracy_y','accuracy_d', 'val_loss','val_accuracy_y','val_accuracy_d'])
             df.to_csv(os.path.join(ex_path, 'losses_accuracies.csv'), index=False)
 
 
 
         df = pd.read_csv(os.path.join(ex_path, 'losses_accuracies.csv'))
         saving_dir = os.path.join("./notebooks",self.experiment_name)
-        loss_acc_df = pd.DataFrame({'epoch': epoch, 'loss': loss_tr,'accuracy': acc_tr_y,
-                                    'val_loss': loss_val.item(), 'val_accuracy': acc_val_y}, index =[epoch] )
+        loss_acc_df = pd.DataFrame({'epoch': epoch, 'loss': loss_tr,'accuracy_y': acc_tr_y, 'accuracy_d':acc_tr_d,
+                                    'val_loss': loss_val.item(), 'val_accuracy_y': acc_val_y,'val_accuracy_d': acc_val_d}, index =[epoch] )
         df = pd.concat([df, loss_acc_df], join="inner", ignore_index=False)
         df.to_csv(os.path.join(ex_path, 'losses_accuracies.csv'), index=False)
 

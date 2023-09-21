@@ -28,23 +28,12 @@ class GraphConstructor():
         for tensor_x, vec_y, vec_d, inj_tensor, img_ids in dataset:
 
             X[counter, :, :]=torch.reshape(tensor_x, (tensor_x.shape[0], tensor_x.shape[1]*tensor_x.shape[2]*tensor_x.shape[3]))
-            # if isinstance(img_ids, str):
-            #     dir_values = [path.split('/')[2] for path in img_ids]
-            #     try:
-            #         assert len(set(dir_values))<2
-            #     except AssertionError:
-            #         print("The batch contains patches from different slides")
-            #         sys.exit(1)
-            #ids = [name.split('_')[0][]]
-            # patch num img_id.split('_')[-1][:-4]
-            # region img_id.split('_')[-3]
-            # sub num img_id.split('_')[1].split('-')[-2]
-
             labels[counter, :, 0]=torch.argmax(vec_d, dim=1)
-            try:
-                regions = [img_id.split('/')[-1].split('_')[4] for img_id in img_ids]
+            if 'aperio' in img_ids[0]:
+                regions = ['_'.join(img_id.split('/')[-1].split('_')[-8:]) for img_id in img_ids]
                 region_labels.append(regions) #, dtype=torch.string)
-            except:
+            else:
+                print('not wsi images')
                 regions=[]
                 region_labels.append(regions)
                 
@@ -60,7 +49,7 @@ class GraphConstructor():
         mx = r_mat_inv.dot(mx)
         return mx
     
-    def distance_calc(self, features, method = 'heat'):
+    def distance_calc(self, features,coordinates=None, method = 'heat'):
         if method == 'heat':
             dist = -0.5 * pair(features) ** 2
             dist = np.exp(dist)
@@ -71,23 +60,32 @@ class GraphConstructor():
             features[features > 0] = 1
             features = normalize(features, axis=1, norm='l1')
             dist = np.dot(features, features.T)
+        elif method=='patch_distance':
+            num_coords = len(coordinates)
+            dist = np.zeros((num_coords, num_coords))
+
+            for i in range(num_coords):
+                for j in range(i, num_coords):
+                    distance = np.sqrt((int(coordinates[i][0]) - int(coordinates[j][0])) ** 2+(int(coordinates[i][1]) - int(coordinates[j][1])) ** 2)
+                    dist[i, j] = distance
+                    dist[j, i] = distance
         return dist
     
     
-    def connection_calc(self, features, labels, region_labels, topk=10,method='ncos'):
+    def connection_calc(self, features, labels, region_labels, topk=7,method='heat'):
         dist = []
         if len(region_labels)>0:
-            print(' i was here')
+            method='patch_distance'
             # region_labels = np.array(region_labels)
             # sorted_indices = np.argsort(region_labels)
             # features = features[sorted_indices, :]
             # labels = labels[sorted_indices, :]
             # region_labels = region_labels[sorted_indices]
-            
-            features=np.array_split(features, 4)    
-    
-            for feat in features:
-                d = self.distance_calc(feat)
+            coordinates = [[reg_lab.split('_')[-2][2:],reg_lab.split('_')[-1][:-4]] for reg_lab in region_labels]
+            features=np.array_split(features, 3)    
+            coordinates = np.array_split(coordinates,3)
+            for feat,coord in zip(features, coordinates):
+                d = self.distance_calc(feat, coord, method)
                 dist.append(d)
         else:
             dist.append(self.distance_calc(features))
@@ -102,17 +100,18 @@ class GraphConstructor():
                 ind = ind.astype(np.int32)
                 inds.append(ind) #each patch's 10 connections
             counter+=1
-
         for i, v in enumerate(inds):
             for vv in v:
                 if vv == i:
                     pass
                 else:
                     connection_pairs.append([i, vv])
-
+                    
+                    
+ 
         return dist, inds, connection_pairs
     def mk_adj_mat(self, n, connection_pairs):
-        
+ 
         idx = np.array([i for i in range(n)], dtype=np.int32)
         idx_map = {j: i for i, j in enumerate(idx)}
         edges_unordered = np.array(connection_pairs,  dtype=np.int32) #features #np.genfromtxt(path, dtype=np.int32)
@@ -159,13 +158,13 @@ class GraphConstructor():
         batch_num = features.shape[0]
         num_features =  features.shape[1]
         #distance_batches = np.zeros((batch_num, num_features, num_features))
-        topk = 10
+        topk = 7
 
         for i in range(0, batch_num):
             dist, inds, connection_pairs = self.connection_calc(features[i, :, :], labels[i, :],region_labels[i], topk = topk)
-            connect_path = "../../connection_pairs_"+str(i)+".pkl" 
-            feat_path = "../../features_"+str(i)+".pkl"
-            label_path = "../../labels_"+str(i)+".pkl"
+            connect_path = "../../graph_vis_data/connection_pairs_"+str(i)+".pkl" 
+            feat_path = "../../graph_vis_data/features_"+str(i)+".pkl"
+            label_path = "../../graph_vis_data/labels_"+str(i)+".pkl"
             with open(connect_path, "wb") as file:
                 pickle.dump(connection_pairs, file)
                 
@@ -176,7 +175,6 @@ class GraphConstructor():
                 pickle.dump(labels[i, :], file)
             
 
-            # distance_batches[i, :] = dist
             adj_mat = self.mk_adj_mat(num_features, connection_pairs)
             adj_matricies.append(adj_mat)
 #             pdb.set_trace()

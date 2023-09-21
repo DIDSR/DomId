@@ -85,6 +85,7 @@ class TrainerCluster(AbstractTrainer):
             self.warmup_beta = self.warmup_beta + 0.01
         # _____________one training epoch: start_______________________
         for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
+            
             self.model.adj =  self.sparse_mx_to_torch_sparse_tensor(self.adj_matricies[i])#.to(self.device)
             if i==0:
                 self.model.batch_zero = True
@@ -178,7 +179,7 @@ class TrainerCluster(AbstractTrainer):
         self.storage.storing(epoch, acc_tr_y, acc_tr_d, self.epo_loss_tr, acc_val_y, acc_val_d, loss_val,
                              r_score_tr, r_score_te)
         if epoch % 2 == 0:
-            _, z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels = prediction.mk_prediction()
+            _, z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels  = prediction.mk_prediction()
             # _, Z, domain_labels, machine_labels, image_locs = prediction.mk_prediction()
 
             self.storage.storing_z_space(z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels)
