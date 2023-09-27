@@ -91,11 +91,10 @@ class GraphConstructor():
         return dist
     
     
-    def connection_calc(self, features, labels, region_labels,graph_method, topk=7):
+    def connection_calc(self, features, region_labels,graph_method, topk=7):
         """
         This function is used to calculate the connection pairs between images for all the batches of dataset.
         :param features: flattened image from the batch of dataset
-        :param labels: domain labels of the batch of dataset
         :param region_labels: if dataset contains spacial information between images, then the region labels can be used to calculate the distance between images
         :param graph_method: graph method to calculate the distance between images
         :param topk: number of connections per image
@@ -131,6 +130,12 @@ class GraphConstructor():
                     connection_pairs.append([i, vv])
         return dist, inds, connection_pairs
     def mk_adj_mat(self, n, connection_pairs):
+        """
+        This function is used to make the adjacency matrix for the graph for each batch of dataset.
+        :param n:
+        :param connection_pairs:
+        :return:
+        """
  
         idx = np.array([i for i in range(n)], dtype=np.int32)
         idx_map = {j: i for i, j in enumerate(idx)}
@@ -151,7 +156,7 @@ class GraphConstructor():
         return adj
     
 
-    def construct_graph(self, dataset, graph_method):
+    def construct_graph(self, dataset, graph_method,experiment_folder ):
         """
         This function is used to construct the graph for all the batches of dataset. This is called in the trainer function of SDCN model.
         :param dataset: dataset contraining all the batches of data (or no batched data)
@@ -166,10 +171,10 @@ class GraphConstructor():
         topk = 7 #topk connections for each image
 
         for i in range(0, batch_num):
-            dist, inds, connection_pairs = self.connection_calc(features[i, :, :], labels[i, :],region_labels[i], graph_method, topk = topk)
-            connect_path = "../../graph_vis_data/connection_pairs_"+str(i)+".pkl" 
-            feat_path = "../../graph_vis_data/features_"+str(i)+".pkl"
-            label_path = "../../graph_vis_data/labels_"+str(i)+".pkl"
+            dist, inds, connection_pairs = self.connection_calc(features[i, :, :],region_labels[i], graph_method, topk = topk)
+            connect_path = experiment_folder+"/connection_pairs_"+str(i)+".pkl"
+            feat_path = experiment_folder+"/features_"+str(i)+".pkl"
+            label_path =experiment_folder+"/labels_"+str(i)+".pkl"
             with open(connect_path, "wb") as file:
                 pickle.dump(connection_pairs, file)
                 
@@ -183,11 +188,3 @@ class GraphConstructor():
             adj_mat = self.mk_adj_mat(num_features, connection_pairs)
             adj_matricies.append(adj_mat)
         return adj_matricies
-    def sparse_mx_to_torch_sparse_tensor(self, sparse_mx): #FIXME move to utils
-        """Convert a scipy sparse matrix to a torch sparse tensor."""
-        sparse_mx = sparse_mx.tocoo().astype(np.float32)
-        indices = torch.from_numpy(
-            np.vstack((sparse_mx.row, sparse_mx.col)).astype(np.int64))
-        values = torch.from_numpy(sparse_mx.data)
-        shape = torch.Size(sparse_mx.shape)
-        return torch.sparse.FloatTensor(indices, values, shape)

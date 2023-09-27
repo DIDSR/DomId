@@ -53,7 +53,7 @@ class TrainerCluster(AbstractTrainer):
             self.graph_method =args.graph_method
         assert self.graph_method, "Graph calculation methos should be specified"
         print('Graph calculation method is', self.graph_method)  
-        self.adj_matricies = GraphConstructor().construct_graph(self.loader_tr, self.graph_method) #.to(self.device)
+        self.adj_matricies = GraphConstructor().construct_graph(self.loader_tr, self.graph_method, self.storage.experiment_name) #.to(self.device)
         self.model.adj =  self.sparse_mx_to_torch_sparse_tensor(self.adj_matricies[0])
         
         
