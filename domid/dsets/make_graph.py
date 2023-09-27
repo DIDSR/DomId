@@ -11,14 +11,22 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import pickle
 
-class GraphConstructor():        
-    def parse_name(self, name):
-        sub_num = name.split('-')[1]
-        region = name.split('_')[-3]
-        return sub_num+'_'+region
-        
+class GraphConstructor():
+    """
+    Class to construct graph from features. This is only used in training for SDCN model.
+    """
+    # def parse_name(self, name):
+    #     sub_num = name.split('-')[1]
+    #     region = name.split('_')[-3]
+    #     return sub_num+'_'+region
+    #
         
     def get_features_labels(self, dataset):
+        """
+        This funciton is used to get features and labels from dataset.
+        :param dataset: Image dataset that can be batched or unbatched
+        :return: X: features from the image (flattened images), labels: domain labels, region_labels: region labels if the dataset is WSI images
+        """
         num_batches = len(dataset)
         num_img,i_c, i_w, i_h =next(iter(dataset))[0].shape
         X = torch.zeros((num_batches, num_img, i_c * i_w * i_h))
@@ -41,7 +49,11 @@ class GraphConstructor():
 
         return X.type(torch.float32), labels.type(torch.int32), region_labels
     def normalize(self, mx): #FIXME move to utils
-        """Row-normalize sparse matrix"""
+        """
+        Row-normalize sparse matrix which is used to calculate the distance for normalized cosine method.
+        :param mx: sparse matrix
+        :return: row-normalized sparse matrix
+        """
         rowsum = np.array(mx.sum(1))
         r_inv = np.power(rowsum, -1).flatten()
         r_inv[np.isinf(r_inv)] = 0.
@@ -50,6 +62,13 @@ class GraphConstructor():
         return mx
     
     def distance_calc(self, features, graph_method, coordinates=None):
+        """
+        This function is used to calculate distance between features.
+        :param features: the batch of features from the dataset
+        :param graph_method: the method to calculate distance between features
+        :param coordinates: if the image(patch in the batch) has the coordinates specified, then the distance between can be calculated based on the coordinates
+        :return: distance matrix between features of the batch of images with the shape of (num_img, num_img)
+        """
         if graph_method == 'heat':
             dist = -0.5 * pair(features) ** 2
             dist = np.exp(dist)
@@ -73,18 +92,23 @@ class GraphConstructor():
     
     
     def connection_calc(self, features, labels, region_labels,graph_method, topk=7):
+        """
+        This function is used to calculate the connection pairs between images for all the batches of dataset.
+        :param features: flattened image from the batch of dataset
+        :param labels: domain labels of the batch of dataset
+        :param region_labels: if dataset contains spacial information between images, then the region labels can be used to calculate the distance between images
+        :param graph_method: graph method to calculate the distance between images
+        :param topk: number of connections per image
+        :return: indecies of top k connections per each image in the batch (shape: (num_img*topk, 2))
+        """
         dist = []
         if len(region_labels)>0:
-            # region_labels = np.array(region_labels)
-            # sorted_indices = np.argsort(region_labels)
-            # features = features[sorted_indices, :]
-            # labels = labels[sorted_indices, :]
-            # region_labels = region_labels[sorted_indices]
+            # if WSI dataset, then split the features into number of regions per batch
             coordinates = [[reg_lab.split('_')[-2][2:],reg_lab.split('_')[-1][:-4]] for reg_lab in region_labels]
-            features=np.array_split(features, 3)    
+            features=np.array_split(features, 3)    #FIXME 3 is the number of regions per batch (we are not connecting between regions)
             coordinates = np.array_split(coordinates,3)
             for feat,coord in zip(features, coordinates):
-                d = self.distance_calc(feat, graph_method, coord)
+                d = self.distance_calc(feat, graph_method, coord) #within each region calculate distance between patches
                 dist.append(d)
         else:
             dist.append(self.distance_calc(features))
@@ -105,9 +129,6 @@ class GraphConstructor():
                     pass
                 else:
                     connection_pairs.append([i, vv])
-                    
-                    
- 
         return dist, inds, connection_pairs
     def mk_adj_mat(self, n, connection_pairs):
  
@@ -129,35 +150,20 @@ class GraphConstructor():
         adj = self.normalize(adj)
         return adj
     
-    def plot_graph(self, edges, labels, bs):
-        
-        num_nodes = len(edges)
-        
-        # for i in range(num_nodes):
-        #     for j in range(i + 1, num_nodes):  # Exclude diagonal and symmetric entries
-        #         if adjacency_matrix[i, j] != 0:
-        #             edges.append((i, j))
-        ed= [(edge[0], edge[1]) for edge in edges]
-        #labels = {0: '0', 1: '1', 2: '2', 3: '3', 4:'4', 5:'5', 6:'6'}
-        labels_color= {0:'blue', 1:'navy', 2:'green',3:'yellow', 4:'orange', 5: 'peach' }
-        graph = nx.Graph(ed)
-        node_colors = [labels_color[labels[node]] if labels[node]>1 else 'purple' for node in graph.nodes()]
-        pos = nx.spring_layout(graph)  # Specify the layout for node positions
-        nx.draw_networkx(graph, pos=pos, node_color=node_colors, with_labels=True)
-        plt.show()
-        plt.savefig("../../graph_bs_"+str(bs)+".png")
-        plt.close()
 
-
-    
     def construct_graph(self, dataset, graph_method):
+        """
+        This function is used to construct the graph for all the batches of dataset. This is called in the trainer function of SDCN model.
+        :param dataset: dataset contraining all the batches of data (or no batched data)
+        :param graph_method: graph construction method
+        :return: the adjacency matrix for all the batches of data
+        """
         
         adj_matricies = []
         features, labels, region_labels = self.get_features_labels(dataset)
         batch_num = features.shape[0]
         num_features =  features.shape[1]
-        #distance_batches = np.zeros((batch_num, num_features, num_features))
-        topk = 7
+        topk = 7 #topk connections for each image
 
         for i in range(0, batch_num):
             dist, inds, connection_pairs = self.connection_calc(features[i, :, :], labels[i, :],region_labels[i], graph_method, topk = topk)
@@ -176,16 +182,6 @@ class GraphConstructor():
 
             adj_mat = self.mk_adj_mat(num_features, connection_pairs)
             adj_matricies.append(adj_mat)
-#             pdb.set_trace()
-#             self.plot_graph(connection_pairs, labels[i, :], i)
-            
-            
-
-       
-        #adj = self.sparse_mx_to_torch_sparse_tensor(adj)
-        # # f.close()
-        # print(counter)
-        # print('error rate: {}'.format(counter / (num_features * topk)))
         return adj_matricies
     def sparse_mx_to_torch_sparse_tensor(self, sparse_mx): #FIXME move to utils
         """Convert a scipy sparse matrix to a torch sparse tensor."""
@@ -195,71 +191,3 @@ class GraphConstructor():
         values = torch.from_numpy(sparse_mx.data)
         shape = torch.Size(sparse_mx.shape)
         return torch.sparse.FloatTensor(indices, values, shape)
-    def load_graph(self, dataset='usps_custom'): #FIXME create a grpah for the dataset? and move to utils
-
-        path = '../graph/{}_graph.txt'.format(dataset)
-
-        data = np.loadtxt('../data/{}.txt'.format(dataset))
-
-
-        return adj
-
-'''
-f = h5py.File('data/usps.h5', 'r')
-train = f.get('train')
-test = f.get('test')
-X_tr = train.get('data')[:]
-y_tr = train.get('target')[:]
-X_te = test.get('data')[:]
-y_te = test.get('target')[:]
-f.close()
-usps = np.concatenate((X_tr, X_te)).astype(np.float32)
-label = np.concatenate((y_tr, y_te)).astype(np.int32)
-'''
-
-'''
-hhar = np.loadtxt('data/hhar.txt', dtype=float)
-label = np.loadtxt('data/hhar_label.txt', dtype=int)
-'''
-#
-# reut = np.loadtxt('data/reut.txt', dtype=float)
-# label = np.loadtxt('data/reut_label.txt', dtype=int)
-
-# from domid.dsets.dset_usps import DsetUSPS
-# from domid.tasks.task_usps import NodeTaskUSPS
-# from domid.arg_parser import parse_cmd_args
-# breakpoint()
-#
-# from domainlab.arg_parser import mk_parser_main
-# parser = mk_parser_main()
-# args = parser.parse_args(["--tr_d", "1", "2","3", "4", "5", "6", "7", "8", "9", "--dpath", "zout", "--split", "0.8"])
-#
-# node = NodeTaskUSPS()
-# trans = [transforms.Resize((16, 16)), transforms.ToTensor()]
-# digit = int(args.tr_d[0])
-# dset = DsetUSPS(digit= digit, args = args, list_transforms=trans)
-# digit_inds = dset.get_original_indicies()
-#
-# #dataset = datasets.USPS(root=dpath, train=True, download=True, transform=None)
-# features = dataset.data
-# features = torch.tensor(features, dtype=torch.float32)
-# rgb_tensor= torch.stack([features] * 3, dim=1)
-# flattened_features = rgb_tensor.reshape(rgb_tensor.shape[0],rgb_tensor.shape[1]*rgb_tensor.shape[2]*rgb_tensor.shape[3])
-#
-# print(flattened_features.shape)
-# labels = dataset.targets
-# construct_graph(flattened_features, labels, 'ncos')
-#
-# features_file_path = "../data/usps_custom.txt"
-#
-# # Write the flattened features to the file
-# with open(features_file_path, 'w') as file:
-#     for feature in flattened_features:
-#         file.write(' '.join([str(value.item()) for value in feature]) + '\n')
-#
-# labels_path = "../data/usps_custom_labels.txt"
-#
-# # Write the flattened features to the file
-# with open(labels_path, 'w') as labels_file:
-#     for label in labels:
-#         labels_file.write(str(label) + '\n')
