@@ -68,6 +68,16 @@ class ModelSDCN(AModelCluster):
 
 
         self.gnn_model = GNN(n_input, n_enc_1, n_enc_2, n_enc_3, n_z, n_clusters)
+        
+        if torch.cuda.device_count() > 1:  # Check if multiple GPUs are available
+            print("Using DataParallel with {} GPUs.".format(torch.cuda.device_count()))
+            #self.gnn_model = torch.nn.DataParallel(self.gnn_model)  # Wrap the model for DataParallel
+            self.encoder = torch.nn.DataParallel(self.encoder)
+            self.decoder = torch.nn.DataParallel(self.decoder)
+            
+        else:
+            print("Using a single GPU.")
+            #self.gnn_model.to(device)
 
         self.v = 1.0
         self.counter= 0

@@ -11,6 +11,8 @@ from domid.trainers.pretraining_KMeans import Pretraining
 from domid.trainers.pretraining_sdcn import Pretraining
 from domid.utils.perf_cluster import PerfCluster
 from domid.dsets.make_graph import GraphConstructor
+import torch.nn.parallel
+import torch.distributed as dist
 class TrainerCluster(AbstractTrainer):
     def __init__(self, model, task, observer, device, writer, pretrain=True, aconf=None):
         """
@@ -25,6 +27,8 @@ class TrainerCluster(AbstractTrainer):
 
         super().__init__()
         super().init_business(model, task, observer, device, aconf)
+        
+
         print(model)
         self.pretrain = pretrain
         self.pretraining_finished = not self.pretrain
@@ -103,6 +107,7 @@ class TrainerCluster(AbstractTrainer):
                 if len(inject_tensor) > 0:
                     inject_tensor = inject_tensor.to(self.device)
             print('i_' + str(i), vec_y.argmax(dim=1).unique(), vec_d.argmax(dim=1).unique())
+            
             tensor_x, vec_y, vec_d = (
                 tensor_x.to(self.device),
                 vec_y.to(self.device),
