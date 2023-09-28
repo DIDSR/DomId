@@ -35,8 +35,8 @@ class DsetWEAH(Dataset):
         self.total_imgs = len(self.images)
         self.path_to_domain = path_to_domain
         self.d_dim = args.d_dim
-   
         self.df = pd.read_csv(args.meta_data_csv)
+        print('the data is loading from the csv:', args.meta_data_csv)
 
     def __len__(self):
         return len(self.images)
@@ -61,7 +61,6 @@ class DsetWEAH(Dataset):
         # A_FDA, A_NIH, H1, H2
 
         # print(p.read_csv('../dset_WEAH.csv'))
-    
         resp_label = int(self.df.loc[self.df['path'] == self.images[idx]]['resp'])
         cah_label = int(self.df.loc[self.df['path'] == self.images[idx]]['ann'])
 

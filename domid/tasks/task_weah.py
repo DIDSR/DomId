@@ -58,7 +58,7 @@ class NodeTaskWEAH(NodeTaskDictCluster):
         # the split ratio
         dpath = args.dpath  # png_files/32, 16))]  # , transforms.ToTensor()]
         ind_global = self.get_list_domains().index(na_domain)
-        df = pd.read_csv('../../dset_WEAH.csv')
+        df = pd.read_csv(args.meta_data_csv)
         mask = df[df['subject']==ind_global]
         #mask = df['resp'].values == ind_global  # response (0 o 1)
         img_paths = np.array(mask['path'])  # [:400]

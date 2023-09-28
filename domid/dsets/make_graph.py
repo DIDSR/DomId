@@ -10,6 +10,7 @@ import scipy.sparse as sp
 import networkx as nx
 import matplotlib.pyplot as plt
 import pickle
+import os
 
 class GraphConstructor():
     """
@@ -103,9 +104,11 @@ class GraphConstructor():
         dist = []
         if len(region_labels)>0:
             # if WSI dataset, then split the features into number of regions per batch
+            region_names = [reg_lab.split('_')[0] for reg_lab in region_labels]
+            num_regions = len(set(region_names))
             coordinates = [[reg_lab.split('_')[-2][2:],reg_lab.split('_')[-1][:-4]] for reg_lab in region_labels]
-            features=np.array_split(features, 3)    #FIXME 3 is the number of regions per batch (we are not connecting between regions)
-            coordinates = np.array_split(coordinates,3)
+            features=np.array_split(features, num_regions)    #FIXME 3 is the number of regions per batch (we are not connecting between regions)
+            coordinates = np.array_split(coordinates,num_regions)
             for feat,coord in zip(features, coordinates):
                 d = self.distance_calc(feat, graph_method, coord) #within each region calculate distance between patches
                 dist.append(d)
@@ -172,17 +175,18 @@ class GraphConstructor():
 
         for i in range(0, batch_num):
             dist, inds, connection_pairs = self.connection_calc(features[i, :, :],region_labels[i], graph_method, topk = topk)
-            connect_path = experiment_folder+"/connection_pairs_"+str(i)+".pkl"
-            feat_path = experiment_folder+"/features_"+str(i)+".pkl"
-            label_path =experiment_folder+"/labels_"+str(i)+".pkl"
-            with open(connect_path, "wb") as file:
-                pickle.dump(connection_pairs, file)
-                
-            with open(feat_path, "wb") as file:
-                pickle.dump(features[i, :, :], file)
-                
-            with open(label_path, "wb") as file:
-                pickle.dump(labels[i, :], file)
+#             try:
+#                 connect_path = os.path.join('../notebooks/', experiment_folder)+"/connection_pairs_"+str(i)+".pkl"
+#                 feat_path = os.path.join('../notebooks/', experiment_folder)+"/features_"+str(i)+".pkl"
+#                 label_path = os.path.join('../notebooks/',experiment_folder)+"/labels_"+str(i)+".pkl"
+#                 with open(connect_path, "wb") as file:
+#                     pickle.dump(connection_pairs, file)
+
+#                 with open(feat_path, "wb") as file:
+#                     pickle.dump(features[i, :, :], file)
+
+#                 with open(label_path, "wb") as file:
+#                     pickle.dump(labels[i, :], file)
             
 
             adj_mat = self.mk_adj_mat(num_features, connection_pairs)
