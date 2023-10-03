@@ -175,18 +175,17 @@ class GraphConstructor():
 
         for i in range(0, batch_num):
             dist, inds, connection_pairs = self.connection_calc(features[i, :, :],region_labels[i], graph_method, topk = topk)
-#             try:
-#                 connect_path = os.path.join('../notebooks/', experiment_folder)+"/connection_pairs_"+str(i)+".pkl"
-#                 feat_path = os.path.join('../notebooks/', experiment_folder)+"/features_"+str(i)+".pkl"
-#                 label_path = os.path.join('../notebooks/',experiment_folder)+"/labels_"+str(i)+".pkl"
-#                 with open(connect_path, "wb") as file:
-#                     pickle.dump(connection_pairs, file)
+            connect_path = os.path.join('notebooks/', experiment_folder)+"/connection_pairs_"+str(i)+".pkl"
+            feat_path = os.path.join('notebooks/', experiment_folder)+"/features_"+str(i)+".pkl"
+            label_path = os.path.join('notebooks/',experiment_folder)+"/labels_"+str(i)+".pkl"
+            with open(connect_path, "wb") as file:
+                pickle.dump(connection_pairs, file)
 
-#                 with open(feat_path, "wb") as file:
-#                     pickle.dump(features[i, :, :], file)
+            with open(feat_path, "wb") as file:
+                pickle.dump(features[i, :, :], file)
 
-#                 with open(label_path, "wb") as file:
-#                     pickle.dump(labels[i, :], file)
+            with open(label_path, "wb") as file:
+                pickle.dump(labels[i, :], file)
             
 
             adj_mat = self.mk_adj_mat(num_features, connection_pairs)

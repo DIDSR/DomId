@@ -24,6 +24,13 @@ class Storing():
 
         self.experiment_name = str(datetime.datetime.now()) + "_"  + str(args.task) + "_" + str(args.aname)
         self.last_epoch = args.epos
+        ex_path = "./notebooks/" + self.experiment_name
+        if not os.path.exists("./notebooks/"+self.experiment_name):
+            print('______Created directory to save result_________')
+
+            os.mkdir(ex_path)
+            df = pd.DataFrame(columns=['epoch','loss', 'accuracy_y','accuracy_d', 'val_loss','val_accuracy_y','val_accuracy_d'])
+            df.to_csv(os.path.join(ex_path, 'losses_accuracies.csv'), index=False)
 
 
     def storing(self, epoch, acc_tr_y,acc_tr_d, loss_tr, acc_val_y, acc_val_d, loss_val, r_score_tr, r_score_te):
@@ -43,16 +50,7 @@ class Storing():
         self.r_scores_tr.append(r_score_tr)
         self.r_scores_te.append(r_score_te)
 
-        ex_path = "./notebooks/" + self.experiment_name
-        if not os.path.exists("./notebooks/"+self.experiment_name):
-            print('______Created directory to save result_________')
-
-            os.mkdir(ex_path)
-            df = pd.DataFrame(columns=['epoch','loss', 'accuracy_y','accuracy_d', 'val_loss','val_accuracy_y','val_accuracy_d'])
-            df.to_csv(os.path.join(ex_path, 'losses_accuracies.csv'), index=False)
-
-
-
+        
         df = pd.read_csv(os.path.join(ex_path, 'losses_accuracies.csv'))
         saving_dir = os.path.join("./notebooks",self.experiment_name)
         loss_acc_df = pd.DataFrame({'epoch': epoch, 'loss': loss_tr,'accuracy_y': acc_tr_y, 'accuracy_d':acc_tr_d,
