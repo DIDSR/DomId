@@ -53,3 +53,14 @@ CUDA_VISIBLE_DEVICES=2 python main_out.py --te_d 0 --tr_d 0 1 2 3 4 5 6 7 8 9 --
 ```
 Sample path to generated csv file: ```../../WashU_with_coord/dset_WEAH.csv ```, ```../../WashU_with_coord/dset_WEAH_65_subjects_3_regions.csv ```
 Sample paths to pretrained AEs: ```./notebooks/2023-06-30 10:38:27.253550_weah_ae/```, ```./notebooks/2023-07-05 12:18:40.078628_weah_ae/ ```
+
+
+* VADE training:
+```
+CUDA_VISIBLE_DEVICES=2 python main_out.py --te_d 0 --tr_d 0 1 2 --task=weah --epos=50 --aname=vade --zd_dim=500 --d_dim=6 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=17 --dpath "../../WashU_with_coord/combined_training_with_coords" --bs 4 --prior Gaus --model cnn --lr 0.0001 --tr_d_range 0 65 --meta_data_csv '../../WashU_with_coord/dset_WEAH_65_subjects_3_regions.csv'
+```
+* DEC training: 
+```
+CUDA_VISIBLE_DEVICES=2 python main_out.py --te_d 0 --tr_d 0 1 2 --task=weah --epos=50 --aname=dec --zd_dim=500 --d_dim=6 --apath=domid/algos/builder_dec.py --L=5 --pre_tr=2 --dpath "../../WashU_with_coord/combined_training_with_coords" --bs 4 --prior Gaus --model cnn --lr 0.0001 --tr_d_range 0 6 --meta_data_csv '../../WashU_with_coord/dset_WEAH_65_subjects_3_regions.csv' --pre_tr_weight_path './notebooks/2023-06-30 10:38:27.253550_weah_ae/' --feat_extract ae
+```
+Note: ```--feat_extract``` can be eitther ae of vae, option for loading pretrained weights also in place. 
