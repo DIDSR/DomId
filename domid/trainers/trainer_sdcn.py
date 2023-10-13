@@ -11,8 +11,10 @@ from domid.trainers.pretraining_KMeans import Pretraining
 from domid.trainers.pretraining_sdcn import Pretraining
 from domid.utils.perf_cluster import PerfCluster
 from domid.dsets.make_graph import GraphConstructor
+from domid.dsets.make_graph_a import GraphConstructorA
 import torch.nn.parallel
 import torch.distributed as dist
+
 class TrainerCluster(AbstractTrainer):
     def __init__(self, model, task, observer, device, writer, pretrain=True, aconf=None):
         """
@@ -57,9 +59,15 @@ class TrainerCluster(AbstractTrainer):
             self.graph_method =args.graph_method
         assert self.graph_method, "Graph calculation methos should be specified"
         print('Graph calculation method is', self.graph_method)  
-        self.adj_matricies = GraphConstructor().construct_graph(self.loader_tr, self.graph_method, self.storage.experiment_name) #.to(self.device)
-        self.model.adj =  self.sparse_mx_to_torch_sparse_tensor(self.adj_matricies[0])
-        
+        #Initializing GNN with a sample graph and calculating all the graphs is needed for all of the batches
+        if self.args.task!='weah':
+            self.adj_matricies = GraphConstructor().construct_graph(self.loader_tr, self.graph_method, self.storage.experiment_name) #.to(self.device)
+            self.model.adj =  self.sparse_mx_to_torch_sparse_tensor(self.adj_matricies[0])
+        else:
+            self.graph_constr= GraphConstructorA()
+            init_gnn_adj_mat = self.graph_constr.construct_graph(next(iter(self.loader_tr))[0][:int(self.args.bs/3), :,:, :],next(iter(self.loader_tr))[-1][:int(self.args.bs/3)], self.graph_method, self.storage.experiment_name)
+            self.model.adj =  self.sparse_mx_to_torch_sparse_tensor(init_gnn_adj_mat)
+            
         
     def sparse_mx_to_torch_sparse_tensor(self, sparse_mx): #FIXME move to utils
         """Convert a scipy sparse matrix to a torch sparse tensor."""
@@ -97,8 +105,13 @@ class TrainerCluster(AbstractTrainer):
             self.warmup_beta = self.warmup_beta + 0.01
         # _____________one training epoch: start_______________________
         for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
-            
-            self.model.adj =  self.sparse_mx_to_torch_sparse_tensor(self.adj_matricies[i])#.to(self.device)
+            if self.args.task == 'weah':
+                patches_idx = torch.randint(0, len(vec_y), (int(self.args.bs/3),))
+                tensor_x = tensor_x[patches_idx, :, :, :]
+                self.model.adj = self.graph_constr.construct_graph(tensor_x, other_vars[1], self.graph_method, self.storage.experiment_name)
+                
+            else:
+                self.model.adj =  self.sparse_mx_to_torch_sparse_tensor(self.adj_matricies[i])#.to(self.device)
             if i==0:
                 self.model.batch_zero = True
 
