@@ -105,13 +105,7 @@ class TrainerCluster(AbstractTrainer):
             self.warmup_beta = self.warmup_beta + 0.01
         # _____________one training epoch: start_______________________
         for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
-            if self.args.task == 'weah':
-                patches_idx = torch.randint(0, len(vec_y), (int(self.args.bs/3),))
-                tensor_x = tensor_x[patches_idx, :, :, :]
-                self.model.adj = self.graph_constr.construct_graph(tensor_x, other_vars[1], self.graph_method, self.storage.experiment_name)
-                
-            else:
-                self.model.adj =  self.sparse_mx_to_torch_sparse_tensor(self.adj_matricies[i])#.to(self.device)
+        
             if i==0:
                 self.model.batch_zero = True
 
@@ -119,6 +113,18 @@ class TrainerCluster(AbstractTrainer):
                 inject_tensor, image_id = other_vars
                 if len(inject_tensor) > 0:
                     inject_tensor = inject_tensor.to(self.device)
+            if self.args.task == 'weah':
+                patches_idx = torch.randint(0, len(vec_y), (int(self.args.bs/3),))
+                tensor_x = tensor_x[patches_idx, :, :, :]
+                vec_y = vec_y[patches_idx]
+                vec_d = vec_d[patches_idx]
+                inject_tensor =inject_tensor[patches_idx]
+                image_id =image_id[patches_idx]
+                
+                self.model.adj = self.graph_constr.construct_graph(tensor_x, other_vars[1], self.graph_method, self.storage.experiment_name)
+                
+            else:
+                self.model.adj =  self.sparse_mx_to_torch_sparse_tensor(self.adj_matricies[i])#.to(self.device)
             print('i_' + str(i), vec_y.argmax(dim=1).unique(), vec_d.argmax(dim=1).unique())
             
             tensor_x, vec_y, vec_d = (
@@ -126,6 +132,7 @@ class TrainerCluster(AbstractTrainer):
                 vec_y.to(self.device),
                 vec_d.to(self.device),
             )
+            
             self.optimizer.zero_grad()
 
             # __________________Pretrain/ELBO loss____________
