@@ -89,6 +89,11 @@ class ModelSDCN(AModelCluster):
         self.kl_loss_running = 0
         self.re_loss_running = 0
         self.ce_loss_running = 0
+        
+        if args.task=='weah':
+            self.random_ind = [torch.randint(0, 900, (300, )) for i in range(0, 65)]
+        else:
+            self.random_ind = []
 
 
     def distance_between_clusters(self, cluster_layer):

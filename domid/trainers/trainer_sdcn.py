@@ -114,17 +114,18 @@ class TrainerCluster(AbstractTrainer):
                 if len(inject_tensor) > 0:
                     inject_tensor = inject_tensor.to(self.device)
             if self.args.task == 'weah':
-                patches_idx = torch.randint(0, len(vec_y), (int(self.args.bs/3),))
+                patches_idx = self.model.random_ind[i] #torch.randint(0, len(vec_y), (int(self.args.bs/3),))
                 tensor_x = tensor_x[patches_idx, :, :, :]
-                vec_y = vec_y[patches_idx]
-                vec_d = vec_d[patches_idx]
-                inject_tensor =inject_tensor[patches_idx]
-                image_id =image_id[patches_idx]
+                vec_y = vec_y[patches_idx, :]
+                vec_d = vec_d[patches_idx, :]
+                image_id =[image_id[patch_idx_num] for patch_idx_num in patches_idx]
                 
-                self.model.adj = self.graph_constr.construct_graph(tensor_x, other_vars[1], self.graph_method, self.storage.experiment_name)
+                self.model.adj = self.graph_constr.construct_graph(tensor_x, image_id, self.graph_method, self.storage.experiment_name)
                 
             else:
                 self.model.adj =  self.sparse_mx_to_torch_sparse_tensor(self.adj_matricies[i])#.to(self.device)
+                
+            
             print('i_' + str(i), vec_y.argmax(dim=1).unique(), vec_d.argmax(dim=1).unique())
             
             tensor_x, vec_y, vec_d = (
@@ -206,7 +207,8 @@ class TrainerCluster(AbstractTrainer):
             tensor_x,
             inject_tensor,
         other_info = (kl_total, ce_total, re_total))
-
+        if self.args.task=='weah':
+            self.model.random_ind = [torch.randint(0, 900, (300, )) for i in range(0, 65)]
 
         # _____storing results and Z space__________
         self.storage.storing(epoch, acc_tr_y, acc_tr_d, self.epo_loss_tr, acc_val_y, acc_val_d, loss_val,
