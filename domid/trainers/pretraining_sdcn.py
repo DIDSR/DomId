@@ -1,6 +1,7 @@
 import torch
 import numpy as np
 from sklearn.cluster import KMeans
+from domid.dsets.make_graph_a import GraphConstructorA
 class Pretraining():
     def __init__(self, model, device, loader_tr, loader_val, i_h, i_w, args):
         """
@@ -27,17 +28,28 @@ class Pretraining():
 
         self.model.encoder.load_state_dict(torch.load(path+'encoder.pt'))
         self.model.decoder.load_state_dict(torch.load(path+'decoder.pt'))
+    
+    def sparse_mx_to_torch_sparse_tensor(self, sparse_mx): #FIXME move to utils
+        """Convert a scipy sparse matrix to a torch sparse tensor."""
+        sparse_mx = sparse_mx.tocoo().astype(np.float32)
+        indices = torch.from_numpy(
+            np.vstack((sparse_mx.row, sparse_mx.col)).astype(np.int64))
+        values = torch.from_numpy(sparse_mx.data)
+        shape = torch.Size(sparse_mx.shape)
+        return torch.sparse.FloatTensor(indices, values, shape)
 
 
         #return weights_encoder, weights_decoder
     def kmeans_cluster_assignement(self):
         num_img = len(self.loader_tr.dataset)
+        if self.args.task == 'weah':
+            num_img = 300 #int(num_img/3)
         Z = np.zeros((num_img, self.model.zd_dim))
         X_pro = torch.zeros((num_img, 1*self.i_h*self.i_w ))
         X = torch.zeros((num_img, 1*self.i_h*self.i_w ))
         counter = 0
         with torch.no_grad():
-            for tensor_x, vec_y, vec_d, *other_vars in self.loader_tr:
+            for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
                 if len(other_vars) > 0:
                     inject_tensor, image_id = other_vars
                     if len(inject_tensor) > 0:
@@ -48,12 +60,16 @@ class Pretraining():
                     vec_y.to(self.device),
                     vec_d.to(self.device),
                 )
-
+                if self.args.task == 'weah':
+                    patches_idx = self.model.random_ind[i] #torch.randint(0, len(vec_y), (int(self.args.bs/3),))
+                    tensor_x = tensor_x[patches_idx, :, :, :]
+                    vec_y = vec_y[patches_idx, :]
+                    vec_d = vec_d[patches_idx, :]
+                    image_id =[image_id[patch_idx_num] for patch_idx_num in patches_idx]
+                    self.model.adj = self.sparse_mx_to_torch_sparse_tensor(GraphConstructorA().construct_graph(tensor_x, image_id, self.model.graph_method, None))
                 preds, z_mu, z, log_sigma2_c, probs, x_pro= self.model.infer_d_v_2(tensor_x, inject_tensor)
                 z_ = z.detach().cpu().numpy()  # [batch_size, zd_dim]
                 Z[counter:counter + z.shape[0], :] = z_
-
-
 
 
         kmeans = KMeans(n_clusters=self.args.d_dim, n_init=20)

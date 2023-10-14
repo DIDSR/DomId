@@ -90,8 +90,15 @@ class ModelSDCN(AModelCluster):
         self.re_loss_running = 0
         self.ce_loss_running = 0
         
+        if 'mnist' in self.args.task:
+            self.graph_method = 'heat'
+        if 'weah' in self.args.task:
+            self.graph_method = 'patch_distance'
+        if self.args.graph_method is not None:
+            self.graph_method =args.graph_method
+        
         if args.task=='weah':
-            self.random_ind = [torch.randint(0, 900, (300, )) for i in range(0, 65)]
+            self.random_ind = [torch.randint(0, self.args.bs, (int(self.args.bs/3), )) for i in range(0, 65)]
         else:
             self.random_ind = []
 
@@ -106,6 +113,7 @@ class ModelSDCN(AModelCluster):
 
 
     def _inference(self, x, inject_tensor=None):
+        #import pdb; pdb.set_trace()
         if self.args.model == "linear":
             x = torch.reshape(x, (x.shape[0], x.shape[1]*x.shape[2]*x.shape[3]))
         enc_h1, enc_h2, enc_h3, z = self.encoder(x)
@@ -171,6 +179,7 @@ class ModelSDCN(AModelCluster):
         """
         Used for tensorboard visualizations only.
         """
+        #import pdb; pdb.set_trace()
         results = self._inference(x)
         if len(inject_domain) > 0:
             

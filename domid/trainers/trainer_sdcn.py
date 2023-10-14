@@ -51,12 +51,8 @@ class TrainerCluster(AbstractTrainer):
         self.storage = Storing(self.args)
         self.loader_val = task.loader_tr
         self.aname = aconf.aname
-        if 'mnist' in self.args.task:
-            self.graph_method = 'heat'
-        if 'weah' in self.args.task:
-            self.graph_method = 'patch_distance'
-        if self.args.graph_method is not None:
-            self.graph_method =args.graph_method
+        self.graph_method = self.model.graph_method
+            
         assert self.graph_method, "Graph calculation methos should be specified"
         print('Graph calculation method is', self.graph_method)  
         #Initializing GNN with a sample graph and calculating all the graphs is needed for all of the batches
@@ -120,7 +116,7 @@ class TrainerCluster(AbstractTrainer):
                 vec_d = vec_d[patches_idx, :]
                 image_id =[image_id[patch_idx_num] for patch_idx_num in patches_idx]
                 
-                self.model.adj = self.graph_constr.construct_graph(tensor_x, image_id, self.graph_method, self.storage.experiment_name)
+                self.model.adj = self.sparse_mx_to_torch_sparse_tensor(self.graph_constr.construct_graph(tensor_x, image_id, self.graph_method, self.storage.experiment_name))
                 
             else:
                 self.model.adj =  self.sparse_mx_to_torch_sparse_tensor(self.adj_matricies[i])#.to(self.device)
@@ -184,6 +180,15 @@ class TrainerCluster(AbstractTrainer):
                 inject_tensor_val, img_id_val = other_vars
                 if len(inject_tensor_val) > 0:
                     inject_tensor_val = inject_tensor_val.to(self.device)
+            if self.args.task == 'weah':
+                patches_idx = self.model.random_ind[i] #torch.randint(0, len(vec_y), (int(self.args.bs/3),))
+                tensor_x_val = tensor_x_val[patches_idx, :, :, :]
+                vec_y_val = vec_y_val[patches_idx, :]
+                vec_d_val = vec_d_val[patches_idx, :]
+                img_id_val =[img_id_val[patch_idx_num] for patch_idx_num in patches_idx]
+                
+                self.model.adj = self.sparse_mx_to_torch_sparse_tensor(self.graph_constr.construct_graph(tensor_x_val, img_id_val, self.graph_method, self.storage.experiment_name))
+
             tensor_x_val, vec_y_val, vec_d_val = (
                 tensor_x_val.to(self.device),
                 vec_y_val.to(self.device),
