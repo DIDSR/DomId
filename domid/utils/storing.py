@@ -71,7 +71,6 @@ class Storing():
         
         
         #exp_path =os.path.join("./notebooks/",self.experiment_name)
-        import pdb; pdb.set_trace()
         np.save(os.path.join(self.ex_path, "Z_space.npy"), Z)
         pickle.dump(Z, open(os.path.join(self.ex_path, "Z_space_picle.p"), 'wb'))
 

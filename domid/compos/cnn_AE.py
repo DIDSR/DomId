@@ -17,6 +17,7 @@ class ConvolutionalEncoder(nn.Module):
         :param k: list of kernel sizes for each convolutional layer
         """
         super(ConvolutionalEncoder, self).__init__()
+        self.num_filters = num_filters
         self.conv_block1 = nn.Conv2d(num_channels, num_filters[0], k[0],stride=2, padding=1)   
         self.conv_block2 = nn.Conv2d(num_filters[0], num_filters[1], k[1],stride=2, padding=1) 
         self.conv_block3 = nn.Conv2d(num_filters[1], num_filters[2], k[2], stride=2,padding=1)
@@ -31,8 +32,10 @@ class ConvolutionalEncoder(nn.Module):
         self.bsnorm2 = nn.BatchNorm2d(num_filters[1])
         self.bsnorm3 = nn.BatchNorm2d(num_filters[2])
         
+        
 
-    def forward(self, x, num_filters=[32, 64, 128]):
+
+    def forward(self, x):
         """
         :param x: input data
         """

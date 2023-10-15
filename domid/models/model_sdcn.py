@@ -60,7 +60,7 @@ class ModelSDCN(AModelCluster):
                 h_dim=self.encoder.h_dim,
                 num_channels=i_c
             ).to(device)
-            n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3, = int((i_w/2)**2*32), int((i_w/4)**2*64), int((i_w/8)**2*128), int((i_w/8)**2*128), int((i_w/4)**2*64), int((i_w/2)**2*32)
+            n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3, = int((i_w/2)**2*self.encoder.num_filters[0]), int((i_w/4)**2*self.encoder.num_filters[1]), int((i_w/8)**2*self.encoder.num_filters[2]), int((i_w/8)**2*self.encoder.num_filters[2]), int((i_w/4)**2*self.encoder.num_filters[1]), int((i_w/2)**2*self.encoder.num_filters[0])
             print(n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3)
 
         self.encoder.load_state_dict(torch.load(self.args.pre_tr_weight_path + 'encoder.pt', map_location=self.device))

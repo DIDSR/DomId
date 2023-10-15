@@ -63,7 +63,6 @@ class Prediction:
                     vec_y = vec_y[patches_idx, :]
                     vec_d = vec_d[patches_idx, :]
                     image_id =[image_id[patch_idx_num] for patch_idx_num in patches_idx]
-                    import pdb; pdb.set_trace()
                     self.model.adj = self.sparse_mx_to_torch_sparse_tensor(GraphConstructorA().construct_graph(tensor_x, image_id, self.model.graph_method, None))
 
                     for ii in range(0, tensor_x.shape[0]):
