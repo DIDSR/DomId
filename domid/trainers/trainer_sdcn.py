@@ -180,7 +180,7 @@ class TrainerCluster(AbstractTrainer):
                 inject_tensor_val, img_id_val = other_vars
                 if len(inject_tensor_val) > 0:
                     inject_tensor_val = inject_tensor_val.to(self.device)
-            if self.args.task == 'weah':
+            if self.args.task == 'weah' and self.args.aname=='sdcn':
                 patches_idx = self.model.random_ind[i] #torch.randint(0, len(vec_y), (int(self.args.bs/3),))
                 tensor_x_val = tensor_x_val[patches_idx, :, :, :]
                 vec_y_val = vec_y_val[patches_idx, :]
@@ -214,19 +214,19 @@ class TrainerCluster(AbstractTrainer):
         other_info = (kl_total, ce_total, re_total))
         if self.args.task=='weah':
             self.model.random_ind = [torch.randint(0, self.args.bs, (int(self.args.bs/3), )) for i in range(0, 65)]
-            import pdb; pdb.set_trace()
+
             if epoch==self.args.epos-1:
                 self.model.random_ind = [torch.range(0, int(self.args.bs/3)-1, step=1, dtype=torch.long) for i in range(0, 65)]
 
         # _____storing results and Z space__________
         self.storage.storing(epoch, acc_tr_y, acc_tr_d, self.epo_loss_tr, acc_val_y, acc_val_d, loss_val,
                              r_score_tr, r_score_te)
-        if epoch % 2 == 0:
+        if epoch % 1 == 0:
             _, z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels  = prediction.mk_prediction()
             # _, Z, domain_labels, machine_labels, image_locs = prediction.mk_prediction()
 
             self.storage.storing_z_space(z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels)
-        if epoch % 2 == 0:
+        if epoch % 1 == 0:
             self.storage.saving_model(self.model)
 
         flag_stop = self.observer.update(epoch)  # notify observer

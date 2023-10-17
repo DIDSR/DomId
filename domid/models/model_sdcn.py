@@ -98,7 +98,7 @@ class ModelSDCN(AModelCluster):
             self.graph_method =args.graph_method
         
         if args.task=='weah':
-            self.random_ind = [torch.randint(0, self.args.bs, (int(self.args.bs/3), )) for i in range(0, 65)]
+            self.random_ind = [torch.randint(0, self.args.bs, (int(self.args.bs/3), )) for i in range(0, 66)]
         else:
             self.random_ind = []
 

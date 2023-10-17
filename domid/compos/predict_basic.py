@@ -38,7 +38,7 @@ class Prediction:
         """
 
         num_img = len(self.loader_tr.dataset)  # FIXME: this returns sample size + 1 for some reason
-        if self.model.args.task == 'weah':
+        if self.model.args.task == 'weah' and self.model.args.aname=='sdcn':
             num_imgs = int(self.model.args.bs/3)
         z_proj = np.zeros((num_img, self.model.zd_dim))
         prob_proj = np.zeros((num_img, self.model.d_dim))
@@ -57,7 +57,7 @@ class Prediction:
                     inject_tensor, image_id = other_vars
                     if len(inject_tensor) > 0:
                         inject_tensor = inject_tensor.to(self.device)
-                if self.model.args.task == 'weah':
+                if self.model.args.task == 'weah' and self.model.args.aname=='sdcn':
                     patches_idx = self.model.random_ind[i] #torch.randint(0, len(vec_y), (int(self.args.bs/3),))
                     tensor_x = tensor_x[patches_idx, :, :, :]
                     vec_y = vec_y[patches_idx, :]
@@ -65,11 +65,11 @@ class Prediction:
                     image_id =[image_id[patch_idx_num] for patch_idx_num in patches_idx]
                     self.model.adj = self.sparse_mx_to_torch_sparse_tensor(GraphConstructorA().construct_graph(tensor_x, image_id, self.model.graph_method, None))
 
-                    for ii in range(0, tensor_x.shape[0]):
+                for ii in range(0, tensor_x.shape[0]):
 
-                        vec_d_labels.append(torch.argmax(vec_d[ii, :]).item())
-                        vec_y_labels.append(torch.argmax(vec_y[ii, :]).item())
-                        image_id_labels.append(image_id[ii])
+                    vec_d_labels.append(torch.argmax(vec_d[ii, :]).item())
+                    vec_y_labels.append(torch.argmax(vec_y[ii, :]).item())
+                    image_id_labels.append(image_id[ii])
 
 
 

@@ -42,8 +42,8 @@ class Pretraining():
         #return weights_encoder, weights_decoder
     def kmeans_cluster_assignement(self):
         num_img = len(self.loader_tr.dataset)
-        if self.args.task == 'weah':
-            num_img = 300 #int(num_img/3)
+        if self.args.task == 'weah' and self.args.aname=='sdcn':
+            num_img = int(self.args.bs/3) #int(num_img/3)
         Z = np.zeros((num_img, self.model.zd_dim))
         X_pro = torch.zeros((num_img, 1*self.i_h*self.i_w ))
         X = torch.zeros((num_img, 1*self.i_h*self.i_w ))
@@ -60,7 +60,7 @@ class Pretraining():
                     vec_y.to(self.device),
                     vec_d.to(self.device),
                 )
-                if self.args.task == 'weah':
+                if self.args.task == 'weah' and self.args.aname=='sdcn':
                     patches_idx = self.model.random_ind[i] #torch.randint(0, len(vec_y), (int(self.args.bs/3),))
                     tensor_x = tensor_x[patches_idx, :, :, :]
                     vec_y = vec_y[patches_idx, :]
