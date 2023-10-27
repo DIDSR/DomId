@@ -69,6 +69,7 @@ class ModelDEC(AModelCluster):
             self.decoder.load_state_dict(torch.load(self.args.pre_tr_weight_path + 'decoder.pt', map_location=self.device))
             print('AE is using pretrained weights. No need for pretraining epochs. ')
         self.log_sigma2_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
+        self.random_ind = []
 
     def target_distribution(self, q_):
         """
