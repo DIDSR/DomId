@@ -19,6 +19,8 @@ import matplotlib.pyplot as plt
 import os
 from sklearn.cluster import KMeans
 from datetime import datetime
+
+
 class ModelSDCN(AModelCluster):
     def __init__(self, zd_dim, d_dim, device, L, i_c, i_h, i_w, args):
 
@@ -67,7 +69,7 @@ class ModelSDCN(AModelCluster):
         self.decoder.load_state_dict(torch.load(self.args.pre_tr_weight_path + 'decoder.pt', map_location=self.device))
 
 
-        self.gnn_model = GNN(n_input, n_enc_1, n_enc_2, n_enc_3, n_z, n_clusters)
+        self.gnn_model = GNN(n_input, n_enc_1, n_enc_2, n_enc_3, n_z, n_clusters, device)
         
         if torch.cuda.device_count() > 1:  # Check if multiple GPUs are available
             print("Using DataParallel with {} GPUs.".format(torch.cuda.device_count()))

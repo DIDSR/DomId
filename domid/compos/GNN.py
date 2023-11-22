@@ -5,14 +5,15 @@ from torch.nn.modules.module import Module
 from domid.compos.GNN_layer import GNNLayer
 
 class GNN(Module):
-    def __init__(self, n_input, n_enc_1, n_enc_2, n_enc_3, n_z, n_clusters):
+    def __init__(self, n_input, n_enc_1, n_enc_2, n_enc_3, n_z, n_clusters, device):
         super(GNN, self).__init__()
 
-        self.gnn_1 = GNNLayer(n_input, n_enc_1)
-        self.gnn_2 = GNNLayer(n_enc_1, n_enc_2)
-        self.gnn_3 = GNNLayer(n_enc_2, n_enc_3)
-        self.gnn_4 = GNNLayer(n_enc_3, n_z)
-        self.gnn_5 = GNNLayer(n_z, n_clusters)
+        self.gnn_1 = GNNLayer(n_input, n_enc_1, device)
+        self.gnn_2 = GNNLayer(n_enc_1, n_enc_2, device)
+        self.gnn_3 = GNNLayer(n_enc_2, n_enc_3, device)
+        self.gnn_4 = GNNLayer(n_enc_3, n_z, device)
+        self.gnn_5 = GNNLayer(n_z, n_clusters, device)
+
     def forward(self, x, adj, tra1, tra2, tra3, z, sigma = 0.5):
  
         if len(x.shape)>2:
