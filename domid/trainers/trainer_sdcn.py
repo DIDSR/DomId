@@ -215,8 +215,11 @@ class TrainerCluster(AbstractTrainer):
         if self.args.task=='weah':
             self.model.random_ind = [torch.randint(0, self.args.bs, (int(self.args.bs/3), )) for i in range(0, 65)]
 
-            if epoch==self.args.epos-1:
-                self.model.random_ind = [torch.range(0, int(self.args.bs/3)-1, step=1, dtype=torch.long) for i in range(0, 65)]
+            if epoch==self.args.epos-1 or epoch==self.args.epos:
+            
+                self.model.random_ind = [torch.range(0, int(self.args.bs/3)-1, step=1, dtype=torch.long) for i in range(0, 65)] #FIXME
+                # arg.bs/3 =900, as a 1/3 of all of the patchs per subject
+                # TODO:assert statement that all images from one region
 
         # _____storing results and Z space__________
         self.storage.storing(epoch, acc_tr_y, acc_tr_d, self.epo_loss_tr, acc_val_y, acc_val_d, loss_val,
