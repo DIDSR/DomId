@@ -22,6 +22,12 @@ from datetime import datetime
 
 
 class ModelSDCN(AModelCluster):
+    """
+    ModelSDCN is a class that implements the SDCN model.(Bo D et al. 2020)
+    The model is composed of a convolutional encoder and decoder, a GNN and a clustering layer.
+    """
+
+
     def __init__(self, zd_dim, d_dim, device, L, i_c, i_h, i_w, args):
 
         super(ModelSDCN, self).__init__()
@@ -115,7 +121,16 @@ class ModelSDCN(AModelCluster):
 
 
     def _inference(self, x, inject_tensor=None):
-        #import pdb; pdb.set_trace()
+        """
+        :param x: [batch_size, n_channels, height, width]
+        :return: probs_c: [batch_size, n_clusters]
+        :return: q: [batch_size, n_clusters]
+        :return: z: [batch_size, n_z]
+        :return: z_mu: [batch_size, n_z]
+        :return: z_sigma2_log: [batch_size, n_z]
+        :return pi: [batch_size, n_clusters]
+        :return logits: [batch_size, n_clusters]
+        """
         if self.args.model == "linear":
             x = torch.reshape(x, (x.shape[0], x.shape[1]*x.shape[2]*x.shape[3]))
         enc_h1, enc_h2, enc_h3, z = self.encoder(x)
@@ -131,36 +146,11 @@ class ModelSDCN(AModelCluster):
 
 
         logits = q.type(torch.float32) #q in the paper and code
-        
-        
-        
-
-        # if self.batch_zero:
-        #     self.local_tb.add_histogram('clustering_layer', self.cluster_layer.flatten(), self.counter)
-        #     self.local_tb.add_histogram('q', q.flatten(), self.counter)
-        #     self.local_tb.add_histogram('pred', probs_c.flatten(), self.counter)
-        #     self.local_tb.add_histogram('h', h.flatten(), self.counter)
-        #     self.local_tb.add_histogram('z', z.flatten(), self.counter)
-
-
         z_mu =torch.mean(z, dim=0) # is not used in SDCN (variance from the encoder in VaDE)
         z_sigma2_log = torch.std(z, dim=0) # is not used in SDCN (variance from the encoder in VaDE)
         pi = torch.Tensor([0]) # is not used in SDCN (variance from the encoder in VaDE)
-
-        # preds_c = torch.argmax(logits, dim=1)
-        # preds_c = F.one_hot(preds_c, num_classes=self.d_dim)
-
         preds_c, *_ = logit2preds_vpic(h) # probs_c is F.softmax(logit, dim=1)
-#         if self.batch_zero:
-#             d = self.distance_between_clusters(self.cluster_layer.detach().cpu())
-#             self.batch_zero = False
-          
-#             plt.imshow(d)
-#             plt.colorbar()
-#             plt.title('Epoch '+str(self.counter))
-#             plt.show()
-#             plt.savefig('./local_tb/SDCN_epoch_'+str(self.counter)+'.png')
-#             plt.close()
+        breakpoint()
 
         return preds_c, probs_c, z, z_mu, z_sigma2_log, z_mu, z_sigma2_log, pi, logits
 
@@ -191,18 +181,29 @@ class ModelSDCN(AModelCluster):
 
         # print(results[2].shape, inject_domain.shape, zy.shape)
         x_pro, *_ = self.decoder(zy)
-
-
         preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = (r.cpu().detach() for r in results)
+
         return preds, z_mu, z, log_sigma2_c, probs, x_pro
 
 
     def target_distribution(self, q):
+        """
+        Compute the target distribution p, where p_i = (sum_j q_j)^2 / sum_j^2 q_j.
+        Corresponds to equation (12) from the paper.
+        """
         weight = q ** 2 / q.sum(0)
         return (weight.t() / weight.sum(1)).t()
 
 
     def cal_loss(self, x, inject_domain, warmup_beta=None):
+        """
+        Compute the loss of the model.
+        Concentrate two different objectives, i.e. clustering objective and classification objective, in one loss function.
+        Corresponds to equation (15) in the paper.
+        :param tensor x: Input tensor of a shape [batchsize, 3, horzintal dim, vertical dim].
+        :param float warmup_beta: Warmup coefficient for the KL divergence term.
+        :return tensor loss: Loss tensor.
+        """
 
         preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits= self._inference(x)
         # logits is q in the paper
@@ -210,8 +211,7 @@ class ModelSDCN(AModelCluster):
         q = logits
         pred = probs_c
         if len(inject_domain) > 0:
-            
-            zy = torch.cat((z, inject_domain), 1)
+                zy = torch.cat((z, inject_domain), 1)
         else:
             zy = z
         x_bar, *_ = self.decoder(zy)
@@ -236,15 +236,6 @@ class ModelSDCN(AModelCluster):
         self.ce_loss_running = ce_loss
         self.re_loss_running = re_loss
 
-        # if self.batch_zero:
-        #     self.local_tb.add_scalar('kl_loss', kl_loss, self.counter)
-        #     self.local_tb.add_scalar('ce_loss', ce_loss, self.counter)
-        #     self.local_tb.add_scalar('re_loss', re_loss, self.counter)
-        #     self.batch_zero = False
-
-#         print('reconstruction loss', re_loss, 'kl_loss', kl_loss, 'ce_loss', ce_loss)
-#         print('loss', loss)
-#             self.counter+=1
         return loss.type(torch.double)
     def cal_loss_for_tensorboard(self):
         return self.kl_loss_running, self.ce_loss_running, self.re_loss_running

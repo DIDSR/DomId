@@ -226,8 +226,6 @@ class TrainerCluster(AbstractTrainer):
                              r_score_tr, r_score_te)
         if epoch % 1 == 0:
             _, z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels  = prediction.mk_prediction()
-            # _, Z, domain_labels, machine_labels, image_locs = prediction.mk_prediction()
-
             self.storage.storing_z_space(z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels)
         if epoch % 1 == 0:
             self.storage.saving_model(self.model)

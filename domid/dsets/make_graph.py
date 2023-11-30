@@ -16,12 +16,6 @@ class GraphConstructor():
     """
     Class to construct graph from features. This is only used in training for SDCN model.
     """
-    # def parse_name(self, name):
-    #     sub_num = name.split('-')[1]
-    #     region = name.split('_')[-3]
-    #     return sub_num+'_'+region
-    #
-        
     def get_features_labels(self, dataset):
         """
         This funciton is used to get features and labels from dataset.
@@ -101,6 +95,7 @@ class GraphConstructor():
         :param topk: number of connections per image
         :return: indecies of top k connections per each image in the batch (shape: (num_img*topk, 2))
         """
+
         dist = []
         if len(region_labels)>0:
             # if WSI dataset, then split the features into number of regions per batch
@@ -113,7 +108,7 @@ class GraphConstructor():
                 d = self.distance_calc(feat, graph_method, coord) #within each region calculate distance between patches
                 dist.append(d)
         else:
-            dist.append(self.distance_calc(features))
+            dist.append(self.distance_calc(features, graph_method))
         
         connection_pairs = [] 
         inds = []
@@ -172,6 +167,7 @@ class GraphConstructor():
         batch_num = features.shape[0]
         num_features =  features.shape[1]
         topk = 7 #topk connections for each image
+
 
         for i in range(0, batch_num):
             dist, inds, connection_pairs = self.connection_calc(features[i, :, :],region_labels[i], graph_method, topk = topk)

@@ -84,14 +84,6 @@ class Prediction:
 
                 preds, z_mu, z, log_sigma2_c, probs, x_pro = self.model.infer_d_v_2(tensor_x, inject_tensor)
                 z = z.detach().cpu().numpy()  # [batch_size, zd_dim]
-                # if z.shape[0] == 1:
-                #     input_imgs[counter, :, :, :] = tensor_x.cpu().detach().numpy()
-                #     z_proj[counter, :] = z
-                #     preds = preds.detach().cpu()
-                #     predicted.append(torch.argmax(preds, 1).item()+1)
-                #
-                # else:
-                    #pdb.set_trace()
                 input_imgs[counter : counter + z.shape[0], :, :, :] = tensor_x.cpu().detach().numpy()
                 z_proj[counter : counter + z.shape[0], :] = z
                 prob_proj[counter : counter + z.shape[0], :] = probs
@@ -105,7 +97,6 @@ class Prediction:
         return input_imgs, z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels
 
     def epoch_tr_acc(self):
-        #hungarian_acc_y_s, conf_mat_y_s, hungarian_acc_d_s, conf_mat_d_s
         acc_vec_y, conf_y, acc_vec_d, conf_d= PerfCluster.cal_acc(self.model, self.loader_tr, self.device, max_batches=None)
         return acc_vec_y, conf_y, acc_vec_d, conf_d
 

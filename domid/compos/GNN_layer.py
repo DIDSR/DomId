@@ -6,7 +6,7 @@ from torch.nn.modules.module import Module
 
 class GNNLayer(Module):
     def __init__(self, in_features, out_features, device):
-        import pdb; pdb.set_trace()
+
         super(GNNLayer, self).__init__()
 
         self.in_features = in_features
