@@ -3,7 +3,7 @@ import torch
 
 from domid.utils.perf_cluster import PerfCluster
 from domid.utils.perf_similarity import PerfCorrelation
-from domid.dsets.make_graph_a import GraphConstructorA
+from domid.dsets.make_graph_wsi import GraphConstructorWSI
 
 class Prediction:
     def __init__(self, model, device, loader_tr, loader_val, i_h, i_w, bs):
@@ -17,14 +17,7 @@ class Prediction:
         # if self.args.dim_inject_y > 0:
         #     self.is_inject_domain = True
         
-    def sparse_mx_to_torch_sparse_tensor(self, sparse_mx): #FIXME move to utils
-        """Convert a scipy sparse matrix to a torch sparse tensor."""
-        sparse_mx = sparse_mx.tocoo().astype(np.float32)
-        indices = torch.from_numpy(
-            np.vstack((sparse_mx.row, sparse_mx.col)).astype(np.int64))
-        values = torch.from_numpy(sparse_mx.data)
-        shape = torch.Size(sparse_mx.shape)
-        return torch.sparse.FloatTensor(indices, values, shape)
+
 
     def mk_prediction(self):
         """
@@ -63,7 +56,7 @@ class Prediction:
                     vec_y = vec_y[patches_idx, :]
                     vec_d = vec_d[patches_idx, :]
                     image_id =[image_id[patch_idx_num] for patch_idx_num in patches_idx]
-                    self.model.adj = self.sparse_mx_to_torch_sparse_tensor(GraphConstructorA().construct_graph(tensor_x, image_id, self.model.graph_method, None))
+                    self.model.adj = GraphConstructorWSI().construct_graph(tensor_x, image_id, self.model.graph_method, None)
 
                 for ii in range(0, tensor_x.shape[0]):
 

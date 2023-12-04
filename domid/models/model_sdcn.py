@@ -37,7 +37,6 @@ class ModelSDCN(AModelCluster):
         self.L = L
         self.args = args
         self.loss_epoch = 0
-
         self.dim_inject_y = 0
 
         if self.args.dim_inject_y:
@@ -63,13 +62,12 @@ class ModelSDCN(AModelCluster):
             self.decoder = ConvolutionalDecoder(
                 prior=args.prior,
                 zd_dim=zd_dim, #50
-                domain_dim=self.dim_inject_y, #
-                #domain_dim=self.dim_inject_y,
+                domain_dim=self.dim_inject_y,
                 h_dim=self.encoder.h_dim,
                 num_channels=i_c
             ).to(device)
             n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3, = int((i_w/2)**2*self.encoder.num_filters[0]), int((i_w/4)**2*self.encoder.num_filters[1]), int((i_w/8)**2*self.encoder.num_filters[2]), int((i_w/8)**2*self.encoder.num_filters[2]), int((i_w/4)**2*self.encoder.num_filters[1]), int((i_w/2)**2*self.encoder.num_filters[0])
-            print(n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3)
+            print('Filter sizes for GNN', n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3)
         if self.args.pre_tr_weight_path:
             self.encoder.load_state_dict(torch.load(self.args.pre_tr_weight_path + 'encoder.pt', map_location=self.device))
             self.decoder.load_state_dict(torch.load(self.args.pre_tr_weight_path + 'decoder.pt', map_location=self.device))
@@ -93,22 +91,18 @@ class ModelSDCN(AModelCluster):
         self.v = 1.0
         self.counter= 0
         self.q_activation = torch.zeros((10, 100))
-        # ex = str(datetime.now())
-        # self.local_tb = SummaryWriter(log_dir=os.path.join('local_tb',ex ))
-        # self.batch_zero = True
-
         self.kl_loss_running = 0
         self.re_loss_running = 0
         self.ce_loss_running = 0
         
         if 'mnist' in self.args.task:
             self.graph_method = 'heat'
-        if 'weah' in self.args.task:
+        if 'wsi' in self.args.task:
             self.graph_method = 'patch_distance'
         if self.args.graph_method is not None:
             self.graph_method =args.graph_method
         
-        if args.task=='weah':
+        if args.task=='wsi':
             self.random_ind = [torch.randint(0, self.args.bs, (int(self.args.bs/3), )) for i in range(0, 66)]
         else:
             self.random_ind = []
@@ -153,7 +147,7 @@ class ModelSDCN(AModelCluster):
         z_sigma2_log = torch.std(z, dim=0) # is not used in SDCN (variance from the encoder in VaDE)
         pi = torch.Tensor([0]) # is not used in SDCN (variance from the encoder in VaDE)
         preds_c, *_ = logit2preds_vpic(h) # probs_c is F.softmax(logit, dim=1)
-        breakpoint()
+
 
         return preds_c, probs_c, z, z_mu, z_sigma2_log, z_mu, z_sigma2_log, pi, logits
 

@@ -11,7 +11,7 @@ from domid.trainers.pretraining_KMeans import Pretraining
 from domid.trainers.pretraining_sdcn import Pretraining
 from domid.utils.perf_cluster import PerfCluster
 from domid.dsets.make_graph import GraphConstructor
-from domid.dsets.make_graph_a import GraphConstructorA
+from domid.dsets.make_graph_wsi import GraphConstructorWSI
 import torch.nn.parallel
 import torch.distributed as dist
 
@@ -54,25 +54,23 @@ class TrainerCluster(AbstractTrainer):
         self.graph_method = self.model.graph_method
             
         assert self.graph_method, "Graph calculation methos should be specified"
-        print('Graph calculation method is', self.graph_method)  
+        print('Graph calculation method is', self.graph_method)
+
         #Initializing GNN with a sample graph and calculating all the graphs is needed for all of the batches
-        if self.args.task!='weah':
-            self.adj_matricies = GraphConstructor().construct_graph(self.loader_tr, self.graph_method, self.storage.experiment_name) #.to(self.device)
-            self.model.adj =  self.sparse_mx_to_torch_sparse_tensor(self.adj_matricies[0])
+        if self.args.task!='wsi':
+            #this calculates graph once and uses it for all the epochs
+            self.adj_mx, self.spar_mx = GraphConstructor(self.graph_method).construct_graph(self.loader_tr, self.graph_method, self.storage.experiment_name) #.to(self.device)
+            self.model.adj =  self.spar_mx[0]
         else:
-            self.graph_constr= GraphConstructorA()
-            init_gnn_adj_mat = self.graph_constr.construct_graph(next(iter(self.loader_tr))[0][:int(self.args.bs/3), :,:, :],next(iter(self.loader_tr))[-1][:int(self.args.bs/3)], self.graph_method, self.storage.experiment_name)
-            self.model.adj =  self.sparse_mx_to_torch_sparse_tensor(init_gnn_adj_mat)
+            # this initializes to calculate graph on the fly for every epoch
+            self.graph_constr= GraphConstructorWSI(self.graph_method)
+            init_adj_mx, init_spar_mx = self.graph_constr.construct_graph(next(iter(self.loader_tr))[0][:int(self.args.bs/3), :,:, :],
+                                                                 next(iter(self.loader_tr))[-1][:int(self.args.bs/3)],
+                                                                 self.graph_method, self.storage.experiment_name)
+            self.model.adj =  init_spar_mx
             
         
-    def sparse_mx_to_torch_sparse_tensor(self, sparse_mx): #FIXME move to utils
-        """Convert a scipy sparse matrix to a torch sparse tensor."""
-        sparse_mx = sparse_mx.tocoo().astype(np.float32)
-        indices = torch.from_numpy(
-            np.vstack((sparse_mx.row, sparse_mx.col)).astype(np.int64))
-        values = torch.from_numpy(sparse_mx.data)
-        shape = torch.Size(sparse_mx.shape)
-        return torch.sparse.FloatTensor(indices, values, shape)
+
 
     def tr_epoch(self, epoch):
         """
@@ -109,17 +107,17 @@ class TrainerCluster(AbstractTrainer):
                 inject_tensor, image_id = other_vars
                 if len(inject_tensor) > 0:
                     inject_tensor = inject_tensor.to(self.device)
-            if self.args.task == 'weah':
+            if self.args.task == 'wsi':
                 patches_idx = self.model.random_ind[i] #torch.randint(0, len(vec_y), (int(self.args.bs/3),))
                 tensor_x = tensor_x[patches_idx, :, :, :]
                 vec_y = vec_y[patches_idx, :]
                 vec_d = vec_d[patches_idx, :]
                 image_id =[image_id[patch_idx_num] for patch_idx_num in patches_idx]
                 
-                self.model.adj = self.sparse_mx_to_torch_sparse_tensor(self.graph_constr.construct_graph(tensor_x, image_id, self.graph_method, self.storage.experiment_name))
+                self.model.adj =self.graph_constr.construct_graph(tensor_x, image_id, self.graph_method, self.storage.experiment_name)
                 
             else:
-                self.model.adj =  self.sparse_mx_to_torch_sparse_tensor(self.adj_matricies[i])#.to(self.device)
+                self.model.adj =  self.spar_mx[i]#.to(self.device)
                 
             
             print('i_' + str(i), vec_y.argmax(dim=1).unique(), vec_d.argmax(dim=1).unique())
@@ -187,7 +185,7 @@ class TrainerCluster(AbstractTrainer):
                 vec_d_val = vec_d_val[patches_idx, :]
                 img_id_val =[img_id_val[patch_idx_num] for patch_idx_num in patches_idx]
                 
-                self.model.adj = self.sparse_mx_to_torch_sparse_tensor(self.graph_constr.construct_graph(tensor_x_val, img_id_val, self.graph_method, self.storage.experiment_name))
+                self.model.adj = self.graph_constr.construct_graph(tensor_x_val, img_id_val, self.graph_method, self.storage.experiment_name)
 
             tensor_x_val, vec_y_val, vec_d_val = (
                 tensor_x_val.to(self.device),

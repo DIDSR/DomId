@@ -12,7 +12,7 @@ import numpy as np
 from domid.tasks.b_task_cluster import NodeTaskDictCluster
 
 
-class NodeTaskWEAH(NodeTaskDictCluster):
+class NodeTaskWSI(NodeTaskDictCluster):
 
 
     @property
