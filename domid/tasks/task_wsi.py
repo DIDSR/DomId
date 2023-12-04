@@ -5,7 +5,7 @@ from domainlab.tasks.utils_task import (DsetDomainVecDecorator, ImSize,
 from domainlab.utils.utils_classif import mk_dummy_label_list_str
 from torch.utils.data import random_split
 import os
-from domid.dsets.dset_weah import DsetWEAH
+from domid.dsets.dset_wsi import DsetWSI
 from torchvision import transforms
 import pandas as pd
 import numpy as np
@@ -64,7 +64,7 @@ class NodeTaskWEAH(NodeTaskDictCluster):
         img_paths = np.array(mask['path'])  # [:400]
  
         trans = [transforms.Resize((64, 64))]
-        dset = DsetWEAH(class_num=ind_global, path=img_paths, args=args, transform=trans)
+        dset = DsetWSI(class_num=ind_global, path=img_paths, args=args, transform=trans)
         train_set = dset
         val_set = dset
         # split dset into training and validation sets

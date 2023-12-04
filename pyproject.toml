@@ -16,9 +16,10 @@ ray = "^2.1.0"
 opencv-python = "^4.6.0.66"
 grpcio = "^1.54.0"
 #domainlab = {git = "https://github.com/marrlab/DomainLab.git", rev = "master"}
+networkx = "^3.2.1"
 
 [tool.poetry.dev-dependencies]
-domainlab = { path = "./DomainLab" , develop = true}
+domainlab = { path = "./DomainLab",  develop = true}
 jupyterlab = "^2.2.8"
 
 [tool.poetry.group.dev.dependencies]

@@ -11,7 +11,7 @@ from domid.tasks.task_mnist import NodeTaskMNIST
 from domid.tasks.task_mnist_color import NodeTaskMNISTColor10
 from domid.tasks.task_usps import NodeTaskUSPS
 from domid.tasks.task_unittest import NodeTaskUnitTest
-from domid.tasks.task_weah import NodeTaskWEAH
+from domid.tasks.task_wsi import NodeTaskWSI
 
 path_this_file = os.path.dirname(os.path.realpath(__file__))
 
@@ -44,7 +44,7 @@ class TaskChainNodeGetter(object):
 
         chain = NodeTaskUnitTest(succ=chain)
 
-        chain = NodeTaskWEAH(succ=chain)
+        chain = NodeTaskWSI(succ=chain)
 
         chain = mk_task_folder(extensions={"caltech": "jpg", "sun": "jpg", "labelme": "jpg"},
                                list_str_y=["chair", "car"],
