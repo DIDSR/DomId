@@ -81,7 +81,7 @@ import torch
 from domainlab.utils.perf import PerfClassif
 from scipy.optimize import linear_sum_assignment
 from sklearn.metrics import confusion_matrix
-from domid.dsets.make_graph_a import GraphConstructorA
+from domid.dsets.make_graph_wsi import GraphConstructorWSI
 
 class PerfCluster(PerfClassif):
     """Clustering Performance"""
@@ -112,15 +112,7 @@ class PerfCluster(PerfClassif):
 
 
         return acc_d, cost, conf_mat
-    @classmethod
-    def sparse_mx_to_torch_sparse_tensor(clc, sparse_mx): #FIXME move to utils
-            """Convert a scipy sparse matrix to a torch sparse tensor."""
-            sparse_mx = sparse_mx.tocoo().astype(np.float32)
-            indices = torch.from_numpy(
-                np.vstack((sparse_mx.row, sparse_mx.col)).astype(np.int64))
-            values = torch.from_numpy(sparse_mx.data)
-            shape = torch.Size(sparse_mx.shape)
-            return torch.sparse.FloatTensor(indices, values, shape)
+
     @classmethod
     def cal_acc(clc, model, loader_te, device, max_batches=None):
         """
@@ -158,7 +150,7 @@ class PerfCluster(PerfClassif):
                     d_s=d_s[patch_num]
                     img_ids = [img_ids[patch_id] for patch_id in patch_num]
                     
-                    model.adj = clc.sparse_mx_to_torch_sparse_tensor(GraphConstructorA().construct_graph(x_s, img_ids, model.graph_method, None))
+                    _, model.adj = GraphConstructorWSI().construct_graph(x_s, img_ids, model.graph_method, None)
                 
                 x_s, y_s, d_s = x_s.to(device), y_s.to(device), d_s.to(device)
 

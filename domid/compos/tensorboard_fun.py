@@ -25,7 +25,7 @@ def tensorboard_write(writer, model, epoch, lr, warmup_beta, acc_tr, loss, pretr
         writer.add_scalar('RE', re_total, epoch)
 
 
-    preds, z_mu, z, _, _, x_pro = model.infer_d_v_2(tensor_x, inject_tensor)
+    preds, *_, x_pro = model.infer_d_v_2(tensor_x, inject_tensor)
     if len(x_pro.shape)<3:
         x_pro= torch.reshape(x_pro, (x_pro.shape[0], tensor_x.shape[1], tensor_x.shape[2], tensor_x.shape[3]))
 

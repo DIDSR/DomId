@@ -108,15 +108,6 @@ class ModelSDCN(AModelCluster):
             self.random_ind = []
 
 
-    def distance_between_clusters(self, cluster_layer):
-        
-        pairwise_dist = torch.zeros(cluster_layer.shape[0], cluster_layer.shape[0])
-        for i in range(0, cluster_layer.shape[0]):
-            for j in range(0,cluster_layer.shape[0]):
-                pairwise_dist[i,j] = torch.cdist(cluster_layer[i, :].unsqueeze(0).unsqueeze(0), cluster_layer[j, :].unsqueeze(0).unsqueeze(0))
-        return pairwise_dist
-
-
     def _inference(self, x, inject_tensor=None):
         """
         :param x: [batch_size, n_channels, height, width]
@@ -143,13 +134,11 @@ class ModelSDCN(AModelCluster):
 
 
         logits = q.type(torch.float32) #q in the paper and code
-        z_mu =torch.mean(z, dim=0) # is not used in SDCN (variance from the encoder in VaDE)
-        z_sigma2_log = torch.std(z, dim=0) # is not used in SDCN (variance from the encoder in VaDE)
-        pi = torch.Tensor([0]) # is not used in SDCN (variance from the encoder in VaDE)
+
         preds_c, *_ = logit2preds_vpic(h) # probs_c is F.softmax(logit, dim=1)
 
 
-        return preds_c, probs_c, z, z_mu, z_sigma2_log, z_mu, z_sigma2_log, pi, logits
+        return preds_c, probs_c, z, logits
 
 
 
@@ -178,9 +167,9 @@ class ModelSDCN(AModelCluster):
 
         # print(results[2].shape, inject_domain.shape, zy.shape)
         x_pro, *_ = self.decoder(zy)
-        preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = (r.cpu().detach() for r in results)
+        preds_c, probs_c, z, logits = (r.cpu().detach() for r in results)
 
-        return preds, z_mu, z, log_sigma2_c, probs, x_pro
+        return preds_c, z, probs_c, x_pro
 
 
     def target_distribution(self, q):
@@ -202,7 +191,7 @@ class ModelSDCN(AModelCluster):
         :return tensor loss: Loss tensor.
         """
 
-        preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits= self._inference(x)
+        preds_c, probs_c, z, logits = self._inference(x)
         # logits is q in the paper
         # probs_c is pred in the code
         q = logits

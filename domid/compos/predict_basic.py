@@ -75,7 +75,9 @@ class Prediction:
 
 
 
-                preds, z_mu, z, log_sigma2_c, probs, x_pro = self.model.infer_d_v_2(tensor_x, inject_tensor)
+                results = self.model.infer_d_v_2(tensor_x, inject_tensor)
+                preds, z, probs, x_pro = results[0], results[1], results[-2], results[-1]
+
                 z = z.detach().cpu().numpy()  # [batch_size, zd_dim]
                 input_imgs[counter : counter + z.shape[0], :, :, :] = tensor_x.cpu().detach().numpy()
                 z_proj[counter : counter + z.shape[0], :] = z
