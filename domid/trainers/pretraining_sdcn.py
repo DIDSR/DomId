@@ -2,7 +2,8 @@ import torch
 import numpy as np
 from sklearn.cluster import KMeans
 from domid.dsets.make_graph_wsi import GraphConstructorWSI
-class Pretraining():
+
+class PretrainingSDCN():
     def __init__(self, model, device, loader_tr, loader_val, i_h, i_w, args):
         """
         :param model: the model to train
@@ -17,11 +18,7 @@ class Pretraining():
         self.loader_val = loader_val
         self.i_h, self.i_w = i_h, i_w
         self.args = args
-        self.path = './notebooks/2023-06-21 12:39:54.269541_usps_ae/'
 
-
-        # if self.args.dim_inject_y > 0:
-        #     self.is_inject_domain = True
     def pretrain_loss(self, tensor_x, inject_tensor):
         return self.model.pretrain_loss(tensor_x, inject_tensor)
 
@@ -38,6 +35,9 @@ class Pretraining():
                 if len(other_vars) > 0:
                     inject_tensor, image_id = other_vars
                     if len(inject_tensor) > 0:
+
+        # if self.args.dim_inject_y > 0:
+        #     self.is_inject_domain = True
                         inject_tensor = inject_tensor.to(self.device)
 
                 tensor_x, vec_y, vec_d = (

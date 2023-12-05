@@ -8,7 +8,7 @@ from domid.compos.predict_basic import Prediction
 from domid.utils.storing import Storing
 from domid.compos.tensorboard_fun import tensorboard_write
 from domid.trainers.pretraining_KMeans import Pretraining
-from domid.trainers.pretraining_sdcn import Pretraining
+from domid.trainers.pretraining_sdcn import PretrainingSDCN
 from domid.utils.perf_cluster import PerfCluster
 from domid.dsets.make_graph import GraphConstructor
 from domid.dsets.make_graph_wsi import GraphConstructorWSI
@@ -82,7 +82,7 @@ class TrainerCluster(AbstractTrainer):
         self.model.train()
         self.epo_loss_tr = 0
 
-        pretrain = Pretraining(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args)
+        pretrain = PretrainingSDCN(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args)
         prediction = Prediction(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args.bs)
         acc_tr_y, _, acc_tr_d, _ = prediction.epoch_tr_acc()
         acc_val_y, _, acc_val_d, _ = prediction.epoch_val_acc()

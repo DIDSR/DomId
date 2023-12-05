@@ -141,16 +141,18 @@ class PerfCluster(PerfClassif):
             for i, (x_s, y_s, d_s, *other_vars) in enumerate(loader_te):
                 if i >= max_batches:
                     break
-               
-                if len(model.random_ind)>0:
-                    _, img_ids = other_vars
-                    patch_num = model.random_ind[i]
-                    x_s = x_s[patch_num, :,:,:]
-                    y_s=y_s[patch_num]
-                    d_s=d_s[patch_num]
-                    img_ids = [img_ids[patch_id] for patch_id in patch_num]
-                    
-                    _, model.adj = GraphConstructorWSI().construct_graph(x_s, img_ids, model.graph_method, None)
+                try: #FIXME: major fixme here, need to redo the random batching
+                    if len(model.random_ind)>0: #other models do not have random_ind attribute
+                        _, img_ids = other_vars
+                        patch_num = model.random_ind[i]
+                        x_s = x_s[patch_num, :,:,:]
+                        y_s=y_s[patch_num]
+                        d_s=d_s[patch_num]
+                        img_ids = [img_ids[patch_id] for patch_id in patch_num]
+
+                        _, model.adj = GraphConstructorWSI().construct_graph(x_s, img_ids, model.graph_method, None)
+                except:
+                    pass
                 
                 x_s, y_s, d_s = x_s.to(device), y_s.to(device), d_s.to(device)
 
