@@ -66,7 +66,7 @@ class TrainerCluster(AbstractTrainer):
             self.graph_constr= GraphConstructorWSI(self.graph_method)
             init_adj_mx, init_spar_mx = self.graph_constr.construct_graph(next(iter(self.loader_tr))[0][:int(self.args.bs/3), :,:, :],
                                                                  next(iter(self.loader_tr))[-1][:int(self.args.bs/3)],
-                                                                 self.graph_method, self.storage.experiment_name)
+                                                                 self.storage.experiment_name)
             self.model.adj =  init_spar_mx
             
         

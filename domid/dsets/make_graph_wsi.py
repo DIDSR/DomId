@@ -19,7 +19,7 @@ class GraphConstructorWSI(GraphConstructor):
     This is only used in training for SDCN model and for WSI dataset.
     """
     def __init__(self, graph_method):
-        super(GraphConstructorWSI, self).__init__()
+        #super(GraphConstructorWSI, self).__init__()
         self.graph_method = graph_method
 
 
