@@ -8,6 +8,8 @@ from domid.models.model_vade import ModelVaDE
 from domid.tasks.task_mnist import NodeTaskMNIST
 from domid.trainers.trainer_cluster import TrainerCluster
 
+#Note: to run tests 'poetry run pytest domid/tests/test_model_trainer.py '.
+# If there is an error with dependencies, try 'poetry install' first. Or manually add PYTHONPATH to the path of the DomId folder.
 
 def experiment_train(args):
     exp = Exp(args)
@@ -395,7 +397,49 @@ def test_MNISTcolor_SDCN():
         ]
     )
     experiment_train(args)
+def test_MNISTcolor_AE():
+    # MNIST color cnn vade with pretraining
+    parser = mk_parser_main()
+    args = parser.parse_args(
+        [
+            "--te_d",
+            "7",
+            "--tr_d",
+            "0",
+            "1",
+            "2",
+            "--zd_dim",
+            "20",
+            "--d_dim",
+            "10",
+            "--dpath",
+            "zout",
+            "--task",
+            "mnistcolor10",
+            "--aname",
+            "ae",
+            "--apath",
+            "domid/algos/builder_ae.py",
+            "--bs",
+            "600",
+            "--split",
+            "0.8",
+            "--L",
+            "5",
+            "--debug",
+            "--nocu",
+            "--model",
+            "cnn",
+            "--prior",
+            "Gaus",
+            "--pre_tr",
+            "1",
+            "--epos",
+            "3"
 
+        ]
+    )
+    experiment_train(args)
 # def test_MNIST_conditional_train():
 #     # create a text file filled with 0s, 1s, and 2s
 #     with open("domid/tests/domain_labels.txt", "w") as f:

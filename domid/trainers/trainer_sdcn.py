@@ -107,7 +107,7 @@ class TrainerCluster(AbstractTrainer):
                 inject_tensor, image_id = other_vars
                 if len(inject_tensor) > 0:
                     inject_tensor = inject_tensor.to(self.device)
-            if self.args.task == 'wsi':
+            if self.args.random_batching:
                 patches_idx = self.model.random_ind[i] #torch.randint(0, len(vec_y), (int(self.args.bs/3),))
                 tensor_x = tensor_x[patches_idx, :, :, :]
                 vec_y = vec_y[patches_idx, :]
@@ -178,7 +178,7 @@ class TrainerCluster(AbstractTrainer):
                 inject_tensor_val, img_id_val = other_vars
                 if len(inject_tensor_val) > 0:
                     inject_tensor_val = inject_tensor_val.to(self.device)
-            if self.args.task == 'weah' and self.args.aname=='sdcn':
+            if self.args.random_batching:
                 patches_idx = self.model.random_ind[i] #torch.randint(0, len(vec_y), (int(self.args.bs/3),))
                 tensor_x_val = tensor_x_val[patches_idx, :, :, :]
                 vec_y_val = vec_y_val[patches_idx, :]
@@ -210,7 +210,7 @@ class TrainerCluster(AbstractTrainer):
             tensor_x,
             inject_tensor,
         other_info = (kl_total, ce_total, re_total))
-        if self.args.task=='weah':
+        if self.args.task=='wsi':
             self.model.random_ind = [torch.randint(0, self.args.bs, (int(self.args.bs/3), )) for i in range(0, 65)]
 
             if epoch==self.args.epos-1 or epoch==self.args.epos:

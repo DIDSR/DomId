@@ -76,7 +76,6 @@ class NodeTaskMNISTColor10(NodeTaskDictCluster):
         trans = [transforms.Resize((32, 32))]
 
         dset = DsetMNISTColorSoloDefault(ind_global, args.dpath, inject_variable=args.inject_var,list_transforms=trans, args = args)
-
         train_set = dset
         val_set = dset
         # split dset into training and test

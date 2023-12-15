@@ -30,6 +30,7 @@ def mk_parser_main():
     parser.add_argument('--tr_d_range', nargs='*', default=None, help = 'range of the trained subjects')
     parser.add_argument('--graph_method', type = str, default=None, help='graph calculation method can be specified for SDCN')
     parser.add_argument('--feat_extract', type = str, default = 'vae', help = 'featue extractor method, either vae or ae')
+    parser.add_argument('--random_batching', type = bool, default = False, help = 'randomization of the samples inside one batch, only used in SDCN')
 
 
     return parser
