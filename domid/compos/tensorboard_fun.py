@@ -3,7 +3,7 @@ import torch
 import numpy as np
 
 
-def tensorboard_write(writer, model, epoch, lr, warmup_beta, acc_tr, loss, pretraining_finished, tensor_x, inject_tensor, other_info=None):
+def tensorboard_write(writer, model, epoch, lr, warmup_beta, acc_tr, loss, pretraining_finished, tensor_x, inject_tensor=None, other_info=None):
     writer.add_scalar('learning rate', lr, epoch)
     writer.add_scalar('warmup', warmup_beta, epoch)
     if not pretraining_finished:
@@ -24,8 +24,10 @@ def tensorboard_write(writer, model, epoch, lr, warmup_beta, acc_tr, loss, pretr
         writer.add_scalar('CE', ce_total, epoch)
         writer.add_scalar('RE', re_total, epoch)
 
-
-    preds, *_, x_pro = model.infer_d_v_2(tensor_x, inject_tensor)
+    if inject_tensor is not None:
+        preds, *_, x_pro = model.infer_d_v_2(tensor_x, inject_tensor)
+    else:
+        preds, *_, x_pro = model.infer_d_v_2(tensor_x)
     if len(x_pro.shape)<3:
         x_pro= torch.reshape(x_pro, (x_pro.shape[0], tensor_x.shape[1], tensor_x.shape[2], tensor_x.shape[3]))
 

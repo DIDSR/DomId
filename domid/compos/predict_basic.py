@@ -74,9 +74,10 @@ class Prediction:
                     vec_d.to(self.device),
                 )
 
-
-
-                results = self.model.infer_d_v_2(tensor_x, inject_tensor)
+                if self.model.args.aname!='sdcn':
+                    results = self.model.infer_d_v_2(tensor_x, inject_tensor)
+                else:
+                    results = self.model.infer_d_v_2(tensor_x)
                 preds, z, probs, x_pro = results[0], results[1], results[-2], results[-1]
 
                 z = z.detach().cpu().numpy()  # [batch_size, zd_dim]

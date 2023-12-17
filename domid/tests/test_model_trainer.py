@@ -8,7 +8,7 @@ from domid.models.model_vade import ModelVaDE
 from domid.tasks.task_mnist import NodeTaskMNIST
 from domid.trainers.trainer_cluster import TrainerCluster
 
-#Note: to run tests 'poetry run pytest domid/tests/test_model_trainer.py '.
+# Note: to run tests 'poetry run pytest domid/tests/test_model_trainer.py '.
 # If there is an error with dependencies, try 'poetry install' first. Or manually add PYTHONPATH to the path of the DomId folder.
 
 def experiment_train(args):
@@ -376,7 +376,7 @@ def test_MNISTcolor_SDCN():
             "--apath",
             "domid/algos/builder_sdcn.py",
             "--bs",
-            "600",
+            "50",
             "--split",
             "0.8",
             "--L",

@@ -151,7 +151,7 @@ class GraphConstructor():
 
         for i in range(0, batch_num):
             dist, inds, connection_pairs = self.connection_calc(features[i, :, :])
-            connect_path = os.path.join('notebooks/', experiment_folder)+"/connection_pairs_"+str(i)+".pkl"
+            connect_path = os.path.join('notebooks/', experiment_folder)+"/connection_pairs_"+str(i)+".pkl" #FIXME move to zout/data?
             feat_path = os.path.join('notebooks/', experiment_folder)+"/features_"+str(i)+".pkl"
             label_path = os.path.join('notebooks/',experiment_folder)+"/labels_"+str(i)+".pkl"
             with open(connect_path, "wb") as file:

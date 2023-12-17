@@ -102,11 +102,6 @@ class TrainerCluster(AbstractTrainer):
         
             if i==0:
                 self.model.batch_zero = True
-
-            if len(other_vars) > 0:
-                inject_tensor, image_id = other_vars
-                if len(inject_tensor) > 0:
-                    inject_tensor = inject_tensor.to(self.device)
             if self.args.random_batching:
                 patches_idx = self.model.random_ind[i] #torch.randint(0, len(vec_y), (int(self.args.bs/3),))
                 tensor_x = tensor_x[patches_idx, :, :, :]
@@ -132,7 +127,7 @@ class TrainerCluster(AbstractTrainer):
 
             # __________________Pretrain/ELBO loss____________
             if epoch < self.thres and not self.pretraining_finished:
-                loss = pretrain.pretrain_loss(tensor_x, inject_tensor)
+                loss = pretrain.pretrain_loss(tensor_x)
             else:
                 if not self.pretraining_finished:
                     self.pretraining_finished = True
@@ -149,7 +144,7 @@ class TrainerCluster(AbstractTrainer):
                     print("Epoch {}: Finished pretraining and starting to use the full model loss.".format(epoch))
                     print("".join(["#"] * 60))
 
-                loss = self.model.cal_loss(tensor_x,inject_tensor)
+                loss = self.model.cal_loss(tensor_x)
             # print('loss', loss)
 
             loss = loss.sum()
@@ -174,10 +169,7 @@ class TrainerCluster(AbstractTrainer):
 
         #__________________Validation_____________________
         for i, (tensor_x_val, vec_y_val, vec_d_val, *other_vars) in enumerate(self.loader_val):
-            if len(other_vars) > 0:
-                inject_tensor_val, img_id_val = other_vars
-                if len(inject_tensor_val) > 0:
-                    inject_tensor_val = inject_tensor_val.to(self.device)
+
             if self.args.random_batching:
                 patches_idx = self.model.random_ind[i] #torch.randint(0, len(vec_y), (int(self.args.bs/3),))
                 tensor_x_val = tensor_x_val[patches_idx, :, :, :]
@@ -194,9 +186,9 @@ class TrainerCluster(AbstractTrainer):
             )
 
             if epoch < self.thres and not self.pretraining_finished:
-                loss_val = pretrain.pretrain_loss(tensor_x_val, inject_tensor_val)
+                loss_val = pretrain.pretrain_loss(tensor_x_val)
             else:
-                loss_val = self.model.cal_loss(tensor_x_val, inject_tensor_val, self.warmup_beta)
+                loss_val = self.model.cal_loss(tensor_x_val, self.warmup_beta)
 
         tensorboard_write(
             self.writer,
@@ -208,7 +200,6 @@ class TrainerCluster(AbstractTrainer):
             loss,
             self.pretraining_finished,
             tensor_x,
-            inject_tensor,
         other_info = (kl_total, ce_total, re_total))
         if self.args.task=='wsi':
             self.model.random_ind = [torch.randint(0, self.args.bs, (int(self.args.bs/3), )) for i in range(0, 65)]

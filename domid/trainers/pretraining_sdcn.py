@@ -19,11 +19,9 @@ class PretrainingSDCN():
         self.i_h, self.i_w = i_h, i_w
         self.args = args
 
-    def pretrain_loss(self, tensor_x, inject_tensor):
-        return self.model.pretrain_loss(tensor_x, inject_tensor)
+    def pretrain_loss(self, tensor_x):
+        return self.model.pretrain_loss(tensor_x)
 
-
-        #return weights_encoder, weights_decoder
     def kmeans_cluster_assignement(self):
         num_img = len(self.loader_tr.dataset)
         if self.args.task == 'wsi' and self.args.aname=='sdcn':
@@ -32,13 +30,6 @@ class PretrainingSDCN():
         counter = 0
         with (torch.no_grad()):
             for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
-                if len(other_vars) > 0:
-                    inject_tensor, image_id = other_vars
-                    if len(inject_tensor) > 0:
-
-        # if self.args.dim_inject_y > 0:
-        #     self.is_inject_domain = True
-                        inject_tensor = inject_tensor.to(self.device)
 
                 tensor_x, vec_y, vec_d = (
                     tensor_x.to(self.device),
@@ -53,7 +44,7 @@ class PretrainingSDCN():
                     adj_mx, spar_mx = GraphConstructorWSI().construct_graph(tensor_x, image_id, self.model.graph_method, None)
                     self.model.adj = spar_mx
 
-                preds, z, probs, x_pro= self.model.infer_d_v_2(tensor_x, inject_tensor)
+                preds, z, probs, x_pro= self.model.infer_d_v_2(tensor_x)
                 z_ = z.detach().cpu().numpy()  # [batch_size, zd_dim]
                 Z[counter:counter + z.shape[0], :] = z_
 

@@ -19,12 +19,12 @@ class GraphConstructorWSI(GraphConstructor):
     This is only used in training for SDCN model and for WSI dataset.
     """
     def __init__(self, graph_method):
-        #super(GraphConstructorWSI, self).__init__()
+        #super().__init__()#FIXME uncomment when works
         self.graph_method = graph_method
 
 
 
-    def distance_calc_wsi(self, features, coordinates=None):
+    def distance_calc_wsi(self, features, coordinates=None): #FIXME remove features?
         """
         This function is used to calculate distance between features.
         :param features: the batch of features from the dataset
