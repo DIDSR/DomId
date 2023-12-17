@@ -149,6 +149,15 @@ The injected variable is the class of the image, and the number of unique values
 ```
 poetry run python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --epos=20 --aname=vade --zd_dim=20 --d_dim=3 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=9 --bs 2 --lr 0.00005 --split 0.8 --prior Gaus --model cnn --inject_var "class" --dim_inject_y 3 --dpath "../HER2/combined_train/"
 ```
+### SDCN + batching
+SDCN is a deep neural network model that combines GCN and AE architectures for the purpose of unsupervised clustering[5].
+
+However, original SDCN model faces significant scalability challenges that hinder its deployment in digital pathology, 
+particularly when dealing with whole-slide digital pathology images (WSI), which are typically of gigapixel size or larger.
+This limitation arises from SDCN need for constructing a graph on the entire dataset and the imperative to process all data in a single
+batch during training. To overcome this issue, we propose batching strategy to the SDCN training process and introduce 
+a novel batching approach tailored specifically for WSI data.
+
 
 ### Simultaneous unsupervised clustering and supervised classification
 #### M2YD model
@@ -160,12 +169,17 @@ Here is a basic example to run the M2YD model on the Color-MNIST dataset:
 poetry run python main_out.py --te_d 0 1 2 --tr_d 3 4 5 6 7 8 9 --task=mnistcolor10 --debug --epos=10 --aname=m2yd --zd_dim=7 --apath=domid/algos/builder_m2yd.py --gamma_y 1
 ```
 
+
 # References
 
 [1] Jiang, Zhuxi, et al. "Variational deep embedding: An unsupervised and generative approach to clustering." IJCAI 2017. (<https://arxiv.org/abs/1611.05148>)
 
-[2] Kingma, and Welling. "Auto-encoding variational bayes." ICLR 2013. (<https://arxiv.org/abs/1312.6114>) 
+[2] Kingma, Welling. "Auto-encoding variational bayes." ICLR 2013. (<https://arxiv.org/abs/1312.6114>) 
 
 [3] Xie, Girshick, Farhadi. "Unsupervised Deep Embedding for Clustering Analysis" (2016) (<http://arxiv.org/abs/1511.06335>)
 
-[4] xxxx, "xxxx," in review, 2023.
+[4] Sidulova, Sun, Gossmann. "Deep Unsupervised Clustering for Conditional Identification of Subgroups Within a Digital Pathology Image Set." MICCAI, 2023. (<https://link.springer.com/chapter/10.1007/978-3-031-43993-3_64>)
+
+[5] Bo, Deyu, et al. "Structural deep clustering network." Proceedings of the web conference 2020. 2020. (<https://doi.org/10.1145/3366423.3380214>)
+
+[6] Sidulova, Kahaki, Hagemann, Gossmann. "Contextual unsupervised deep clustering in digital pathology." 2024 (in review)
