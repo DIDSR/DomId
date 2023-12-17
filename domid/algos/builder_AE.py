@@ -9,7 +9,7 @@ from tensorboardX import SummaryWriter
 
 from domid.algos.observers.b_obvisitor_clustering_only import \
     ObVisitorClusteringOnly
-from domid.models.model_AE import ModelAE
+from domid.models.model_ae import ModelAE
 from domid.trainers.trainer_ae import TrainerCluster
 
 

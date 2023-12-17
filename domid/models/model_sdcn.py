@@ -153,20 +153,17 @@ class ModelSDCN(AModelCluster):
         preds, *_ = self._inference(x)
         return preds.cpu().detach()
 
-    def infer_d_v_2(self, x, inject_domain):
+    def infer_d_v_2(self, x):
         """
         Used for tensorboard visualizations only.
         """
         #import pdb; pdb.set_trace()
         results = self._inference(x)
-        if len(inject_domain) > 0:
-            
-            zy = torch.cat((results[2], inject_domain), 1)
-        else:
-            zy = results[2]
+
+        z = results[2]
 
         # print(results[2].shape, inject_domain.shape, zy.shape)
-        x_pro, *_ = self.decoder(zy)
+        x_pro, *_ = self.decoder(z)
         preds_c, probs_c, z, logits = (r.cpu().detach() for r in results)
 
         return preds_c, z, probs_c, x_pro
@@ -181,7 +178,7 @@ class ModelSDCN(AModelCluster):
         return (weight.t() / weight.sum(1)).t()
 
 
-    def cal_loss(self, x, inject_domain, warmup_beta=None):
+    def cal_loss(self, x, warmup_beta=None):
         """
         Compute the loss of the model.
         Concentrate two different objectives, i.e. clustering objective and classification objective, in one loss function.
@@ -196,11 +193,9 @@ class ModelSDCN(AModelCluster):
         # probs_c is pred in the code
         q = logits
         pred = probs_c
-        if len(inject_domain) > 0:
-                zy = torch.cat((z, inject_domain), 1)
-        else:
-            zy = z
-        x_bar, *_ = self.decoder(zy)
+
+
+        x_bar, *_ = self.decoder(z)
         q = q.data
         
 
@@ -227,16 +222,13 @@ class ModelSDCN(AModelCluster):
         return self.kl_loss_running, self.ce_loss_running, self.re_loss_running
 
 
-    def pretrain_loss(self, x, inject_domain):
+    def pretrain_loss(self, x):
         if self.args.model == "linear":
             x = torch.reshape(x, (x.shape[0], x.shape[1]*x.shape[2]*x.shape[3]))
         enc_h1, enc_h2, enc_h3, z = self.encoder(x)
 
-        if len(inject_domain) > 0:
-            zy = torch.cat((z, inject_domain), 1)
-        else:
-            zy = z
-        x_pro, *_ = self.decoder(zy) #FIXME account for different number of outputs from decoder
+
+        x_pro, *_ = self.decoder(z) #FIXME account for different number of outputs from decoder
 
 
         loss = F.mse_loss(x, x_pro)
