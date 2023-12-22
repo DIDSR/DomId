@@ -17,6 +17,7 @@ opencv-python = "^4.6.0.66"
 grpcio = "^1.54.0"
 #domainlab = {git = "https://github.com/marrlab/DomainLab.git", rev = "master"}
 networkx = "^3.2.1"
+rich = "^13.7.0"
 
 [tool.poetry.dev-dependencies]
 domainlab = { path = "./DomainLab",  develop = true}

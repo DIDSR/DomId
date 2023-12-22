@@ -159,6 +159,15 @@ batch during training. To overcome this issue, we propose batching strategy to t
 a novel batching approach tailored specifically for WSI data.
 
 
+```
+poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 5 6 7 8 9 --task=mnistcolor10 --epos=30 --aname=ae --zd_dim=20 --d_dim=10 --apath=domid/algos/builder_AE.py --L=5 --pre_tr=2 --bs 600 --lr 0.0001 --model cnn --nocu
+```
+
+```
+poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 5 6 7 8 9 --task=mnistcolor10 --epos=30 --aname=sdcn --zd_dim=20 --d_dim=10 --apath=domid/algos/builder_sdcn.py --L=5 --pre_tr=2 --bs 600 --lr 0.0001 --model cnn --pre_tr_weight_path 'path/to/pretrained_weights/folder/' --nocu
+
+```
+
 ### Simultaneous unsupervised clustering and supervised classification
 #### M2YD model
 
