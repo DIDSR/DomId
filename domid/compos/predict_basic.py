@@ -81,9 +81,9 @@ class Prediction:
                 preds, z, probs, x_pro = results[0], results[1], results[-2], results[-1]
 
                 z = z.detach().cpu().numpy()  # [batch_size, zd_dim]
-                input_imgs[counter : counter + z.shape[0], :, :, :] = tensor_x.cpu().detach().numpy()
-                z_proj[counter : counter + z.shape[0], :] = z
-                prob_proj[counter : counter + z.shape[0], :] = probs
+                input_imgs[counter : counter + tensor_x.shape[0], :, :, :] = tensor_x.cpu().detach().numpy()
+                z_proj[counter : counter + tensor_x.shape[0], :] = z
+                prob_proj[counter : counter + tensor_x.shape[0], :] = probs
                 
 
                 preds = preds.detach().cpu()

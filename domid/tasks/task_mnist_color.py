@@ -80,8 +80,9 @@ class NodeTaskMNISTColor10(NodeTaskDictCluster):
         val_set = dset
         # split dset into training and test
         if ratio_split:
-            train_len = int(len(dset) * ratio_split)
-            val_len = len(dset) - train_len
-            train_set, val_set = random_split(dset, [train_len, val_len])
+            if args.aname != 'sdcn':
+                train_len = int(len(dset) * ratio_split)
+                val_len = len(dset) - train_len
+                train_set, val_set = random_split(dset, [train_len, val_len])
         return train_set, val_set
 

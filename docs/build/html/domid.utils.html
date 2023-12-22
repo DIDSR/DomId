@@ -306,6 +306,8 @@
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#domid.utils.perf_cluster.PerfCluster.__init__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">PerfCluster.__init__()</span></code></a>
         </li>
+        <li class="md-nav__item"><a href="#domid.utils.perf_cluster.PerfCluster.hungarian_algorithm" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">PerfCluster.hungarian_algorithm()</span></code></a>
+        </li>
         <li class="md-nav__item"><a href="#domid.utils.perf_cluster.PerfCluster.cal_acc" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">PerfCluster.cal_acc()</span></code></a>
         </li></ul>
             </nav>
@@ -352,6 +354,12 @@
 <dt class="sig sig-object py" id="domid.utils.perf_cluster.PerfCluster.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_classes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/utils/perf_cluster.html#PerfCluster.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.utils.perf_cluster.PerfCluster.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="domid.utils.perf_cluster.PerfCluster.hungarian_algorithm">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">hungarian_algorithm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cluster_pred_scalar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cluster_true_scalar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cost</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/utils/perf_cluster.html#PerfCluster.hungarian_algorithm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.utils.perf_cluster.PerfCluster.hungarian_algorithm" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function takes two arrays as input, encodes any string elements to integers,
+and applies the Hungarian Algorithm to find the optimal assignment between the two arrays.</p>
+</dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="domid.utils.perf_cluster.PerfCluster.cal_acc">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cal_acc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loader_te</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_batches</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/utils/perf_cluster.html#PerfCluster.cal_acc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.utils.perf_cluster.PerfCluster.cal_acc" title="Permalink to this definition">¶</a></dt>

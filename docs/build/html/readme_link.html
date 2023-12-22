@@ -314,6 +314,8 @@
         </li></ul>
             </nav>
         </li>
+        <li class="md-nav__item"><a href="#sdcn-batching" class="md-nav__link">SDCN + batching</a>
+        </li>
         <li class="md-nav__item"><a href="#simultaneous-unsupervised-clustering-and-supervised-classification" class="md-nav__link">Simultaneous unsupervised clustering and supervised classification</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#m2yd-model" class="md-nav__link">M2YD model</a>
@@ -341,7 +343,7 @@
 <h1 id="readme-link--page-root">Introduction<a class="headerlink" href="#readme-link--page-root" title="Permalink to this heading">¶</a></h1>
 <section class="tex2jax_ignore mathjax_ignore" id="domain-identification-domid">
 <h2 id="domain-identification-domid">Domain Identification (DomId)<a class="headerlink" href="#domain-identification-domid" title="Permalink to this heading">¶</a></h2>
-<p><img alt="GH Actions CI " src="https://github.com/agisga/DomId/actions/workflows/ci.yml/badge.svg"/></p>
+<p><img alt="GH Actions CI " src="https://github.com/DIDSR/DomId/actions/workflows/ci.yml/badge.svg"/></p>
 <p>Deep unsupervised clustering algorithms for domain identification.</p>
 <section id="installation">
 <h3 id="installation">Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h3>
@@ -485,6 +487,22 @@ The injected variable is the class of the image, and the number of unique values
 </div>
 </section>
 </section>
+<section id="sdcn-batching">
+<h4 id="sdcn-batching">SDCN + batching<a class="headerlink" href="#sdcn-batching" title="Permalink to this heading">¶</a></h4>
+<p>SDCN is a deep neural network model that combines GCN and AE architectures for the purpose of unsupervised clustering[5].</p>
+<p>However, original SDCN model faces significant scalability challenges that hinder its deployment in digital pathology,
+particularly when dealing with whole-slide digital pathology images (WSI), which are typically of gigapixel size or larger.
+This limitation arises from SDCN need for constructing a graph on the entire dataset and the imperative to process all data in a single
+batch during training. To overcome this issue, we propose batching strategy to the SDCN training process and introduce
+a novel batching approach tailored specifically for WSI data.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 5 6 7 8 9 --task=mnistcolor10 --epos=30 --aname=ae --zd_dim=20 --d_dim=10 --apath=domid/algos/builder_AE.py --L=5 --pre_tr=2 --bs 600 --lr 0.0001 --model cnn --nocu
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 5 6 7 8 9 --task=mnistcolor10 --epos=30 --aname=sdcn --zd_dim=20 --d_dim=10 --apath=domid/algos/builder_sdcn.py --L=5 --pre_tr=2 --bs 600 --lr 0.0001 --model cnn --pre_tr_weight_path 'path/to/pretrained_weights/folder/' --nocu
+
+</pre></div>
+</div>
+</section>
 <section id="simultaneous-unsupervised-clustering-and-supervised-classification">
 <h4 id="simultaneous-unsupervised-clustering-and-supervised-classification">Simultaneous unsupervised clustering and supervised classification<a class="headerlink" href="#simultaneous-unsupervised-clustering-and-supervised-classification" title="Permalink to this heading">¶</a></h4>
 <section id="m2yd-model">
@@ -501,9 +519,11 @@ Here is a basic example to run the M2YD model on the Color-MNIST dataset:</p>
 <section class="tex2jax_ignore mathjax_ignore" id="references">
 <h2 id="references">References<a class="headerlink" href="#references" title="Permalink to this heading">¶</a></h2>
 <p>[1] Jiang, Zhuxi, et al. “Variational deep embedding: An unsupervised and generative approach to clustering.” IJCAI 2017. (<a class="reference external" href="https://arxiv.org/abs/1611.05148">https://arxiv.org/abs/1611.05148</a>)</p>
-<p>[2] Kingma, and Welling. “Auto-encoding variational bayes.” ICLR 2013. (<a class="reference external" href="https://arxiv.org/abs/1312.6114">https://arxiv.org/abs/1312.6114</a>)</p>
+<p>[2] Kingma, Welling. “Auto-encoding variational bayes.” ICLR 2013. (<a class="reference external" href="https://arxiv.org/abs/1312.6114">https://arxiv.org/abs/1312.6114</a>)</p>
 <p>[3] Xie, Girshick, Farhadi. “Unsupervised Deep Embedding for Clustering Analysis” (2016) (<a class="reference external" href="http://arxiv.org/abs/1511.06335">http://arxiv.org/abs/1511.06335</a>)</p>
-<p>[4] xxxx, “xxxx,” in review, 2023.</p>
+<p>[4] Sidulova, Sun, Gossmann. “Deep Unsupervised Clustering for Conditional Identification of Subgroups Within a Digital Pathology Image Set.” MICCAI, 2023. (<a class="reference external" href="https://link.springer.com/chapter/10.1007/978-3-031-43993-3_64">https://link.springer.com/chapter/10.1007/978-3-031-43993-3_64</a>)</p>
+<p>[5] Bo, Deyu, et al. “Structural deep clustering network.” Proceedings of the web conference 2020. 2020. (<a class="reference external" href="https://doi.org/10.1145/3366423.3380214">https://doi.org/10.1145/3366423.3380214</a>)</p>
+<p>[6] Sidulova, Kahaki, Hagemann, Gossmann. “Contextual unsupervised deep clustering in digital pathology.” 2024 (in review)</p>
 </section>
 </section>
 
