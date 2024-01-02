@@ -23,4 +23,3 @@ class GNNLayer(Module):
             output = activation(output)
 
         return output
-

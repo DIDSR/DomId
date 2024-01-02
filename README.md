@@ -149,14 +149,16 @@ The injected variable is the class of the image, and the number of unique values
 ```
 poetry run python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --epos=20 --aname=vade --zd_dim=20 --d_dim=3 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=9 --bs 2 --lr 0.00005 --split 0.8 --prior Gaus --model cnn --inject_var "class" --dim_inject_y 3 --dpath "../HER2/combined_train/"
 ```
-### SDCN + batching
-SDCN is a deep neural network model that combines GCN and AE architectures for the purpose of unsupervised clustering[5].
+
+### SDCN, and modified SDCN for WSI data
+
+SDCN is a deep neural network model that combines GCN and AE architectures for the purpose of unsupervised clustering.[5]
 
 However, original SDCN model faces significant scalability challenges that hinder its deployment in digital pathology, 
 particularly when dealing with whole-slide digital pathology images (WSI), which are typically of gigapixel size or larger.
 This limitation arises from SDCN need for constructing a graph on the entire dataset and the imperative to process all data in a single
 batch during training. To overcome this issue, we propose batching strategy to the SDCN training process and introduce 
-a novel batching approach tailored specifically for WSI data.
+a novel batching approach tailored specifically for WSI data.[6]
 
 
 ```

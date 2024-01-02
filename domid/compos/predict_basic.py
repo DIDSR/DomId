@@ -5,6 +5,7 @@ from domid.utils.perf_cluster import PerfCluster
 from domid.utils.perf_similarity import PerfCorrelation
 from domid.dsets.make_graph_wsi import GraphConstructorWSI
 
+
 class Prediction:
     def __init__(self, model, device, loader_tr, loader_val, i_h, i_w, bs):
         self.loader_tr = loader_tr
@@ -16,8 +17,6 @@ class Prediction:
         self.is_inject_domain = False
         # if self.args.dim_inject_y > 0:
         #     self.is_inject_domain = True
-        
-
 
     def mk_prediction(self):
         """
@@ -31,18 +30,18 @@ class Prediction:
         """
 
         num_img = len(self.loader_tr.dataset)  # FIXME: this returns sample size + 1 for some reason
-        if self.model.args.task == 'wsi' and self.model.args.aname=='sdcn':
-            num_img = int(self.model.args.bs/3)
+        if self.model.args.task == "wsi" and self.model.args.aname == "sdcn":
+            num_img = int(self.model.args.bs / 3)
         z_proj = np.zeros((num_img, self.model.zd_dim))
         prob_proj = np.zeros((num_img, self.model.d_dim))
         input_imgs = np.zeros((num_img, 3, self.i_h, self.i_w))
 
         image_id_labels = []
-        vec_d_labels =[]
-        vec_y_labels =[]
+        vec_d_labels = []
+        vec_y_labels = []
         predictions = []
         counter = 0
-        #import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         with torch.no_grad():
 
             for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
@@ -52,12 +51,14 @@ class Prediction:
                         inject_tensor = inject_tensor.to(self.device)
 
                 if self.model.args.random_batching:
-                    patches_idx = self.model.random_ind[i] #torch.randint(0, len(vec_y), (int(self.args.bs/3),))
+                    patches_idx = self.model.random_ind[i]  # torch.randint(0, len(vec_y), (int(self.args.bs/3),))
                     tensor_x = tensor_x[patches_idx, :, :, :]
                     vec_y = vec_y[patches_idx, :]
                     vec_d = vec_d[patches_idx, :]
-                    image_id =[image_id[patch_idx_num] for patch_idx_num in patches_idx]
-                    self.model.adj = GraphConstructorWSI().construct_graph(tensor_x, image_id, self.model.graph_method, None)
+                    image_id = [image_id[patch_idx_num] for patch_idx_num in patches_idx]
+                    self.model.adj = GraphConstructorWSI().construct_graph(
+                        tensor_x, image_id, self.model.graph_method, None
+                    )
 
                 for ii in range(0, tensor_x.shape[0]):
 
@@ -65,16 +66,13 @@ class Prediction:
                     vec_y_labels.append(torch.argmax(vec_y[ii, :]).item())
                     image_id_labels.append(image_id[ii])
 
-
-
-
                 tensor_x, vec_y, vec_d = (
                     tensor_x.to(self.device),
                     vec_y.to(self.device),
                     vec_d.to(self.device),
                 )
 
-                if self.model.args.aname!='sdcn':
+                if self.model.args.aname != "sdcn":
                     results = self.model.infer_d_v_2(tensor_x, inject_tensor)
                 else:
                     results = self.model.infer_d_v_2(tensor_x)
@@ -84,23 +82,27 @@ class Prediction:
                 input_imgs[counter : counter + tensor_x.shape[0], :, :, :] = tensor_x.cpu().detach().numpy()
                 z_proj[counter : counter + tensor_x.shape[0], :] = z
                 prob_proj[counter : counter + tensor_x.shape[0], :] = probs
-                
 
                 preds = preds.detach().cpu()
-                #domain_labels[counter : counter + z.shape[0], 0] = torch.argmax(preds, 1) + 1
-                predictions+=(torch.argmax(preds, 1) + 1).tolist()
+                # domain_labels[counter : counter + z.shape[0], 0] = torch.argmax(preds, 1) + 1
+                predictions += (torch.argmax(preds, 1) + 1).tolist()
                 counter += z.shape[0]
 
         return input_imgs, z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels
 
     def epoch_tr_acc(self):
-        acc_vec_y, conf_y, acc_vec_d, conf_d= PerfCluster.cal_acc(self.model, self.loader_tr, self.device, max_batches=None)
+        acc_vec_y, conf_y, acc_vec_d, conf_d = PerfCluster.cal_acc(
+            self.model, self.loader_tr, self.device, max_batches=None
+        )
         return acc_vec_y, conf_y, acc_vec_d, conf_d
 
     def epoch_val_acc(self):
-        acc_vec_y, conf_y, acc_vec_d, conf_d = PerfCluster.cal_acc(self.model, self.loader_val, self.device, max_batches=None)
+        acc_vec_y, conf_y, acc_vec_d, conf_d = PerfCluster.cal_acc(
+            self.model, self.loader_val, self.device, max_batches=None
+        )
 
         return acc_vec_y, conf_y, acc_vec_d, conf_d
+
     def epoch_tr_correlation(self):
 
         correlation_tr = PerfCorrelation.cal_acc(self.model, self.loader_tr, self.device, max_batches=None)
