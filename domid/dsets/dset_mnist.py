@@ -21,7 +21,7 @@ class DsetMNIST(Dataset):
     """
 
     @store_args
-    def __init__(self, digit, args, subset_step=10, list_transforms=None,raw_split="train"):
+    def __init__(self, digit, args, subset_step=10, list_transforms=None, raw_split="train"):
         """
         :param digit: a integer value from 0 to 9; only images of this digit will be kept.
         :param path: disk storage directory
@@ -34,9 +34,6 @@ class DsetMNIST(Dataset):
 
         # keep only images of specified digit
         self.images = dataset.data[dataset.targets == digit]
-        # if subset_step == 1 and args.debug:
-        #     # used to speed up the unit tests
-        #     subset_step = 100
         inds_subset = list(range(0, self.images.shape[0], subset_step))
         self.images = self.images[inds_subset]
         n_img = self.images.shape[0]
@@ -65,10 +62,9 @@ class DsetMNIST(Dataset):
         label = self.labels[idx]
         label = mk_fun_label2onehot(10)(label)
         if self.inject_variable:
-            inject_tensor = np.random.randint(0, self.args.dim_inject_y, size=(1, ))[0]
+            inject_tensor = np.random.randint(0, self.args.dim_inject_y, size=(1,))[0]
             # inject_tensor = torch.randint(low=0, high=self.args.dim_inject_y, size=(len(label),))
-            inject_tensor = mk_fun_label2onehot(self.args.dim_inject_y)(inject_tensor-1)
-
+            inject_tensor = mk_fun_label2onehot(self.args.dim_inject_y)(inject_tensor - 1)
 
         else:
             inject_tensor = []
@@ -85,10 +81,4 @@ class DsetMNIST(Dataset):
         # else:
         #     inject_domain = np.array([])
 
-        return (
-            image,
-            label,
-            inject_tensor,
-            location
-
-        )  # FIXME for mnist color as well
+        return (image, label, inject_tensor, location)  # FIXME for mnist color as well

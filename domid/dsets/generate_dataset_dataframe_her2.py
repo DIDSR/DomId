@@ -46,6 +46,7 @@ def parse_machine_labels(image_names):
         machine_labels.append(machine)
     return machine_labels
 
+
 def mean_scores_per_experiment(scores, img_locs):
     """
     Parser to get mean scores per image from the cvs file.
@@ -57,21 +58,16 @@ def mean_scores_per_experiment(scores, img_locs):
 
     for image_loc in img_locs:
         try:
-            image_loc = str(
-                image_loc.split("/")[-1]
-            )  # depending if the path is full or not, take the img name only
+            image_loc = str(image_loc.split("/")[-1])  # depending if the path is full or not, take the img name only
         except:
             "not full path"
 
-        N = len(image_loc) - 6 #removes the _machine.jpg part from the name of the image
-        mean_score = scores.loc[
-            scores["file name"].str.contains(image_loc[:N])
-        ].mean(axis=1)
+        N = len(image_loc) - 6  # removes the _machine.jpg part from the name of the image
+        mean_score = scores.loc[scores["file name"].str.contains(image_loc[:N])].mean(axis=1)
         mean_score = float(mean_score)
         # print(mean_score)
         M.append(mean_score)
     return M
-
 
 
 if __name__ == "__main__":
@@ -90,7 +86,7 @@ if __name__ == "__main__":
         images = os.listdir(folder_path)
         labels = [label_of_the_folder_int] * len(images)
         machine_labels = parse_machine_labels(images)
-        base_path_scores = os.path.join(*path.split('/')[:-1])
+        base_path_scores = os.path.join(*path.split("/")[:-1])
         # base_path = "/your/data/location"
 
         scores = pd.read_csv(
@@ -98,9 +94,7 @@ if __name__ == "__main__":
             names=["num", "file name", "s1", "s2", "s3", "s4", "s5", "s6", "s_7"],
         )
         individual_scores = mean_scores_per_experiment(scores, images)
-        data[start : start + len(images), :] = np.stack(
-            (images, labels, machine_labels, individual_scores), 0
-        ).T
+        data[start : start + len(images), :] = np.stack((images, labels, machine_labels, individual_scores), 0).T
         start += len(images)
         print(len(images))
 

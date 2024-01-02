@@ -15,6 +15,7 @@ from domid.dsets.make_graph_wsi import GraphConstructorWSI
 import torch.nn.parallel
 import torch.distributed as dist
 
+
 class TrainerCluster(AbstractTrainer):
     def __init__(self, model, task, observer, device, writer, pretrain=True, aconf=None):
         """
@@ -29,7 +30,6 @@ class TrainerCluster(AbstractTrainer):
 
         super().__init__()
         super().init_business(model, task, observer, device, aconf)
-        
 
         print(model)
         self.pretrain = pretrain
@@ -37,8 +37,7 @@ class TrainerCluster(AbstractTrainer):
         self.lr = aconf.lr
         self.warmup_beta = 0.1
         if not self.pretraining_finished:
-            self.optimizer = optim.Adam(self.model.parameters(), lr=self.lr
-            )
+            self.optimizer = optim.Adam(self.model.parameters(), lr=self.lr)
             print("".join(["#"] * 60) + "\nPretraining initialized.\n" + "".join(["#"] * 60))
         else:
             self.optimizer = optim.Adam(self.model.parameters(), lr=self.lr)
@@ -52,25 +51,26 @@ class TrainerCluster(AbstractTrainer):
         self.loader_val = task.loader_tr
         self.aname = aconf.aname
         self.graph_method = self.model.graph_method
-            
-        assert self.graph_method, "Graph calculation methos should be specified"
-        print('Graph calculation method is', self.graph_method)
 
-        #Initializing GNN with a sample graph and calculating all the graphs is needed for all of the batches
-        if self.args.task!='wsi':
-            #this calculates graph once and uses it for all the epochs
-            self.adj_mx, self.spar_mx = GraphConstructor(self.graph_method).construct_graph(self.loader_tr, self.graph_method, self.storage.experiment_name) #.to(self.device)
-            self.model.adj =  self.spar_mx[0]
+        assert self.graph_method, "Graph calculation methos should be specified"
+        print("Graph calculation method is", self.graph_method)
+
+        # Initializing GNN with a sample graph and calculating all the graphs is needed for all of the batches
+        if self.args.task != "wsi":
+            # this calculates graph once and uses it for all the epochs
+            self.adj_mx, self.spar_mx = GraphConstructor(self.graph_method).construct_graph(
+                self.loader_tr, self.graph_method, self.storage.experiment_name
+            )  # .to(self.device)
+            self.model.adj = self.spar_mx[0]
         else:
             # this initializes to calculate graph on the fly for every epoch
-            self.graph_constr= GraphConstructorWSI(self.graph_method)
-            init_adj_mx, init_spar_mx = self.graph_constr.construct_graph(next(iter(self.loader_tr))[0][:int(self.args.bs/3), :,:, :],
-                                                                 next(iter(self.loader_tr))[-1][:int(self.args.bs/3)],
-                                                                 self.storage.experiment_name)
-            self.model.adj =  init_spar_mx
-            
-        
-
+            self.graph_constr = GraphConstructorWSI(self.graph_method)
+            init_adj_mx, init_spar_mx = self.graph_constr.construct_graph(
+                next(iter(self.loader_tr))[0][: int(self.args.bs / 3), :, :, :],
+                next(iter(self.loader_tr))[-1][: int(self.args.bs / 3)],
+                self.storage.experiment_name,
+            )
+            self.model.adj = init_spar_mx
 
     def tr_epoch(self, epoch):
         """
@@ -82,16 +82,20 @@ class TrainerCluster(AbstractTrainer):
         self.model.train()
         self.epo_loss_tr = 0
 
-        pretrain = PretrainingSDCN(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args)
-        prediction = Prediction(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args.bs)
+        pretrain = PretrainingSDCN(
+            self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args
+        )
+        prediction = Prediction(
+            self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args.bs
+        )
         acc_tr_y, _, acc_tr_d, _ = prediction.epoch_tr_acc()
         acc_val_y, _, acc_val_d, _ = prediction.epoch_val_acc()
-        r_score_tr = 'None'
-        r_score_te = 'None'
+        r_score_tr = "None"
+        r_score_te = "None"
         kl_total = 0
         ce_total = 0
         re_total = 0
-        if self.args.task == 'her2':
+        if self.args.task == "her2":
             r_score_tr = prediction.epoch_tr_correlation()
             r_score_te = prediction.epoch_val_correlation()  # validation set is used as a test set
         # ___________Define warm-up for ELBO loss_________
@@ -99,30 +103,31 @@ class TrainerCluster(AbstractTrainer):
             self.warmup_beta = self.warmup_beta + 0.01
         # _____________one training epoch: start_______________________
         for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
-        
-            if i==0:
+
+            if i == 0:
                 self.model.batch_zero = True
             if self.args.random_batching:
-                patches_idx = self.model.random_ind[i] #torch.randint(0, len(vec_y), (int(self.args.bs/3),))
+                patches_idx = self.model.random_ind[i]  # torch.randint(0, len(vec_y), (int(self.args.bs/3),))
                 tensor_x = tensor_x[patches_idx, :, :, :]
                 vec_y = vec_y[patches_idx, :]
                 vec_d = vec_d[patches_idx, :]
-                image_id =[image_id[patch_idx_num] for patch_idx_num in patches_idx]
-                
-                self.model.adj =self.graph_constr.construct_graph(tensor_x, image_id, self.graph_method, self.storage.experiment_name)
-                
+                image_id = [image_id[patch_idx_num] for patch_idx_num in patches_idx]
+
+                self.model.adj = self.graph_constr.construct_graph(
+                    tensor_x, image_id, self.graph_method, self.storage.experiment_name
+                )
+
             else:
-                self.model.adj =  self.spar_mx[i]#.to(self.device)
-                
-            
-            print('i_' + str(i), vec_y.argmax(dim=1).unique(), vec_d.argmax(dim=1).unique())
-            
+                self.model.adj = self.spar_mx[i]  # .to(self.device)
+
+            print("i_" + str(i), vec_y.argmax(dim=1).unique(), vec_d.argmax(dim=1).unique())
+
             tensor_x, vec_y, vec_d = (
                 tensor_x.to(self.device),
                 vec_y.to(self.device),
                 vec_d.to(self.device),
             )
-            
+
             self.optimizer.zero_grad()
 
             # __________________Pretrain/ELBO loss____________
@@ -132,7 +137,7 @@ class TrainerCluster(AbstractTrainer):
                 if not self.pretraining_finished:
                     self.pretraining_finished = True
                     # reset the optimizer
-                    self.model.counter =1
+                    self.model.counter = 1
                     self.optimizer = optim.Adam(
                         self.model.parameters(),
                         lr=self.lr,
@@ -166,18 +171,19 @@ class TrainerCluster(AbstractTrainer):
         if not self.pretraining_finished:
             pretrain.model_fit()
 
-
-        #__________________Validation_____________________
+        # __________________Validation_____________________
         for i, (tensor_x_val, vec_y_val, vec_d_val, *other_vars) in enumerate(self.loader_val):
 
             if self.args.random_batching:
-                patches_idx = self.model.random_ind[i] #torch.randint(0, len(vec_y), (int(self.args.bs/3),))
+                patches_idx = self.model.random_ind[i]  # torch.randint(0, len(vec_y), (int(self.args.bs/3),))
                 tensor_x_val = tensor_x_val[patches_idx, :, :, :]
                 vec_y_val = vec_y_val[patches_idx, :]
                 vec_d_val = vec_d_val[patches_idx, :]
-                img_id_val =[img_id_val[patch_idx_num] for patch_idx_num in patches_idx]
-                
-                self.model.adj = self.graph_constr.construct_graph(tensor_x_val, img_id_val, self.graph_method, self.storage.experiment_name)
+                img_id_val = [img_id_val[patch_idx_num] for patch_idx_num in patches_idx]
+
+                self.model.adj = self.graph_constr.construct_graph(
+                    tensor_x_val, img_id_val, self.graph_method, self.storage.experiment_name
+                )
 
             tensor_x_val, vec_y_val, vec_d_val = (
                 tensor_x_val.to(self.device),
@@ -200,27 +206,31 @@ class TrainerCluster(AbstractTrainer):
             loss,
             self.pretraining_finished,
             tensor_x,
-        other_info = (kl_total, ce_total, re_total))
-        if self.args.task=='wsi':
-            self.model.random_ind = [torch.randint(0, self.args.bs, (int(self.args.bs/3), )) for i in range(0, 65)]
+            other_info=(kl_total, ce_total, re_total),
+        )
+        if self.args.task == "wsi":
+            self.model.random_ind = [torch.randint(0, self.args.bs, (int(self.args.bs / 3),)) for i in range(0, 65)]
 
-            if epoch==self.args.epos-1 or epoch==self.args.epos:
-            
-                self.model.random_ind = [torch.range(0, int(self.args.bs/3)-1, step=1, dtype=torch.long) for i in range(0, 65)] #FIXME
+            if epoch == self.args.epos - 1 or epoch == self.args.epos:
+
+                self.model.random_ind = [
+                    torch.range(0, int(self.args.bs / 3) - 1, step=1, dtype=torch.long) for i in range(0, 65)
+                ]  # FIXME
                 # arg.bs/3 =900, as a 1/3 of all of the patchs per subject
                 # TODO:assert statement that all images from one region
 
         # _____storing results and Z space__________
-        self.storage.storing(epoch, acc_tr_y, acc_tr_d, self.epo_loss_tr, acc_val_y, acc_val_d, loss_val,
-                             r_score_tr, r_score_te)
+        self.storage.storing(
+            epoch, acc_tr_y, acc_tr_d, self.epo_loss_tr, acc_val_y, acc_val_d, loss_val, r_score_tr, r_score_te
+        )
         if epoch % 1 == 0:
-            _, z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels  = prediction.mk_prediction()
+            _, z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels = prediction.mk_prediction()
             self.storage.storing_z_space(z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels)
         if epoch % 1 == 0:
             self.storage.saving_model(self.model)
 
         flag_stop = self.observer.update(epoch)  # notify observer
-        #self.storage.csv_dump(epoch)
+        # self.storage.csv_dump(epoch)
         return flag_stop
 
     def before_tr(self):

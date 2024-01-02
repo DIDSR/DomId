@@ -17,16 +17,17 @@ class NodeAlgoBuilderM2YD(NodeAlgoBuilder):
         task = exp.task
         args = exp.args
         device = get_device(args)
-        model = ModelXY2D(y_dim=len(task.list_str_y),
-                          list_str_y=task.list_str_y,
-                          zd_dim=args.zd_dim,
-                          gamma_y=args.gamma_y,
-                          device=device,
-                          i_c=task.isize.c,
-                          i_h=task.isize.h,
-                          i_w=task.isize.w)
-        observer = ObVisitorCleanUp(
-            ObVisitorClustering(exp, MSelOracleVisitor(MSelTrLoss(max_es=args.es)), device))
+        model = ModelXY2D(
+            y_dim=len(task.list_str_y),
+            list_str_y=task.list_str_y,
+            zd_dim=args.zd_dim,
+            gamma_y=args.gamma_y,
+            device=device,
+            i_c=task.isize.c,
+            i_h=task.isize.h,
+            i_w=task.isize.w,
+        )
+        observer = ObVisitorCleanUp(ObVisitorClustering(exp, MSelOracleVisitor(MSelTrLoss(max_es=args.es)), device))
         trainer = TrainerBasic()
         trainer.init_business(model, task, observer, device, args)
         return trainer

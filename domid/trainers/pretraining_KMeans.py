@@ -7,7 +7,9 @@ from sklearn.neighbors import KNeighborsClassifier
 from scipy.optimize import linear_sum_assignment
 from sklearn.metrics import confusion_matrix
 from sklearn.cluster import KMeans
-class Pretraining():
+
+
+class Pretraining:
     def __init__(self, model, device, loader_tr, loader_val, i_h, i_w, args):
         """
         :param model: the model to train
@@ -31,10 +33,9 @@ class Pretraining():
         :param tensor_x: the input image
         :return: the loss
         """
-       # import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         loss = self.model.pretrain_loss(tensor_x, inject_tensor)
         return loss
-
 
     def model_fit(self):
 
@@ -54,12 +55,9 @@ class Pretraining():
                     vec_d.to(self.device),
                 )
 
-                preds, z_mu, z, log_sigma2_c, probs, x_pro= self.model.infer_d_v_2(tensor_x, inject_tensor)
+                preds, z_mu, z, log_sigma2_c, probs, x_pro = self.model.infer_d_v_2(tensor_x, inject_tensor)
                 z_ = z.detach().cpu().numpy()  # [batch_size, zd_dim]
-                Z[counter:counter + z.shape[0], :] = z_
-
-
-
+                Z[counter : counter + z.shape[0], :] = z_
 
         kmeans = KMeans(n_clusters=self.args.d_dim, n_init=20)
         predictions = kmeans.fit_predict(Z)

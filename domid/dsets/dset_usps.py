@@ -12,12 +12,9 @@ from torch.utils.data import Dataset
 from torchvision import datasets, transforms
 
 
-
 class DsetUSPS(Dataset):
-
-
     @store_args
-    def __init__(self, digit,args, subset_step=1, list_transforms=None):
+    def __init__(self, digit, args, subset_step=1, list_transforms=None):
 
         dpath = os.path.normpath(args.dpath)
         self.digit = digit
@@ -29,15 +26,15 @@ class DsetUSPS(Dataset):
         self.labels = all_labels[torch.Tensor(self.dataset.targets) == digit].to(dtype=torch.long)
         self.args = args
         self.inject_variable = args.inject_var
+
     def get_original_indicies(self):
         return (torch.Tensor(self.dataset.targets) == self.digit).nonzero().flatten()
-
 
     def __len__(self):
         return len(self.images)
 
     def __getitem__(self, idx):
-        #img_loc = os.path.join(self.img_dir, self.images[idx])
+        # img_loc = os.path.join(self.img_dir, self.images[idx])
         image = self.images[idx]
         image = Image.fromarray(image)
         # image = image.convert("RGB")
@@ -47,10 +44,6 @@ class DsetUSPS(Dataset):
                 image = trans(image)
         else:
             image = transforms.ToTensor()(image)
-
-
-
-
 
         label = self.labels[idx]
 

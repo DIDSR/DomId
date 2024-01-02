@@ -20,14 +20,12 @@ class NodeTaskHER2(NodeTaskDictCluster):
         """
         return mk_dummy_label_list_str("dummy", 3)
 
-
-
     @property
     def isize(self):
         """
         :return: image size object storing image channels, height, width.
         """
-        return ImSize(3,32 , 32)  # FIXME should be in sync with transforms
+        return ImSize(3, 32, 32)  # FIXME should be in sync with transforms
 
     def get_list_domains(self):
         """
@@ -45,7 +43,7 @@ class NodeTaskHER2(NodeTaskDictCluster):
         set, no need to split; args.split: by default, split is set to be
         zero which in python can be evaluated in if statement, in which case,
         no separate validation set will be created. Otherwise, this argument
-        is the percentage of the data to be used as training set, while the 
+        is the percentage of the data to be used as training set, while the
         rest will be used as validation set.
         :return: training dataset, validation dataset
         """
@@ -61,13 +59,16 @@ class NodeTaskHER2(NodeTaskDictCluster):
         # mean = [0.6399, 0.5951, 0.6179]
         # std = [0.1800, 0.1980, 0.2070]
 
-
-        trans = transforms.Compose([transforms.Resize((32, 32)),
-                                    transforms.RandomHorizontalFlip(),
-                                    transforms.RandomVerticalFlip(),
-                                    transforms.RandomAutocontrast(0.25),
-                                    transforms.RandomAdjustSharpness(2, 0.25),
-                                    transforms.ToTensor()])
+        trans = transforms.Compose(
+            [
+                transforms.Resize((32, 32)),
+                transforms.RandomHorizontalFlip(),
+                transforms.RandomVerticalFlip(),
+                transforms.RandomAutocontrast(0.25),
+                transforms.RandomAdjustSharpness(2, 0.25),
+                transforms.ToTensor(),
+            ]
+        )
 
         dset = DsetHER2(ind_global, args.dpath, args.d_dim, args.inject_var, transform=trans)
         train_set = dset

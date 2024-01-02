@@ -1,7 +1,6 @@
 # from domainlab.tasks.task_mnist_color import NodeTaskMNISTColor10
 from domainlab.tasks.b_task import NodeTaskDict
-from domainlab.tasks.utils_task import (DsetDomainVecDecorator, ImSize,
-                                        mk_loader, mk_onehot)
+from domainlab.tasks.utils_task import DsetDomainVecDecorator, ImSize, mk_loader, mk_onehot
 from domainlab.utils.utils_classif import mk_dummy_label_list_str
 from torch.utils.data import random_split
 import os
@@ -13,8 +12,6 @@ from domid.tasks.b_task_cluster import NodeTaskDictCluster
 
 
 class NodeTaskWSI(NodeTaskDictCluster):
-
-
     @property
     def list_str_y(self):
         """
@@ -59,10 +56,10 @@ class NodeTaskWSI(NodeTaskDictCluster):
         dpath = args.dpath  # png_files/32, 16))]  # , transforms.ToTensor()]
         ind_global = self.get_list_domains().index(na_domain)
         df = pd.read_csv(args.meta_data_csv)
-        mask = df[df['subject']==ind_global]
-        #mask = df['resp'].values == ind_global  # response (0 o 1)
-        img_paths = np.array(mask['path'])  # [:400]
- 
+        mask = df[df["subject"] == ind_global]
+        # mask = df['resp'].values == ind_global  # response (0 o 1)
+        img_paths = np.array(mask["path"])  # [:400]
+
         trans = [transforms.Resize((64, 64))]
         dset = DsetWSI(class_num=ind_global, path=img_paths, args=args, transform=trans)
         train_set = dset
@@ -77,6 +74,7 @@ class NodeTaskWSI(NodeTaskDictCluster):
 
 def test_fun():
     from domainlab.arg_parser import mk_parser_main
+
     parser = mk_parser_main()
     args = parser.parse_args(["--te_d", "0", "--dpath", "zout", "--split", "0.2"])
     node = NodeTaskMNIST()

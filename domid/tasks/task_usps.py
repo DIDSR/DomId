@@ -1,17 +1,19 @@
 from domainlab.tasks.task_mnist_color import NodeTaskMNISTColor10
-from domainlab.tasks.utils_task import (DsetDomainVecDecorator, ImSize,
-                                        mk_loader, mk_onehot)
+from domainlab.tasks.utils_task import DsetDomainVecDecorator, ImSize, mk_loader, mk_onehot
 from domainlab.utils.utils_classif import mk_dummy_label_list_str
 from torch.utils.data import random_split
 from torchvision import transforms
 
 from domid.dsets.dset_usps import DsetUSPS
 from domid.tasks.b_task_cluster import NodeTaskDictCluster
+
+
 class NodeTaskUSPS(NodeTaskDictCluster):
     """Basic USPS task where the digits are considered "domains"
 
     The digits (0, 1, ..., 9) are regarded as domains (to be separated by unsupervised clustering). Based on NodeTaskMNISTColor10 from DomainLab.
     """
+
     @property
     def list_str_y(self):
         """
@@ -55,7 +57,7 @@ class NodeTaskUSPS(NodeTaskDictCluster):
         # the split ratio
         trans = [transforms.Resize((16, 16)), transforms.ToTensor()]
         ind_global = self.get_list_domains().index(na_domain)
-        dset = DsetUSPS( digit= ind_global, args = args, list_transforms=trans)
+        dset = DsetUSPS(digit=ind_global, args=args, list_transforms=trans)
         train_set = dset
         val_set = dset
         # split dset into training and validation sets
@@ -65,8 +67,10 @@ class NodeTaskUSPS(NodeTaskDictCluster):
         #     train_set, val_set = random_split(dset, [train_len, val_len])
         return train_set, val_set
 
+
 def test_fun():
     from domainlab.arg_parser import mk_parser_main
+
     parser = mk_parser_main()
     args = parser.parse_args(["--te_d", "0", "--dpath", "zout", "--split", "0.2"])
     node = NodeTaskMNIST()

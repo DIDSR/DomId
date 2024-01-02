@@ -1,7 +1,5 @@
-
 from domid.algos.builder_vade import NodeAlgoBuilderVaDE
-from domid.algos.observers.b_obvisitor_clustering_only import \
-    ObVisitorClusteringOnly
+from domid.algos.observers.b_obvisitor_clustering_only import ObVisitorClusteringOnly
 from domid.arg_parser import mk_parser_main
 from domid.compos.exp.exp_main import Exp
 from domid.models.model_vade import ModelVaDE
@@ -10,6 +8,7 @@ from domid.trainers.trainer_cluster import TrainerCluster
 
 # Note: to run tests 'poetry run pytest domid/tests/test_model_trainer.py '.
 # If there is an error with dependencies, try 'poetry install' first. Or manually add PYTHONPATH to the path of the DomId folder.
+
 
 def experiment_train(args):
     exp = Exp(args)
@@ -348,10 +347,12 @@ def test_MNIST_conditionalOne_train():
             "--dim_inject_y",
             "10",
             "--inject_var",
-            "digit"
+            "digit",
         ]
     )
     experiment_train(args)
+
+
 def test_MNISTcolor_SDCN():
     # MNIST color cnn vade with pretraining
     parser = mk_parser_main()
@@ -392,11 +393,12 @@ def test_MNISTcolor_SDCN():
             "--pre_tr_weight_path",
             "./notebooks/2023-11-30 10:52:19.451201_mnist_ae/",
             "--epos",
-            "3"
-
+            "3",
         ]
     )
     experiment_train(args)
+
+
 def test_MNISTcolor_AE():
     # MNIST color cnn vade with pretraining
     parser = mk_parser_main()
@@ -435,11 +437,12 @@ def test_MNISTcolor_AE():
             "--pre_tr",
             "1",
             "--epos",
-            "3"
-
+            "3",
         ]
     )
     experiment_train(args)
+
+
 # def test_MNIST_conditional_train():
 #     # create a text file filled with 0s, 1s, and 2s
 #     with open("domid/tests/domain_labels.txt", "w") as f:

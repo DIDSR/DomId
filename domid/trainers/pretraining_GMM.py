@@ -4,7 +4,7 @@ import torch.optim as optim
 from sklearn.mixture import GaussianMixture
 
 
-class Pretraining():
+class Pretraining:
     def __init__(self, model, device, loader_tr, loader_val, i_h, i_w, args):
         """
         :param model: the model to train
@@ -28,10 +28,9 @@ class Pretraining():
         :param tensor_x: the input image
         :return: the loss
         """
-       # import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         loss = self.model.pretrain_loss(tensor_x, inject_tensor)
         return loss
-
 
     def GMM_fit(self):
         """
@@ -44,7 +43,7 @@ class Pretraining():
         counter = 0
         with torch.no_grad():
             for tensor_x, vec_y, vec_d, *other_vars in self.loader_tr:
-                if len(other_vars)>0:
+                if len(other_vars) > 0:
                     inject_tensor, image_id = other_vars
                     if len(inject_tensor) > 0:
                         inject_tensor = inject_tensor.to(self.device)
@@ -57,15 +56,17 @@ class Pretraining():
 
                 preds, z_mu, z, *_ = self.model.infer_d_v_2(tensor_x, inject_tensor)
                 z = z.detach().cpu().numpy()  # [batch_size, zd_dim]
-                Z[counter:counter + z.shape[0], :] = z
+                Z[counter : counter + z.shape[0], :] = z
                 counter += z.shape[0]
 
         try:
-            gmm = GaussianMixture(n_components=self.model.d_dim, covariance_type='diag', reg_covar = 10 ** -3) #, reg_covar=10)
+            gmm = GaussianMixture(
+                n_components=self.model.d_dim, covariance_type="diag", reg_covar=10**-3
+            )  # , reg_covar=10)
             out_fit_pred = gmm.fit_predict(Z)
             # print(out_fit_pred)
         except Exception as ex:
-            raise RuntimeError("Gaussian mixture model failed:"+str(ex))
+            raise RuntimeError("Gaussian mixture model failed:" + str(ex))
         # visitor/intruder to deep learning model to change model parameters
         self.model.log_pi.data = torch.log(torch.from_numpy(gmm.weights_)).to(self.device).float()
         # name convention: mu_c is the mean for the Gaussian mixture cluster,

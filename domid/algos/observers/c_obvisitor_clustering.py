@@ -1,4 +1,3 @@
-
 import warnings
 
 import numpy as np
@@ -9,7 +8,7 @@ from domainlab.utils.perf import PerfClassif
 from domainlab.utils.utils_class import store_args
 
 
-def pred2file(loader_te, model, device, fa='path_prediction.txt', flag_pred_scalar=False):
+def pred2file(loader_te, model, device, fa="path_prediction.txt", flag_pred_scalar=False):
     """
     stores prediction to txt file
     """
@@ -24,7 +23,7 @@ def pred2file(loader_te, model, device, fa='path_prediction.txt', flag_pred_scal
             list_pred_list = [np.asarray(pred).argmax() for pred in list_pred_list]
             list_label_list = [np.asarray(label).argmax() for label in list_label_list]
         list_pair_path_pred = list(zip(path, list_label_list, list_pred_list))  # label belongs to data
-        with open(fa, 'a') as f:
+        with open(fa, "a") as f:
             for pair in list_pair_path_pred:
                 print(str(pair)[1:-1], file=f)  # 1:-1 removes brackets of tuple
     print("prediction saved in file ", fa)
@@ -34,6 +33,7 @@ class ObVisitor(AObVisitor):
     """
     Observer + Visitor pattern for model selection
     """
+
     @store_args
     def __init__(self, exp, model_sel, device):
         """
@@ -96,13 +96,13 @@ class ObVisitor(AObVisitor):
         to be called by a decorator
         """
 
-        print('was in clean up in c obvisitor, but did not clean anything')
+        print("was in clean up in c obvisitor, but did not clean anything")
         if not self.keep_model:
             try:
-                self.exp.visitor.remove("epoch")    # the last epoch
+                self.exp.visitor.remove("epoch")  # the last epoch
                 # epoch exist to still have a model to evaluate if the training stops in between
                 self.exp.visitor.remove("final")
                 self.exp.visitor.remove()
-                self.exp.visitor.remove("oracle")   # oracle means use out-of-domain test accuracy to select the model
+                self.exp.visitor.remove("oracle")  # oracle means use out-of-domain test accuracy to select the model
             except Exception as e:
                 warnings.warn("failed to delete model")

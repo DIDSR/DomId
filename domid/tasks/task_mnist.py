@@ -1,6 +1,5 @@
 from domainlab.tasks.task_mnist_color import NodeTaskMNISTColor10
-from domainlab.tasks.utils_task import (DsetDomainVecDecorator, ImSize,
-                                        mk_loader, mk_onehot)
+from domainlab.tasks.utils_task import DsetDomainVecDecorator, ImSize, mk_loader, mk_onehot
 from domainlab.utils.utils_classif import mk_dummy_label_list_str
 from torch.utils.data import random_split
 from torchvision import transforms
@@ -13,6 +12,7 @@ class NodeTaskMNIST(NodeTaskMNISTColor10):
 
     The digits (0, 1, ..., 9) are regarded as domains (to be separated by unsupervised clustering). Based on NodeTaskMNISTColor10 from DomainLab.
     """
+
     @property
     def list_str_y(self):
         """
@@ -45,7 +45,7 @@ class NodeTaskMNIST(NodeTaskMNISTColor10):
             set, no need to split; args.split: by default, split is set to be
             zero which in python can be evaluated in if statement, in which case,
             no separate validation set will be created. Otherwise, this argument
-            is the percentage of the data to be used as training set, while the 
+            is the percentage of the data to be used as training set, while the
             rest will be used as validation set.
         :return: training dataset, validation dataset
         """
@@ -56,19 +56,21 @@ class NodeTaskMNIST(NodeTaskMNISTColor10):
         # the split ratio
         trans = [transforms.Resize((32, 32)), transforms.ToTensor()]
         ind_global = self.get_list_domains().index(na_domain)
-        dset = DsetMNIST( digit= ind_global, args = args, list_transforms=trans)
+        dset = DsetMNIST(digit=ind_global, args=args, list_transforms=trans)
         train_set = dset
         val_set = dset
         # split dset into training and validation sets
-        
+
         if ratio_split:
             train_len = int(len(dset) * ratio_split)
             val_len = len(dset) - train_len
             train_set, val_set = random_split(dset, [train_len, val_len])
         return train_set, val_set
 
+
 def test_fun():
     from domainlab.arg_parser import mk_parser_main
+
     parser = mk_parser_main()
     args = parser.parse_args(["--te_d", "0", "--dpath", "zout", "--split", "0.2"])
     node = NodeTaskMNIST()

@@ -10,6 +10,8 @@ from domid.compos.tensorboard_fun import tensorboard_write
 from domid.trainers.pretraining_KMeans import Pretraining
 from domid.utils.perf_cluster import PerfCluster
 from domid.dsets.make_graph import GraphConstructor
+
+
 class TrainerCluster(AbstractTrainer):
     def __init__(self, model, task, observer, device, writer, pretrain=True, aconf=None):
         """
@@ -30,8 +32,7 @@ class TrainerCluster(AbstractTrainer):
         self.lr = aconf.lr
         self.warmup_beta = 0.1
         if not self.pretraining_finished:
-            self.optimizer = optim.Adam(self.model.parameters(), lr=self.lr
-            )
+            self.optimizer = optim.Adam(self.model.parameters(), lr=self.lr)
             print("".join(["#"] * 60) + "\nPretraining initialized.\n" + "".join(["#"] * 60))
         else:
             self.optimizer = optim.Adam(self.model.parameters(), lr=self.lr)
@@ -45,7 +46,7 @@ class TrainerCluster(AbstractTrainer):
         self.loader_val = task.loader_tr
         self.aname = aconf.aname
 
-        #self.model.adj = GraphConstructor().construct_graph(self.loader_tr).to(self.device)
+        # self.model.adj = GraphConstructor().construct_graph(self.loader_tr).to(self.device)
 
     def tr_epoch(self, epoch):
         """
@@ -59,12 +60,14 @@ class TrainerCluster(AbstractTrainer):
 
         pretrain = Pretraining(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args)
 
-        prediction = Prediction(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args.bs)
+        prediction = Prediction(
+            self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args.bs
+        )
         acc_tr_y, _, acc_tr_d, _ = prediction.epoch_tr_acc()
         acc_val_y, _, acc_val_d, _ = prediction.epoch_val_acc()
-        r_score_tr = 'None'
-        r_score_te = 'None'
-        if self.args.task == 'her2':
+        r_score_tr = "None"
+        r_score_te = "None"
+        if self.args.task == "her2":
             r_score_tr = prediction.epoch_tr_correlation()
             r_score_te = prediction.epoch_val_correlation()  # validation set is used as a test set
         # ___________Define warm-up for ELBO loss_________
@@ -72,9 +75,9 @@ class TrainerCluster(AbstractTrainer):
             self.warmup_beta = self.warmup_beta + 0.01
         # _____________one training epoch: start_______________________
         for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
-            if i ==0:
+            if i == 0:
                 self.model.batch_zero = True
-                
+
             if len(other_vars) > 0:
                 inject_tensor, image_id = other_vars
                 if len(inject_tensor) > 0:
@@ -86,7 +89,7 @@ class TrainerCluster(AbstractTrainer):
                 vec_d.to(self.device),
             )
             self.optimizer.zero_grad()
-       
+
             # __________________Pretrain/ELBO loss____________
             if epoch < self.thres and not self.pretraining_finished:
                 loss = pretrain.pretrain_loss(tensor_x, inject_tensor)
@@ -94,7 +97,7 @@ class TrainerCluster(AbstractTrainer):
                 if not self.pretraining_finished:
                     self.pretraining_finished = True
                     # reset the optimizer
-                    self.model.counter =1
+                    self.model.counter = 1
                     self.optimizer = optim.Adam(
                         self.model.parameters(),
                         lr=self.lr,
@@ -104,7 +107,7 @@ class TrainerCluster(AbstractTrainer):
                     print("Epoch {}: Finished pretraining and starting to use the full model loss.".format(epoch))
                     print("".join(["#"] * 60))
 
-                loss = self.model.cal_loss(tensor_x,inject_tensor)
+                loss = self.model.cal_loss(tensor_x, inject_tensor)
 
             loss = loss.sum()
             loss.backward()
@@ -120,8 +123,7 @@ class TrainerCluster(AbstractTrainer):
         if not self.pretraining_finished:
             pretrain.model_fit()
 
-
-        #__________________Validation_____________________
+        # __________________Validation_____________________
         for i, (tensor_x_val, vec_y_val, vec_d_val, *other_vars) in enumerate(self.loader_val):
             if len(other_vars) > 0:
                 inject_tensor_val, img_id_val = other_vars
@@ -152,8 +154,9 @@ class TrainerCluster(AbstractTrainer):
         )
 
         # _____storing results and Z space__________
-        self.storage.storing(epoch, acc_tr_y, acc_tr_d, self.epo_loss_tr, acc_val_y, acc_val_d, loss_val,
-                             r_score_tr, r_score_te)
+        self.storage.storing(
+            epoch, acc_tr_y, acc_tr_d, self.epo_loss_tr, acc_val_y, acc_val_d, loss_val, r_score_tr, r_score_te
+        )
         if epoch % 2 == 0:
             _, z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels = prediction.mk_prediction()
             # _, Z, domain_labels, machine_labels, image_locs = prediction.mk_prediction()
@@ -163,7 +166,7 @@ class TrainerCluster(AbstractTrainer):
             self.storage.saving_model(self.model)
 
         flag_stop = self.observer.update(epoch)  # notify observer
-        #self.storage.csv_dump(epoch)
+        # self.storage.csv_dump(epoch)
         return flag_stop
 
     def before_tr(self):

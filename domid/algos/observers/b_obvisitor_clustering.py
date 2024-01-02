@@ -10,6 +10,7 @@ class ObVisitorClustering(ObVisitor):
     """
     Observer + Visitor pattern for clustering algorithms
     """
+
     def update(self, epoch):
         print("epoch:", epoch)
         self.epo = epoch
@@ -22,8 +23,6 @@ class ObVisitorClustering(ObVisitor):
             self.acc_val = acc_val
             print("clustering validation acc: ", acc_val)
             print(conf_mat_val)
-
-
 
         return super().update(epoch)
 

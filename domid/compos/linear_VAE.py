@@ -19,7 +19,7 @@ class LinearEncoder(nn.Module):
         self.encod = nn.Sequential(
             *linear_block(self.input_dim, features_dim[0]),
             *linear_block(features_dim[0], features_dim[1]),
-            *linear_block(features_dim[1], features_dim[2])
+            *linear_block(features_dim[1], features_dim[2]),
         )
         self.mu_layer = nn.Linear(features_dim[2], zd_dim)
         self.log_sigma2_layer = nn.Linear(features_dim[2], zd_dim)
@@ -30,11 +30,12 @@ class LinearEncoder(nn.Module):
         """
 
         assert x.shape[1] == 3
-        x = torch.reshape(x, (x.shape[0], 3*x.shape[2]*x.shape[3]))
+        x = torch.reshape(x, (x.shape[0], 3 * x.shape[2] * x.shape[3]))
         z = self.encod(x)
         mu = self.mu_layer(z)
         log_sigma2 = self.log_sigma2_layer(z)
         return mu, log_sigma2
+
 
 class LinearDecoder(nn.Module):
     def __init__(self, prior, zd_dim, input_dim=(3, 28, 28), features_dim=[500, 500, 2000]):
@@ -64,7 +65,7 @@ class LinearDecoder(nn.Module):
         """
         x_decoded = self.decod(z)
 
-        if self.prior == 'Bern':
+        if self.prior == "Bern":
             # if Bernoulli distribution sigmoid activation to mu is applied
             x_pro = self.mu_layer(x_decoded)
             x_pro = self.activation(x_pro)
@@ -77,4 +78,3 @@ class LinearDecoder(nn.Module):
         log_sigma = torch.reshape(log_sigma, (log_sigma.shape[0], *self.input_dim))
 
         return x_pro, log_sigma
-

@@ -15,45 +15,45 @@
 # Out[43]: array([0, 1, 2, 0, 1])
 #
 # 1. look at the first entry in the array
-#|    | t1 | t2 | t3 |
-#|----+----+----+----|
-#| p1 | +1 |    |    |
-#| p2 |    |    |    |
-#| p3 |    |    |    |
-#|----+----+----+----|
+# |    | t1 | t2 | t3 |
+# |----+----+----+----|
+# | p1 | +1 |    |    |
+# | p2 |    |    |    |
+# | p3 |    |    |    |
+# |----+----+----+----|
 #
 # 2. look at the second entry in the array
-#|    | t1 | t2 | t3 |
-#|----+----+----+----|
-#| p1 | 1  |    |    |
-#| p2 |    | +1 |    |
-#| p3 |    |    |    |
-#|----+----+----+----|
+# |    | t1 | t2 | t3 |
+# |----+----+----+----|
+# | p1 | 1  |    |    |
+# | p2 |    | +1 |    |
+# | p3 |    |    |    |
+# |----+----+----+----|
 #
 # 3. look at the third entry in the array
-#|    | t1 | t2 | t3 |
-#|----+----+----+----|
-#| p1 | 1  |    | +1 |
-#| p2 |    |  1 |    |
-#| p3 |    |    |    |
-#|----+----+----+----|
+# |    | t1 | t2 | t3 |
+# |----+----+----+----|
+# | p1 | 1  |    | +1 |
+# | p2 |    |  1 |    |
+# | p3 |    |    |    |
+# |----+----+----+----|
 #
 # 4. look at the 4th and 5th entry in the array
-#|    | t1 | t2 | t3 |
-#|----+----+----+----|
-#| p1 | 1  |  0 |  1 |
-#| p2 | +1 |1+1 |  0 |
-#| p3 | 0  | 0  |  0 |
-#|----+----+----+----|
+# |    | t1 | t2 | t3 |
+# |----+----+----+----|
+# | p1 | 1  |  0 |  1 |
+# | p2 | +1 |1+1 |  0 |
+# | p3 | 0  | 0  |  0 |
+# |----+----+----+----|
 #
 ## What is the best permutation?
 # we are trying to maximize the sum of the diagonal entries.
-#cost = - np.array([[1, 0, 1], [1, 2, 0], [0, 0, 0]])
-#row_ind, col_ind = linear_sum_assignment(cost)
-#col_ind
-#Out[52]: array([0, 1, 2])
-#cost[row_ind, col_ind].sum()  # note that this is not summing the full matrix but only the entries defined by zip(row_ind, col_ind)
-#Out[53]: -3
+# cost = - np.array([[1, 0, 1], [1, 2, 0], [0, 0, 0]])
+# row_ind, col_ind = linear_sum_assignment(cost)
+# col_ind
+# Out[52]: array([0, 1, 2])
+# cost[row_ind, col_ind].sum()  # note that this is not summing the full matrix but only the entries defined by zip(row_ind, col_ind)
+# Out[53]: -3
 #
 # # simpler way to construct the same matrix:
 # tmp_pred = np.array([[1., 0., 0.],
@@ -83,9 +83,11 @@ from scipy.optimize import linear_sum_assignment
 from sklearn.metrics import confusion_matrix
 from domid.dsets.make_graph_wsi import GraphConstructorWSI
 
+
 class PerfCluster(PerfClassif):
     """Clustering Performance"""
-    def __init__(self,  num_classes):
+
+    def __init__(self, num_classes):
         super().__init__()
         self.cost = np.zeros((num_classes, num_classes), dtype="int")
 
@@ -97,11 +99,9 @@ class PerfCluster(PerfClassif):
         """
 
         # if len(np.unique(cluster_pred_scalar)) == len(np.unique(cluster_true_scalar)):
-            # clusteqr_pred_scalar = [item - 1 for item in cluster_pred_scalar]
+        # clusteqr_pred_scalar = [item - 1 for item in cluster_pred_scalar]
 
-
-
-        cost = cost - confusion_matrix(cluster_pred_scalar, cluster_true_scalar,labels=list(range(cost.shape[0])))
+        cost = cost - confusion_matrix(cluster_pred_scalar, cluster_true_scalar, labels=list(range(cost.shape[0])))
 
         # What is the best permutation?
         row_ind, col_ind = linear_sum_assignment(cost)
@@ -109,7 +109,6 @@ class PerfCluster(PerfClassif):
         conf_mat = (-1) * cost[:, col_ind]
         # Accuracy for best permutation:
         acc_d = np.diag(conf_mat).sum() / conf_mat.sum()
-
 
         return acc_d, cost, conf_mat
 
@@ -134,40 +133,43 @@ class PerfCluster(PerfClassif):
         conf_mat_y_s = cost_y_s
         conf_mat_d_s = cost_d_s
 
-        hungarian_acc_y_s =0
-        hungarian_acc_d_s =0
+        hungarian_acc_y_s = 0
+        hungarian_acc_d_s = 0
 
         with torch.no_grad():
             for i, (x_s, y_s, d_s, *other_vars) in enumerate(loader_te):
                 if i >= max_batches:
                     break
-                try: #FIXME: major fixme here, need to redo the random batching
-                    if len(model.random_ind)>0: #other models do not have random_ind attribute
+                try:  # FIXME: major fixme here, need to redo the random batching
+                    if len(model.random_ind) > 0:  # other models do not have random_ind attribute
                         _, img_ids = other_vars
                         patch_num = model.random_ind[i]
-                        x_s = x_s[patch_num, :,:,:]
-                        y_s=y_s[patch_num]
-                        d_s=d_s[patch_num]
+                        x_s = x_s[patch_num, :, :, :]
+                        y_s = y_s[patch_num]
+                        d_s = d_s[patch_num]
                         img_ids = [img_ids[patch_id] for patch_id in patch_num]
 
                         _, model.adj = GraphConstructorWSI().construct_graph(x_s, img_ids, model.graph_method, None)
                 except:
                     pass
-                
+
                 x_s, y_s, d_s = x_s.to(device), y_s.to(device), d_s.to(device)
 
                 pred = model_local.infer_d_v(x_s)
-                list_vec_preds+=pred.argmax(axis=1).detach().cpu().numpy().tolist()
-                list_vec_y_labels+=y_s.argmax(axis=1).detach().cpu().numpy().tolist()
-                list_vec_d_labels+=d_s.argmax(axis=1).detach().cpu().numpy().tolist()
+                list_vec_preds += pred.argmax(axis=1).detach().cpu().numpy().tolist()
+                list_vec_y_labels += y_s.argmax(axis=1).detach().cpu().numpy().tolist()
+                list_vec_d_labels += d_s.argmax(axis=1).detach().cpu().numpy().tolist()
 
-            if pred.shape[1]==y_s.shape[1]:
+            if pred.shape[1] == y_s.shape[1]:
 
-                hungarian_acc_y_s, cost_y_s, conf_mat_y_s = clc.hungarian_algorithm(list_vec_preds, list_vec_y_labels, cost_y_s)
-            if pred.shape[1]==d_s.shape[1]:
+                hungarian_acc_y_s, cost_y_s, conf_mat_y_s = clc.hungarian_algorithm(
+                    list_vec_preds, list_vec_y_labels, cost_y_s
+                )
+            if pred.shape[1] == d_s.shape[1]:
 
-                hungarian_acc_d_s, cost_d_s, conf_mat_d_s = clc.hungarian_algorithm(list_vec_preds, list_vec_d_labels, cost_d_s)
-
+                hungarian_acc_d_s, cost_d_s, conf_mat_d_s = clc.hungarian_algorithm(
+                    list_vec_preds, list_vec_d_labels, cost_d_s
+                )
 
         return hungarian_acc_y_s, conf_mat_y_s, hungarian_acc_d_s, conf_mat_d_s
 
@@ -205,4 +207,3 @@ class PerfCluster(PerfClassif):
         # acc_d = np.diag(conf_mat).sum() / conf_mat.sum()
         #
         # return acc_d, conf_mat
-
