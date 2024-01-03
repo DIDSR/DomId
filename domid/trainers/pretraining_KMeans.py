@@ -1,12 +1,11 @@
 import numpy as np
 import torch
 import torch.optim as optim
-from sklearn.mixture import GaussianMixture
-
-from sklearn.neighbors import KNeighborsClassifier
 from scipy.optimize import linear_sum_assignment
-from sklearn.metrics import confusion_matrix
 from sklearn.cluster import KMeans
+from sklearn.metrics import confusion_matrix
+from sklearn.mixture import GaussianMixture
+from sklearn.neighbors import KNeighborsClassifier
 
 
 class Pretraining:

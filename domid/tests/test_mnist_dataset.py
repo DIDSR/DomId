@@ -1,6 +1,7 @@
+import torch
+
 from domid.arg_parser import mk_parser_main
 from domid.compos.exp.exp_main import Exp
-import torch
 from domid.models.model_m2yd import ModelXY2D
 from domid.models.model_vade import ModelVaDE
 from domid.tasks.task_mnist import NodeTaskMNIST

@@ -1,6 +1,7 @@
-import torch
 import numpy as np
+import torch
 from sklearn.cluster import KMeans
+
 from domid.dsets.make_graph_wsi import GraphConstructorWSI
 
 

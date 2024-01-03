@@ -1,24 +1,24 @@
+import os
 import warnings
+from datetime import datetime
 
+import matplotlib.pyplot as plt
 import numpy as np
+import scipy.sparse as sp
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from domainlab.dsets.utils_data import mk_fun_label2onehot
 from domainlab.utils.utils_classif import logit2preds_vpic
+from sklearn.cluster import KMeans
 from tensorboardX import SummaryWriter
-from domid.compos.linear_VAE import LinearDecoder, LinearEncoder
-from domid.models.a_model_cluster import AModelCluster
-from domid.compos.GNN_layer import GNNLayer
-from domid.compos.linear_AE import LinearEncoderAE, LinearDecoderAE
+
 from domid.compos.cnn_AE import ConvolutionalDecoder, ConvolutionalEncoder
 from domid.compos.GNN import GNN
-
-import scipy.sparse as sp
-import matplotlib.pyplot as plt
-import os
-from sklearn.cluster import KMeans
-from domainlab.dsets.utils_data import mk_fun_label2onehot
-from datetime import datetime
+from domid.compos.GNN_layer import GNNLayer
+from domid.compos.linear_AE import LinearDecoderAE, LinearEncoderAE
+from domid.compos.linear_VAE import LinearDecoder, LinearEncoder
+from domid.models.a_model_cluster import AModelCluster
 
 
 class ModelAE(AModelCluster):

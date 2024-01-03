@@ -3,8 +3,8 @@ from domainlab.utils.utils_classif import mk_dummy_label_list_str
 from torch.utils.data import random_split
 from torchvision import transforms
 
-from domid.tasks.b_task_cluster import NodeTaskDictCluster
 from domid.dsets.dset_her2 import DsetHER2
+from domid.tasks.b_task_cluster import NodeTaskDictCluster
 
 
 class NodeTaskHER2(NodeTaskDictCluster):

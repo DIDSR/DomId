@@ -1,8 +1,14 @@
 import numpy as np
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from domid.compos.VAE_blocks import UnFlatten, get_output_shape, cnn_encoding_block, cnn_decoding_block
-import torch
+
+from domid.compos.VAE_blocks import (
+    UnFlatten,
+    cnn_decoding_block,
+    cnn_encoding_block,
+    get_output_shape,
+)
 
 
 class ConvolutionalEncoder(nn.Module):

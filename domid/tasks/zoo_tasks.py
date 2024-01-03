@@ -9,8 +9,8 @@ from torchvision import transforms
 from domid.tasks.task_her2 import NodeTaskHER2
 from domid.tasks.task_mnist import NodeTaskMNIST
 from domid.tasks.task_mnist_color import NodeTaskMNISTColor10
-from domid.tasks.task_usps import NodeTaskUSPS
 from domid.tasks.task_unittest import NodeTaskUnitTest
+from domid.tasks.task_usps import NodeTaskUSPS
 from domid.tasks.task_wsi import NodeTaskWSI
 
 path_this_file = os.path.dirname(os.path.realpath(__file__))

@@ -1,9 +1,9 @@
 import numpy as np
 import torch
 
+from domid.dsets.make_graph_wsi import GraphConstructorWSI
 from domid.utils.perf_cluster import PerfCluster
 from domid.utils.perf_similarity import PerfCorrelation
-from domid.dsets.make_graph_wsi import GraphConstructorWSI
 
 
 class Prediction:

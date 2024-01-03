@@ -1,15 +1,16 @@
 import itertools
+import os
 
 import torch
 import torch.optim as optim
 from domainlab.algos.trainers.a_trainer import AbstractTrainer
-import os
+
 from domid.compos.predict_basic import Prediction
-from domid.utils.storing import Storing
 from domid.compos.tensorboard_fun import tensorboard_write
+from domid.dsets.make_graph import GraphConstructor
 from domid.trainers.pretraining_KMeans import Pretraining
 from domid.utils.perf_cluster import PerfCluster
-from domid.dsets.make_graph import GraphConstructor
+from domid.utils.storing import Storing
 
 
 class TrainerCluster(AbstractTrainer):

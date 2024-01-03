@@ -1,19 +1,21 @@
 import itertools
+import os
+
 import numpy as np
 import torch
+import torch.distributed as dist
+import torch.nn.parallel
 import torch.optim as optim
 from domainlab.algos.trainers.a_trainer import AbstractTrainer
-import os
+
 from domid.compos.predict_basic import Prediction
-from domid.utils.storing import Storing
 from domid.compos.tensorboard_fun import tensorboard_write
+from domid.dsets.make_graph import GraphConstructor
+from domid.dsets.make_graph_wsi import GraphConstructorWSI
 from domid.trainers.pretraining_KMeans import Pretraining
 from domid.trainers.pretraining_sdcn import PretrainingSDCN
 from domid.utils.perf_cluster import PerfCluster
-from domid.dsets.make_graph import GraphConstructor
-from domid.dsets.make_graph_wsi import GraphConstructorWSI
-import torch.nn.parallel
-import torch.distributed as dist
+from domid.utils.storing import Storing
 
 
 class TrainerCluster(AbstractTrainer):
