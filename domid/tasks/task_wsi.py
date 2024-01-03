@@ -4,12 +4,7 @@ import os
 import numpy as np
 import pandas as pd
 from domainlab.tasks.b_task import NodeTaskDict
-from domainlab.tasks.utils_task import (
-    DsetDomainVecDecorator,
-    ImSize,
-    mk_loader,
-    mk_onehot,
-)
+from domainlab.tasks.utils_task import DsetDomainVecDecorator, ImSize, mk_loader, mk_onehot
 from domainlab.utils.utils_classif import mk_dummy_label_list_str
 from torch.utils.data import random_split
 from torchvision import transforms
