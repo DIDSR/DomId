@@ -1,10 +1,6 @@
 import os
-import warnings
 from datetime import datetime
 
-import matplotlib.pyplot as plt
-import numpy as np
-import scipy.sparse as sp
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -14,10 +10,7 @@ from sklearn.cluster import KMeans
 from tensorboardX import SummaryWriter
 
 from domid.compos.cnn_AE import ConvolutionalDecoder, ConvolutionalEncoder
-from domid.compos.GNN import GNN
-from domid.compos.GNN_layer import GNNLayer
 from domid.compos.linear_AE import LinearDecoderAE, LinearEncoderAE
-from domid.compos.linear_VAE import LinearDecoder, LinearEncoder
 from domid.models.a_model_cluster import AModelCluster
 
 
@@ -37,7 +30,6 @@ class ModelAE(AModelCluster):
         if self.args.dim_inject_y:
             self.dim_inject_y = self.args.dim_inject_y
 
-        n_clusters = d_dim
         n_z = zd_dim
         n_input = i_c * i_h * i_w
         n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3, = (
@@ -115,7 +107,6 @@ class ModelAE(AModelCluster):
     def infer_d_v(self, x):
         """
         Predict the cluster/domain of the input data.
-        Corresponds to equation (16) in the paper.
 
         :param tensor x: Input tensor of a shape [batchsize, 3, horzintal dim, vertical dim].
         :return tensor preds: One hot encoded tensor of the predicted cluster assignment.

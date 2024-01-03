@@ -1,22 +1,11 @@
-import os
-import warnings
-from datetime import datetime
-
-import matplotlib.pyplot as plt
-import numpy as np
-import scipy.sparse as sp
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from domainlab.utils.utils_classif import logit2preds_vpic
-from sklearn.cluster import KMeans
-from tensorboardX import SummaryWriter
 
 from domid.compos.cnn_AE import ConvolutionalDecoder, ConvolutionalEncoder
 from domid.compos.GNN import GNN
-from domid.compos.GNN_layer import GNNLayer
 from domid.compos.linear_AE import LinearDecoderAE, LinearEncoderAE
-from domid.compos.linear_VAE import LinearDecoder, LinearEncoder
 from domid.models.a_model_cluster import AModelCluster
 
 
@@ -97,8 +86,10 @@ class ModelSDCN(AModelCluster):
             self.decoder = torch.nn.DataParallel(self.decoder)
 
         else:
-            print("Using a single GPU.")
-            # self.gnn_model.to(device)
+            if torch.cuda.device_count() == 1:
+                print("Using a single GPU.")
+            else:
+                print("Using CPU(s).")
 
         self.v = 1.0
         self.counter = 0
