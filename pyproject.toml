@@ -48,3 +48,8 @@ extend-exclude = '''
   | ^/zoutput/*
 )
 '''
+
+[tool.isort]
+profile = "black"
+src_paths = ["domid"]
+extend_skip = ["_build", "docs", "DomainLab", "notebooks", "runs", "zout", "zoutput"]
