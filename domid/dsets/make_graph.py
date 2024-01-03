@@ -44,9 +44,7 @@ class GraphConstructor:
         labels = torch.zeros((num_batches, num_img, 1))
         counter = 0
         for tensor_x, vec_y, vec_d, inj_tensor, img_ids in dataset:
-            X[counter, :, :] = torch.reshape(
-                tensor_x, (tensor_x.shape[0], tensor_x.shape[1] * tensor_x.shape[2] * tensor_x.shape[3])
-            )
+            X[counter, :, :] = torch.reshape(tensor_x, (tensor_x.shape[0], i_c * i_w * i_h))
             labels[counter, :, 0] = torch.argmax(vec_d, dim=1)
             counter += 1
 
@@ -58,9 +56,9 @@ class GraphConstructor:
         :param mx: sparse matrix
         :return: row-normalized sparse matrix
         """
-        rowsum = np.array(mx.sum(1))
+        rowsum = mx.sum(1)
         r_inv = np.power(rowsum, -1).flatten()
-        r_inv[np.isinf(r_inv)] = 0.0
+        r_inv[np.isinf(r_inv)] = 0.0  # i.e., when row sum is 0, we will keep that row at 0 in themultiplication below
         r_mat_inv = sp.diags(r_inv)
         mx = r_mat_inv.dot(mx)
         return mx
@@ -147,7 +145,7 @@ class GraphConstructor:
         """
 
         sparse_matrices = []
-        adjecency_matrices = []
+        adjacency_matrices = []
         features, domain_labels = self.get_features_labels(dataset)
         batch_num = features.shape[0]
         num_features = features.shape[1]
@@ -156,7 +154,7 @@ class GraphConstructor:
             dist, inds, connection_pairs = self.connection_calc(features[i, :, :])
             connect_path = (
                 os.path.join("notebooks/", experiment_folder) + "/connection_pairs_" + str(i) + ".pkl"
-            )  # FIXME move to zout/data?
+            )  # FIXME move to zout
             feat_path = os.path.join("notebooks/", experiment_folder) + "/features_" + str(i) + ".pkl"
             label_path = os.path.join("notebooks/", experiment_folder) + "/labels_" + str(i) + ".pkl"
             with open(connect_path, "wb") as file:
@@ -169,7 +167,7 @@ class GraphConstructor:
                 pickle.dump(domain_labels[i, :], file)
 
             adj_mat = self.mk_adj_mat(num_features, connection_pairs)
-            adjecency_matrices.append(adj_mat)
+            adjacency_matrices.append(adj_mat)
             sparse_mx = self.sparse_mx_to_torch_sparse_tensor(adj_mat)
             sparse_matrices.append(sparse_mx)
-        return adjecency_matrices, sparse_matrices
+        return adjacency_matrices, sparse_matrices
