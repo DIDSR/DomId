@@ -1,6 +1,6 @@
+import numpy as np
 import tensorboardX
 import torch
-import numpy as np
 
 
 def tensorboard_write(

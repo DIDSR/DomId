@@ -5,9 +5,10 @@ import abc
 import os
 import struct
 from os.path import exists
-import torch
+
 import numpy as np
 import pandas as pd
+import torch
 from domainlab.dsets.utils_data import mk_fun_label2onehot
 from domainlab.utils.utils_class import store_args
 from PIL import Image

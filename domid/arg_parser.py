@@ -2,8 +2,8 @@
 Command line arguments
 """
 
-from domainlab import arg_parser
 import numpy as np
+from domainlab import arg_parser
 
 
 def mk_parser_main():

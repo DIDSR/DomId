@@ -1,9 +1,9 @@
 import numpy as np
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 from domid.compos.VAE_blocks import linear_block
-import torch.nn.functional as F
 
 
 class LinearEncoderAE(nn.Module):

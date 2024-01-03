@@ -5,10 +5,10 @@ import torch.optim as optim
 from domainlab.algos.trainers.a_trainer import AbstractTrainer
 
 from domid.compos.predict_basic import Prediction
-from domid.utils.storing import Storing
 from domid.compos.tensorboard_fun import tensorboard_write
 from domid.trainers.pretraining_GMM import Pretraining
 from domid.utils.perf_cluster import PerfCluster
+from domid.utils.storing import Storing
 
 
 class TrainerCluster(AbstractTrainer):

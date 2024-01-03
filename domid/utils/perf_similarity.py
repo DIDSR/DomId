@@ -1,13 +1,12 @@
+import os
+
 import numpy as np
+import pandas as pd
+import scipy
 import torch
 from domainlab.utils.perf import PerfClassif
 from scipy.optimize import linear_sum_assignment
 from sklearn.metrics import confusion_matrix
-from sklearn.metrics import confusion_matrix
-from scipy.optimize import linear_sum_assignment
-import scipy
-import os
-import pandas as pd
 
 
 class PerfCorrelation(PerfClassif):

@@ -1,13 +1,15 @@
 # from domainlab.tasks.task_mnist_color import NodeTaskMNISTColor10
+import os
+
+import numpy as np
+import pandas as pd
 from domainlab.tasks.b_task import NodeTaskDict
 from domainlab.tasks.utils_task import DsetDomainVecDecorator, ImSize, mk_loader, mk_onehot
 from domainlab.utils.utils_classif import mk_dummy_label_list_str
 from torch.utils.data import random_split
-import os
-from domid.dsets.dset_wsi import DsetWSI
 from torchvision import transforms
-import pandas as pd
-import numpy as np
+
+from domid.dsets.dset_wsi import DsetWSI
 from domid.tasks.b_task_cluster import NodeTaskDictCluster
 
 
