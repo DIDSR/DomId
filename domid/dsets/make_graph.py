@@ -21,6 +21,11 @@ class GraphConstructor:
     """
 
     def __init__(self, graph_method, topk=7):
+        """
+        Initializer of GraphConstructor.
+        :param graph_method: the method to calculate distance between features; one of 'heat', 'cos', 'ncos'.
+        :param topk: number of connections per image
+        """
         self.graph_method = graph_method
         self.topk = topk
 
@@ -63,12 +68,10 @@ class GraphConstructor:
         mx = r_mat_inv.dot(mx)
         return mx
 
-    def distance_calc(self, features, coordinates=None):
+    def distance_calc(self, features):
         """
         This function is used to calculate distance between features.
         :param features: the batch of features from the dataset
-        :param graph_method: the method to calculate distance between features
-        :param coordinates: if the image(patch in the batch) has the coordinates specified, then the distance between can be calculated based on the coordinates
         :return: distance matrix between features of the batch of images with the shape of (num_img, num_img)
         """
         if self.graph_method == "heat":
@@ -88,10 +91,7 @@ class GraphConstructor:
         """
         This function is used to calculate the connection pairs between images for all the batches of dataset.
         :param features: flattened image from the batch of dataset
-        :param region_labels: if dataset contains spacial information between images, then the region labels can be used to calculate the distance between images
-        :param graph_method: graph method to calculate the distance between images
-        :param topk: number of connections per image
-        :return: indecies of top k connections per each image in the batch (shape: (num_img*topk, 2))
+        :return: indecies of top k connections per each image in the batch (shape: (num_img*self.topk, 2))
         """
 
         dist = self.distance_calc(features, self.graph_method)
