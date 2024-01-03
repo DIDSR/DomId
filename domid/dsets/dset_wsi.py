@@ -55,31 +55,13 @@ class DsetWSI(Dataset):
                 image = trans(image)
 
         image = transforms.ToTensor()(image)
-        # label = mk_fun_label2onehot(2)(self.class_num)
 
-        # FIXME: responded and non responded
-        # A_FDA, A_NIH, H1, H2
-
-        # print(p.read_csv('../dset_WEAH.csv'))
         resp_label = int(self.df.loc[self.df["path"] == self.images[idx]]["resp"])
         cah_label = int(self.df.loc[self.df["path"] == self.images[idx]]["ann"])
 
         label_dict = {"01": 0, "02": 1, "11": 2, "12": 3, "03": 4, "13": 5}
         encod_label = label_dict[str(resp_label) + str(cah_label)]
 
-        # label = torch.cat((mk_fun_label2onehot(2)(resp_label), mk_fun_label2onehot(2)(cah_label)), 0)
-
-        #         BMI = self.df.loc[(self.df['path'] == self.images[idx])]['BMI']  # BMIinstead of machine
-        #         BMI = int(BMI)
-
-        if self.path_to_domain:
-            domain = np.loadtxt(os.path.join(self.path_to_domain, "domain_labels.txt"))[idx]
-            # FIXME: no need to hardcode the name of the file as "domain_labels.txt"
-            domain = mk_fun_label2onehot(self.d_dim)(int(domain) - 1)
-            # FIXME: no need to hardcode the number of domains as d_dim
-        else:
-            domain = []
-        # print('label', label)
         label = mk_fun_label2onehot(6)(encod_label)
         inject_tensor = []
         img_id = img_loc
