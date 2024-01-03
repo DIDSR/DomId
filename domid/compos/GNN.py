@@ -16,7 +16,7 @@ class GNN(Module):
         self.gnn_4 = GNNLayer(n_enc_3, n_z, device)
         self.gnn_5 = GNNLayer(n_z, n_clusters, device)
 
-    def _flatten_if_needed(x):
+    def _flatten_if_needed(self, x):
         return torch.flatten(x, 1, -1) if len(x.shape) > 2 else x
 
     def forward(self, x, adj, tra1, tra2, tra3, z, sigma=0.5):

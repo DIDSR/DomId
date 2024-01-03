@@ -63,6 +63,7 @@ def mk_parser_main():
         default=False,
         help="randomization of the samples inside one batch, only used in SDCN",
     )
+    parser.add_argument("--subset_step", type=int, default=10, help="subset step for the MNIST dataset")
 
     return parser
 

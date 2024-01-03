@@ -104,4 +104,4 @@ class ConvolutionalDecoder(nn.Module):
         else:
             x_pro = x_decoded[:, 0 : self.num_channels, :, :]
 
-        return x_pro, []
+        return x_pro
