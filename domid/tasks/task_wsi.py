@@ -1,10 +1,6 @@
-# from domainlab.tasks.task_mnist_color import NodeTaskMNISTColor10
-import os
-
 import numpy as np
 import pandas as pd
-from domainlab.tasks.b_task import NodeTaskDict
-from domainlab.tasks.utils_task import DsetDomainVecDecorator, ImSize, mk_loader, mk_onehot
+from domainlab.tasks.utils_task import ImSize
 from domainlab.utils.utils_classif import mk_dummy_label_list_str
 from torch.utils.data import random_split
 from torchvision import transforms
@@ -17,7 +13,7 @@ class NodeTaskWSI(NodeTaskDictCluster):
     @property
     def list_str_y(self):
         """
-        WEAH task has no labels (digits are considered domains)
+        WSI task has no labels because it's used for unsupervised learning (the available annotations are considered domains instead)
         """
         return mk_dummy_label_list_str("dummy", 6)
 
@@ -34,10 +30,10 @@ class NodeTaskWSI(NodeTaskDictCluster):
 
         :return: list of domain names
         """
-        return mk_dummy_label_list_str("digit", 313)
+        return mk_dummy_label_list_str("digit", 313)  # FIXME: "digit" is wrong for WSI
 
     def get_dset_by_domain(self, args, na_domain, split=True):
-        """Get a dataset by digit
+        """Get a dataset by 'domain'
 
         :param args: command line arguments
         :param na_domain: domain name
