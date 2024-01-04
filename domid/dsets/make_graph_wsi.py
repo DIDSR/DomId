@@ -48,7 +48,6 @@ class GraphConstructorWSI(GraphConstructor):
         :param region_labels: if dataset contains spacial information between images, then the region labels can be used to calculate the distance between images
         :return: indecies of top k connections per each image in the batch (shape: (num_img*self.topk, 2))
         """
-
         dist = []
         if len(region_labels) > 0:
 

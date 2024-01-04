@@ -61,6 +61,7 @@ class GraphConstructor:
         :param mx: sparse matrix
         :return: row-normalized sparse matrix
         """
+
         rowsum = mx.sum(1)
         r_inv = np.power(rowsum, -1).flatten()
         r_inv[np.isinf(r_inv)] = 0.0  # i.e., when row sum is 0, we will keep that row at 0 in themultiplication below
@@ -94,7 +95,7 @@ class GraphConstructor:
         :return: indecies of top k connections per each image in the batch (shape: (num_img*self.topk, 2))
         """
 
-        dist = self.distance_calc(features, self.graph_method)
+        dist = self.distance_calc(features)
 
         connection_pairs = []
         inds = []
@@ -127,6 +128,7 @@ class GraphConstructor:
             print("Error: Some keys in edges_unordered do not exist in idx_map.")
         else:
             edges = np.array(edges_mapped, dtype=np.int32).reshape(edges_unordered.shape)
+
         adj = sp.coo_matrix((np.ones(edges.shape[0]), (edges[:, 0], edges[:, 1])), shape=(n, n), dtype=np.float32)
 
         # build symmetric adjacency matrix
@@ -136,7 +138,7 @@ class GraphConstructor:
         adj = self.normalize(adj)
         return adj
 
-    def construct_graph(self, dataset, graph_method, experiment_folder):
+    def construct_graph(self, dataset, experiment_folder):
         """
         This function is used to construct the graph for all the batches of dataset. This is called in the trainer function of SDCN model.
         :param dataset: dataset contraining all the batches of data (or no batched data)
@@ -152,22 +154,25 @@ class GraphConstructor:
 
         for i in range(0, batch_num):
             dist, inds, connection_pairs = self.connection_calc(features[i, :, :])
-            connect_path = (
-                os.path.join("notebooks/", experiment_folder) + "/connection_pairs_" + str(i) + ".pkl"
-            )  # FIXME move to zout
-            feat_path = os.path.join("notebooks/", experiment_folder) + "/features_" + str(i) + ".pkl"
-            label_path = os.path.join("notebooks/", experiment_folder) + "/labels_" + str(i) + ".pkl"
-            with open(connect_path, "wb") as file:
-                pickle.dump(connection_pairs, file)
+            if experiment_folder is not None:
+                connect_path = (
+                    os.path.join("notebooks/", experiment_folder) + "/connection_pairs_" + str(i) + ".pkl"
+                )  # FIXME move to zout
+                feat_path = os.path.join("notebooks/", experiment_folder) + "/features_" + str(i) + ".pkl"
+                label_path = os.path.join("notebooks/", experiment_folder) + "/labels_" + str(i) + ".pkl"
+                with open(connect_path, "wb") as file:
+                    pickle.dump(connection_pairs, file)
 
-            with open(feat_path, "wb") as file:
-                pickle.dump(features[i, :, :], file)
+                with open(feat_path, "wb") as file:
+                    pickle.dump(features[i, :, :], file)
 
-            with open(label_path, "wb") as file:
-                pickle.dump(domain_labels[i, :], file)
+                with open(label_path, "wb") as file:
+                    pickle.dump(domain_labels[i, :], file)
 
             adj_mat = self.mk_adj_mat(num_features, connection_pairs)
             adjacency_matrices.append(adj_mat)
             sparse_mx = self.sparse_mx_to_torch_sparse_tensor(adj_mat)
             sparse_matrices.append(sparse_mx)
         return adjacency_matrices, sparse_matrices
+
+
