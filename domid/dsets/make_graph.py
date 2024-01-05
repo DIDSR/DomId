@@ -174,5 +174,3 @@ class GraphConstructor:
             sparse_mx = self.sparse_mx_to_torch_sparse_tensor(adj_mat)
             sparse_matrices.append(sparse_mx)
         return adjacency_matrices, sparse_matrices
-
-
