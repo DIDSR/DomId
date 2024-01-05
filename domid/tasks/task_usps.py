@@ -58,13 +58,13 @@ class NodeTaskUSPS(NodeTaskDictCluster):
         trans = [transforms.Resize((16, 16)), transforms.ToTensor()]
         ind_global = self.get_list_domains().index(na_domain)
         dset = DsetUSPS(digit=ind_global, args=args, list_transforms=trans)
-        train_set = dset
-        val_set = dset
+        # train_set = dset
+        # val_set = dset
         # split dset into training and validation sets
-        # if ratio_split:
-        #     train_len = int(len(dset) * ratio_split)
-        #     val_len = len(dset) - train_len
-        #     train_set, val_set = random_split(dset, [train_len, val_len])
+        if ratio_split:
+            train_len = int(len(dset) * ratio_split)
+            val_len = len(dset) - train_len
+            train_set, val_set = random_split(dset, [train_len, val_len])
         return train_set, val_set
 
 

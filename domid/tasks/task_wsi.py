@@ -64,13 +64,13 @@ class NodeTaskWSI(NodeTaskDictCluster):
 
         trans = [transforms.Resize((64, 64))]
         dset = DsetWSI(class_num=ind_global, path=img_paths, args=args, transform=trans)
-        train_set = dset
-        val_set = dset
+        # train_set = dset
+        # val_set = dset
         # split dset into training and validation sets
-        # if ratio_split:
-        #     train_len = int(len(dset) * ratio_split)
-        #     val_len = len(dset) - train_len
-        #     train_set, val_set = random_split(dset, [train_len, val_len])
+        if ratio_split:
+            train_len = int(len(dset) * ratio_split)
+            val_len = len(dset) - train_len
+            train_set, val_set = random_split(dset, [train_len, val_len])
         return train_set, val_set
 
 

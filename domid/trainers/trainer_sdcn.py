@@ -61,7 +61,7 @@ class TrainerCluster(AbstractTrainer):
         if self.args.task != "wsi":
             # this calculates graph once and uses it for all the epochs
             self.adj_mx, self.spar_mx = GraphConstructor(self.graph_method).construct_graph(
-                self.loader_tr, self.graph_method, self.storage.experiment_name
+                self.loader_tr, self.storage.experiment_name
             )  # .to(self.device)
             self.model.adj = self.spar_mx[0]
         else:
