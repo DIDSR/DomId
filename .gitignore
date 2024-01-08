@@ -3,5 +3,5 @@ runs/*
 figures/*
 notebooks/2022-*
 notebooks/2023-*
-docs/build/*
-docs/build/html/*
+#docs/build/*
+#docs/build/html/*

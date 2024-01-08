@@ -319,7 +319,9 @@ from domid.trainers.trainer_cluster import TrainerCluster
         """
         task = exp.task
         args = exp.args
+
         device = get_device(args)
+
 
         zd_dim = args.zd_dim
         d_dim = args.d_dim
