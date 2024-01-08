@@ -35,6 +35,8 @@ class DsetUnitTest(Dataset):
 
     def create_the_dataset(self, dpath):
         # Check if the directory exists
+        seed = 42
+        torch.manual_seed(seed)
         if not os.path.exists(dpath):
             os.makedirs(dpath)
             dummy_images = torch.ones(7000, 3, 16, 16)
