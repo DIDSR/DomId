@@ -45,12 +45,13 @@ class GraphConstructorWSI(GraphConstructor):
         """
         This function is used to calculate the connection pairs between images for all the batches of dataset.
         :param features: flattened image from the batch of dataset
-        :param region_labels: if dataset contains spacial information between images, then the region labels can be used to calculate the distance between images
+        :param region_labels:  spacial information between patches used to calculate the distance between them (e.g. of the string '1Carcinoma_coord_39100_39573_patchnumber_98_xy_0_0.png')
         :return: indecies of top k connections per each image in the batch (shape: (num_img*self.topk, 2))
         """
         dist = []
         if len(region_labels) > 0:
-
+            # sample region_label that is passed to this function is '1Carcinoma_coord_39100_39573_patchnumber_98_xy_0_0.png'
+            # the coordinated of the region would then be (39100, 39573) and the coordinates of the patch would be (0, 0)
             coordinates = [
                 [
                     int(reg_lab.split("_")[2]) + int(reg_lab.split("_")[-1][:-4]),
