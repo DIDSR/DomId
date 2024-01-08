@@ -20,6 +20,16 @@ class GNN(Module):
         return torch.flatten(x, 1, -1) if len(x.shape) > 2 else x
 
     def forward(self, x, adj, tra1, tra2, tra3, z, sigma=0.5):
+        """
+        :param x: image batch
+        :param adj: adjacency matrix from the constructed graph for the batch of images
+        :param tra1: features from the first layer of the encoder
+        :param tra2: features from the second layer of the encoder
+        :param tra3: features from the third layer of the encoder
+        :param z: latent features from the encoder
+        :param sigma:
+        :return: hidden layer that is used for clustering
+        """
 
         x, tra1, tra2, tra3 = map(self._flatten_if_needed, (x, tra1, tra2, tra3))
         h = self.gnn_1(x, adj)

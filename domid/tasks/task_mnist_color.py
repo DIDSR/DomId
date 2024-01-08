@@ -77,13 +77,14 @@ class NodeTaskMNISTColor10(NodeTaskDictCluster):
         dset = DsetMNISTColorSoloDefault(
             ind_global, args.dpath, inject_variable=args.inject_var, list_transforms=trans, args=args
         )
-        breakpoint()
+
         # split dset into training and test
         if ratio_split>0:
             train_len = int(len(dset) * ratio_split)
             val_len = len(dset) - train_len
             train_set, val_set = random_split(dset, [train_len, val_len])
         else:
+            print("no split between train and test datasets")
             train_set = dset
             val_set = dset
         return train_set, val_set

@@ -15,8 +15,12 @@ class GNNLayer(Module):
         torch.nn.init.xavier_uniform_(self.weight)
 
     def forward(self, features, adj, activation=torch.nn.ReLU()):
-        # if len(features.shape)>2:
-        #     features = torch.flatten(features, 1,-1)
+        """
+        :param features: features from specific layer of the encoder
+        :param adj: adjecency matrix from the constructed graph
+        :param activation:
+        :return: hidden layer of GNN
+        """
         support = torch.mm(features, self.weight)
         output = torch.spmm(adj, support)
         if activation:

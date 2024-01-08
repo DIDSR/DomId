@@ -163,7 +163,7 @@ class ModelSDCN(AModelCluster):
         z = results[2]
 
         # print(results[2].shape, inject_domain.shape, zy.shape)
-        x_pro, *_ = self.decoder(z)
+        x_pro = self.decoder(z)
         preds_c, probs_c, z, logits = (r.cpu().detach() for r in results)
 
         return preds_c, z, probs_c, x_pro
@@ -192,7 +192,7 @@ class ModelSDCN(AModelCluster):
         q = logits
         pred = probs_c
 
-        x_bar, *_ = self.decoder(z)
+        x_bar = self.decoder(z)
         q = q.data
 
         # if self.counter==1:
@@ -223,8 +223,7 @@ class ModelSDCN(AModelCluster):
             x = torch.reshape(x, (x.shape[0], x.shape[1] * x.shape[2] * x.shape[3]))
         enc_h1, enc_h2, enc_h3, z = self.encoder(x)
 
-        x_pro, *_ = self.decoder(z)  # FIXME account for different number of outputs from decoder
-
+        x_pro = self.decoder(z)
         loss = F.mse_loss(x, x_pro)
 
         return loss
