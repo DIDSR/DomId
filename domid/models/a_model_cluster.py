@@ -39,3 +39,9 @@ class AModelCluster(nn.Module):
                 r_score_te = self.perf_metric_correlation.cal_acc(self, loader_te, device)
 
         return metric_tr, metric_te, r_score_tr, r_score_te
+    def calc_loss(self, tensor_x, vec_y, vec_d, inj_tensor, img_ids):
+        """
+        Calculates the loss for the model.
+        """
+        raise NotImplementedError
+
