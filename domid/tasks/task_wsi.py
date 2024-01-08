@@ -58,14 +58,17 @@ class NodeTaskWSI(NodeTaskDictCluster):
         # mask = df['resp'].values == ind_global  # response (0 o 1)
         img_paths = np.array(mask["path"])  # [:400]
 
-        trans = [transforms.Resize((64, 64))]
+        trans = [transforms.Resize((self.ImSize.w, self.ImSize.h))]
         dset = DsetWSI(class_num=ind_global, path=img_paths, args=args, transform=trans)
 
         # split dset into training and validation sets
-        if ratio_split:
+        if ratio_split > 0:
             train_len = int(len(dset) * ratio_split)
             val_len = len(dset) - train_len
             train_set, val_set = random_split(dset, [train_len, val_len])
+        else:
+            train_set = dset
+            val_set = dset
         return train_set, val_set
 
 

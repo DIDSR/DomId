@@ -59,10 +59,13 @@ class NodeTaskUSPS(NodeTaskDictCluster):
         dset = DsetUSPS(digit=ind_global, args=args, list_transforms=trans)
 
         # split dset into training and validation sets
-        if ratio_split:
+        if ratio_split > 0:
             train_len = int(len(dset) * ratio_split)
             val_len = len(dset) - train_len
             train_set, val_set = random_split(dset, [train_len, val_len])
+        else:
+            train_set = dset
+            val_set = dset
         return train_set, val_set
 
 
