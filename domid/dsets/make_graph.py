@@ -30,7 +30,8 @@ class GraphConstructor:
         self.topk = topk
 
     def sparse_mx_to_torch_sparse_tensor(self, sparse_mx):  # FIXME move to utils
-        """Convert a scipy sparse matrix to a torch sparse tensor."""
+        """Convert a scipy sparse matrix to a torch sparse
+         tensor."""
         sparse_mx = sparse_mx.tocoo().astype(np.float32)
         indices = torch.from_numpy(np.vstack((sparse_mx.row, sparse_mx.col)).astype(np.int64))
         values = torch.from_numpy(sparse_mx.data)
@@ -62,9 +63,9 @@ class GraphConstructor:
         :return: row-normalized sparse matrix
         """
 
-        rowsum = mx.sum(1)
+        rowsum = np.array(mx.sum(1))
         r_inv = np.power(rowsum, -1).flatten()
-        r_inv[np.isinf(r_inv)] = 0.0  # i.e., when row sum is 0, we will keep that row at 0 in themultiplication below
+        r_inv[np.isinf(r_inv)] = 0. # i.e., when row sum is 0, we will keep that row at 0 in themultiplication below
         r_mat_inv = sp.diags(r_inv)
         mx = r_mat_inv.dot(mx)
         return mx
@@ -109,14 +110,13 @@ class GraphConstructor:
                     pass
                 else:
                     connection_pairs.append([i, vv])
-
         return dist, inds, connection_pairs
 
     def mk_adj_mat(self, n, connection_pairs):
         """
         This function is used to make the adjacency matrix for the graph for each batch of dataset.
-        :param n:
-        :param connection_pairs:
+        :param n: batchsize
+        :param connection_pairs: top k connections per each image in the batch (shape: (num_img*self.topk, 2))
         :return:
         """
 
@@ -128,14 +128,13 @@ class GraphConstructor:
             print("Error: Some keys in edges_unordered do not exist in idx_map.")
         else:
             edges = np.array(edges_mapped, dtype=np.int32).reshape(edges_unordered.shape)
-
         adj = sp.coo_matrix((np.ones(edges.shape[0]), (edges[:, 0], edges[:, 1])), shape=(n, n), dtype=np.float32)
 
         # build symmetric adjacency matrix
         adj = adj + adj.T.multiply(adj.T > adj) - adj.multiply(adj.T > adj)
-
         adj = adj + sp.eye(adj.shape[0])
         adj = self.normalize(adj)
+
         return adj
 
     def construct_graph(self, dataset, experiment_folder):
@@ -154,6 +153,10 @@ class GraphConstructor:
 
         for i in range(0, batch_num):
             dist, inds, connection_pairs = self.connection_calc(features[i, :, :])
+            adj_mat = self.mk_adj_mat(num_features, connection_pairs)
+            adjacency_matrices.append(adj_mat)
+            sparse_mx = self.sparse_mx_to_torch_sparse_tensor(adj_mat)
+            sparse_matrices.append(sparse_mx)
             if experiment_folder is not None:
                 connect_path = (
                     os.path.join("notebooks/", experiment_folder) + "/connection_pairs_" + str(i) + ".pkl"
@@ -168,9 +171,4 @@ class GraphConstructor:
 
                 with open(label_path, "wb") as file:
                     pickle.dump(domain_labels[i, :], file)
-
-            adj_mat = self.mk_adj_mat(num_features, connection_pairs)
-            adjacency_matrices.append(adj_mat)
-            sparse_mx = self.sparse_mx_to_torch_sparse_tensor(adj_mat)
-            sparse_matrices.append(sparse_mx)
         return adjacency_matrices, sparse_matrices
