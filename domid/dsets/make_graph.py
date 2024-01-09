@@ -31,7 +31,7 @@ class GraphConstructor:
 
     def sparse_mx_to_torch_sparse_tensor(self, sparse_mx):  # FIXME move to utils
         """Convert a scipy sparse matrix to a torch sparse
-         tensor."""
+        tensor."""
         sparse_mx = sparse_mx.tocoo().astype(np.float32)
         indices = torch.from_numpy(np.vstack((sparse_mx.row, sparse_mx.col)).astype(np.int64))
         values = torch.from_numpy(sparse_mx.data)
@@ -65,7 +65,7 @@ class GraphConstructor:
 
         rowsum = np.array(mx.sum(1))
         r_inv = np.power(rowsum, -1).flatten()
-        r_inv[np.isinf(r_inv)] = 0. # i.e., when row sum is 0, we will keep that row at 0 in themultiplication below
+        r_inv[np.isinf(r_inv)] = 0.0  # i.e., when row sum is 0, we will keep that row at 0 in themultiplication below
         r_mat_inv = sp.diags(r_inv)
         mx = r_mat_inv.dot(mx)
         return mx

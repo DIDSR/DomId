@@ -14,9 +14,6 @@ class Prediction:
         self.i_w = i_w
         self.i_h = i_h
         self.device = device
-        self.is_inject_domain = False
-        # if self.args.dim_inject_y > 0:
-        #     self.is_inject_domain = True
 
     def mk_prediction(self):
         """

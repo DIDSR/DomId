@@ -79,7 +79,7 @@ class NodeTaskMNISTColor10(NodeTaskDictCluster):
         )
 
         # split dset into training and test
-        if ratio_split>0:
+        if ratio_split > 0:
             train_len = int(len(dset) * ratio_split)
             val_len = len(dset) - train_len
             train_set, val_set = random_split(dset, [train_len, val_len])

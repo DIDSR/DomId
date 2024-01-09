@@ -1,9 +1,4 @@
-import itertools
-import os
-
-import numpy as np
 import torch
-import torch.distributed as dist
 import torch.nn.parallel
 import torch.optim as optim
 from domainlab.algos.trainers.a_trainer import AbstractTrainer
@@ -12,7 +7,6 @@ from domid.compos.predict_basic import Prediction
 from domid.compos.tensorboard_fun import tensorboard_write
 from domid.dsets.make_graph import GraphConstructor
 from domid.dsets.make_graph_wsi import GraphConstructorWSI
-from domid.trainers.pretraining_KMeans import Pretraining
 from domid.trainers.pretraining_sdcn import PretrainingSDCN
 from domid.utils.perf_cluster import PerfCluster
 from domid.utils.storing import Storing
@@ -66,6 +60,7 @@ class TrainerCluster(AbstractTrainer):
             self.model.adj = self.spar_mx[0]
         else:
             # this initializes to calculate graph on the fly for every epoch
+            # for the "wsi" task the graphs are constructed in domid/trainers/pretraining_sdcn.py
             self.graph_constr = GraphConstructorWSI(self.graph_method)
             init_adj_mx, init_spar_mx = self.graph_constr.construct_graph(
                 next(iter(self.loader_tr))[0][: int(self.args.bs / 3), :, :, :],
@@ -103,6 +98,7 @@ class TrainerCluster(AbstractTrainer):
         # ___________Define warm-up for ELBO loss_________
         if self.warmup_beta < 1 and self.pretraining_finished:
             self.warmup_beta = self.warmup_beta + 0.01
+
         # _____________one training epoch: start_______________________
         for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
 
@@ -137,8 +133,9 @@ class TrainerCluster(AbstractTrainer):
                 loss = pretrain.pretrain_loss(tensor_x)
             else:
                 if not self.pretraining_finished:
+                    # i.e., this is the first epoch after pre-training
+                    # So we need to set the pretraining_finishend flag to True, and to reset the optimizer:
                     self.pretraining_finished = True
-                    # reset the optimizer
                     self.model.counter = 1
                     self.optimizer = optim.Adam(
                         self.model.parameters(),
