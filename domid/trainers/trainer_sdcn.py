@@ -155,7 +155,6 @@ class TrainerCluster(AbstractTrainer):
             loss.backward()
             self.optimizer.step()
             self.epo_loss_tr += loss.cpu().detach().item()
-            # FIXME: devide #  number of samples in the HER notebook
 
             kl_batch, ce_batch, re_batch = self.model.cal_loss_for_tensorboard()
             kl_total += kl_batch

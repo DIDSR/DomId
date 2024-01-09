@@ -112,7 +112,6 @@ class TrainerCluster(AbstractTrainer):
             loss.backward()
             self.optimizer.step()
             self.epo_loss_tr += loss.cpu().detach().item()
-            # FIXME: devide #  number of samples in the HER notebook
 
         # after one epoch (all batches), GMM is calculated again and pi, mu_c
         # will get updated via this line.
