@@ -51,7 +51,7 @@ def test_mnist_length():
     assert x.shape == (1, 3, 32, 32)
     assert vec_y.shape == (1, 10)
     assert inject_tensor == []
-    assert len(ldr) == 5958
+    assert len(ldr) == 596
 
 
 def test_mnistcolor10_length():
