@@ -377,7 +377,7 @@ def test_MNISTcolor_SDCN():
             "--apath",
             "domid/algos/builder_sdcn.py",
             "--bs",
-            "50",
+            "10",
             "--split",
             "0.8",
             "--L",
@@ -394,6 +394,7 @@ def test_MNISTcolor_SDCN():
             "./notebooks/2023-11-30 10:52:19.451201_mnist_ae/",
             "--epos",
             "3",
+
         ]
     )
     experiment_train(args)
