@@ -274,6 +274,18 @@
       
     
     </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Utilities</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.utils.html" class="md-nav__link">domid.utils package</a>
+      
+    
+    </li>
   </ul>
   
 
@@ -300,9 +312,10 @@
 <span></span>import numpy as np
 import torch
 
-from domid.utils.perf_cluster import PerfCluster
-from domid.utils.perf_similarity import PerfCorrelation
 from domid.dsets.make_graph_wsi import GraphConstructorWSI
+from domid.utils.perf_cluster import PerfCluster
+from domid.utils.perf_similarity import PerfCorrelationHER2
+
 
 <div class="viewcode-block" id="Prediction"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.predict_basic.Prediction">[docs]</a>class Prediction:
 <div class="viewcode-block" id="Prediction.__init__"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.predict_basic.Prediction.__init__">[docs]</a>    def __init__(self, model, device, loader_tr, loader_val, i_h, i_w, bs):
@@ -311,12 +324,7 @@ from domid.dsets.make_graph_wsi import GraphConstructorWSI
         self.model = model
         self.i_w = i_w
         self.i_h = i_h
-        self.device = device
-        self.is_inject_domain = False</div>
-        # if self.args.dim_inject_y &gt; 0:
-        #     self.is_inject_domain = True
-        
-
+        self.device = device</div>
 
 <div class="viewcode-block" id="Prediction.mk_prediction"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.predict_basic.Prediction.mk_prediction">[docs]</a>    def mk_prediction(self):
         """
@@ -330,18 +338,18 @@ from domid.dsets.make_graph_wsi import GraphConstructorWSI
         """
 
         num_img = len(self.loader_tr.dataset)  # FIXME: this returns sample size + 1 for some reason
-        if self.model.args.task == 'wsi' and self.model.args.aname=='sdcn':
-            num_img = int(self.model.args.bs/3)
+        if self.model.args.task == "wsi" and self.model.args.aname == "sdcn":
+            num_img = int(self.model.args.bs / 3)
         z_proj = np.zeros((num_img, self.model.zd_dim))
         prob_proj = np.zeros((num_img, self.model.d_dim))
         input_imgs = np.zeros((num_img, 3, self.i_h, self.i_w))
 
         image_id_labels = []
-        vec_d_labels =[]
-        vec_y_labels =[]
+        vec_d_labels = []
+        vec_y_labels = []
         predictions = []
         counter = 0
-        #import pdb; pdb.set_trace()
+
         with torch.no_grad():
 
             for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
@@ -351,12 +359,14 @@ from domid.dsets.make_graph_wsi import GraphConstructorWSI
                         inject_tensor = inject_tensor.to(self.device)
 
                 if self.model.args.random_batching:
-                    patches_idx = self.model.random_ind[i] #torch.randint(0, len(vec_y), (int(self.args.bs/3),))
+                    patches_idx = self.model.random_ind[i]  # torch.randint(0, len(vec_y), (int(self.args.bs/3),))
                     tensor_x = tensor_x[patches_idx, :, :, :]
                     vec_y = vec_y[patches_idx, :]
                     vec_d = vec_d[patches_idx, :]
-                    image_id =[image_id[patch_idx_num] for patch_idx_num in patches_idx]
-                    self.model.adj = GraphConstructorWSI().construct_graph(tensor_x, image_id, self.model.graph_method, None)
+                    image_id = [image_id[patch_idx_num] for patch_idx_num in patches_idx]
+                    self.model.adj = GraphConstructorWSI().construct_graph(
+                        tensor_x, image_id, self.model.graph_method, None
+                    )
 
                 for ii in range(0, tensor_x.shape[0]):
 
@@ -364,86 +374,64 @@ from domid.dsets.make_graph_wsi import GraphConstructorWSI
                     vec_y_labels.append(torch.argmax(vec_y[ii, :]).item())
                     image_id_labels.append(image_id[ii])
 
-
-
-
                 tensor_x, vec_y, vec_d = (
                     tensor_x.to(self.device),
                     vec_y.to(self.device),
                     vec_d.to(self.device),
                 )
 
-                if self.model.args.aname!='sdcn':
+                if self.model.args.aname != "sdcn":
                     results = self.model.infer_d_v_2(tensor_x, inject_tensor)
                 else:
                     results = self.model.infer_d_v_2(tensor_x)
                 preds, z, probs, x_pro = results[0], results[1], results[-2], results[-1]
 
                 z = z.detach().cpu().numpy()  # [batch_size, zd_dim]
-                input_imgs[counter : counter + z.shape[0], :, :, :] = tensor_x.cpu().detach().numpy()
-                z_proj[counter : counter + z.shape[0], :] = z
-                prob_proj[counter : counter + z.shape[0], :] = probs
-                
+                input_imgs[counter : counter + tensor_x.shape[0], :, :, :] = tensor_x.cpu().detach().numpy()
+                z_proj[counter : counter + tensor_x.shape[0], :] = z
+                prob_proj[counter : counter + tensor_x.shape[0], :] = probs
 
                 preds = preds.detach().cpu()
-                #domain_labels[counter : counter + z.shape[0], 0] = torch.argmax(preds, 1) + 1
-                predictions+=(torch.argmax(preds, 1) + 1).tolist()
+                # domain_labels[counter : counter + z.shape[0], 0] = torch.argmax(preds, 1) + 1
+                predictions += (torch.argmax(preds, 1) + 1).tolist()
                 counter += z.shape[0]
 
         return input_imgs, z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels</div>
 
 <div class="viewcode-block" id="Prediction.epoch_tr_acc"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.predict_basic.Prediction.epoch_tr_acc">[docs]</a>    def epoch_tr_acc(self):
-        acc_vec_y, conf_y, acc_vec_d, conf_d= PerfCluster.cal_acc(self.model, self.loader_tr, self.device, max_batches=None)
+        """
+        This function used to calculate accuracy and confusion matrix for training set for both vec_d and vec_y labels and predictions.
+        """
+        # hungarian_acc_y_s, conf_mat_y_s, hungarian_acc_d_s, conf_mat_d_s
+        acc_vec_y, conf_y, acc_vec_d, conf_d = PerfCluster.cal_acc(
+            self.model, self.loader_tr, self.device, max_batches=None
+        )
         return acc_vec_y, conf_y, acc_vec_d, conf_d</div>
 
 <div class="viewcode-block" id="Prediction.epoch_val_acc"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.predict_basic.Prediction.epoch_val_acc">[docs]</a>    def epoch_val_acc(self):
-        acc_vec_y, conf_y, acc_vec_d, conf_d = PerfCluster.cal_acc(self.model, self.loader_val, self.device, max_batches=None)
+        """
+        This function used to calculate accuracy and confusion matrix for validation set for both vec_d and vec_y labels and predictions.
+        """
+        acc_vec_y, conf_y, acc_vec_d, conf_d = PerfCluster.cal_acc(
+            self.model, self.loader_val, self.device, max_batches=None
+        )
 
         return acc_vec_y, conf_y, acc_vec_d, conf_d</div>
-<div class="viewcode-block" id="Prediction.epoch_tr_correlation"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.predict_basic.Prediction.epoch_tr_correlation">[docs]</a>    def epoch_tr_correlation(self):
 
-        correlation_tr = PerfCorrelation.cal_acc(self.model, self.loader_tr, self.device, max_batches=None)
+<div class="viewcode-block" id="Prediction.epoch_tr_correlation"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.predict_basic.Prediction.epoch_tr_correlation">[docs]</a>    def epoch_tr_correlation(self):
+        """
+        This function used to calculate correlation with HER2 scores for training set. Only used for HER2 dataset/task.
+        """
+
+        correlation_tr = PerfCorrelationHER2.cal_acc(self.model, self.loader_tr, self.device, max_batches=None)
         return correlation_tr</div>
 
 <div class="viewcode-block" id="Prediction.epoch_val_correlation"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.predict_basic.Prediction.epoch_val_correlation">[docs]</a>    def epoch_val_correlation(self):
-        correlation_val = PerfCorrelation.cal_acc(self.model, self.loader_val, self.device, max_batches=None)
+        """
+        This function used to calculate correlation with HER2 scores for valiation set. Only used for HER2 dataset/task.
+        """
+        correlation_val = PerfCorrelationHER2.cal_acc(self.model, self.loader_val, self.device, max_batches=None)
         return correlation_val</div></div>
-
-    # def prediction_te(self):
-    #     """
-    #     This function is used for ease of storing the results. From training
-    #     dataloader u=images, the prediction using currect state of the model
-    #     are made.
-    #     :return: tensor of dateset images
-    #     :return: Z space of the current model
-    #     :return: domain labels corresponding to Z space
-    #     :return: machine (class labels) labels corresponding to Z space
-    #     """
-    #     num_img = len(self.loader_val.dataset)
-    #     Z = np.zeros((num_img, self.model.zd_dim))
-    #     input_imgs = np.zeros((num_img, 3, self.i_h, self.i_w))
-    #     domain_labels = np.zeros((num_img, 1))
-    #     machine_labels = []
-    #     counter = 0
-    #     with torch.no_grad():
-    #         for tensor_x, vec_y, vec_d, *other_vars in self.loader_val:
-    #             if len(other_vars) &gt; 0:
-    #                 machine, image_loc = other_vars
-    #                 for i in range(len(machine)):
-    #                     machine_labels.append(machine[i][0])
-    #             tensor_x = tensor_x.to(self.device)
-    #             preds, z_mu, z, *_ = self.model.infer_d_v_2(tensor_x)
-    #             z = z.detach().cpu().numpy()  # [batch_size, zd_dim]
-    #
-    #             input_imgs[counter:counter+z.shape[0], :, :, :] = tensor_x.cpu().detach().numpy()
-    #             Z[counter:counter + z.shape[0], :] = z
-    #             preds = preds.detach().cpu()
-    #             domain_labels[counter:counter + z.shape[0], 0] = torch.argmax(preds, 1)+1
-    #
-    #
-    #
-    #     return input_imgs, Z, domain_labels, machine_labels
-    #
 </pre></div>
 
           </article>
@@ -464,7 +452,7 @@ from domid.dsets.make_graph_wsi import GraphConstructorWSI
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
           <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2023, FDA/CDRH/OSEL/DIDSR..
+              &#169; Copyright 2024, FDA/CDRH/OSEL/DIDSR..
               
           </div>
             Created using

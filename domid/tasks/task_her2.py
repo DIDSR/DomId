@@ -5,6 +5,7 @@ from torchvision import transforms
 
 from domid.dsets.dset_her2 import DsetHER2
 from domid.tasks.b_task_cluster import NodeTaskDictCluster
+from domid.utils.perf_similarity import PerfCorrelationHER2
 
 
 class NodeTaskHER2(NodeTaskDictCluster):
@@ -80,6 +81,12 @@ class NodeTaskHER2(NodeTaskDictCluster):
             train_set, val_set = random_split(dset, [train_len, val_len])
 
         return train_set, val_set
+
+    def calc_corr(self, model, loader_tr, loader_te, device):
+        perf_metric_correlation = PerfCorrelationHER2()
+        r_score_tr = perf_metric_correlation.cal_acc(model, loader_tr, device)
+        r_score_te = perf_metric_correlation.cal_acc(model, loader_te, device)
+        return r_score_tr, r_score_te
 
 
 def test_fun():

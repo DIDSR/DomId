@@ -20,6 +20,22 @@ domid.utils.perf\_cluster module
    :undoc-members:
    :show-inheritance:
 
+domid.utils.perf\_similarity module
+-----------------------------------
+
+.. automodule:: domid.utils.perf_similarity
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+domid.utils.storing module
+--------------------------
+
+.. automodule:: domid.utils.storing
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

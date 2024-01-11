@@ -274,6 +274,18 @@
       
     
     </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Utilities</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.utils.html" class="md-nav__link">domid.utils package</a>
+      
+    
+    </li>
   </ul>
   
 
@@ -297,12 +309,11 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <h1 id="modules-domid-models-model-dec--page-root">Source code for domid.models.model_dec</h1><div class="highlight"><pre>
-<span></span>import numpy as np
-import tensorboardX
-import torch
+<span></span>import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from domainlab.utils.utils_classif import logit2preds_vpic
+
 from domid.compos.DEC_clustering_layer import DECClusteringLayer
 from domid.models.a_model_cluster import AModelCluster
 
@@ -327,19 +338,17 @@ from domid.models.a_model_cluster import AModelCluster
         self.zd_dim = zd_dim
         self.device = device
 
-        self.alpha = 1 # FIXME
+        self.alpha = 1  # FIXME
         self.hidden = zd_dim
         self.cluster_centers = None
         self.dim_inject_y = 0
         self.warmup_beta = 0
         self.args = args
-        
-        if self.args.feat_extract =='vae':
+
+        if self.args.feat_extract == "vae":
             from domid.compos.cnn_VAE import ConvolutionalDecoder, ConvolutionalEncoder
-        elif self.args.feat_extract =='ae':
+        elif self.args.feat_extract == "ae":
             from domid.compos.cnn_AE import ConvolutionalDecoder, ConvolutionalEncoder
-        
-            
 
         self.encoder = ConvolutionalEncoder(zd_dim=zd_dim, num_channels=i_c, i_w=i_w, i_h=i_h).to(device)
         self.decoder = ConvolutionalDecoder(
@@ -348,12 +357,13 @@ from domid.models.a_model_cluster import AModelCluster
             domain_dim=self.dim_inject_y,  #
             # domain_dim=self.dim_inject_y,
             h_dim=self.encoder.h_dim,
-            num_channels=i_c
+            num_channels=i_c,
         ).to(device)
-        
 
         self.autoencoder = self.encoder
-        self.clusteringlayer = DECClusteringLayer(self.n_clusters, self.hidden, None, self.alpha, self.device) # learnable parameter - cluster center
+        self.clusteringlayer = DECClusteringLayer(
+            self.n_clusters, self.hidden, None, self.alpha, self.device
+        )  # learnable parameter - cluster center
         self.mu_c = self.clusteringlayer.cluster_centers
         self.log_pi = nn.Parameter(
             torch.FloatTensor(
@@ -364,21 +374,25 @@ from domid.models.a_model_cluster import AModelCluster
             requires_grad=True,
         )
         if self.args.pre_tr_weight_path:
-            self.encoder.load_state_dict(torch.load(self.args.pre_tr_weight_path + 'encoder.pt', map_location=self.device))
-            self.decoder.load_state_dict(torch.load(self.args.pre_tr_weight_path + 'decoder.pt', map_location=self.device))
-            print('AE is using pretrained weights. No need for pretraining epochs. ')
+            self.encoder.load_state_dict(
+                torch.load(self.args.pre_tr_weight_path + "encoder.pt", map_location=self.device)
+            )
+            self.decoder.load_state_dict(
+                torch.load(self.args.pre_tr_weight_path + "decoder.pt", map_location=self.device)
+            )
+            print("AE is using pretrained weights. No need for pretraining epochs. ")
         self.log_sigma2_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
         self.random_ind = []</div>
 
 <div class="viewcode-block" id="ModelDEC.target_distribution"><a class="viewcode-back" href="../../../domid.models.html#domid.models.model_dec.ModelDEC.target_distribution">[docs]</a>    def target_distribution(self, q_):
         """
-           Corresponds to equation 3 from the paper.
-           Calculates the target distribution for the Kullback-Leibler divergence loss.
+        Corresponds to equation 3 from the paper.
+        Calculates the target distribution for the Kullback-Leibler divergence loss.
 
-           :param q_: A tensor of the predicted cluster probabilities.
-           :return tensor: The calculated target distribution
-           """
-        weight = (q_ ** 2) / torch.sum(q_, 0)
+        :param q_: A tensor of the predicted cluster probabilities.
+        :return tensor: The calculated target distribution
+        """
+        weight = (q_**2) / torch.sum(q_, 0)
         return (weight.t() / torch.sum(weight, 1)).t()</div>
 
     def _inference(self, x):
@@ -393,19 +407,19 @@ from domid.models.a_model_cluster import AModelCluster
         :return tensor pi: Tensor of the estimated cluster prevalences, p(c) (shape: [self.d_dim])
         :return tensor logits: Tensor where each column contains the log-probability p(c)p(z|c) for cluster c=0,...,self.d_dim-1 (shape: [batch_size, self.d_dim]).
         """
-        if self.args.feat_extract == 'vae':
-            
+        if self.args.feat_extract == "vae":
+
             z_mu, z_sigma2_log = self.encoder(x)
-            z = z_mu # no reparametrization
-        elif self.args.feat_extract == 'ae':
+            z = z_mu  # no reparametrization
+        elif self.args.feat_extract == "ae":
             *_, z_mu = self.encoder(x)
-            z_sigma2_log =torch.Tensor([]).to(self.device) 
+            z_sigma2_log = torch.Tensor([]).to(self.device)
             z = z_mu
-            
-        probs_c = self.clusteringlayer(z_mu) # in dec it is
-        preds_c, logits, *_ = logit2preds_vpic(probs_c) # preds c is oen hot encoded
-        mu_c =self.mu_c
-        #print(mu_c[0, :5])
+
+        probs_c = self.clusteringlayer(z_mu)  # in dec it is
+        preds_c, logits, *_ = logit2preds_vpic(probs_c)  # preds c is oen hot encoded
+        mu_c = self.mu_c
+        # print(mu_c[0, :5])
         log_sigma2_c = self.log_sigma2_c
         pi = self.log_pi
 
@@ -419,6 +433,7 @@ from domid.models.a_model_cluster import AModelCluster
         """
         preds, *_ = self._inference(x)
         return preds.cpu().detach()</div>
+
 <div class="viewcode-block" id="ModelDEC.infer_d_v_2"><a class="viewcode-back" href="../../../domid.models.html#domid.models.model_dec.ModelDEC.infer_d_v_2">[docs]</a>    def infer_d_v_2(self, x, inject_domain):
 
         results = self._inference(x)
@@ -435,17 +450,17 @@ from domid.models.a_model_cluster import AModelCluster
         Loss = nn.MSELoss()
         # Loss = nn.MSELoss(reduction='sum')
         # Loss = nn.HuberLoss()
-        if self.args.feat_extract == 'vae':
-            
+        if self.args.feat_extract == "vae":
+
             z_mu, z_sigma2_log = self.encoder(x)
-            z = z_mu # no reparametrization
-        elif self.args.feat_extract == 'ae':
+            z = z_mu  # no reparametrization
+        elif self.args.feat_extract == "ae":
             *_, z_mu = self.encoder(x)
             z = z_mu
-            
+
         # z_mu, z_sigma2_log = self.encoder(x)
         # z = z_mu
-        #z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
+        # z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
         if len(inject_domain) &gt; 0:
             zy = torch.cat((z, inject_domain), 1)
         else:
@@ -457,19 +472,18 @@ from domid.models.a_model_cluster import AModelCluster
 
 <div class="viewcode-block" id="ModelDEC.cal_loss"><a class="viewcode-back" href="../../../domid.models.html#domid.models.model_dec.ModelDEC.cal_loss">[docs]</a>    def cal_loss(self, x, inject_tensor, warmup_beta):
         """
-            Calculates the KL-divergence loss between the predicted probabilities and the target distribution.
+        Calculates the KL-divergence loss between the predicted probabilities and the target distribution.
 
-            :param x: input tensor/image
-            :param inject_tensor: tensor to inject (not used in DEC, only used in CDVaDE
-            :param warmup_beta: warm-up beta value
-            :return tensor loss (float): calculated KL-divergence loss value
-            """
+        :param x: input tensor/image
+        :param inject_tensor: tensor to inject (not used in DEC, only used in CDVaDE
+        :param warmup_beta: warm-up beta value
+        :return tensor loss (float): calculated KL-divergence loss value
+        """
 
         preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = self._inference(x)
 
         target = self.target_distribution(probs).detach()
-        loss_function = nn.KLDivLoss(reduction= "batchmean")
-
+        loss_function = nn.KLDivLoss(reduction="batchmean")
 
         loss = loss_function(probs.log(), target)
         if self.warmup_beta != warmup_beta:
@@ -497,7 +511,7 @@ from domid.models.a_model_cluster import AModelCluster
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
           <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2023, FDA/CDRH/OSEL/DIDSR..
+              &#169; Copyright 2024, FDA/CDRH/OSEL/DIDSR..
               
           </div>
             Created using

@@ -1,6 +1,5 @@
 import itertools
 
-import torch
 import torch.optim as optim
 from domainlab.algos.trainers.a_trainer import AbstractTrainer
 
@@ -68,6 +67,7 @@ class TrainerCluster(AbstractTrainer):
         if self.args.task == "her2":
             r_score_tr = prediction.epoch_tr_correlation()
             r_score_te = prediction.epoch_val_correlation()  # validation set is used as a test set
+
         # ___________Define warm-up for ELBO loss_________
         if self.warmup_beta < 1 and self.pretraining_finished:
             self.warmup_beta = self.warmup_beta + 0.01
@@ -92,9 +92,9 @@ class TrainerCluster(AbstractTrainer):
                 loss = pretrain.pretrain_loss(tensor_x, inject_tensor)
             else:
                 if not self.pretraining_finished:
+                    # i.e., this is the first epoch after pre-training
+                    # So we need to set the pretraining_finishend flag to True, and to reset the optimizer:
                     self.pretraining_finished = True
-                    # reset the optimizer
-
                     self.optimizer = optim.Adam(
                         self.model.parameters(),
                         lr=self.lr,
@@ -112,7 +112,6 @@ class TrainerCluster(AbstractTrainer):
             loss.backward()
             self.optimizer.step()
             self.epo_loss_tr += loss.cpu().detach().item()
-            # FIXME: devide #  number of samples in the HER notebook
 
         # after one epoch (all batches), GMM is calculated again and pi, mu_c
         # will get updated via this line.
@@ -121,21 +120,13 @@ class TrainerCluster(AbstractTrainer):
         if not self.pretraining_finished:
             pretrain.GMM_fit()
 
-        # only z and pi needed
-        (
-            preds_c,
-            probs_c,
-            z,
-            z_mu,
-            z_sigma2_log,
-            mu_c,
-            log_sigma2_c,
-            pi,
-            logits,
-        ) = self.model._inference(tensor_x)
+        # model._inference returns (preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits)
+        # but only pi needed here
+        *_, pi, _ = self.model._inference(tensor_x)
         if self.aname == "vade":
             print("pi:")
             print(pi.cpu().detach().numpy())
+
         # __________________Validation_____________________
         for i, (tensor_x_val, vec_y_val, vec_d_val, *other_vars) in enumerate(self.loader_val):
             if len(other_vars) > 0:

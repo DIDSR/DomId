@@ -1,7 +1,3 @@
-import itertools
-import os
-
-import torch
 import torch.optim as optim
 from domainlab.algos.trainers.a_trainer import AbstractTrainer
 
@@ -96,8 +92,9 @@ class TrainerCluster(AbstractTrainer):
                 loss = pretrain.pretrain_loss(tensor_x, inject_tensor)
             else:
                 if not self.pretraining_finished:
+                    # i.e., this is the first epoch after pre-training
+                    # So we need to set the pretraining_finishend flag to True, and to reset the optimizer:
                     self.pretraining_finished = True
-                    # reset the optimizer
                     self.model.counter = 1
                     self.optimizer = optim.Adam(
                         self.model.parameters(),
@@ -114,7 +111,6 @@ class TrainerCluster(AbstractTrainer):
             loss.backward()
             self.optimizer.step()
             self.epo_loss_tr += loss.cpu().detach().item()
-            # FIXME: devide #  number of samples in the HER notebook
 
         # after one epoch (all batches), GMM is calculated again and pi, mu_c
         # will get updated via this line.

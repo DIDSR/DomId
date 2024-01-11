@@ -274,6 +274,18 @@
       
     
     </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Utilities</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.utils.html" class="md-nav__link">domid.utils package</a>
+      
+    
+    </li>
   </ul>
   
 
@@ -302,7 +314,7 @@ import torch.nn as nn
 
 
 <div class="viewcode-block" id="DECClusteringLayer"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.DEC_clustering_layer.DECClusteringLayer">[docs]</a>class DECClusteringLayer(nn.Module):
-<div class="viewcode-block" id="DECClusteringLayer.__init__"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.DEC_clustering_layer.DECClusteringLayer.__init__">[docs]</a>    def __init__(self, n_clusters=10, hidden=10, cluster_centers=None, alpha=1.0, device = 'cpu'):
+<div class="viewcode-block" id="DECClusteringLayer.__init__"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.DEC_clustering_layer.DECClusteringLayer.__init__">[docs]</a>    def __init__(self, n_clusters=10, hidden=10, cluster_centers=None, alpha=1.0, device="cpu"):
         """
         :param n_clusters: The number of clusters.
         :param hidden: The size of the hidden layer.
@@ -316,7 +328,7 @@ import torch.nn as nn
         self.hidden = hidden
 
         if cluster_centers is None:
-            initial_cluster_centers = torch.zeros(self.n_clusters, self.hidden,dtype=torch.float).to(device)
+            initial_cluster_centers = torch.zeros(self.n_clusters, self.hidden, dtype=torch.float).to(device)
             nn.init.xavier_uniform_(initial_cluster_centers)
         else:
             initial_cluster_centers = cluster_centers
@@ -335,7 +347,7 @@ import torch.nn as nn
         numerator = 1.0 / (1.0 + (norm_squared / self.alpha))
         power = float(self.alpha + 1) / 2
         numerator = numerator**power
-        t_dist = (numerator.t() / torch.sum(numerator, 1)).t() #soft assignment using t-distribution
+        t_dist = (numerator.t() / torch.sum(numerator, 1)).t()  # soft assignment using t-distribution
         return t_dist</div></div>
 </pre></div>
 
@@ -357,7 +369,7 @@ import torch.nn as nn
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
           <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2023, FDA/CDRH/OSEL/DIDSR..
+              &#169; Copyright 2024, FDA/CDRH/OSEL/DIDSR..
               
           </div>
             Created using

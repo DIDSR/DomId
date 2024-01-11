@@ -1,6 +1,5 @@
 import numpy as np
 import torch
-import torch.optim as optim
 from sklearn.mixture import GaussianMixture
 
 
@@ -19,9 +18,6 @@ class Pretraining:
         self.loader_val = loader_val
         self.i_h, self.i_w = i_h, i_w
         self.args = args
-        self.is_inject_domain = False
-        # if self.args.dim_inject_y > 0:
-        #     self.is_inject_domain = True
 
     def pretrain_loss(self, tensor_x, inject_tensor):
         """

@@ -274,6 +274,18 @@
       
     
     </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Utilities</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.utils.html" class="md-nav__link">domid.utils package</a>
+      
+    
+    </li>
   </ul>
   
 
@@ -320,7 +332,7 @@ from torchvision import datasets, transforms
     """
 
 <div class="viewcode-block" id="DsetMNIST.__init__"><a class="viewcode-back" href="../../../domid.dsets.html#domid.dsets.dset_mnist.DsetMNIST.__init__">[docs]</a>    @store_args
-    def __init__(self, digit, args, subset_step=10, list_transforms=None,raw_split="train"):
+    def __init__(self, digit, args, list_transforms=None, raw_split="train"):
         """
         :param digit: a integer value from 0 to 9; only images of this digit will be kept.
         :param path: disk storage directory
@@ -332,10 +344,8 @@ from torchvision import datasets, transforms
         dataset = datasets.MNIST(root=dpath, train=True, download=True, transform=list_transforms)
 
         # keep only images of specified digit
+        subset_step = args.subset_step
         self.images = dataset.data[dataset.targets == digit]
-        # if subset_step == 1 and args.debug:
-        #     # used to speed up the unit tests
-        #     subset_step = 100
         inds_subset = list(range(0, self.images.shape[0], subset_step))
         self.images = self.images[inds_subset]
         n_img = self.images.shape[0]
@@ -364,10 +374,9 @@ from torchvision import datasets, transforms
         label = self.labels[idx]
         label = mk_fun_label2onehot(10)(label)
         if self.inject_variable:
-            inject_tensor = np.random.randint(0, self.args.dim_inject_y, size=(1, ))[0]
+            inject_tensor = np.random.randint(0, self.args.dim_inject_y, size=(1,))[0]
             # inject_tensor = torch.randint(low=0, high=self.args.dim_inject_y, size=(len(label),))
-            inject_tensor = mk_fun_label2onehot(self.args.dim_inject_y)(inject_tensor-1)
-
+            inject_tensor = mk_fun_label2onehot(self.args.dim_inject_y)(inject_tensor - 1)
 
         else:
             inject_tensor = []
@@ -384,13 +393,7 @@ from torchvision import datasets, transforms
         # else:
         #     inject_domain = np.array([])
 
-        return (
-            image,
-            label,
-            inject_tensor,
-            location
-
-        )  # FIXME for mnist color as well</div>
+        return (image, label, inject_tensor, location)  # FIXME for mnist color as well</div>
 </pre></div>
 
           </article>
@@ -411,7 +414,7 @@ from torchvision import datasets, transforms
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
           <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2023, FDA/CDRH/OSEL/DIDSR..
+              &#169; Copyright 2024, FDA/CDRH/OSEL/DIDSR..
               
           </div>
             Created using

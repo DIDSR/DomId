@@ -18,7 +18,7 @@ from domid.tasks.task_mnist_color import NodeTaskMNISTColor10
 
 def graph_constructor(args):
 
-    graph = GraphConstructor("ncos", 2)
+    graph = GraphConstructor(args.graph_method, 2)
 
     node = NodeTaskMNISTColor10()
     domain1 = node.get_list_domains()[0]
@@ -31,7 +31,6 @@ def graph_constructor(args):
     inject_tesnor = torch.zeros((len(ldr) * bs, 0))
     img_id = torch.zeros((len(ldr) * bs, 1))
     start = 0
-    vec_d = [0, 0, 1]
     for i, (tensor_x, vec_y, *_) in enumerate(ldr):
         end = start + bs
         X[start:end, :, :, :] = tensor_x
@@ -40,12 +39,12 @@ def graph_constructor(args):
         start = end
 
     dataset = torch.utils.data.TensorDataset(X, label1, label2, inject_tesnor, img_id)
-    dlr = torch.utils.data.DataLoader(dataset, batch_size=500, shuffle=False)
-    graph.construct_graph(dlr, None)
-    return graph
+    dlr = torch.utils.data.DataLoader(dataset, batch_size=bs, shuffle=False)
+    adjacency_matrices, sparse_matrices = graph.construct_graph(dlr, None)
+    return adjacency_matrices, sparse_matrices
 
 
-def test_MNISTcolor_SDCN_graph_construction():
+def test_MNISTcolor_SDCN_graph_construction_heat():
     print("done")
     parser = mk_parser_main()
     args = parser.parse_args(
@@ -79,11 +78,15 @@ def test_MNISTcolor_SDCN_graph_construction():
         ]
     )
 
-    graph_constructor(args)
+    adj_mat, sp_mat = graph_constructor(args)
+
+    for i in adj_mat:
+        assert i.shape == (args.bs, args.bs)
+    for j in sp_mat:
+        assert j.shape == (args.bs, args.bs)
 
 
-def test_MNISTcolor_SDCN_graph_construction():
-    print("done")
+def test_MNISTcolor_SDCN_graph_construction_ncos():
     parser = mk_parser_main()
     args = parser.parse_args(
         [
@@ -112,8 +115,13 @@ def test_MNISTcolor_SDCN_graph_construction():
             "--model",
             "linear",
             "--graph_method",
-            "heat",
+            "ncos",
         ]
     )
 
-    graph_constructor(args)
+    adj_mat, sp_mat = graph_constructor(args)
+
+    for i in adj_mat:
+        assert i.shape == (args.bs, args.bs)
+    for j in sp_mat:
+        assert j.shape == (args.bs, args.bs)

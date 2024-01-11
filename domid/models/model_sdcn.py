@@ -113,13 +113,14 @@ class ModelSDCN(AModelCluster):
     def _inference(self, x, inject_tensor=None):
         """
         :param x: [batch_size, n_channels, height, width]
-        :return: probs_c: [batch_size, n_clusters]
-        :return: q: [batch_size, n_clusters]
-        :return: z: [batch_size, n_z]
-        :return: z_mu: [batch_size, n_z]
-        :return: z_sigma2_log: [batch_size, n_z]
-        :return pi: [batch_size, n_clusters]
-        :return logits: [batch_size, n_clusters]
+        :return:
+            - probs_c - [batch_size, n_clusters]
+            - q - [batch_size, n_clusters]
+            - z - [batch_size, n_z]
+            - z_mu - [batch_size, n_z]
+            - z_sigma2_log - [batch_size, n_z]
+            - pi - [batch_size, n_clusters]
+            - logits - [batch_size, n_clusters]
         """
         if self.args.model == "linear":
             x = torch.reshape(x, (x.shape[0], x.shape[1] * x.shape[2] * x.shape[3]))

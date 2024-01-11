@@ -25,10 +25,7 @@ sys.path.insert(0, os.path.abspath("../DomainLab"))
 # -- Project information -----------------------------------------------------
 
 project = "domid"  # @FIXME
-copyright = (
-    f"{datetime.now().year}, FDA/CDRH/OSEL/DIDSR."
-    ""
-)
+copyright = f"{datetime.now().year}, FDA/CDRH/OSEL/DIDSR." ""
 
 author = "Alexej Gossmann, Mariia Sidulova, et.al."
 
@@ -62,7 +59,7 @@ extensions = [
     "sphinx_material",
     "nbsphinx",
     "nbsphinx_link",
-    #"IPython.sphinxext.ipython_console_highlighting",
+    # "IPython.sphinxext.ipython_console_highlighting",
 ]
 
 # myst_all_links_external = True
@@ -81,11 +78,11 @@ myst_enable_extensions = [
 ]
 
 autodoc_default_options = {
-    'members': True,
-    'member-order': 'bysource',
-    'special-members': '__init__', # create docs for methods such as '__init__',
-    'undoc-members': True,
-    'exclude-members': '__weakref__'
+    "members": True,
+    "member-order": "bysource",
+    "special-members": "__init__",  # create docs for methods such as '__init__',
+    "undoc-members": True,
+    "exclude-members": "__weakref__",
 }
 
 # autosummary_generate = True
@@ -104,11 +101,11 @@ templates_path = ["_templates"]
 #        '.md': 'recommonmark.parser.CommonMarkParser',
 # }
 
-source_suffix = ['.rst', '.md']
+source_suffix = [".rst", ".md"]
 source_suffix = {
-        '.rst': 'restructuredtext',
-        '.txt': 'markdown',
-        '.md': 'markdown',
+    ".rst": "restructuredtext",
+    ".txt": "markdown",
+    ".md": "markdown",
 }
 
 # The master toctree document.
@@ -124,11 +121,13 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path .
-exclude_patterns = ["setup.py",
-                    "_build",
-                    "Thumbs.db",
-                    ".DS_Store",
-                    "**.ipynb_checkpoints"]
+exclude_patterns = [
+    "setup.py",
+    "_build",
+    "Thumbs.db",
+    ".DS_Store",
+    "**.ipynb_checkpoints",
+]
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = "default"
@@ -139,10 +138,7 @@ highlight_language = "none"
 # -- HTML theme settings ------------------------------------------------
 html_short_title = "domid"  # @FIXME
 html_show_sourcelink = False
-html_sidebars = {"**": ["logo-text.html",
-                        "globaltoc.html",
-                        "localtoc.html",
-                        "searchbox.html"]}
+html_sidebars = {"**": ["logo-text.html", "globaltoc.html", "localtoc.html", "searchbox.html"]}
 
 html_theme_path = sphinx_material.html_theme_path()
 html_context = sphinx_material.get_html_context()
@@ -166,40 +162,34 @@ html_theme_options = {
     "theme_color": "#2196f3",
     "master_doc": False,
     "nav_title": "DomId",
-   "nav_links": [
-       {
-           "href": "about_link",
-           "internal": True,
-           "title": "About"},
-       {
-           "href": "readme_link",
-           "internal": True,
-           "title": "Quick Start"},
-#        {
-#            "href": "doc_tasks",
-#            "internal": True,
-#            "title": "Task Specification"},
-#        {
-#            "href": "doc_custom_nn",
-#            "internal": True,
-#            "title": "Custom Neural Network"},
-#        {
-#            "href": "doc_examples",
-#            "internal": True,
-#            "title": "Examples"},
-#        {
-#            "href": "doc_output",
-#            "internal": True,
-#            "title": "Output Structure"},
-#        {
-#            "href": "doc_extend_contribute",
-#            "internal": True,
-#            "title": "Extend and Contribute"},
-#        # {
-#        #     "href": "https://squidfunk.github.io/mkdocs-material/",
-#        #     "internal": False,
-#        #     "title": "Material for MkDocs",
-#        # },
+    "nav_links": [
+        {"href": "about_link", "internal": True, "title": "About"},
+        {"href": "readme_link", "internal": True, "title": "Quick Start"},
+        #        {
+        #            "href": "doc_tasks",
+        #            "internal": True,
+        #            "title": "Task Specification"},
+        #        {
+        #            "href": "doc_custom_nn",
+        #            "internal": True,
+        #            "title": "Custom Neural Network"},
+        #        {
+        #            "href": "doc_examples",
+        #            "internal": True,
+        #            "title": "Examples"},
+        #        {
+        #            "href": "doc_output",
+        #            "internal": True,
+        #            "title": "Output Structure"},
+        #        {
+        #            "href": "doc_extend_contribute",
+        #            "internal": True,
+        #            "title": "Extend and Contribute"},
+        #        # {
+        #        #     "href": "https://squidfunk.github.io/mkdocs-material/",
+        #        #     "internal": False,
+        #        #     "title": "Material for MkDocs",
+        #        # },
     ],
     "heroes": {
         "index": "A pytorch platform for deep unsupervised clustering and domain identification",
@@ -255,7 +245,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, "domid", "domid", [author], 1)]   # @FIXME
+man_pages = [(master_doc, "domid", "domid", [author], 1)]  # @FIXME
 
 
 # -- Options for Texinfo output ----------------------------------------------

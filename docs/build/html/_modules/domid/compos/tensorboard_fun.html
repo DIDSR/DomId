@@ -274,6 +274,18 @@
       
     
     </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Utilities</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.utils.html" class="md-nav__link">domid.utils package</a>
+      
+    
+    </li>
   </ul>
   
 
@@ -297,40 +309,60 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <h1 id="modules-domid-compos-tensorboard-fun--page-root">Source code for domid.compos.tensorboard_fun</h1><div class="highlight"><pre>
-<span></span>import tensorboardX
+<span></span>import numpy as np
+import tensorboardX
 import torch
-import numpy as np
 
 
-<div class="viewcode-block" id="tensorboard_write"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.tensorboard_fun.tensorboard_write">[docs]</a>def tensorboard_write(writer, model, epoch, lr, warmup_beta, acc_tr, loss, pretraining_finished, tensor_x, inject_tensor=None, other_info=None):
-    writer.add_scalar('learning rate', lr, epoch)
-    writer.add_scalar('warmup', warmup_beta, epoch)
+<div class="viewcode-block" id="tensorboard_write"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.tensorboard_fun.tensorboard_write">[docs]</a>def tensorboard_write(
+    writer,
+    model,
+    epoch,
+    lr,
+    warmup_beta,
+    acc_tr,
+    loss,
+    pretraining_finished,
+    tensor_x,
+    inject_tensor=None,
+    other_info=None,
+):
+    writer.add_scalar("learning rate", lr, epoch)
+    writer.add_scalar("warmup", warmup_beta, epoch)
     if not pretraining_finished:
-        writer.add_scalar('Pretraining', acc_tr, epoch)
-        writer.add_scalar('Pretraining Loss', loss, epoch)
+        writer.add_scalar("Pretraining", acc_tr, epoch)
+        writer.add_scalar("Pretraining Loss", loss, epoch)
     else:
-        writer.add_scalar('Training acc', acc_tr, epoch)
-        writer.add_scalar('Loss', loss, epoch)
+        writer.add_scalar("Training acc", acc_tr, epoch)
+        writer.add_scalar("Loss", loss, epoch)
 
     if not pretraining_finished:
         name = "Output of the decoder pretraining"
     else:
         name = "Output of the decoder training"
 
-    if other_info is not None and epoch&gt;3:
+    if other_info is not None and epoch &gt; 3:
         kl_total, ce_total, re_total = other_info
-        writer.add_scalar('KL', kl_total, epoch)
-        writer.add_scalar('CE', ce_total, epoch)
-        writer.add_scalar('RE', re_total, epoch)
+        writer.add_scalar("KL", kl_total, epoch)
+        writer.add_scalar("CE", ce_total, epoch)
+        writer.add_scalar("RE", re_total, epoch)
 
     if inject_tensor is not None:
         preds, *_, x_pro = model.infer_d_v_2(tensor_x, inject_tensor)
     else:
         preds, *_, x_pro = model.infer_d_v_2(tensor_x)
-    if len(x_pro.shape)&lt;3:
-        x_pro= torch.reshape(x_pro, (x_pro.shape[0], tensor_x.shape[1], tensor_x.shape[2], tensor_x.shape[3]))
 
-    imgs = torch.cat((tensor_x[0:8, :, :, :], x_pro[0:8, :, :, :],), 0)
+    if len(x_pro.shape) &lt; 3:
+        x_pro = torch.reshape(x_pro, (x_pro.shape[0], tensor_x.shape[1], tensor_x.shape[2], tensor_x.shape[3]))
+
+    imgs = torch.cat(
+        (
+            tensor_x[0:8, :, :, :],
+            x_pro[0:8, :, :, :],
+        ),
+        0,
+    )
+
     # mse = torch.nn.MSELoss()#(dim=1, eps=1e-08)
     # sample1 = tensor_x[0, :, :, :].flatten().unsqueeze(0)
     # sample2 = x_pro[0, :, :, :].flatten().unsqueeze(0)
@@ -358,7 +390,7 @@ import numpy as np
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
           <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2023, FDA/CDRH/OSEL/DIDSR..
+              &#169; Copyright 2024, FDA/CDRH/OSEL/DIDSR..
               
           </div>
             Created using

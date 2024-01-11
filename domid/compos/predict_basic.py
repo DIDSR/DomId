@@ -3,7 +3,7 @@ import torch
 
 from domid.dsets.make_graph_wsi import GraphConstructorWSI
 from domid.utils.perf_cluster import PerfCluster
-from domid.utils.perf_similarity import PerfCorrelation
+from domid.utils.perf_similarity import PerfCorrelationHER2
 
 
 class Prediction:
@@ -14,9 +14,6 @@ class Prediction:
         self.i_w = i_w
         self.i_h = i_h
         self.device = device
-        self.is_inject_domain = False
-        # if self.args.dim_inject_y > 0:
-        #     self.is_inject_domain = True
 
     def mk_prediction(self):
         """
@@ -41,7 +38,7 @@ class Prediction:
         vec_y_labels = []
         predictions = []
         counter = 0
-        # import pdb; pdb.set_trace()
+
         with torch.no_grad():
 
             for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
@@ -91,12 +88,19 @@ class Prediction:
         return input_imgs, z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels
 
     def epoch_tr_acc(self):
+        """
+        This function used to calculate accuracy and confusion matrix for training set for both vec_d and vec_y labels and predictions.
+        """
+        # hungarian_acc_y_s, conf_mat_y_s, hungarian_acc_d_s, conf_mat_d_s
         acc_vec_y, conf_y, acc_vec_d, conf_d = PerfCluster.cal_acc(
             self.model, self.loader_tr, self.device, max_batches=None
         )
         return acc_vec_y, conf_y, acc_vec_d, conf_d
 
     def epoch_val_acc(self):
+        """
+        This function used to calculate accuracy and confusion matrix for validation set for both vec_d and vec_y labels and predictions.
+        """
         acc_vec_y, conf_y, acc_vec_d, conf_d = PerfCluster.cal_acc(
             self.model, self.loader_val, self.device, max_batches=None
         )
@@ -104,46 +108,16 @@ class Prediction:
         return acc_vec_y, conf_y, acc_vec_d, conf_d
 
     def epoch_tr_correlation(self):
+        """
+        This function used to calculate correlation with HER2 scores for training set. Only used for HER2 dataset/task.
+        """
 
-        correlation_tr = PerfCorrelation.cal_acc(self.model, self.loader_tr, self.device, max_batches=None)
+        correlation_tr = PerfCorrelationHER2.cal_acc(self.model, self.loader_tr, self.device, max_batches=None)
         return correlation_tr
 
     def epoch_val_correlation(self):
-        correlation_val = PerfCorrelation.cal_acc(self.model, self.loader_val, self.device, max_batches=None)
+        """
+        This function used to calculate correlation with HER2 scores for valiation set. Only used for HER2 dataset/task.
+        """
+        correlation_val = PerfCorrelationHER2.cal_acc(self.model, self.loader_val, self.device, max_batches=None)
         return correlation_val
-
-    # def prediction_te(self):
-    #     """
-    #     This function is used for ease of storing the results. From training
-    #     dataloader u=images, the prediction using currect state of the model
-    #     are made.
-    #     :return: tensor of dateset images
-    #     :return: Z space of the current model
-    #     :return: domain labels corresponding to Z space
-    #     :return: machine (class labels) labels corresponding to Z space
-    #     """
-    #     num_img = len(self.loader_val.dataset)
-    #     Z = np.zeros((num_img, self.model.zd_dim))
-    #     input_imgs = np.zeros((num_img, 3, self.i_h, self.i_w))
-    #     domain_labels = np.zeros((num_img, 1))
-    #     machine_labels = []
-    #     counter = 0
-    #     with torch.no_grad():
-    #         for tensor_x, vec_y, vec_d, *other_vars in self.loader_val:
-    #             if len(other_vars) > 0:
-    #                 machine, image_loc = other_vars
-    #                 for i in range(len(machine)):
-    #                     machine_labels.append(machine[i][0])
-    #             tensor_x = tensor_x.to(self.device)
-    #             preds, z_mu, z, *_ = self.model.infer_d_v_2(tensor_x)
-    #             z = z.detach().cpu().numpy()  # [batch_size, zd_dim]
-    #
-    #             input_imgs[counter:counter+z.shape[0], :, :, :] = tensor_x.cpu().detach().numpy()
-    #             Z[counter:counter + z.shape[0], :] = z
-    #             preds = preds.detach().cpu()
-    #             domain_labels[counter:counter + z.shape[0], 0] = torch.argmax(preds, 1)+1
-    #
-    #
-    #
-    #     return input_imgs, Z, domain_labels, machine_labels
-    #

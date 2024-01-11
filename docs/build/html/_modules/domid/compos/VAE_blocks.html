@@ -274,6 +274,18 @@
       
     
     </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Utilities</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.utils.html" class="md-nav__link">domid.utils package</a>
+      
+    
+    </li>
   </ul>
   
 
@@ -305,21 +317,20 @@ import torch.nn as nn
 <div class="viewcode-block" id="get_output_shape"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.VAE_blocks.get_output_shape">[docs]</a>def get_output_shape(model, image_dim):
     return model(torch.rand(*(image_dim))).data.shape</div>
 
-<div class="viewcode-block" id="cnn_encoding_block"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.VAE_blocks.cnn_encoding_block">[docs]</a>def cnn_encoding_block(in_c, out_c, kernel_size=(4,4), stride=2, padding=1):
+
+<div class="viewcode-block" id="cnn_encoding_block"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.VAE_blocks.cnn_encoding_block">[docs]</a>def cnn_encoding_block(in_c, out_c, kernel_size=(4, 4), stride=2, padding=1):
     layers = [
         nn.Conv2d(in_c, out_c, kernel_size, stride, padding),
         nn.BatchNorm2d(out_c),
-        nn.LeakyReLU() #negative slope
+        nn.LeakyReLU(),  # negative slope
     ]
     return layers</div>
 
-<div class="viewcode-block" id="cnn_decoding_block"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.VAE_blocks.cnn_decoding_block">[docs]</a>def cnn_decoding_block(in_c, out_c, kernel_size=(3,3), stride=2, padding=1):
-    layers = [
-        nn.ConvTranspose2d(in_c, out_c, kernel_size, stride, padding),
-        nn.BatchNorm2d(out_c),
-        nn.LeakyReLU()
-    ]
+
+<div class="viewcode-block" id="cnn_decoding_block"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.VAE_blocks.cnn_decoding_block">[docs]</a>def cnn_decoding_block(in_c, out_c, kernel_size=(3, 3), stride=2, padding=1):
+    layers = [nn.ConvTranspose2d(in_c, out_c, kernel_size, stride, padding), nn.BatchNorm2d(out_c), nn.LeakyReLU()]
     return layers</div>
+
 
 <div class="viewcode-block" id="UnFlatten"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.VAE_blocks.UnFlatten">[docs]</a>class UnFlatten(nn.Module):
 <div class="viewcode-block" id="UnFlatten.__init__"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.VAE_blocks.UnFlatten.__init__">[docs]</a>    def __init__(self, num_channels):
@@ -328,8 +339,9 @@ import torch.nn as nn
 
 <div class="viewcode-block" id="UnFlatten.forward"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.VAE_blocks.UnFlatten.forward">[docs]</a>    def forward(self, input):
         filter_size = self.num_channels
-        N = int(np.sqrt(input.shape[1]/filter_size))
+        N = int(np.sqrt(input.shape[1] / filter_size))
         return input.view(input.size(0), filter_size, N, N)</div></div>
+
 
 <div class="viewcode-block" id="linear_block"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.VAE_blocks.linear_block">[docs]</a>def linear_block(in_c, out_c):
     layers = [nn.Linear(in_c, out_c), nn.ReLU(True)]
@@ -354,7 +366,7 @@ import torch.nn as nn
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
           <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2023, FDA/CDRH/OSEL/DIDSR..
+              &#169; Copyright 2024, FDA/CDRH/OSEL/DIDSR..
               
           </div>
             Created using

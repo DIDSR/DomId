@@ -274,6 +274,18 @@
       
     
     </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Utilities</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.utils.html" class="md-nav__link">domid.utils package</a>
+      
+    
+    </li>
   </ul>
   
 
@@ -316,16 +328,17 @@ from domid.models.model_m2yd import ModelXY2D
         task = exp.task
         args = exp.args
         device = get_device(args)
-        model = ModelXY2D(y_dim=len(task.list_str_y),
-                          list_str_y=task.list_str_y,
-                          zd_dim=args.zd_dim,
-                          gamma_y=args.gamma_y,
-                          device=device,
-                          i_c=task.isize.c,
-                          i_h=task.isize.h,
-                          i_w=task.isize.w)
-        observer = ObVisitorCleanUp(
-            ObVisitorClustering(exp, MSelOracleVisitor(MSelTrLoss(max_es=args.es)), device))
+        model = ModelXY2D(
+            y_dim=len(task.list_str_y),
+            list_str_y=task.list_str_y,
+            zd_dim=args.zd_dim,
+            gamma_y=args.gamma_y,
+            device=device,
+            i_c=task.isize.c,
+            i_h=task.isize.h,
+            i_w=task.isize.w,
+        )
+        observer = ObVisitorCleanUp(ObVisitorClustering(exp, MSelOracleVisitor(MSelTrLoss(max_es=args.es)), device))
         trainer = TrainerBasic()
         trainer.init_business(model, task, observer, device, args)
         return trainer</div></div>
@@ -353,7 +366,7 @@ from domid.models.model_m2yd import ModelXY2D
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
           <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2023, FDA/CDRH/OSEL/DIDSR..
+              &#169; Copyright 2024, FDA/CDRH/OSEL/DIDSR..
               
           </div>
             Created using

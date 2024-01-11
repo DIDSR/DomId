@@ -377,7 +377,7 @@ def test_MNISTcolor_SDCN():
             "--apath",
             "domid/algos/builder_sdcn.py",
             "--bs",
-            "50",
+            "10",
             "--split",
             "0.8",
             "--L",

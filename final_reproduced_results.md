@@ -1,6 +1,6 @@
 All of the experiments below can be reproduced with the following commit:
 8d29ed50871e052a9d681ae7655121e54bd9990e
-
+The following results can be reproduced with running bash scripts from the 'experiments' directory. 
 
 # MNIST 5 digits and 5 numbers
 
