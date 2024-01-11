@@ -394,7 +394,6 @@ def test_MNISTcolor_SDCN():
             "./notebooks/2023-11-30 10:52:19.451201_mnist_ae/",
             "--epos",
             "3",
-
         ]
     )
     experiment_train(args)

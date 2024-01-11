@@ -6,7 +6,6 @@ from domid.utils.perf_cluster import PerfCluster
 from domid.utils.perf_similarity import PerfCorrelationHER2
 
 
-
 class Prediction:
     def __init__(self, model, device, loader_tr, loader_val, i_h, i_w, bs):
         self.loader_tr = loader_tr
@@ -86,14 +85,7 @@ class Prediction:
                 predictions += (torch.argmax(preds, 1) + 1).tolist()
                 counter += z.shape[0]
 
-        return (
-            input_imgs,
-            z_proj,
-            predictions,
-            vec_y_labels,
-            vec_d_labels,
-            image_id_labels,
-        )
+        return input_imgs, z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels
 
     def epoch_tr_acc(self):
         """

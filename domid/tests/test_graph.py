@@ -78,13 +78,12 @@ def test_MNISTcolor_SDCN_graph_construction_heat():
         ]
     )
 
-    adj_mat, sp_mat =graph_constructor(args)
+    adj_mat, sp_mat = graph_constructor(args)
 
     for i in adj_mat:
         assert i.shape == (args.bs, args.bs)
     for j in sp_mat:
         assert j.shape == (args.bs, args.bs)
-
 
 
 def test_MNISTcolor_SDCN_graph_construction_ncos():

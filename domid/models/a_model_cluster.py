@@ -4,7 +4,6 @@ import torch.nn as nn
 from domid.utils.perf_cluster import PerfCluster
 
 
-
 class AModelCluster(nn.Module):
     """
     Operations that all clustering models should have
