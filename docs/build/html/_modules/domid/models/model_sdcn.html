@@ -1,0 +1,593 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="lang:clipboard.copy" content="Copy to clipboard">
+  <meta name="lang:clipboard.copied" content="Copied to clipboard">
+  <meta name="lang:search.language" content="en">
+  <meta name="lang:search.pipeline.stopwords" content="True">
+  <meta name="lang:search.pipeline.trimmer" content="True">
+  <meta name="lang:search.result.none" content="No matching documents">
+  <meta name="lang:search.result.one" content="1 matching document">
+  <meta name="lang:search.result.other" content="# matching documents">
+  <meta name="lang:search.tokenizer" content="[\s\-]+">
+
+  
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
+
+    <style>
+      body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+    </style>
+  
+
+  <link rel="stylesheet" href="../../../_static/stylesheets/application.css"/>
+  <link rel="stylesheet" href="../../../_static/stylesheets/application-palette.css"/>
+  <link rel="stylesheet" href="../../../_static/stylesheets/application-fixes.css"/>
+  
+  <link rel="stylesheet" href="../../../_static/fonts/material-icons.css"/>
+  
+  <meta name="theme-color" content="#2196f3">
+  <script src="../../../_static/javascripts/modernizr.js"></script>
+  
+  
+    <link rel="apple-touch-icon" href="../../../_static/images/apple-icon-152x152.png"/>
+  
+  
+    <title>domid.models.model_sdcn &#8212; domid  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/material.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="author" title="About these documents" href="../../../about.html" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  
+    <link rel="apple-touch-icon" href="../../../_static/images/apple-icon-152x152.png"/>
+  
+   
+
+  </head>
+  <body dir=ltr
+        data-md-color-primary=teal data-md-color-accent=cyan>
+  
+  <svg class="md-svg">
+    <defs data-children-count="0">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+      
+    </defs>
+  </svg>
+  
+  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
+  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
+  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+  <a href="#_modules/domid/models/model_sdcn" tabindex="1" class="md-skip"> Skip to content </a>
+  <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../../../index.html" title="domid  documentation"
+           class="md-header-nav__button md-logo">
+          
+            <i class="md-icon">school</i>
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          <span class="md-header-nav__topic">DomId</span>
+          <span class="md-header-nav__topic"> domid.models.model_sdcn </span>
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+        
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" action="../../../search.html" method="get" name="search">
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
+             autocapitalize="off" autocomplete="off" spellcheck="false"
+             data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            <a href="https://github.com/agisga/DomId" title="Go to repository" class="md-source" data-md-source="github">
+
+    <div class="md-source__icon">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="28" height="28">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    DomId
+  </div>
+</a>
+          </div>
+        </div>
+      
+      
+    </div>
+  </nav>
+</header>
+
+  
+  <div class="md-container">
+    
+    
+    
+  <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+      <ul class="md-tabs__list">
+            
+            <li class="md-tabs__item"><a href="../../../about_link.html" class="md-tabs__link">About</a></li>
+            
+            <li class="md-tabs__item"><a href="../../../readme_link.html" class="md-tabs__link">Quick Start</a></li>
+          <li class="md-tabs__item"><a href="../../index.html" class="md-tabs__link">Module code</a></li>
+      </ul>
+    </div>
+  </nav>
+    <main class="md-main">
+      <div class="md-main__inner md-grid" data-md-component="container">
+        
+          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="../../../index.html" title="domid documentation" class="md-nav__button md-logo">
+      
+        <i class="md-icon">school</i>
+      
+    </a>
+    <a href="../../../index.html"
+       title="domid documentation">DomId</a>
+  </label>
+    <div class="md-nav__source">
+      <a href="https://github.com/agisga/DomId" title="Go to repository" class="md-source" data-md-source="github">
+
+    <div class="md-source__icon">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="28" height="28">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    DomId
+  </div>
+</a>
+    </div>
+  
+  
+
+  
+  <ul class="md-nav__list">
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">More information about the models</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../about_link.html" class="md-nav__link">About DomId</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Datasets and Tasks</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.dsets.html" class="md-nav__link">domid.dsets package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.tasks.html" class="md-nav__link">domid.tasks package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Models</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.compos.html" class="md-nav__link">domid.compos package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.models.html" class="md-nav__link">domid.models package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Training a Model</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.algos.html" class="md-nav__link">domid.algos package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.trainers.html" class="md-nav__link">domid.trainers package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Utilities</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.utils.html" class="md-nav__link">domid.utils package</a>
+      
+    
+    </li>
+  </ul>
+  
+
+</nav>
+              </div>
+            </div>
+          </div>
+          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                
+<nav class="md-nav md-nav--secondary">
+  <ul class="md-nav__list" data-md-scrollfix="">
+  </ul>
+</nav>
+              </div>
+            </div>
+          </div>
+        
+        <div class="md-content">
+          <article class="md-content__inner md-typeset" role="main">
+            
+  <h1 id="modules-domid-models-model-sdcn--page-root">Source code for domid.models.model_sdcn</h1><div class="highlight"><pre>
+<span></span>import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from domainlab.utils.utils_classif import logit2preds_vpic
+
+from domid.compos.cnn_AE import ConvolutionalDecoder, ConvolutionalEncoder
+from domid.compos.GNN import GNN
+from domid.compos.linear_AE import LinearDecoderAE, LinearEncoderAE
+from domid.models.a_model_cluster import AModelCluster
+
+
+<div class="viewcode-block" id="ModelSDCN"><a class="viewcode-back" href="../../../domid.models.html#domid.models.model_sdcn.ModelSDCN">[docs]</a>class ModelSDCN(AModelCluster):
+    """
+    ModelSDCN is a class that implements the SDCN model.(Bo D et al. 2020)
+    The model is composed of a convolutional encoder and decoder, a GNN and a clustering layer.
+    """
+
+<div class="viewcode-block" id="ModelSDCN.__init__"><a class="viewcode-back" href="../../../domid.models.html#domid.models.model_sdcn.ModelSDCN.__init__">[docs]</a>    def __init__(self, zd_dim, d_dim, device, L, i_c, i_h, i_w, args):
+
+        super(ModelSDCN, self).__init__()
+        self.zd_dim = zd_dim
+        self.d_dim = d_dim
+        self.device = device
+        self.L = L
+        self.args = args
+        self.loss_epoch = 0
+        self.dim_inject_y = 0
+
+        if self.args.dim_inject_y:
+            self.dim_inject_y = self.args.dim_inject_y
+
+        n_clusters = d_dim
+        n_z = zd_dim
+        n_input = i_c * i_h * i_w
+
+        self.cluster_layer = nn.Parameter(torch.Tensor(self.d_dim, self.zd_dim))
+        torch.nn.init.xavier_normal_(self.cluster_layer.data)
+
+        if self.args.model == "linear":
+            n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3, = (
+                500,
+                500,
+                2000,
+                2000,
+                500,
+                500,
+            )
+            self.encoder = LinearEncoderAE(n_enc_1, n_enc_2, n_enc_3, n_input, n_z)
+            self.decoder = LinearDecoderAE(n_dec_1, n_dec_2, n_dec_3, n_input, n_z)
+
+        else:
+            self.encoder = ConvolutionalEncoder(zd_dim=zd_dim, num_channels=i_c, i_w=i_w, i_h=i_h).to(device)
+            self.decoder = ConvolutionalDecoder(
+                prior=args.prior,
+                zd_dim=zd_dim,  # 50
+                domain_dim=self.dim_inject_y,
+                h_dim=self.encoder.h_dim,
+                num_channels=i_c,
+            ).to(device)
+            n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3, = (
+                int((i_w / 2) ** 2 * self.encoder.num_filters[0]),
+                int((i_w / 4) ** 2 * self.encoder.num_filters[1]),
+                int((i_w / 8) ** 2 * self.encoder.num_filters[2]),
+                int((i_w / 8) ** 2 * self.encoder.num_filters[2]),
+                int((i_w / 4) ** 2 * self.encoder.num_filters[1]),
+                int((i_w / 2) ** 2 * self.encoder.num_filters[0]),
+            )
+            print("Filter sizes for GNN", n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3)
+        if self.args.pre_tr_weight_path:
+            self.encoder.load_state_dict(
+                torch.load(self.args.pre_tr_weight_path + "encoder.pt", map_location=self.device)
+            )
+            self.decoder.load_state_dict(
+                torch.load(self.args.pre_tr_weight_path + "decoder.pt", map_location=self.device)
+            )
+            print("Pre-trained weights loaded")
+        else:
+            raise ValueError("Pre-trianed weight path is not provided")
+
+        self.gnn_model = GNN(n_input, n_enc_1, n_enc_2, n_enc_3, n_z, n_clusters, device)
+
+        if torch.cuda.device_count() &gt; 1:  # Check if multiple GPUs are available
+            print("Using DataParallel with {} GPUs.".format(torch.cuda.device_count()))
+            # self.gnn_model = torch.nn.DataParallel(self.gnn_model)  # Wrap the model for DataParallel
+            self.encoder = torch.nn.DataParallel(self.encoder)
+            self.decoder = torch.nn.DataParallel(self.decoder)
+
+        else:
+            if torch.cuda.device_count() == 1:
+                print("Using a single GPU.")
+            else:
+                print("Using CPU(s).")
+
+        self.v = 1.0
+        self.counter = 0
+        self.q_activation = torch.zeros((10, 100))
+        self.kl_loss_running = 0
+        self.re_loss_running = 0
+        self.ce_loss_running = 0
+
+        if "mnist" in self.args.task:
+            self.graph_method = "heat"
+        if "wsi" in self.args.task:
+            self.graph_method = "patch_distance"
+        if self.args.graph_method is not None:
+            self.graph_method = args.graph_method
+
+        if args.task == "wsi":
+            self.random_ind = [torch.randint(0, self.args.bs, (int(self.args.bs / 3),)) for i in range(0, 66)]
+        else:
+            self.random_ind = []</div>
+
+    def _inference(self, x, inject_tensor=None):
+        """
+        :param x: [batch_size, n_channels, height, width]
+        :return:
+            - probs_c - [batch_size, n_clusters]
+            - q - [batch_size, n_clusters]
+            - z - [batch_size, n_z]
+            - z_mu - [batch_size, n_z]
+            - z_sigma2_log - [batch_size, n_z]
+            - pi - [batch_size, n_clusters]
+            - logits - [batch_size, n_clusters]
+        """
+        if self.args.model == "linear":
+            x = torch.reshape(x, (x.shape[0], x.shape[1] * x.shape[2] * x.shape[3]))
+        enc_h1, enc_h2, enc_h3, z = self.encoder(x)
+
+        h = self.gnn_model(x, self.adj.to(self.device), enc_h1, enc_h2, enc_h3, z)
+        probs_c = F.softmax(
+            h, dim=1
+        )  # [batch_size, n_clusters] (batch_zise==number of samples) same as preds in the code
+        # and p is calculated using preds and target distribution.
+
+        # Dual Self-supervised Module
+        q = 1.0 / (1.0 + torch.sum(torch.pow(z.unsqueeze(1) - self.cluster_layer, 2), 2)) / self.v
+        q = q.pow((self.v + 1.0) / 2.0)
+        q = (q.t() / torch.sum(q, 1)).t()
+
+        logits = q.type(torch.float32)  # q in the paper and code
+
+        preds_c, *_ = logit2preds_vpic(h)  # probs_c is F.softmax(logit, dim=1)
+
+        return preds_c, probs_c, z, logits
+
+<div class="viewcode-block" id="ModelSDCN.infer_d_v"><a class="viewcode-back" href="../../../domid.models.html#domid.models.model_sdcn.ModelSDCN.infer_d_v">[docs]</a>    def infer_d_v(self, x):
+        """
+        Predict the cluster/domain of the input data.
+        Corresponds to equation (16) in the paper.
+
+        :param tensor x: Input tensor of a shape [batchsize, 3, horzintal dim, vertical dim].
+        :return tensor preds: One hot encoded tensor of the predicted cluster assignment.
+        """
+        preds, *_ = self._inference(x)
+        return preds.cpu().detach()</div>
+
+<div class="viewcode-block" id="ModelSDCN.infer_d_v_2"><a class="viewcode-back" href="../../../domid.models.html#domid.models.model_sdcn.ModelSDCN.infer_d_v_2">[docs]</a>    def infer_d_v_2(self, x):
+        """
+        Used for tensorboard visualizations only.
+        """
+        # import pdb; pdb.set_trace()
+        results = self._inference(x)
+
+        z = results[2]
+
+        # print(results[2].shape, inject_domain.shape, zy.shape)
+        x_pro = self.decoder(z)
+        preds_c, probs_c, z, logits = (r.cpu().detach() for r in results)
+
+        return preds_c, z, probs_c, x_pro</div>
+
+<div class="viewcode-block" id="ModelSDCN.target_distribution"><a class="viewcode-back" href="../../../domid.models.html#domid.models.model_sdcn.ModelSDCN.target_distribution">[docs]</a>    def target_distribution(self, q):
+        """
+        Compute the target distribution p, where p_i = (sum_j q_j)^2 / sum_j^2 q_j.
+        Corresponds to equation (12) from the paper.
+        """
+        weight = q**2 / q.sum(0)
+        return (weight.t() / weight.sum(1)).t()</div>
+
+<div class="viewcode-block" id="ModelSDCN.cal_loss"><a class="viewcode-back" href="../../../domid.models.html#domid.models.model_sdcn.ModelSDCN.cal_loss">[docs]</a>    def cal_loss(self, x, warmup_beta=None):
+        """
+        Compute the loss of the model.
+        Concentrate two different objectives, i.e. clustering objective and classification objective, in one loss function.
+        Corresponds to equation (15) in the paper.
+        :param tensor x: Input tensor of a shape [batchsize, 3, horzintal dim, vertical dim].
+        :param float warmup_beta: Warmup coefficient for the KL divergence term.
+        :return tensor loss: Loss tensor.
+        """
+
+        preds_c, probs_c, z, logits = self._inference(x)
+        # logits is q in the paper
+        # probs_c is pred in the code
+        q = logits
+        pred = probs_c
+
+        x_bar = self.decoder(z)
+        q = q.data
+
+        # if self.counter==1:
+        p = self.target_distribution(q)
+
+        # self.local_tb.add_histogram('p', p, self.counter)
+
+        if self.args.model == "linear":
+            x = torch.reshape(x, (x.shape[0], x.shape[1] * x.shape[2] * x.shape[3]))
+
+        kl_loss = F.kl_div(q.log(), p, reduction="batchmean")
+        ce_loss = F.kl_div(pred.log(), p, reduction="batchmean")
+        re_loss = F.mse_loss(x, x_bar)
+
+        loss = 0.1 * kl_loss + 0.01 * ce_loss + re_loss
+
+        self.kl_loss_running = kl_loss
+        self.ce_loss_running = ce_loss
+        self.re_loss_running = re_loss
+
+        return loss.type(torch.double)</div>
+
+<div class="viewcode-block" id="ModelSDCN.cal_loss_for_tensorboard"><a class="viewcode-back" href="../../../domid.models.html#domid.models.model_sdcn.ModelSDCN.cal_loss_for_tensorboard">[docs]</a>    def cal_loss_for_tensorboard(self):
+        return self.kl_loss_running, self.ce_loss_running, self.re_loss_running</div>
+
+<div class="viewcode-block" id="ModelSDCN.pretrain_loss"><a class="viewcode-back" href="../../../domid.models.html#domid.models.model_sdcn.ModelSDCN.pretrain_loss">[docs]</a>    def pretrain_loss(self, x):
+        if self.args.model == "linear":
+            x = torch.reshape(x, (x.shape[0], x.shape[1] * x.shape[2] * x.shape[3]))
+        enc_h1, enc_h2, enc_h3, z = self.encoder(x)
+
+        x_pro = self.decoder(z)
+        loss = F.mse_loss(x, x_pro)
+
+        return loss</div></div>
+
+
+# def test_fun(d_dim, zd_dim, device):
+#     device = torch.device("cpu")
+#     model = ModelVaDE(d_dim=d_dim, zd_dim=zd_dim, device=device)
+#     x = torch.rand(2, 3, 28, 28)
+#     import numpy as np
+#
+#     a = np.zeros((2, 10))
+#     a = np.double(a)
+#     a[0, 1] = 1.0
+#     a[1, 8] = 1.0
+#     a
+#     y = torch.tensor(a, dtype=torch.float)
+#     model(x, y)
+#     model.cal_loss(x)
+</pre></div>
+
+          </article>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer class="md-footer">
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+          
+          
+        </a>
+        
+      </nav>
+    </div>
+    <div class="md-footer-meta md-typeset">
+      <div class="md-footer-meta__inner md-grid">
+        <div class="md-footer-copyright">
+          <div class="md-footer-copyright__highlight">
+              &#169; Copyright 2024, FDA/CDRH/OSEL/DIDSR..
+              
+          </div>
+            Created using
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+             and
+            <a href="https://github.com/bashtage/sphinx-material/">Material for
+              Sphinx</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="../../../_static/javascripts/application.js"></script>
+  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
+  </body>
+</html>
