@@ -274,6 +274,18 @@
       
     
     </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Utilities</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.utils.html" class="md-nav__link">domid.utils package</a>
+      
+    
+    </li>
   </ul>
   
 
@@ -299,11 +311,10 @@
   <h1 id="modules-domid-trainers-pretraining-gmm--page-root">Source code for domid.trainers.pretraining_GMM</h1><div class="highlight"><pre>
 <span></span>import numpy as np
 import torch
-import torch.optim as optim
 from sklearn.mixture import GaussianMixture
 
 
-<div class="viewcode-block" id="Pretraining"><a class="viewcode-back" href="../../../domid.trainers.html#domid.trainers.pretraining_GMM.Pretraining">[docs]</a>class Pretraining():
+<div class="viewcode-block" id="Pretraining"><a class="viewcode-back" href="../../../domid.trainers.html#domid.trainers.pretraining_GMM.Pretraining">[docs]</a>class Pretraining:
 <div class="viewcode-block" id="Pretraining.__init__"><a class="viewcode-back" href="../../../domid.trainers.html#domid.trainers.pretraining_GMM.Pretraining.__init__">[docs]</a>    def __init__(self, model, device, loader_tr, loader_val, i_h, i_w, args):
         """
         :param model: the model to train
@@ -317,20 +328,16 @@ from sklearn.mixture import GaussianMixture
         self.loader_tr = loader_tr
         self.loader_val = loader_val
         self.i_h, self.i_w = i_h, i_w
-        self.args = args
-        self.is_inject_domain = False</div>
-        # if self.args.dim_inject_y &gt; 0:
-        #     self.is_inject_domain = True
+        self.args = args</div>
 
 <div class="viewcode-block" id="Pretraining.pretrain_loss"><a class="viewcode-back" href="../../../domid.trainers.html#domid.trainers.pretraining_GMM.Pretraining.pretrain_loss">[docs]</a>    def pretrain_loss(self, tensor_x, inject_tensor):
         """
         :param tensor_x: the input image
         :return: the loss
         """
-       # import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         loss = self.model.pretrain_loss(tensor_x, inject_tensor)
         return loss</div>
-
 
 <div class="viewcode-block" id="Pretraining.GMM_fit"><a class="viewcode-back" href="../../../domid.trainers.html#domid.trainers.pretraining_GMM.Pretraining.GMM_fit">[docs]</a>    def GMM_fit(self):
         """
@@ -343,7 +350,7 @@ from sklearn.mixture import GaussianMixture
         counter = 0
         with torch.no_grad():
             for tensor_x, vec_y, vec_d, *other_vars in self.loader_tr:
-                if len(other_vars)&gt;0:
+                if len(other_vars) &gt; 0:
                     inject_tensor, image_id = other_vars
                     if len(inject_tensor) &gt; 0:
                         inject_tensor = inject_tensor.to(self.device)
@@ -356,15 +363,17 @@ from sklearn.mixture import GaussianMixture
 
                 preds, z_mu, z, *_ = self.model.infer_d_v_2(tensor_x, inject_tensor)
                 z = z.detach().cpu().numpy()  # [batch_size, zd_dim]
-                Z[counter:counter + z.shape[0], :] = z
+                Z[counter : counter + z.shape[0], :] = z
                 counter += z.shape[0]
 
         try:
-            gmm = GaussianMixture(n_components=self.model.d_dim, covariance_type='diag', reg_covar = 10 ** -3) #, reg_covar=10)
+            gmm = GaussianMixture(
+                n_components=self.model.d_dim, covariance_type="diag", reg_covar=10**-3
+            )  # , reg_covar=10)
             out_fit_pred = gmm.fit_predict(Z)
             # print(out_fit_pred)
         except Exception as ex:
-            raise RuntimeError("Gaussian mixture model failed:"+str(ex))
+            raise RuntimeError("Gaussian mixture model failed:" + str(ex))
         # visitor/intruder to deep learning model to change model parameters
         self.model.log_pi.data = torch.log(torch.from_numpy(gmm.weights_)).to(self.device).float()
         # name convention: mu_c is the mean for the Gaussian mixture cluster,
@@ -391,7 +400,7 @@ from sklearn.mixture import GaussianMixture
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
           <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2023, FDA/CDRH/OSEL/DIDSR..
+              &#169; Copyright 2024, FDA/CDRH/OSEL/DIDSR..
               
           </div>
             Created using

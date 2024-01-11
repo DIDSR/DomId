@@ -12,6 +12,14 @@ domid.models.a\_model\_cluster module
    :undoc-members:
    :show-inheritance:
 
+domid.models.model\_ae module
+-----------------------------
+
+.. automodule:: domid.models.model_ae
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 domid.models.model\_dec module
 ------------------------------
 
@@ -24,6 +32,14 @@ domid.models.model\_m2yd module
 -------------------------------
 
 .. automodule:: domid.models.model_m2yd
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+domid.models.model\_sdcn module
+-------------------------------
+
+.. automodule:: domid.models.model_sdcn
    :members:
    :undoc-members:
    :show-inheritance:

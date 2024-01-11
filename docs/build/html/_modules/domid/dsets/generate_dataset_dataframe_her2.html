@@ -274,6 +274,18 @@
       
     
     </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Utilities</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.utils.html" class="md-nav__link">domid.utils package</a>
+      
+    
+    </li>
   </ul>
   
 
@@ -345,6 +357,7 @@ print(f"HER2 data directory: {path}")
         machine_labels.append(machine)
     return machine_labels</div>
 
+
 <div class="viewcode-block" id="mean_scores_per_experiment"><a class="viewcode-back" href="../../../domid.dsets.html#domid.dsets.generate_dataset_dataframe_her2.mean_scores_per_experiment">[docs]</a>def mean_scores_per_experiment(scores, img_locs):
     """
     Parser to get mean scores per image from the cvs file.
@@ -356,21 +369,16 @@ print(f"HER2 data directory: {path}")
 
     for image_loc in img_locs:
         try:
-            image_loc = str(
-                image_loc.split("/")[-1]
-            )  # depending if the path is full or not, take the img name only
+            image_loc = str(image_loc.split("/")[-1])  # depending if the path is full or not, take the img name only
         except:
             "not full path"
 
-        N = len(image_loc) - 6 #removes the _machine.jpg part from the name of the image
-        mean_score = scores.loc[
-            scores["file name"].str.contains(image_loc[:N])
-        ].mean(axis=1)
+        N = len(image_loc) - 6  # removes the _machine.jpg part from the name of the image
+        mean_score = scores.loc[scores["file name"].str.contains(image_loc[:N])].mean(axis=1)
         mean_score = float(mean_score)
         # print(mean_score)
         M.append(mean_score)
     return M</div>
-
 
 
 if __name__ == "__main__":
@@ -389,7 +397,7 @@ if __name__ == "__main__":
         images = os.listdir(folder_path)
         labels = [label_of_the_folder_int] * len(images)
         machine_labels = parse_machine_labels(images)
-        base_path_scores = os.path.join(*path.split('/')[:-1])
+        base_path_scores = os.path.join(*path.split("/")[:-1])
         # base_path = "/your/data/location"
 
         scores = pd.read_csv(
@@ -397,9 +405,7 @@ if __name__ == "__main__":
             names=["num", "file name", "s1", "s2", "s3", "s4", "s5", "s6", "s_7"],
         )
         individual_scores = mean_scores_per_experiment(scores, images)
-        data[start : start + len(images), :] = np.stack(
-            (images, labels, machine_labels, individual_scores), 0
-        ).T
+        data[start : start + len(images), :] = np.stack((images, labels, machine_labels, individual_scores), 0).T
         start += len(images)
         print(len(images))
 
@@ -432,7 +438,7 @@ if __name__ == "__main__":
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
           <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2023, FDA/CDRH/OSEL/DIDSR..
+              &#169; Copyright 2024, FDA/CDRH/OSEL/DIDSR..
               
           </div>
             Created using

@@ -12,6 +12,22 @@ domid.compos.DEC\_clustering\_layer module
    :undoc-members:
    :show-inheritance:
 
+domid.compos.GNN module
+-----------------------
+
+.. automodule:: domid.compos.GNN
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+domid.compos.GNN\_layer module
+------------------------------
+
+.. automodule:: domid.compos.GNN_layer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 domid.compos.VAE\_blocks module
 -------------------------------
 
@@ -20,10 +36,26 @@ domid.compos.VAE\_blocks module
    :undoc-members:
    :show-inheritance:
 
+domid.compos.cnn\_AE module
+---------------------------
+
+.. automodule:: domid.compos.cnn_AE
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 domid.compos.cnn\_VAE module
 ----------------------------
 
 .. automodule:: domid.compos.cnn_VAE
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+domid.compos.linear\_AE module
+------------------------------
+
+.. automodule:: domid.compos.linear_AE
    :members:
    :undoc-members:
    :show-inheritance:
@@ -48,14 +80,6 @@ domid.compos.predict\_basic module
 ----------------------------------
 
 .. automodule:: domid.compos.predict_basic
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-domid.compos.storing module
----------------------------
-
-.. automodule:: domid.compos.storing
    :members:
    :undoc-members:
    :show-inheritance:

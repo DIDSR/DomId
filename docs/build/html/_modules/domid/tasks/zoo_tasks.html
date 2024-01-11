@@ -274,6 +274,18 @@
       
     
     </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Utilities</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.utils.html" class="md-nav__link">domid.utils package</a>
+      
+    
+    </li>
   </ul>
   
 
@@ -308,8 +320,8 @@ from torchvision import transforms
 from domid.tasks.task_her2 import NodeTaskHER2
 from domid.tasks.task_mnist import NodeTaskMNIST
 from domid.tasks.task_mnist_color import NodeTaskMNISTColor10
-from domid.tasks.task_usps import NodeTaskUSPS
 from domid.tasks.task_unittest import NodeTaskUnitTest
+from domid.tasks.task_usps import NodeTaskUSPS
 from domid.tasks.task_wsi import NodeTaskWSI
 
 path_this_file = os.path.dirname(os.path.realpath(__file__))
@@ -320,6 +332,7 @@ path_this_file = os.path.dirname(os.path.realpath(__file__))
     1. Hardcoded chain
     3. Return selected node
     """
+
 <div class="viewcode-block" id="TaskChainNodeGetter.__init__"><a class="viewcode-back" href="../../../domid.tasks.html#domid.tasks.zoo_tasks.TaskChainNodeGetter.__init__">[docs]</a>    def __init__(self, args):
         self.args = args
         tpath = args.tpath
@@ -345,43 +358,29 @@ path_this_file = os.path.dirname(os.path.realpath(__file__))
 
         chain = NodeTaskWSI(succ=chain)
 
-        chain = mk_task_folder(extensions={"caltech": "jpg", "sun": "jpg", "labelme": "jpg"},
-                               list_str_y=["chair", "car"],
-                               dict_domain_folder_name2class={
-                                   "caltech": {"auto": "car",
-                                               "stuhl": "chair"},
-                                   "sun": {"vehicle": "car",
-                                           "sofa": "chair"},
-                                   "labelme": {"drive": "car",
-                                               "sit": "chair"}
-                               },
-                               dict_domain_img_trans={
-                                   "caltech": transforms.Compose(
-                                       [transforms.Resize((224, 224)),
-                                        transforms.ToTensor()]),
-                                   "sun": transforms.Compose(
-                                       [transforms.Resize((224, 224)),
-                                        transforms.ToTensor()]),
-                                   "labelme": transforms.Compose(
-                                       [transforms.Resize((224, 224)),
-                                        transforms.ToTensor()]),
-                               },
-                               img_trans_te=transforms.Compose(
-                                   [transforms.Resize((224, 224)),
-                                    transforms.ToTensor()]),
-                               isize=ImSize(3, 224, 224),
-                               dict_domain2imgroot={
-                                   "caltech": os.path.join(
-                                       path_this_file,
-                                       "../../data/vlcs_mini/caltech/"),
-                                   "sun": os.path.join(
-                                       path_this_file,
-                                       "../../data/vlcs_mini/sun/"),
-                                   "labelme": os.path.join(
-                                       path_this_file,
-                                       "../../data/vlcs_mini/labelme/")},
-                               taskna="mini_vlcs",
-                               succ=chain)
+        chain = mk_task_folder(
+            extensions={"caltech": "jpg", "sun": "jpg", "labelme": "jpg"},
+            list_str_y=["chair", "car"],
+            dict_domain_folder_name2class={
+                "caltech": {"auto": "car", "stuhl": "chair"},
+                "sun": {"vehicle": "car", "sofa": "chair"},
+                "labelme": {"drive": "car", "sit": "chair"},
+            },
+            dict_domain_img_trans={
+                "caltech": transforms.Compose([transforms.Resize((224, 224)), transforms.ToTensor()]),
+                "sun": transforms.Compose([transforms.Resize((224, 224)), transforms.ToTensor()]),
+                "labelme": transforms.Compose([transforms.Resize((224, 224)), transforms.ToTensor()]),
+            },
+            img_trans_te=transforms.Compose([transforms.Resize((224, 224)), transforms.ToTensor()]),
+            isize=ImSize(3, 224, 224),
+            dict_domain2imgroot={
+                "caltech": os.path.join(path_this_file, "../../data/vlcs_mini/caltech/"),
+                "sun": os.path.join(path_this_file, "../../data/vlcs_mini/sun/"),
+                "labelme": os.path.join(path_this_file, "../../data/vlcs_mini/labelme/"),
+            },
+            taskna="mini_vlcs",
+            succ=chain,
+        )
 
         if self.tpath is not None:
             node = self.task_module.get_task(self.args.task)
@@ -389,9 +388,7 @@ path_this_file = os.path.dirname(os.path.realpath(__file__))
             chain = node
             if self.args.task is None:
                 print("")
-                print("overriding args.task ",
-                      self.args.task, " to  ",
-                      node.task_name)
+                print("overriding args.task ", self.args.task, " to  ", node.task_name)
                 print("")
                 self.request = node.task_name  # FIXME
         node = chain.handle(self.request)
@@ -416,7 +413,7 @@ path_this_file = os.path.dirname(os.path.realpath(__file__))
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
           <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2023, FDA/CDRH/OSEL/DIDSR..
+              &#169; Copyright 2024, FDA/CDRH/OSEL/DIDSR..
               
           </div>
             Created using

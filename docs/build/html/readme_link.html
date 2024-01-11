@@ -274,6 +274,18 @@
       
     
     </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Utilities</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.utils.html" class="md-nav__link">domid.utils package</a>
+      
+    
+    </li>
   </ul>
   
 
@@ -314,7 +326,7 @@
         </li></ul>
             </nav>
         </li>
-        <li class="md-nav__item"><a href="#sdcn-batching" class="md-nav__link">SDCN + batching</a>
+        <li class="md-nav__item"><a href="#sdcn-and-modified-sdcn-for-wsi-data" class="md-nav__link">SDCN, and modified SDCN for WSI data</a>
         </li>
         <li class="md-nav__item"><a href="#simultaneous-unsupervised-clustering-and-supervised-classification" class="md-nav__link">Simultaneous unsupervised clustering and supervised classification</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -487,14 +499,14 @@ The injected variable is the class of the image, and the number of unique values
 </div>
 </section>
 </section>
-<section id="sdcn-batching">
-<h4 id="sdcn-batching">SDCN + batching<a class="headerlink" href="#sdcn-batching" title="Permalink to this heading">¶</a></h4>
-<p>SDCN is a deep neural network model that combines GCN and AE architectures for the purpose of unsupervised clustering[5].</p>
+<section id="sdcn-and-modified-sdcn-for-wsi-data">
+<h4 id="sdcn-and-modified-sdcn-for-wsi-data">SDCN, and modified SDCN for WSI data<a class="headerlink" href="#sdcn-and-modified-sdcn-for-wsi-data" title="Permalink to this heading">¶</a></h4>
+<p>SDCN is a deep neural network model that combines GCN and AE architectures for the purpose of unsupervised clustering.[5]</p>
 <p>However, original SDCN model faces significant scalability challenges that hinder its deployment in digital pathology,
 particularly when dealing with whole-slide digital pathology images (WSI), which are typically of gigapixel size or larger.
 This limitation arises from SDCN need for constructing a graph on the entire dataset and the imperative to process all data in a single
 batch during training. To overcome this issue, we propose batching strategy to the SDCN training process and introduce
-a novel batching approach tailored specifically for WSI data.</p>
+a novel batching approach tailored specifically for WSI data.[6]</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>poetry run python main_out.py --te_d 0 --tr_d 0 1 2 3 4 5 6 7 8 9 --task=mnistcolor10 --epos=30 --aname=ae --zd_dim=20 --d_dim=10 --apath=domid/algos/builder_AE.py --L=5 --pre_tr=2 --bs 600 --lr 0.0001 --model cnn --nocu
 </pre></div>
 </div>
@@ -546,7 +558,7 @@ Here is a basic example to run the M2YD model on the Color-MNIST dataset:</p>
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
           <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2023, FDA/CDRH/OSEL/DIDSR..
+              &#169; Copyright 2024, FDA/CDRH/OSEL/DIDSR..
               
           </div>
             Created using

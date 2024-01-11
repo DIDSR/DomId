@@ -28,6 +28,14 @@ domid.utils.perf\_similarity module
    :undoc-members:
    :show-inheritance:
 
+domid.utils.storing module
+--------------------------
+
+.. automodule:: domid.utils.storing
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

@@ -36,6 +36,14 @@ domid.dsets.dset\_mnist\_color\_solo\_default module
    :undoc-members:
    :show-inheritance:
 
+domid.dsets.dset\_unittest module
+---------------------------------
+
+.. automodule:: domid.dsets.dset_unittest
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 domid.dsets.dset\_usps module
 -----------------------------
 
@@ -44,10 +52,34 @@ domid.dsets.dset\_usps module
    :undoc-members:
    :show-inheritance:
 
+domid.dsets.dset\_wsi module
+----------------------------
+
+.. automodule:: domid.dsets.dset_wsi
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 domid.dsets.generate\_dataset\_dataframe\_her2 module
 -----------------------------------------------------
 
 .. automodule:: domid.dsets.generate_dataset_dataframe_her2
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+domid.dsets.make\_graph module
+------------------------------
+
+.. automodule:: domid.dsets.make_graph
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+domid.dsets.make\_graph\_wsi module
+-----------------------------------
+
+.. automodule:: domid.dsets.make_graph_wsi
    :members:
    :undoc-members:
    :show-inheritance:

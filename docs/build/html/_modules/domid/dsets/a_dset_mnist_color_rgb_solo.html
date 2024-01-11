@@ -274,6 +274,18 @@
       
     
     </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Utilities</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.utils.html" class="md-nav__link">domid.utils package</a>
+      
+    
+    </li>
   </ul>
   
 
@@ -304,9 +316,10 @@ import abc
 import os
 import struct
 from os.path import exists
-import torch
+
 import numpy as np
 import pandas as pd
+import torch
 from domainlab.dsets.utils_data import mk_fun_label2onehot
 from domainlab.utils.utils_class import store_args
 from PIL import Image
@@ -321,6 +334,7 @@ from torchvision import datasets, transforms
         2. subdomains: color(foreground, background)
         3. structure: each subdomain contains a combination of foreground+background color
     """
+
 <div class="viewcode-block" id="ADsetMNISTColorRGBSolo.get_foreground_color"><a class="viewcode-back" href="../../../domid.dsets.html#domid.dsets.a_dset_mnist_color_rgb_solo.ADsetMNISTColorRGBSolo.get_foreground_color">[docs]</a>    @abc.abstractmethod
     def get_foreground_color(self, ind):
         raise NotImplementedError</div>
@@ -334,14 +348,19 @@ from torchvision import datasets, transforms
         raise NotImplementedError</div>
 
 <div class="viewcode-block" id="ADsetMNISTColorRGBSolo.__init__"><a class="viewcode-back" href="../../../domid.dsets.html#domid.dsets.a_dset_mnist_color_rgb_solo.ADsetMNISTColorRGBSolo.__init__">[docs]</a>    @store_args
-    def __init__(self, ind_color, path,
-                 subset_step=100,
-                 color_scheme="both",
-                 label_transform=mk_fun_label2onehot(10),
-                 list_transforms=None,
-                 raw_split='train',
-                 flag_rand_color=False,
-                 inject_variable= None, args = None):
+    def __init__(
+        self,
+        ind_color,
+        path,
+        subset_step=100,
+        color_scheme="both",
+        label_transform=mk_fun_label2onehot(10),
+        list_transforms=None,
+        raw_split="train",
+        flag_rand_color=False,
+        inject_variable=None,
+        args=None,
+    ):
         """
         :param ind_color: index of a color palette
         :param path: disk storage directory
@@ -358,12 +377,9 @@ from torchvision import datasets, transforms
         flag_train = True
         if raw_split != "train":
             flag_train = False
-        dataset = datasets.MNIST(root=dpath,
-                                 train=flag_train,
-                                 download=True,
-                                 transform=transforms.ToTensor())
+        dataset = datasets.MNIST(root=dpath, train=flag_train, download=True, transform=transforms.ToTensor())
 
-        if color_scheme not in ['num', 'back', 'both']:
+        if color_scheme not in ["num", "back", "both"]:
             raise ValueError("color must be either 'num', 'back' or 'both")
 
         raw_path = os.path.dirname(dataset.raw_folder)
@@ -385,7 +401,8 @@ from torchvision import datasets, transforms
         self.generate_dataframe()
         self.flag_load_df = True
         self.inject_variable = inject_variable
-        if self.inject_variable: self.inject_dim = args.dim_inject_y</div>
+        if self.inject_variable:
+            self.inject_dim = args.dim_inject_y</div>
 
     def _filter_digits(self, x, y=None):
         """
@@ -395,8 +412,8 @@ from torchvision import datasets, transforms
         """
         if y is None:
             assert isinstance(x, pd.DataFrame), "provide a value for y if x is not a pandas dataframe"
-            filtered_x = x[x['digit'].isin(self.wanted_digits)]
-            filtered_y = filtered_x['digit'].values
+            filtered_x = x[x["digit"].isin(self.wanted_digits)]
+            filtered_y = filtered_x["digit"].values
         else:
             subidx = []
             for wanted in self.wanted_digits:
@@ -407,27 +424,25 @@ from torchvision import datasets, transforms
             filtered_y = y[subidx]
         return filtered_x, filtered_y
 
-
     def _collect_imgs_labels(self, path, raw_split):
         """
         :param path:
         :param raw_split:
         """
-        if raw_split == 'train':
-            fimages = os.path.join(path, 'raw', 'train-images-idx3-ubyte')
-            flabels = os.path.join(path, 'raw', 'train-labels-idx1-ubyte')
+        if raw_split == "train":
+            fimages = os.path.join(path, "raw", "train-images-idx3-ubyte")
+            flabels = os.path.join(path, "raw", "train-labels-idx1-ubyte")
         else:
-            fimages = os.path.join(path, 'raw', 't10k-images-idx3-ubyte')
-            flabels = os.path.join(path, 'raw', 't10k-labels-idx1-ubyte')
+            fimages = os.path.join(path, "raw", "t10k-images-idx3-ubyte")
+            flabels = os.path.join(path, "raw", "t10k-labels-idx1-ubyte")
 
         # Load images
-        with open(fimages, 'rb') as f_h:
+        with open(fimages, "rb") as f_h:
             _, _, rows, cols = struct.unpack("&gt;IIII", f_h.read(16))
-            self.images = np.fromfile(f_h, dtype=np.uint8).reshape(
-                -1, rows, cols)
+            self.images = np.fromfile(f_h, dtype=np.uint8).reshape(-1, rows, cols)
 
         # Load labels
-        with open(flabels, 'rb') as f_h:
+        with open(flabels, "rb") as f_h:
             struct.unpack("&gt;II", f_h.read(8))
             self.labels = np.fromfile(f_h, dtype=np.int8)
         self.images = np.tile(self.images[:, :, :, np.newaxis], 3)
@@ -436,16 +451,16 @@ from torchvision import datasets, transforms
         return len(self.images)
 
 <div class="viewcode-block" id="ADsetMNISTColorRGBSolo.generate_dataframe"><a class="viewcode-back" href="../../../domid.dsets.html#domid.dsets.a_dset_mnist_color_rgb_solo.ADsetMNISTColorRGBSolo.generate_dataframe">[docs]</a>    def generate_dataframe(self):
-        df_name = 'dataframe_colored_mnist.csv'
+        df_name = "dataframe_colored_mnist.csv"
         self.df_save_path = os.path.join(self.path, df_name)
         if exists(self.df_save_path):
             df = pd.read_csv(self.df_save_path)
         else:
-            df = pd.DataFrame(columns=['image_id', 'color', 'digit'])
+            df = pd.DataFrame(columns=["image_id", "color", "digit"])
 
         for i in range(len(self.images)):
             image_id = "_".join([str(i), str(self.ind_color), str(self.color_scheme), str(self.labels[i])])
-            new_row = {'image_id': image_id, 'color': self.ind_color, 'digit': self.labels[i]}
+            new_row = {"image_id": image_id, "color": self.ind_color, "digit": self.labels[i]}
             # if a row with that image id exists already, replace it; otherwise, add a new row
             indices = df.loc[df["image_id"] == image_id].index
             if len(indices) == 1:
@@ -455,7 +470,7 @@ from torchvision import datasets, transforms
             elif len(indices) &gt; 1:
                 raise ValueError("Multiple dataframe rows with the same image_id!")
             else:
-                df.loc[len(df)+1] = new_row
+                df.loc[len(df) + 1] = new_row
         df.to_csv(self.df_save_path, index=False)</div>
 
     def _op_color_img(self, image):
@@ -467,7 +482,7 @@ from torchvision import datasets, transforms
 
             c_f = self.get_foreground_color(np.random.randint(0, self.get_num_colors()))
             c_b = 0
-            if self.color_scheme == 'both':
+            if self.color_scheme == "both":
                 count = 0
                 while True:
                     c_b = self.get_background_color(np.random.randint(0, self.get_num_colors()))
@@ -476,25 +491,22 @@ from torchvision import datasets, transforms
                         # is not equal to foreground
                         break
         else:
-            if self.color_scheme == 'num':
+            if self.color_scheme == "num":
                 # domain and class label has perfect mutual information:
                 # assign color
                 # according to their class (0,10)
                 c_f = self.get_foreground_color(self.ind_color)
-                c_b = np.array([0]*3)
-            elif self.color_scheme == 'back':  # only paint background
-                c_f = np.array([0]*3)
+                c_b = np.array([0] * 3)
+            elif self.color_scheme == "back":  # only paint background
+                c_f = np.array([0] * 3)
                 c_b = self.get_background_color(self.ind_color)
 
             else:  # paint both background and foreground
                 c_f = self.get_foreground_color(self.ind_color)
                 c_b = self.get_background_color(self.ind_color)
-        image[:, :, 0] = image[:, :, 0] / 255 * c_f[0] + \
-            (255 - image[:, :, 0]) / 255 * c_b[0]
-        image[:, :, 1] = image[:, :, 1] / 255 * c_f[1] + \
-            (255 - image[:, :, 1]) / 255 * c_b[1]
-        image[:, :, 2] = image[:, :, 2] / 255 * c_f[2] + \
-            (255 - image[:, :, 2]) / 255 * c_b[2]
+        image[:, :, 0] = image[:, :, 0] / 255 * c_f[0] + (255 - image[:, :, 0]) / 255 * c_b[0]
+        image[:, :, 1] = image[:, :, 1] / 255 * c_f[1] + (255 - image[:, :, 1]) / 255 * c_b[1]
+        image[:, :, 2] = image[:, :, 2] / 255 * c_f[2] + (255 - image[:, :, 2]) / 255 * c_b[2]
         return image
 
     def _color_imgs_onehot_labels(self):
@@ -504,15 +516,15 @@ from torchvision import datasets, transforms
         for i in range(self.images.shape[0]):  # 60k*28*28*3
             img = self.images[i]  # size: 28*28*3 instead of 3*28*28
             self.images[i] = self._op_color_img(img)
-            
 
     def __getitem__(self, idx):
         if self.flag_load_df:
             self.df = pd.read_csv(self.df_save_path)
             # only keep the single color of this dataset
-            self.df = self.df[self.df['color'] == self.ind_color]
+            self.df = self.df[self.df["color"] == self.ind_color]
             # only keep the digits of this dataset
-            if len(self.wanted_digits) &lt; 10: self.df, _ = self._filter_digits(self.df)
+            if len(self.wanted_digits) &lt; 10:
+                self.df, _ = self._filter_digits(self.df)
             self.flag_load_df = False
         if isinstance(idx, torch.Tensor):
             idx = idx.item()
@@ -520,13 +532,14 @@ from torchvision import datasets, transforms
         indices = self.df.loc[self.df["image_id"] == image_id].index
 
         assert len(indices) == 1, "invalid image_id"
-        df_idx = indices[0]  # this class is for one domain (i.e., one color), but the dataframe combines all domains, so the index will be different
+        # this class is for one domain (i.e., one color), but the dataframe combines all domains, so the index will be different:
+        df_idx = indices[0]
 
         image = self.images[idx]  # range of pixel: [0,255]
         label = self.labels[idx]
         if self.label_transform is not None:
             label = self.label_transform(label)
-        image = Image.fromarray(image)   # numpy array 28*28*3 -&gt; 3*28*28
+        image = Image.fromarray(image)  # numpy array 28*28*3 -&gt; 3*28*28
         if self.list_transforms is not None:
             for trans in self.list_transforms:
                 image = trans(image)
@@ -559,7 +572,7 @@ from torchvision import datasets, transforms
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
           <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2023, FDA/CDRH/OSEL/DIDSR..
+              &#169; Copyright 2024, FDA/CDRH/OSEL/DIDSR..
               
           </div>
             Created using

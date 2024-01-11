@@ -274,6 +274,18 @@
       
     
     </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Utilities</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.utils.html" class="md-nav__link">domid.utils package</a>
+      
+    
+    </li>
   </ul>
   
 
@@ -301,7 +313,7 @@
 import torch.nn as nn
 
 from domid.utils.perf_cluster import PerfCluster
-from domid.utils.perf_similarity import PerfCorrelation
+
 
 <div class="viewcode-block" id="AModelCluster"><a class="viewcode-back" href="../../../domid.models.html#domid.models.a_model_cluster.AModelCluster">[docs]</a>class AModelCluster(nn.Module):
     """
@@ -314,10 +326,7 @@ from domid.utils.perf_similarity import PerfCorrelation
         """
         self.task = task
         self.perf_metric = PerfCluster(task.dim_y)
-
-
-        self.perf_metric_correlation = PerfCorrelation()
-        return self.perf_metric, self.perf_metric_correlation</div>
+        return self.perf_metric</div>
 
 <div class="viewcode-block" id="AModelCluster.cal_perf_metric"><a class="viewcode-back" href="../../../domid.models.html#domid.models.a_model_cluster.AModelCluster.cal_perf_metric">[docs]</a>    def cal_perf_metric(self, loader_tr, device, loader_te=None):
         """
@@ -332,14 +341,12 @@ from domid.utils.perf_similarity import PerfCorrelation
 
         r_score_tr = None
         r_score_te = None
-        if self.task.get_list_domains() == ['class0', 'class1', 'class2']: #if task ==her2
+        # if self.task.get_list_domains() == ['class0', 'class1', 'class2']: #if task ==her2
+        if hasattr(self.task, "calc_corr"):
             with torch.no_grad():
-                r_score_tr = self.perf_metric_correlation.cal_acc(self, loader_tr,device)
-                r_score_te = self.perf_metric_correlation.cal_acc(self, loader_te, device)
+                r_score_tr, r_score_te = self.task.calc_corr(self, loader_tr, loader_te, device)
 
         return metric_tr, metric_te, r_score_tr, r_score_te</div></div>
-
-
 </pre></div>
 
           </article>
@@ -360,7 +367,7 @@ from domid.utils.perf_similarity import PerfCorrelation
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
           <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2023, FDA/CDRH/OSEL/DIDSR..
+              &#169; Copyright 2024, FDA/CDRH/OSEL/DIDSR..
               
           </div>
             Created using
