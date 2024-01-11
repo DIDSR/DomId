@@ -1,11 +1,8 @@
-import numpy as np
-import tensorboardX
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from domainlab.utils.utils_classif import logit2preds_vpic
 
-from domid.compos.cnn_VAE import ConvolutionalDecoder, ConvolutionalEncoder
 from domid.compos.DEC_clustering_layer import DECClusteringLayer
 from domid.models.a_model_cluster import AModelCluster
 
@@ -35,6 +32,12 @@ class ModelDEC(AModelCluster):
         self.cluster_centers = None
         self.dim_inject_y = 0
         self.warmup_beta = 0
+        self.args = args
+
+        if self.args.feat_extract == "vae":
+            from domid.compos.cnn_VAE import ConvolutionalDecoder, ConvolutionalEncoder
+        elif self.args.feat_extract == "ae":
+            from domid.compos.cnn_AE import ConvolutionalDecoder, ConvolutionalEncoder
 
         self.encoder = ConvolutionalEncoder(zd_dim=zd_dim, num_channels=i_c, i_w=i_w, i_h=i_h).to(device)
         self.decoder = ConvolutionalDecoder(
@@ -59,7 +62,16 @@ class ModelDEC(AModelCluster):
             .log(),
             requires_grad=True,
         )
+        if self.args.pre_tr_weight_path:
+            self.encoder.load_state_dict(
+                torch.load(self.args.pre_tr_weight_path + "encoder.pt", map_location=self.device)
+            )
+            self.decoder.load_state_dict(
+                torch.load(self.args.pre_tr_weight_path + "decoder.pt", map_location=self.device)
+            )
+            print("AE is using pretrained weights. No need for pretraining epochs. ")
         self.log_sigma2_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
+        self.random_ind = []
 
     def target_distribution(self, q_):
         """
@@ -84,8 +96,15 @@ class ModelDEC(AModelCluster):
         :return tensor pi: Tensor of the estimated cluster prevalences, p(c) (shape: [self.d_dim])
         :return tensor logits: Tensor where each column contains the log-probability p(c)p(z|c) for cluster c=0,...,self.d_dim-1 (shape: [batch_size, self.d_dim]).
         """
-        z_mu, z_sigma2_log = self.encoder(x)
-        z = z_mu  # no reparametrization
+        if self.args.feat_extract == "vae":
+
+            z_mu, z_sigma2_log = self.encoder(x)
+            z = z_mu  # no reparametrization
+        elif self.args.feat_extract == "ae":
+            *_, z_mu = self.encoder(x)
+            z_sigma2_log = torch.Tensor([]).to(self.device)
+            z = z_mu
+
         probs_c = self.clusteringlayer(z_mu)  # in dec it is
         preds_c, logits, *_ = logit2preds_vpic(probs_c)  # preds c is oen hot encoded
         mu_c = self.mu_c
@@ -120,8 +139,16 @@ class ModelDEC(AModelCluster):
         Loss = nn.MSELoss()
         # Loss = nn.MSELoss(reduction='sum')
         # Loss = nn.HuberLoss()
-        z_mu, z_sigma2_log = self.encoder(x)
-        z = z_mu
+        if self.args.feat_extract == "vae":
+
+            z_mu, z_sigma2_log = self.encoder(x)
+            z = z_mu  # no reparametrization
+        elif self.args.feat_extract == "ae":
+            *_, z_mu = self.encoder(x)
+            z = z_mu
+
+        # z_mu, z_sigma2_log = self.encoder(x)
+        # z = z_mu
         # z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
         if len(inject_domain) > 0:
             zy = torch.cat((z, inject_domain), 1)
@@ -142,17 +169,7 @@ class ModelDEC(AModelCluster):
         :return tensor loss (float): calculated KL-divergence loss value
         """
 
-        (
-            preds,
-            probs,
-            z,
-            z_mu,
-            z_sigma2_log,
-            mu_c,
-            log_sigma2_c,
-            pi,
-            logits,
-        ) = self._inference(x)
+        preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = self._inference(x)
 
         target = self.target_distribution(probs).detach()
         loss_function = nn.KLDivLoss(reduction="batchmean")

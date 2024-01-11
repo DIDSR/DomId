@@ -274,6 +274,18 @@
       
     
     </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Utilities</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../../../domid.utils.html" class="md-nav__link">domid.utils package</a>
+      
+    
+    </li>
   </ul>
   
 
@@ -302,8 +314,8 @@ from domainlab.utils.utils_classif import mk_dummy_label_list_str
 from torch.utils.data import random_split
 from torchvision import transforms
 
-from domid.tasks.b_task_cluster import NodeTaskDictCluster
 from domid.dsets.dset_her2 import DsetHER2
+from domid.tasks.b_task_cluster import NodeTaskDictCluster
 from domid.utils.perf_similarity import PerfCorrelationHER2
 
 
@@ -320,14 +332,12 @@ from domid.utils.perf_similarity import PerfCorrelationHER2
         """
         return mk_dummy_label_list_str("dummy", 3)
 
-
-
     @property
     def isize(self):
         """
         :return: image size object storing image channels, height, width.
         """
-        return ImSize(3,32 , 32)  # FIXME should be in sync with transforms
+        return ImSize(3, 32, 32)  # FIXME should be in sync with transforms
 
 <div class="viewcode-block" id="NodeTaskHER2.get_list_domains"><a class="viewcode-back" href="../../../domid.tasks.html#domid.tasks.task_her2.NodeTaskHER2.get_list_domains">[docs]</a>    def get_list_domains(self):
         """
@@ -345,7 +355,7 @@ from domid.utils.perf_similarity import PerfCorrelationHER2
         set, no need to split; args.split: by default, split is set to be
         zero which in python can be evaluated in if statement, in which case,
         no separate validation set will be created. Otherwise, this argument
-        is the percentage of the data to be used as training set, while the 
+        is the percentage of the data to be used as training set, while the
         rest will be used as validation set.
         :return: training dataset, validation dataset
         """
@@ -361,13 +371,16 @@ from domid.utils.perf_similarity import PerfCorrelationHER2
         # mean = [0.6399, 0.5951, 0.6179]
         # std = [0.1800, 0.1980, 0.2070]
 
-
-        trans = transforms.Compose([transforms.Resize((32, 32)),
-                                    transforms.RandomHorizontalFlip(),
-                                    transforms.RandomVerticalFlip(),
-                                    transforms.RandomAutocontrast(0.25),
-                                    transforms.RandomAdjustSharpness(2, 0.25),
-                                    transforms.ToTensor()])
+        trans = transforms.Compose(
+            [
+                transforms.Resize((32, 32)),
+                transforms.RandomHorizontalFlip(),
+                transforms.RandomVerticalFlip(),
+                transforms.RandomAutocontrast(0.25),
+                transforms.RandomAdjustSharpness(2, 0.25),
+                transforms.ToTensor(),
+            ]
+        )
 
         dset = DsetHER2(ind_global, args.dpath, args.d_dim, args.inject_var, transform=trans)
         train_set = dset
@@ -379,10 +392,10 @@ from domid.utils.perf_similarity import PerfCorrelationHER2
             train_set, val_set = random_split(dset, [train_len, val_len])
 
         return train_set, val_set</div>
+
 <div class="viewcode-block" id="NodeTaskHER2.calc_corr"><a class="viewcode-back" href="../../../domid.tasks.html#domid.tasks.task_her2.NodeTaskHER2.calc_corr">[docs]</a>    def calc_corr(self, model, loader_tr, loader_te, device):
         perf_metric_correlation = PerfCorrelationHER2()
         r_score_tr = perf_metric_correlation.cal_acc(model, loader_tr, device)
-        # cal_acc(clc, model, loader_tr, device, max_batches=None):
         r_score_te = perf_metric_correlation.cal_acc(model, loader_te, device)
         return r_score_tr, r_score_te</div></div>
 
@@ -420,7 +433,7 @@ from domid.utils.perf_similarity import PerfCorrelationHER2
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
           <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2023, FDA/CDRH/OSEL/DIDSR..
+              &#169; Copyright 2024, FDA/CDRH/OSEL/DIDSR..
               
           </div>
             Created using

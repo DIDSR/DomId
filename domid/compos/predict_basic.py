@@ -1,6 +1,7 @@
 import numpy as np
 import torch
 
+from domid.dsets.make_graph_wsi import GraphConstructorWSI
 from domid.utils.perf_cluster import PerfCluster
 from domid.utils.perf_similarity import PerfCorrelationHER2
 
@@ -13,10 +14,6 @@ class Prediction:
         self.i_w = i_w
         self.i_h = i_h
         self.device = device
-        self.bs = bs
-        self.is_inject_domain = False
-        # if self.args.dim_inject_y > 0:
-        #     self.is_inject_domain = True
 
     def mk_prediction(self):
         """
@@ -30,7 +27,10 @@ class Prediction:
         """
 
         num_img = len(self.loader_tr.dataset)  # FIXME: this returns sample size + 1 for some reason
+        if self.model.args.task == "wsi" and self.model.args.aname == "sdcn":
+            num_img = int(self.model.args.bs / 3)
         z_proj = np.zeros((num_img, self.model.zd_dim))
+        prob_proj = np.zeros((num_img, self.model.d_dim))
         input_imgs = np.zeros((num_img, 3, self.i_h, self.i_w))
 
         image_id_labels = []
@@ -41,16 +41,27 @@ class Prediction:
 
         with torch.no_grad():
 
-            for tensor_x, vec_y, vec_d, *other_vars in self.loader_tr:
+            for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
                 if len(other_vars) > 0:
                     inject_tensor, image_id = other_vars
                     if len(inject_tensor) > 0:
                         inject_tensor = inject_tensor.to(self.device)
 
-                    for ii in range(0, self.bs):
-                        vec_d_labels.append(torch.argmax(vec_d[ii, :]).item())
-                        vec_y_labels.append(torch.argmax(vec_y[ii, :]).item())
-                        image_id_labels.append(image_id[ii])
+                if self.model.args.random_batching:
+                    patches_idx = self.model.random_ind[i]  # torch.randint(0, len(vec_y), (int(self.args.bs/3),))
+                    tensor_x = tensor_x[patches_idx, :, :, :]
+                    vec_y = vec_y[patches_idx, :]
+                    vec_d = vec_d[patches_idx, :]
+                    image_id = [image_id[patch_idx_num] for patch_idx_num in patches_idx]
+                    self.model.adj = GraphConstructorWSI().construct_graph(
+                        tensor_x, image_id, self.model.graph_method, None
+                    )
+
+                for ii in range(0, tensor_x.shape[0]):
+
+                    vec_d_labels.append(torch.argmax(vec_d[ii, :]).item())
+                    vec_y_labels.append(torch.argmax(vec_y[ii, :]).item())
+                    image_id_labels.append(image_id[ii])
 
                 tensor_x, vec_y, vec_d = (
                     tensor_x.to(self.device),
@@ -58,22 +69,23 @@ class Prediction:
                     vec_d.to(self.device),
                 )
 
-                preds, z_mu, z, *_ = self.model.infer_d_v_2(tensor_x, inject_tensor)
+                if self.model.args.aname != "sdcn":
+                    results = self.model.infer_d_v_2(tensor_x, inject_tensor)
+                else:
+                    results = self.model.infer_d_v_2(tensor_x)
+                preds, z, probs, x_pro = results[0], results[1], results[-2], results[-1]
+
                 z = z.detach().cpu().numpy()  # [batch_size, zd_dim]
-                input_imgs[counter : counter + z.shape[0], :, :, :] = tensor_x.cpu().detach().numpy()
-                z_proj[counter : counter + z.shape[0], :] = z
+                input_imgs[counter : counter + tensor_x.shape[0], :, :, :] = tensor_x.cpu().detach().numpy()
+                z_proj[counter : counter + tensor_x.shape[0], :] = z
+                prob_proj[counter : counter + tensor_x.shape[0], :] = probs
+
                 preds = preds.detach().cpu()
+                # domain_labels[counter : counter + z.shape[0], 0] = torch.argmax(preds, 1) + 1
                 predictions += (torch.argmax(preds, 1) + 1).tolist()
                 counter += z.shape[0]
 
-        return (
-            input_imgs,
-            z_proj,
-            predictions,
-            vec_y_labels,
-            vec_d_labels,
-            image_id_labels,
-        )
+        return input_imgs, z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels
 
     def epoch_tr_acc(self):
         """

@@ -1,14 +1,13 @@
 import itertools
 
-import torch
 import torch.optim as optim
 from domainlab.algos.trainers.a_trainer import AbstractTrainer
 
 from domid.compos.predict_basic import Prediction
-from domid.compos.storing import Storing
 from domid.compos.tensorboard_fun import tensorboard_write
 from domid.trainers.pretraining_GMM import Pretraining
 from domid.utils.perf_cluster import PerfCluster
+from domid.utils.storing import Storing
 
 
 class TrainerCluster(AbstractTrainer):
@@ -32,8 +31,7 @@ class TrainerCluster(AbstractTrainer):
         self.warmup_beta = 0.1
         if not self.pretraining_finished:
             self.optimizer = optim.Adam(
-                itertools.chain(self.model.encoder.parameters(), self.model.decoder.parameters()),
-                lr=self.lr,
+                itertools.chain(self.model.encoder.parameters(), self.model.decoder.parameters()), lr=self.lr
             )
             print("".join(["#"] * 60) + "\nPretraining initialized.\n" + "".join(["#"] * 60))
         else:
@@ -58,23 +56,9 @@ class TrainerCluster(AbstractTrainer):
         self.model.train()
         self.epo_loss_tr = 0
 
-        pretrain = Pretraining(
-            self.model,
-            self.device,
-            self.loader_tr,
-            self.loader_val,
-            self.i_h,
-            self.i_w,
-            self.args,
-        )
+        pretrain = Pretraining(self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args)
         prediction = Prediction(
-            self.model,
-            self.device,
-            self.loader_tr,
-            self.loader_val,
-            self.i_h,
-            self.i_w,
-            self.args.bs,
+            self.model, self.device, self.loader_tr, self.loader_val, self.i_h, self.i_w, self.args.bs
         )
         acc_tr_y, _, acc_tr_d, _ = prediction.epoch_tr_acc()
         acc_val_y, _, acc_val_d, _ = prediction.epoch_val_acc()
@@ -83,6 +67,7 @@ class TrainerCluster(AbstractTrainer):
         if self.args.task == "her2":
             r_score_tr = prediction.epoch_tr_correlation()
             r_score_te = prediction.epoch_val_correlation()  # validation set is used as a test set
+
         # ___________Define warm-up for ELBO loss_________
         if self.warmup_beta < 1 and self.pretraining_finished:
             self.warmup_beta = self.warmup_beta + 0.01
@@ -107,9 +92,9 @@ class TrainerCluster(AbstractTrainer):
                 loss = pretrain.pretrain_loss(tensor_x, inject_tensor)
             else:
                 if not self.pretraining_finished:
+                    # i.e., this is the first epoch after pre-training
+                    # So we need to set the pretraining_finishend flag to True, and to reset the optimizer:
                     self.pretraining_finished = True
-                    # reset the optimizer
-
                     self.optimizer = optim.Adam(
                         self.model.parameters(),
                         lr=self.lr,
@@ -127,7 +112,6 @@ class TrainerCluster(AbstractTrainer):
             loss.backward()
             self.optimizer.step()
             self.epo_loss_tr += loss.cpu().detach().item()
-            # FIXME: devide #  number of samples in the HER notebook
 
         # after one epoch (all batches), GMM is calculated again and pi, mu_c
         # will get updated via this line.
@@ -136,21 +120,13 @@ class TrainerCluster(AbstractTrainer):
         if not self.pretraining_finished:
             pretrain.GMM_fit()
 
-        # only z and pi needed
-        (
-            preds_c,
-            probs_c,
-            z,
-            z_mu,
-            z_sigma2_log,
-            mu_c,
-            log_sigma2_c,
-            pi,
-            logits,
-        ) = self.model._inference(tensor_x)
+        # model._inference returns (preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits)
+        # but only pi needed here
+        *_, pi, _ = self.model._inference(tensor_x)
         if self.aname == "vade":
             print("pi:")
             print(pi.cpu().detach().numpy())
+
         # __________________Validation_____________________
         for i, (tensor_x_val, vec_y_val, vec_d_val, *other_vars) in enumerate(self.loader_val):
             if len(other_vars) > 0:
@@ -183,25 +159,10 @@ class TrainerCluster(AbstractTrainer):
 
         # _____storing results and Z space__________
         self.storage.storing(
-            epoch,
-            acc_tr_y,
-            acc_tr_d,
-            self.epo_loss_tr,
-            acc_val_y,
-            acc_val_d,
-            loss_val.sum(),
-            r_score_tr,
-            r_score_te,
+            epoch, acc_tr_y, acc_tr_d, self.epo_loss_tr, acc_val_y, acc_val_d, loss_val.sum(), r_score_tr, r_score_te
         )
-        if epoch % 1 == 0 and epoch > 0:
-            (
-                _,
-                z_proj,
-                predictions,
-                vec_y_labels,
-                vec_d_labels,
-                image_id_labels,
-            ) = prediction.mk_prediction()
+        if epoch % 2 == 0:
+            _, z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels = prediction.mk_prediction()
             # _, Z, domain_labels, machine_labels, image_locs = prediction.mk_prediction()
 
             self.storage.storing_z_space(z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels)
@@ -216,8 +177,8 @@ class TrainerCluster(AbstractTrainer):
         """
         check the performance of randomly initialized weight
         """
-        metric_tr = PerfCluster.cal_acc(self.model, self.loader_tr, self.device)  # FIXME change tr to te
-        print("before training, model accuracy (vs. domain):", metric_tr[3])
+        acc = PerfCluster.cal_acc(self.model, self.loader_tr, self.device)  # FIXME change tr to te
+        print("before training, model accuracy:", acc)
 
     def post_tr(self):
         print("training is done")

@@ -282,6 +282,18 @@
       
     
     </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Utilities</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="domid.utils.html" class="md-nav__link">domid.utils package</a>
+      
+    
+    </li>
   </ul>
   
 
@@ -307,6 +319,8 @@
         <li class="md-nav__item"><a href="#composition-and-defining-a-model" class="md-nav__link">Composition and Defining a Model</a>
         </li>
         <li class="md-nav__item"><a href="#training-a-model" class="md-nav__link">Training a Model</a>
+        </li>
+        <li class="md-nav__item"><a href="#ulitilies" class="md-nav__link">Ulitilies</a>
         </li>
   </ul>
 </nav>
@@ -362,12 +376,15 @@ As the pretraining, training, and performance evaluation metrics are specific to
 <li class="toctree-l1"><a class="reference internal" href="domid.compos.html">domid.compos package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="domid.compos.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.compos.html#module-domid.compos.DEC_clustering_layer">domid.compos.DEC_clustering_layer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domid.compos.html#module-domid.compos.GNN">domid.compos.GNN module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domid.compos.html#module-domid.compos.GNN_layer">domid.compos.GNN_layer module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.compos.html#module-domid.compos.VAE_blocks">domid.compos.VAE_blocks module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domid.compos.html#module-domid.compos.cnn_AE">domid.compos.cnn_AE module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.compos.html#module-domid.compos.cnn_VAE">domid.compos.cnn_VAE module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domid.compos.html#module-domid.compos.linear_AE">domid.compos.linear_AE module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.compos.html#module-domid.compos.linear_VAE">domid.compos.linear_VAE module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.compos.html#module-domid.compos.nn_net">domid.compos.nn_net module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.compos.html#module-domid.compos.predict_basic">domid.compos.predict_basic module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="domid.compos.html#module-domid.compos.storing">domid.compos.storing module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.compos.html#module-domid.compos.tensorboard_fun">domid.compos.tensorboard_fun module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.compos.html#module-domid.compos">Module contents</a></li>
 </ul>
@@ -375,8 +392,10 @@ As the pretraining, training, and performance evaluation metrics are specific to
 <li class="toctree-l1"><a class="reference internal" href="domid.models.html">domid.models package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="domid.models.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.models.html#module-domid.models.a_model_cluster">domid.models.a_model_cluster module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domid.models.html#module-domid.models.model_ae">domid.models.model_ae module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.models.html#module-domid.models.model_dec">domid.models.model_dec module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.models.html#module-domid.models.model_m2yd">domid.models.model_m2yd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domid.models.html#module-domid.models.model_sdcn">domid.models.model_sdcn module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.models.html#module-domid.models.model_vade">domid.models.model_vade module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.models.html#module-domid.models">Module contents</a></li>
 </ul>
@@ -395,8 +414,10 @@ The Observer defines the training and validation losses and metrics, while the T
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="domid.algos.html">domid.algos package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="domid.algos.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domid.algos.html#module-domid.algos.builder_ae">domid.algos.builder_ae module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.algos.html#module-domid.algos.builder_dec">domid.algos.builder_dec module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.algos.html#module-domid.algos.builder_m2yd">domid.algos.builder_m2yd module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domid.algos.html#module-domid.algos.builder_sdcn">domid.algos.builder_sdcn module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.algos.html#module-domid.algos.builder_vade">domid.algos.builder_vade module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.algos.html#module-domid.algos">Module contents</a></li>
 </ul>
@@ -404,8 +425,30 @@ The Observer defines the training and validation losses and metrics, while the T
 <li class="toctree-l1"><a class="reference internal" href="domid.trainers.html">domid.trainers package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="domid.trainers.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.trainers.html#module-domid.trainers.pretraining_GMM">domid.trainers.pretraining_GMM module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domid.trainers.html#module-domid.trainers.pretraining_KMeans">domid.trainers.pretraining_KMeans module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domid.trainers.html#module-domid.trainers.pretraining_sdcn">domid.trainers.pretraining_sdcn module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domid.trainers.html#module-domid.trainers.trainer_ae">domid.trainers.trainer_ae module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.trainers.html#module-domid.trainers.trainer_cluster">domid.trainers.trainer_cluster module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domid.trainers.html#module-domid.trainers.trainer_sdcn">domid.trainers.trainer_sdcn module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="domid.trainers.html#module-domid.trainers">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="ulitilies">
+<h1 id="ulitilies">Ulitilies<a class="headerlink" href="#ulitilies" title="Permalink to this heading">¶</a></h1>
+<p>Some functions that are used for evaluation of the performance of the model are defined in the utils directory. For more information, please refer to the details provided below.</p>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Utilities</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="domid.utils.html">domid.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="domid.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domid.utils.html#module-domid.utils.mean_std">domid.utils.mean_std module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domid.utils.html#module-domid.utils.perf_cluster">domid.utils.perf_cluster module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domid.utils.html#module-domid.utils.perf_similarity">domid.utils.perf_similarity module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domid.utils.html#module-domid.utils.storing">domid.utils.storing module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="domid.utils.html#module-domid.utils">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -442,7 +485,7 @@ The Observer defines the training and validation losses and metrics, while the T
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
           <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2023, FDA/CDRH/OSEL/DIDSR..
+              &#169; Copyright 2024, FDA/CDRH/OSEL/DIDSR..
               
           </div>
             Created using

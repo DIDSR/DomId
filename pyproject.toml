@@ -15,9 +15,12 @@ tabulate = "^0.9.0"
 ray = "^2.1.0"
 opencv-python = "^4.6.0.66"
 grpcio = "^1.54.0"
-domainlab = {git = "https://github.com/marrlab/DomainLab.git", rev = "master"}
+#domainlab = {git = "https://github.com/marrlab/DomainLab.git", rev = "master"}
+networkx = "^3.2.1"
+rich = "^13.7.0"
 
 [tool.poetry.dev-dependencies]
+domainlab = { path = "./DomainLab",  develop = true}
 jupyterlab = "^2.2.8"
 
 [tool.poetry.group.dev.dependencies]
@@ -36,6 +39,18 @@ extend-exclude = '''
 # A regex preceded with ^/ will apply only to files and directories
 # in the root of the project.
 (
-  ^/notebooks/.*
+  ^/_build/*
+  | ^/docs/*
+  | ^/DomainLab/*
+  | ^/notebooks/*
+  | ^/runs/*
+  | ^/zout/*
+  | ^/zoutput/*
 )
 '''
+
+[tool.isort]
+profile = "black"
+src_paths = ["domid"]
+line_length = 120  # match black above
+extend_skip = ["_build", "docs", "DomainLab", "notebooks", "runs", "zout", "zoutput"]

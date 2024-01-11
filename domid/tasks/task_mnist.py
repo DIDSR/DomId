@@ -1,10 +1,5 @@
 from domainlab.tasks.task_mnist_color import NodeTaskMNISTColor10
-from domainlab.tasks.utils_task import (
-    DsetDomainVecDecorator,
-    ImSize,
-    mk_loader,
-    mk_onehot,
-)
+from domainlab.tasks.utils_task import DsetDomainVecDecorator, ImSize, mk_loader, mk_onehot
 from domainlab.utils.utils_classif import mk_dummy_label_list_str
 from torch.utils.data import random_split
 from torchvision import transforms
@@ -65,6 +60,7 @@ class NodeTaskMNIST(NodeTaskMNISTColor10):
         train_set = dset
         val_set = dset
         # split dset into training and validation sets
+
         if ratio_split:
             train_len = int(len(dset) * ratio_split)
             val_len = len(dset) - train_len

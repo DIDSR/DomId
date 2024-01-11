@@ -12,6 +12,14 @@ domid.tests.test\_domid module
    :undoc-members:
    :show-inheritance:
 
+domid.tests.test\_graph module
+------------------------------
+
+.. automodule:: domid.tests.test_graph
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 domid.tests.test\_losses module
 -------------------------------
 

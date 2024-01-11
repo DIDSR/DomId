@@ -3,8 +3,8 @@ from domainlab.utils.utils_classif import mk_dummy_label_list_str
 from torch.utils.data import random_split
 from torchvision import transforms
 
-from domid.tasks.b_task_cluster import NodeTaskDictCluster
 from domid.dsets.dset_her2 import DsetHER2
+from domid.tasks.b_task_cluster import NodeTaskDictCluster
 from domid.utils.perf_similarity import PerfCorrelationHER2
 
 
@@ -85,7 +85,6 @@ class NodeTaskHER2(NodeTaskDictCluster):
     def calc_corr(self, model, loader_tr, loader_te, device):
         perf_metric_correlation = PerfCorrelationHER2()
         r_score_tr = perf_metric_correlation.cal_acc(model, loader_tr, device)
-        # cal_acc(clc, model, loader_tr, device, max_batches=None):
         r_score_te = perf_metric_correlation.cal_acc(model, loader_te, device)
         return r_score_tr, r_score_te
 

@@ -36,10 +36,26 @@ domid.tasks.task\_mnist\_color module
    :undoc-members:
    :show-inheritance:
 
+domid.tasks.task\_unittest module
+---------------------------------
+
+.. automodule:: domid.tasks.task_unittest
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 domid.tasks.task\_usps module
 -----------------------------
 
 .. automodule:: domid.tasks.task_usps
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+domid.tasks.task\_wsi module
+----------------------------
+
+.. automodule:: domid.tasks.task_wsi
    :members:
    :undoc-members:
    :show-inheritance:

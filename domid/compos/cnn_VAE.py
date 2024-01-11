@@ -5,15 +5,7 @@ from domid.compos.VAE_blocks import UnFlatten, get_output_shape
 
 
 class ConvolutionalEncoder(nn.Module):
-    def __init__(
-        self,
-        zd_dim,
-        num_channels=3,
-        num_filters=[32, 64, 128],
-        i_w=28,
-        i_h=28,
-        k=[3, 3, 3],
-    ):
+    def __init__(self, zd_dim, num_channels=3, num_filters=[32, 64, 128], i_w=28, i_h=28, k=[3, 3, 3]):
         """
         VAE Encoder
 
@@ -29,15 +21,7 @@ class ConvolutionalEncoder(nn.Module):
         num_filters = [num_channels] + num_filters
         for i in range(len(num_filters) - 1):
 
-            modules.append(
-                nn.Conv2d(
-                    num_filters[i],
-                    num_filters[i + 1],
-                    kernel_size=k[i],
-                    stride=2,
-                    padding=1,
-                )
-            )
+            modules.append(nn.Conv2d(num_filters[i], num_filters[i + 1], kernel_size=k[i], stride=2, padding=1))
             modules.append(nn.BatchNorm2d(num_filters[i + 1]))
             modules.append(nn.LeakyReLU())
         modules.append(nn.Flatten())
@@ -59,14 +43,7 @@ class ConvolutionalEncoder(nn.Module):
 
 class ConvolutionalDecoder(nn.Module):
     def __init__(
-        self,
-        prior,
-        zd_dim,
-        domain_dim,
-        h_dim,
-        num_channels=3,
-        num_filters=[32, 64, 128],
-        k=[4, 4, 4],
+        self, prior, zd_dim, domain_dim, h_dim, num_channels=3, num_filters=[32, 64, 128], k=[4, 4, 4]
     ):  # , 256, 512, 1024]):
         """
         VAE Decoder
@@ -90,25 +67,11 @@ class ConvolutionalDecoder(nn.Module):
         modules = []
         for i in range(len(num_filters) - 2):
             modules.append(
-                nn.ConvTranspose2d(
-                    num_filters[i],
-                    num_filters[i + 1],
-                    kernel_size=k[i],
-                    stride=2,
-                    padding=1,
-                )
+                nn.ConvTranspose2d(num_filters[i], num_filters[i + 1], kernel_size=k[i], stride=2, padding=1)
             )
             modules.append(nn.BatchNorm2d(num_filters[i + 1]))
             modules.append(nn.LeakyReLU())
-        modules.append(
-            nn.ConvTranspose2d(
-                num_filters[-2],
-                num_channels * 2,
-                kernel_size=k[-1],
-                stride=2,
-                padding=1,
-            )
-        )
+        modules.append(nn.ConvTranspose2d(num_filters[-2], num_channels * 2, kernel_size=k[-1], stride=2, padding=1))
         self.decod = nn.Sequential(*modules)
 
     def forward(self, z):

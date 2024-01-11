@@ -8,6 +8,7 @@ from os.path import exists
 
 import numpy as np
 import pandas as pd
+import torch
 from domainlab.dsets.utils_data import mk_fun_label2onehot
 from domainlab.utils.utils_class import store_args
 from PIL import Image
@@ -147,19 +148,8 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
             df = pd.DataFrame(columns=["image_id", "color", "digit"])
 
         for i in range(len(self.images)):
-            image_id = "_".join(
-                [
-                    str(i),
-                    str(self.ind_color),
-                    str(self.color_scheme),
-                    str(self.labels[i]),
-                ]
-            )
-            new_row = {
-                "image_id": image_id,
-                "color": self.ind_color,
-                "digit": self.labels[i],
-            }
+            image_id = "_".join([str(i), str(self.ind_color), str(self.color_scheme), str(self.labels[i])])
+            new_row = {"image_id": image_id, "color": self.ind_color, "digit": self.labels[i]}
             # if a row with that image id exists already, replace it; otherwise, add a new row
             indices = df.loc[df["image_id"] == image_id].index
             if len(indices) == 1:
@@ -225,20 +215,14 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
             if len(self.wanted_digits) < 10:
                 self.df, _ = self._filter_digits(self.df)
             self.flag_load_df = False
-
-        image_id = "_".join(
-            [
-                str(idx),
-                str(self.ind_color),
-                str(self.color_scheme),
-                str(self.labels[idx]),
-            ]
-        )
+        if isinstance(idx, torch.Tensor):
+            idx = idx.item()
+        image_id = "_".join([str(idx), str(self.ind_color), str(self.color_scheme), str(self.labels[idx])])
         indices = self.df.loc[self.df["image_id"] == image_id].index
+
         assert len(indices) == 1, "invalid image_id"
-        df_idx = indices[
-            0
-        ]  # this class is for one domain (i.e., one color), but the dataframe combines all domains, so the index will be different
+        # this class is for one domain (i.e., one color), but the dataframe combines all domains, so the index will be different:
+        df_idx = indices[0]
 
         image = self.images[idx]  # range of pixel: [0,255]
         label = self.labels[idx]

@@ -205,17 +205,7 @@ class ModelVaDE(AModelCluster):
         :param tensor x: Input tensor of a shape [batchsize, 3, horzintal dim, vertical dim].
         :param int L: Number of Monte Carlo samples in the SGVB
         """
-        (
-            preds,
-            probs,
-            z,
-            z_mu,
-            z_sigma2_log,
-            mu_c,
-            log_sigma2_c,
-            pi,
-            logits,
-        ) = self._inference(x)
+        preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = self._inference(x)
         # mu, sigma from the decoder
         eps = 1e-10
 

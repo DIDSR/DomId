@@ -21,7 +21,7 @@ class DsetMNIST(Dataset):
     """
 
     @store_args
-    def __init__(self, digit, args, subset_step=1, list_transforms=None, raw_split="train"):
+    def __init__(self, digit, args, list_transforms=None, raw_split="train"):
         """
         :param digit: a integer value from 0 to 9; only images of this digit will be kept.
         :param path: disk storage directory
@@ -33,10 +33,8 @@ class DsetMNIST(Dataset):
         dataset = datasets.MNIST(root=dpath, train=True, download=True, transform=list_transforms)
 
         # keep only images of specified digit
+        subset_step = args.subset_step
         self.images = dataset.data[dataset.targets == digit]
-        if subset_step == 1 and args.debug:
-            # used to speed up the unit tests
-            subset_step = 100
         inds_subset = list(range(0, self.images.shape[0], subset_step))
         self.images = self.images[inds_subset]
         n_img = self.images.shape[0]

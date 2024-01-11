@@ -6,6 +6,9 @@ from domid.models.model_vade import ModelVaDE
 from domid.tasks.task_mnist import NodeTaskMNIST
 from domid.trainers.trainer_cluster import TrainerCluster
 
+# Note: to run tests 'poetry run pytest domid/tests/test_model_trainer.py '.
+# If there is an error with dependencies, try 'poetry install' first. Or manually add PYTHONPATH to the path of the DomId folder.
+
 
 def experiment_train(args):
     exp = Exp(args)
@@ -345,6 +348,96 @@ def test_MNIST_conditionalOne_train():
             "10",
             "--inject_var",
             "digit",
+        ]
+    )
+    experiment_train(args)
+
+
+def test_MNISTcolor_SDCN():
+    # MNIST color cnn vade with pretraining
+    parser = mk_parser_main()
+    args = parser.parse_args(
+        [
+            "--te_d",
+            "7",
+            "--tr_d",
+            "0",
+            "1",
+            "2",
+            "--zd_dim",
+            "20",
+            "--d_dim",
+            "10",
+            "--dpath",
+            "zout",
+            "--task",
+            "mnistcolor10",
+            "--aname",
+            "sdcn",
+            "--apath",
+            "domid/algos/builder_sdcn.py",
+            "--bs",
+            "10",
+            "--split",
+            "0.8",
+            "--L",
+            "5",
+            "--debug",
+            "--nocu",
+            "--model",
+            "cnn",
+            "--prior",
+            "Gaus",
+            "--pre_tr",
+            "1",
+            "--pre_tr_weight_path",
+            "./notebooks/2023-11-30 10:52:19.451201_mnist_ae/",
+            "--epos",
+            "3",
+        ]
+    )
+    experiment_train(args)
+
+
+def test_MNISTcolor_AE():
+    # MNIST color cnn vade with pretraining
+    parser = mk_parser_main()
+    args = parser.parse_args(
+        [
+            "--te_d",
+            "7",
+            "--tr_d",
+            "0",
+            "1",
+            "2",
+            "--zd_dim",
+            "20",
+            "--d_dim",
+            "10",
+            "--dpath",
+            "zout",
+            "--task",
+            "mnistcolor10",
+            "--aname",
+            "ae",
+            "--apath",
+            "domid/algos/builder_ae.py",
+            "--bs",
+            "600",
+            "--split",
+            "0.8",
+            "--L",
+            "5",
+            "--debug",
+            "--nocu",
+            "--model",
+            "cnn",
+            "--prior",
+            "Gaus",
+            "--pre_tr",
+            "1",
+            "--epos",
+            "3",
         ]
     )
     experiment_train(args)

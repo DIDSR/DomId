@@ -17,11 +17,7 @@ def cnn_encoding_block(in_c, out_c, kernel_size=(4, 4), stride=2, padding=1):
 
 
 def cnn_decoding_block(in_c, out_c, kernel_size=(3, 3), stride=2, padding=1):
-    layers = [
-        nn.ConvTranspose2d(in_c, out_c, kernel_size, stride, padding),
-        nn.BatchNorm2d(out_c),
-        nn.LeakyReLU(),
-    ]
+    layers = [nn.ConvTranspose2d(in_c, out_c, kernel_size, stride, padding), nn.BatchNorm2d(out_c), nn.LeakyReLU()]
     return layers
 
 

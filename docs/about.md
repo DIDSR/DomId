@@ -44,17 +44,34 @@ DEC involves training a deep neural
 network to learn a lower-dimensional representation of the data, and simultaneously optimizing a clustering loss function to group similar 
 data points based on their embeddings. 
 
+# SDCN Model Summary
+Structural Deep Clustering Network (SDCN) is a deep neural network model that combines GCN and AE architectures for the purpose of unsupervised clustering[5].
+
+However, original SDCN model faces significant scalability challenges that hinder its deployment in digital pathology, 
+particularly when dealing with whole-slide digital pathology images (WSI), which are typically of gigapixel size or larger.
+This limitation arises from SDCN need for constructing a graph on the entire dataset and the imperative to process all data in a single
+batch during training. To overcome this issue, we propose batching strategy to the SDCN training process and introduce 
+a novel batching approach tailored specifically for WSI data.
+
 # M2YD Model Summary
 
 The M2YD model is implemented as an experimental method, which combines an unsupervised VAE-based clustering neural network with simultaneous training of a neural network for a supervised classification task.
 At the current stage, the method/model is purely experimental (with limited validation), and thus not recommended for practical use, unless you know exactly what you are doing.
 
+
+
+
 # References
 
 [1] Jiang, Zhuxi, et al. "Variational deep embedding: An unsupervised and generative approach to clustering." IJCAI 2017. (<https://arxiv.org/abs/1611.05148>)
 
-[2] Kingma, and Welling. "Auto-encoding variational bayes." ICLR 2013. (<https://arxiv.org/abs/1312.6114>) 
+[2] Kingma, Welling. "Auto-encoding variational bayes." ICLR 2013. (<https://arxiv.org/abs/1312.6114>) 
 
 [3] Xie, Girshick, Farhadi. "Unsupervised Deep Embedding for Clustering Analysis" (2016) (<http://arxiv.org/abs/1511.06335>)
 
-[4] XXXX, "XXXX," in review, 2023.
+[4] Sidulova, Sun, Gossmann. "Deep Unsupervised Clustering for Conditional Identification of Subgroups Within a Digital Pathology Image Set." MICCAI, 2023. (<https://link.springer.com/chapter/10.1007/978-3-031-43993-3_64>)
+
+[5] Bo, Deyu, et al. "Structural deep clustering network." Proceedings of the web conference 2020. 2020. (<https://doi.org/10.1145/3366423.3380214>)
+
+[6] Sidulova, Kahaki, Hagemann, Gossmann. "Contextual unsupervised deep clustering in digital pathology." 2024 (in review)
+

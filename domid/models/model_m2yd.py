@@ -44,19 +44,7 @@ class ModelXY2D(AModelClassif):
     """
 
     @store_args
-    def __init__(
-        self,
-        list_str_y,
-        y_dim,
-        zd_dim,
-        gamma_y,
-        device,
-        i_c,
-        i_h,
-        i_w,
-        dim_feat_x=10,
-        list_str_d=None,
-    ):
+    def __init__(self, list_str_y, y_dim, zd_dim, gamma_y, device, i_c, i_h, i_w, dim_feat_x=10, list_str_d=None):
         """
         :param y_dim: classification task class-label dimension
         :param zd_dim: dimension of latent variable $z_d$ dimension
@@ -132,15 +120,7 @@ class ModelXY2D(AModelClassif):
 
 
 def test_fun():
-    model = ModelXY2D(
-        y_dim=10,
-        zd_dim=8,
-        gamma_y=3500,
-        device=torch.device("cpu"),
-        i_c=3,
-        i_h=28,
-        i_w=28,
-    )
+    model = ModelXY2D(y_dim=10, zd_dim=8, gamma_y=3500, device=torch.device("cpu"), i_c=3, i_h=28, i_w=28)
     device = torch.device("cpu")
     x = torch.rand(2, 3, 28, 28)
     import numpy as np

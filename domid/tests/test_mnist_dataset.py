@@ -1,6 +1,7 @@
+import torch
+
 from domid.arg_parser import mk_parser_main
 from domid.compos.exp.exp_main import Exp
-import torch
 from domid.models.model_m2yd import ModelXY2D
 from domid.models.model_vade import ModelVaDE
 from domid.tasks.task_mnist import NodeTaskMNIST
@@ -50,7 +51,7 @@ def test_mnist_length():
     assert x.shape == (1, 3, 32, 32)
     assert vec_y.shape == (1, 10)
     assert inject_tensor == []
-    assert len(ldr) == 5958
+    assert len(ldr) == 596
 
 
 def test_mnistcolor10_length():
