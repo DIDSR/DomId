@@ -9,7 +9,7 @@ from scipy.optimize import linear_sum_assignment
 from sklearn.metrics import confusion_matrix
 
 
-class PerfCorrelation(PerfClassif):
+class PerfCorrelationHER2(PerfClassif):
     """Clustering Performance"""
 
     def __init__(self):

@@ -18,7 +18,15 @@ class DsetHER2(Dataset):
     """
 
     @store_args
-    def __init__(self, class_num, path, d_dim, inject_variable=None, metadata_path=None, transform=None):
+    def __init__(
+        self,
+        class_num,
+        path,
+        d_dim,
+        inject_variable=None,
+        metadata_path=None,
+        transform=None,
+    ):
         """
         :param class_num: a integer value from 0 to 2, only images of this class will be kept. Note: that actual classes are from 1-3 (therefore, 1 is added in line 28)
         :param path: path to data storage directory (typically passed through args.dpath)

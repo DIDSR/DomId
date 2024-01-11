@@ -116,13 +116,23 @@ class PerfCluster(PerfClassif):
     @classmethod
     def cal_acc(clc, model, loader_te, device, max_batches=None):
         """
+        Compare the cluster assignment against the domain labels (d)
+        as well as against the class labels (y). Compute the two respective
+        confusion matrices and overall accuracy measurements (after finding
+        the optimal matching with the cluster labels).
+
         :param model:
         :param loader_te:
         :param device: for final test, GPU can be used
         :param max_batches:
-                maximum number of iteration for data loader, used to
-                probe performance with less computation burden.
+                maximum number of iterations for data loader, used to
+                probe performance with less computational burden.
                 default None, which means to traverse the whole dataset
+        :return:
+        - accuracy (clusters vs. y),
+        - confusion matrix (clusters vs. y)
+        - accuracy (clusters vs. d),
+        - confusion matrix (clusters vs. d)
         """
         model.eval()
         model_local = model.to(device)

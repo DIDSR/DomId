@@ -80,6 +80,15 @@ The Observer defines the training and validation losses and metrics, while the T
    domid.trainers
 
 
+Ulitilies
+=================
+Some functions that are used for evaluation of the performance of the model are defined in the utils directory. For more information, please refer to the details provided below.
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Utilities
+
+   domid.utils
 
 
 

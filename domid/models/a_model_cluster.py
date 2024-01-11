@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 
 from domid.utils.perf_cluster import PerfCluster
-from domid.utils.perf_similarity import PerfCorrelation
+
 
 
 class AModelCluster(nn.Module):
@@ -16,9 +16,7 @@ class AModelCluster(nn.Module):
         """
         self.task = task
         self.perf_metric = PerfCluster(task.dim_y)
-
-        self.perf_metric_correlation = PerfCorrelation()
-        return self.perf_metric, self.perf_metric_correlation
+        return self.perf_metric
 
     def cal_perf_metric(self, loader_tr, device, loader_te=None):
         """
@@ -33,9 +31,9 @@ class AModelCluster(nn.Module):
 
         r_score_tr = None
         r_score_te = None
-        if self.task.get_list_domains() == ["class0", "class1", "class2"]:  # if task ==her2
+        # if self.task.get_list_domains() == ['class0', 'class1', 'class2']: #if task ==her2
+        if hasattr(self.task, "calc_corr"):
             with torch.no_grad():
-                r_score_tr = self.perf_metric_correlation.cal_acc(self, loader_tr, device)
-                r_score_te = self.perf_metric_correlation.cal_acc(self, loader_te, device)
+                r_score_tr, r_score_te = self.task.calc_corr(self, loader_tr, loader_te, device)
 
         return metric_tr, metric_te, r_score_tr, r_score_te
