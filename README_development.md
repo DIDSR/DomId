@@ -2,11 +2,25 @@
 
 ## Generate documentation with Sphinx
 
-Probably set up a separate Python virtual environment. Then run the following:
+It is recommended to set up a separate Python virtual environment for the Sphinx run as it has additional dependencies beyond what's required by DomId (see `docs/requirements.txt`).
+
+You should be able to generate documentation for DomID by running the following:
 
 ```
-sh gen_doc.sh
+sh sh_gen_doc.sh
 ```
+
+Sphinx will regenerate the documentation in html format, and you can find the output in the 'build' directory.
+
+### Alternative approaches
+
+- Alternatively, to rebuild the documentation, run the following command from the root of the repository:
+
+```
+sphinx-build -b html docs/ docs/build
+```
+
+- There is also Makefile in the project, the shortcut command to build the documentation is to run `make html` from the root of the repository (which is used by `sh_gen_doc.sh` above).
 
 ## Automated (unit) tests
 
