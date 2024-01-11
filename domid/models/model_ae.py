@@ -123,9 +123,10 @@ class ModelAE(AModelCluster):
             zy = torch.cat((results[2], inject_domain), 1)
         else:
             zy = results[2]
-        x_pro, *_ = self.decoder(zy)
+        x_pro = self.decoder(zy)
 
         preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = (r.cpu().detach() for r in results)
+
         return preds, z_mu, z, log_sigma2_c, probs, x_pro
 
     def cal_loss(self, x, inject_domain, warmup_beta=None):
@@ -141,7 +142,7 @@ class ModelAE(AModelCluster):
             zy = torch.cat((z, inject_domain), 1)
         else:
             zy = z
-        x_pro, *_ = self.decoder(zy)  # FIXME account for different number of outputs from decoder
+        x_pro = self.decoder(zy)  # FIXME account for different number of outputs from decoder
 
         loss = F.mse_loss(x_pro, x)
 

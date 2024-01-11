@@ -40,6 +40,7 @@ def tensorboard_write(
         preds, *_, x_pro = model.infer_d_v_2(tensor_x, inject_tensor)
     else:
         preds, *_, x_pro = model.infer_d_v_2(tensor_x)
+
     if len(x_pro.shape) < 3:
         x_pro = torch.reshape(x_pro, (x_pro.shape[0], tensor_x.shape[1], tensor_x.shape[2], tensor_x.shape[3]))
 
@@ -50,6 +51,7 @@ def tensorboard_write(
         ),
         0,
     )
+
     # mse = torch.nn.MSELoss()#(dim=1, eps=1e-08)
     # sample1 = tensor_x[0, :, :, :].flatten().unsqueeze(0)
     # sample2 = x_pro[0, :, :, :].flatten().unsqueeze(0)
