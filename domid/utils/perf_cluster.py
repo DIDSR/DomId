@@ -129,10 +129,10 @@ class PerfCluster(PerfClassif):
                 probe performance with less computational burden.
                 default None, which means to traverse the whole dataset
         :return:
-        - accuracy (clusters vs. y),
-        - confusion matrix (clusters vs. y)
-        - accuracy (clusters vs. d),
-        - confusion matrix (clusters vs. d)
+            - accuracy - clusters vs. y
+            - confusion matrix - clusters vs. y
+            - accuracy - clusters vs. d
+            - confusion matrix - clusters vs. d
         """
         model.eval()
         model_local = model.to(device)
