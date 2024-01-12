@@ -8,7 +8,7 @@ from domainlab.utils.utils_cuda import get_device
 from tensorboardX import SummaryWriter
 
 from domid.algos.observers.b_obvisitor_clustering_only import ObVisitorClusteringOnly
-from domid.models.model_ae import ModelAE
+from domid.models.model_ae import mk_ae
 from domid.trainers.trainer_ae import TrainerCluster
 
 
@@ -29,7 +29,7 @@ class NodeAlgoBuilderAE(NodeAlgoBuilder):
         pretrain = args.pre_tr > 0
 
         now = "zd_dim_" + str(zd_dim) + "_lr_" + str(args.lr) + "_" + str(datetime.datetime.now())
-        model = ModelAE(
+        model = mk_ae()(
             zd_dim=zd_dim,
             d_dim=d_dim,
             device=device,

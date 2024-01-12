@@ -8,7 +8,7 @@ from domainlab.utils.utils_cuda import get_device
 from tensorboardX import SummaryWriter
 
 from domid.algos.observers.b_obvisitor_clustering_only import ObVisitorClusteringOnly
-from domid.models.model_dec import ModelDEC
+from domid.models.model_dec import mk_dec
 from domid.trainers.trainer_cluster import TrainerCluster
 
 
@@ -29,7 +29,7 @@ class NodeAlgoBuilderDEC(NodeAlgoBuilder):
             pretrain = True
 
         now = "zd_dim_" + str(zd_dim) + "_lr_" + str(args.lr) + "_" + str(datetime.datetime.now())
-        model = ModelDEC(
+        model = mk_dec()(
             zd_dim=zd_dim,
             d_dim=d_dim,
             device=device,

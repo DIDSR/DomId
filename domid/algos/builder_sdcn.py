@@ -8,7 +8,7 @@ from domainlab.utils.utils_cuda import get_device
 from tensorboardX import SummaryWriter
 
 from domid.algos.observers.b_obvisitor_clustering_only import ObVisitorClusteringOnly
-from domid.models.model_sdcn import ModelSDCN
+from domid.models.model_sdcn import mk_sdcn
 from domid.trainers.trainer_sdcn import TrainerCluster
 
 
@@ -30,7 +30,7 @@ class NodeAlgoBuilderSDCN(NodeAlgoBuilder):
             pretrain = True
 
         now = "zd_dim_" + str(zd_dim) + "_lr_" + str(args.lr) + "_" + str(datetime.datetime.now())
-        model = ModelSDCN(
+        model = mk_sdcn()(
             zd_dim=zd_dim,
             d_dim=d_dim,
             device=device,

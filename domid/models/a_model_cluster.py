@@ -3,12 +3,12 @@ import torch.nn as nn
 import torch.nn.functional as F
 from domid.utils.perf_cluster import PerfCluster
 
-
 class AModelCluster(nn.Module):
     """
     Operations that all clustering models should have
     """
     def __init__(self):
+        super(AModelCluster, self).__init__()
         self._decoratee = None
 
     def create_perf_obj(self, task):
@@ -45,7 +45,7 @@ class AModelCluster(nn.Module):
         """
         self._decoratee = model
         self.reset_feature_extractor(model.net_invar_feat)
-    def calc_loss(self, tensor_x, vec_y, vec_d, inj_tensor, img_ids):
+    def cal_loss(self, tensor_x, vec_y, vec_d, inj_tensor, img_ids):
         """
         Calculates the loss for the model.
         """
@@ -71,7 +71,7 @@ class AModelCluster(nn.Module):
             return self._decoratee.cal_rec_loss(
                 tensor_x, tensor_y, tensor_d, others)
         return None, None
-    def _cal_pretrain_loss(self, tensor_x, x_pro, inject_domain):
+    def _cal_pretrain_loss(self, tensor_x, x_pro, inject_domain=None):
         """
         Pretraining loss for the model.
         """
