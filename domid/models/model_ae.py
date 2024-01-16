@@ -122,24 +122,11 @@ def mk_ae(parent_class=AModelCluster):
 
             return preds, z_mu, z, log_sigma2_c, probs, x_pro
 
-        def cal_loss(self, x, inject_domain, warmup_beta=None):
-            loss = self.pretrain_loss(x, inject_domain)
+        def _cal_loss(self, x, inject_domain, warmup_beta=None):
+            loss = self._cal_pretrain_loss(x, inject_domain)
             return loss
 
-        def pretrain_loss(self, x, inject_domain):
-            if self.args.model == "linear":
-                x = torch.reshape(x, (x.shape[0], x.shape[1] * x.shape[2] * x.shape[3]))
-            *_, z = self.encoder(x)
 
-            if len(inject_domain) > 0:
-                zy = torch.cat((z, inject_domain), 1)
-            else:
-                zy = z
-            x_pro = self.decoder(zy)  # FIXME account for different number of outputs from decoder
-
-            loss = F.mse_loss(x_pro, x)
-
-            return loss
 
     return ModelAE
 

@@ -22,7 +22,7 @@ class PretrainingSDCN:
         self.args = args
 
     def pretrain_loss(self, tensor_x):
-        return self.model.pretrain_loss(tensor_x)
+        return self.model._cal_pretrain_loss(tensor_x)
 
     def kmeans_cluster_assignement(self):
         num_img = len(self.loader_tr.dataset)

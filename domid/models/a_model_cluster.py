@@ -39,18 +39,15 @@ class AModelCluster(nn.Module):
 
         return metric_tr, metric_te, r_score_tr, r_score_te
 
-    def extend(self, model):
-        """
-        extend the loss of the decoratee
-        """
-        self._decoratee = model
-        self.reset_feature_extractor(model.net_invar_feat)
     def cal_loss(self, tensor_x, vec_y, vec_d, inj_tensor, img_ids):
         """
         Calculates the loss for the model.
         """
-
-        raise NotImplementedError
+        total_loss = self._cal_reconstruction_loss(tensor_x, inj_tensor)
+        if self._decoratee is not None:
+            kl_loss = self._decoratee._cal_kl_loss(tensor_x, vec_y, vec_d, inj_tensor)
+            total_loss += kl_loss
+        raise total_loss
 
     def infer_d_v(self, x):
         """
@@ -68,25 +65,43 @@ class AModelCluster(nn.Module):
         combine losses from two models
         """
         if self._decoratee is not None:
-            return self._decoratee.cal_rec_loss(
+            return self._decoratee._cal_kl_loss(
                 tensor_x, tensor_y, tensor_d, others)
         return None, None
-    def _cal_pretrain_loss(self, tensor_x, x_pro, inject_domain=None):
+
+    #@abc.abstractmethod #FIXME no abc?
+    def _cal_pretrain_loss(self, tensor_x, inject_tensor=None):
         """
         Pretraining loss for the model.
         """
-        Loss = nn.MSELoss()
-        pre_loss = Loss(tensor_x, x_pro)
-        raise pre_loss
-    def _cal_reconstruction_loss(self, x, x_pro):
-        """
-        Reconstruction loss for the model.
-        """
-        sigma = torch.Tensor([0.9]).to(self.device)  # mean sigma of all images
-        log_sigma_est = torch.log(sigma).to(self.device)
-        rec_loss = torch.mean(torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2, 2), 2), 1), 0) / sigma ** 2
+        return self._cal_reconstruction_loss(tensor_x, inject_tensor)
+    def _cal_reconstruction_loss(self, tensor_x, inject_domain=None):
 
-        raise rec_loss
+        if self.args.model == "linear":
+            tensor_x = torch.reshape(tensor_x, (tensor_x.shape[0], tensor_x.shape[1] * tensor_x.shape[2] * tensor_x.shape[3]))
+
+        if self.args.feat_extract == "vae":
+            z_mu, z_sigma2_log = self.encoder(tensor_x)
+            z = z_mu
+            if len(inject_domain) > 0:
+                zy = torch.cat((z, inject_domain), 1)
+            else:
+                zy = z
+        elif self.args.feat_extract == "ae":
+            *_, z_mu = self.encoder(tensor_x)
+            zy = z_mu
+
+
+
+        x_pro = self.decoder(zy)
+
+        if isinstance(x_pro, tuple):
+            x_pro = x_pro[0]
+
+        loss = F.mse_loss(x_pro, tensor_x)
+
+        return loss
+
     def _cal_kl_loss(self, q, p):
         """
 

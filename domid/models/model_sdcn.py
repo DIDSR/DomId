@@ -167,7 +167,7 @@ def mk_sdcn(parent_class=AModelCluster):
             weight = q**2 / q.sum(0)
             return (weight.t() / weight.sum(1)).t()
 
-        def cal_loss(self, x, warmup_beta=None):
+        def _cal_kl_loss(self, x, warmup_beta=None):
             """
             Compute the loss of the model.
             Concentrate two different objectives, i.e. clustering objective and classification objective, in one loss function.
@@ -209,17 +209,9 @@ def mk_sdcn(parent_class=AModelCluster):
         def cal_loss_for_tensorboard(self):
             return self.kl_loss_running, self.ce_loss_running, self.re_loss_running
 
-        def pretrain_loss(self, x):
-            if self.args.model == "linear":
-                x = torch.reshape(x, (x.shape[0], x.shape[1] * x.shape[2] * x.shape[3]))
-            enc_h1, enc_h2, enc_h3, z = self.encoder(x)
-
-            x_pro = self.decoder(z)
-            loss = F.mse_loss(x, x_pro)
-
-            return loss
 
 
+    return ModelSDCN
 # def test_fun(d_dim, zd_dim, device):
 #     device = torch.device("cpu")
 #     model = ModelVaDE(d_dim=d_dim, zd_dim=zd_dim, device=device)

@@ -25,7 +25,7 @@ class Pretraining:
         :return: the loss
         """
         # import pdb; pdb.set_trace()
-        loss = self.model.pretrain_loss(tensor_x, inject_tensor)
+        loss = self.model._cal_pretrain_loss(tensor_x, inject_tensor)
         return loss
 
     def GMM_fit(self):

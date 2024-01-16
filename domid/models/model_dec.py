@@ -128,31 +128,9 @@ def mk_dec(parent_class=AModelCluster):
             preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = (r.cpu().detach() for r in results)
             return preds, z_mu, z, log_sigma2_c, probs, x_pro
 
-        def pretrain_loss(self, x, inject_domain):
-            Loss = nn.MSELoss()
-            # Loss = nn.MSELoss(reduction='sum')
-            # Loss = nn.HuberLoss()
-            if self.args.feat_extract == "vae":
 
-                z_mu, z_sigma2_log = self.encoder(x)
-                z = z_mu  # no reparametrization
-            elif self.args.feat_extract == "ae":
-                *_, z_mu = self.encoder(x)
-                z = z_mu
 
-            # z_mu, z_sigma2_log = self.encoder(x)
-            # z = z_mu
-            # z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
-            if len(inject_domain) > 0:
-                zy = torch.cat((z, inject_domain), 1)
-            else:
-                zy = z
-
-            x_pro, *_ = self.decoder(zy)
-            loss = Loss(x, x_pro)
-            return loss
-
-        def cal_loss(self, x, inject_tensor, warmup_beta):
+        def _cal_kl_loss(self, x, inject_tensor, warmup_beta):
             """
             Calculates the KL-divergence loss between the predicted probabilities and the target distribution.
 

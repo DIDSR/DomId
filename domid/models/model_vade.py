@@ -134,61 +134,24 @@ def mk_vade(parent_class=AModelCluster):
             :param x: tensor with input data
             :return: ELBO loss
             """
+
             return self.ELBO_Loss(x, inject_domain, warmup_beta)
 
-        def pretrain_loss(self, x, inject_domain):
 
-            Loss = nn.MSELoss()
-            # Loss = nn.MSELoss(reduction='sum')
-            # Loss = nn.HuberLoss()
-            z_mu, z_sigma2_log = self.encoder(x)
-            z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
-            if len(inject_domain) > 0:
-                zy = torch.cat((z, inject_domain), 1)
-            else:
-                zy = z
-            x_pro, *_ = self.decoder(zy)
 
-            loss = Loss(x, x_pro)
-
-            return loss
-
-        def reconstruction_loss(self, x, x_pro, log_sigma):
+        def _cal_reconstruction_loss(self, x, x_pro, log_sigma):
 
             if self.args.prior == "Bern":
                 L_rec = F.binary_cross_entropy(x_pro, x)
             else:
-                #  print('first part',torch.mean(torch.sum(torch.sum(torch.sum(log_sigma, 2), 2), 1), 0))
-                # #torch.sum(log_sigma)*1/log_sigma.shape[0])
-                #  print('second part',  torch.mean(
-                #       torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 / torch.exp(log_sigma) ** 2, 2),2),1), 0))
-                #  print('MSE', F.mse_loss(x, x_pro))
-                #  print('constant infront of MSE',  torch.sum(torch.exp(log_sigma)**2))
-                #  print('x pro min/max/mean', torch.min(x_pro), torch.max(x_pro), torch.mean(x_pro))
-                #  print('log_sigma min/max/mean',torch.min(log_sigma), 'max',torch.max(log_sigma), 'mean', torch.mean(log_sigma))
-
-                # L_rec = torch.mean(torch.sum(torch.sum(torch.sum(log_sigma, 2), 2), 1), 0) + torch.mean(
-                #     torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2 / torch.exp(log_sigma) ** 2, 2), 2), 1), 0
-                # )
 
                 sigma = torch.Tensor([0.9]).to(self.device)  # mean sigma of all images
                 log_sigma_est = torch.log(sigma).to(self.device)
                 L_rec = torch.mean(torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2, 2), 2), 1), 0) / sigma**2
-                # L_rec = F.mse_loss(x_pro, x)
-                # print(L_rec, L_rec0)
-
-                # print('L rec', L_rec)
-                # print("#"*10)
-                # L_rec = torch.sum(log_sigma)*1/log_sigma.shape[0]+F.mse_loss(x, x_pro)*(log_sigma.shape[0]/torch.sum(torch.exp(log_sigma)**2))
-
-                # L_rec = F.mse_loss(x, x_pro)#*(log_sigma.shape[0]/torch.sum(torch.exp(log_sigma)**2))
-
-            # Note that the mean is taken over the batch dimension, and the sum over the spatial dimensions and the channels.
-            # Thir is consistent with the computation of other terms of the ELBO loss below.
 
             return L_rec
 
-        def ELBO_Loss(self, x, inject_domain, warmup_beta):
+        def _cal_kl_loss(self, x, inject_domain, warmup_beta):
             """ELBO loss function
             Using SGVB estimator and the reparametrization trick calculates ELBO loss.
             Calculates loss between encoded input and input using ELBO equation (12) in the papaer.
@@ -271,7 +234,7 @@ def mk_vade(parent_class=AModelCluster):
                 )
             )
 
-
+    return ModelVaDE
 def test_fun(d_dim, zd_dim, device):
     device = torch.device("cpu")
     model = ModelVaDE(d_dim=d_dim, zd_dim=zd_dim, device=device)
