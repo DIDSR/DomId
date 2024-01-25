@@ -209,6 +209,23 @@ def mk_sdcn(parent_class=AModelCluster):
         def cal_loss_for_tensorboard(self):
             return self.kl_loss_running, self.ce_loss_running, self.re_loss_running
 
+        def hyper_init(self, functor_scheduler):
+            """hyper_init.
+            :param functor_scheduler:
+            """
+            return functor_scheduler(trainer=None)
+
+        def hyper_update(self, epoch, fun_scheduler):
+            """hyper_update.
+            :param epoch:
+            :param fun_scheduler: the hyperparameter scheduler object
+            """
+            dict_rst = fun_scheduler(
+                epoch
+            )  # the __call__ method of hy
+            # perparameter scheduler
+            self.alpha = dict_rst["alpha"]
+
 
 
     return ModelSDCN

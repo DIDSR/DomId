@@ -22,7 +22,7 @@ class Storing:
         self.r_scores_tr = []
         self.r_scores_te = []
 
-        self.experiment_name = str(datetime.datetime.now()) + "_" + str(args.task) + "_" + str(args.aname)
+        self.experiment_name = str(datetime.datetime.now()) + "_" + str(args.task) + "_" + str(args.model)
         self.last_epoch = args.epos
         self.ex_path = "./notebooks/" + self.experiment_name
         if not os.path.exists("./notebooks/" + self.experiment_name):

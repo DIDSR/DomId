@@ -12,23 +12,29 @@ from domid.utils.perf_cluster import PerfCluster
 from domid.utils.storing import Storing
 
 
-class TrainerCluster(AbstractTrainer):
-    def __init__(self, model, task, observer, device, writer, pretrain=True, aconf=None):
-        """
-        :param model: model to train
-        :param task: task to train on
-        :param observer: observer to notify
-        :param device: device to use
-        :param writer: tensorboard writer
-        :param pretrain: whether to pretrain the model with MSE loss
-        :param aconf: configuration parameters, including learning rate and pretrain threshold
-        """
+class TrainerSDCN(AbstractTrainer):
 
-        super().__init__()
+    def init_business(self, model, task, observer, device, aconf, flag_accept=True):
+        """
+        model, task, observer, device, aconf
+        """
+    #def init_business(self, model, task, observer, device, writer, pretrain=True, aconf=None):
+        # """
+        # :param model: model to train
+        # :param task: task to train on
+        # :param observer: observer to notify
+        # :param device: device to use
+        # :param writer: tensorboard writer
+        # :param pretrain: whether to pretrain the model with MSE loss
+        # :param aconf: configuration parameters, including learning rate and pretrain threshold
+        # """
+
+        #super().__init__()
         super().init_business(model, task, observer, device, aconf)
 
-        print(model)
-        self.pretrain = pretrain
+        # breakpoint()
+        # print(model)
+        self.pretrain = True
         self.pretraining_finished = not self.pretrain
         self.lr = aconf.lr
         self.warmup_beta = 0.1
@@ -39,13 +45,13 @@ class TrainerCluster(AbstractTrainer):
             self.optimizer = optim.Adam(self.model.parameters(), lr=self.lr)
 
         self.epo_loss_tr = None
-        self.writer = writer
+        self.writer = None
         self.thres = aconf.pre_tr  # number of epochs for pretraining
         self.i_h, self.i_w = task.isize.h, task.isize.w
         self.args = aconf
         self.storage = Storing(self.args)
         self.loader_val = task.loader_tr
-        self.aname = aconf.aname
+        self.aname = aconf.model
         self.graph_method = self.model.graph_method
 
         assert self.graph_method, "Graph calculation methos should be specified"
@@ -148,7 +154,7 @@ class TrainerCluster(AbstractTrainer):
                     print("Epoch {}: Finished pretraining and starting to use the full model loss.".format(epoch))
                     print("".join(["#"] * 60))
 
-                loss = self.model.cal_loss(tensor_x)
+                loss = self.model.cal_loss(tensor_x,vec_y=None, vec_d=None, inj_tensor=None, img_ids=None)
             # print('loss', loss)
 
             loss = loss.sum()
@@ -235,6 +241,7 @@ class TrainerCluster(AbstractTrainer):
         """
         check the performance of randomly initialized weight
         """
+
         acc = PerfCluster.cal_acc(self.model, self.loader_tr, self.device)  # FIXME change tr to te
         print("before training, model accuracy:", acc)
 

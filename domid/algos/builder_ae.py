@@ -10,7 +10,8 @@ from tensorboardX import SummaryWriter
 from domid.algos.observers.b_obvisitor_clustering_only import ObVisitorClusteringOnly
 from domid.models.model_ae import mk_ae
 from domid.trainers.trainer_ae import TrainerCluster
-
+from domainlab.algos.msels.c_msel_oracle import MSelOracleVisitor
+from domainlab.algos.msels.c_msel_val import MSelValPerf
 
 class NodeAlgoBuilderAE(NodeAlgoBuilder):
     def init_business(self, exp):
@@ -19,7 +20,7 @@ class NodeAlgoBuilderAE(NodeAlgoBuilder):
         """
         task = exp.task
         args = exp.args
-
+        msel = MSelOracleVisitor(MSelValPerf(max_es=args.es)) # FIXME upgrate domainlab
         device = get_device(args)
 
         zd_dim = args.zd_dim

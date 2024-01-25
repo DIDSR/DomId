@@ -2,14 +2,15 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from domid.utils.perf_cluster import PerfCluster
-
+import abc
 class AModelCluster(nn.Module):
     """
     Operations that all clustering models should have
     """
     def __init__(self):
         super(AModelCluster, self).__init__()
-        self._decoratee = None
+        self._decoratee = None #FIXME do i pass it to every model?
+
 
     def create_perf_obj(self, task):
         """
@@ -69,7 +70,7 @@ class AModelCluster(nn.Module):
                 tensor_x, tensor_y, tensor_d, others)
         return None, None
 
-    #@abc.abstractmethod #FIXME no abc?
+    @abc.abstractmethod
     def _cal_pretrain_loss(self, tensor_x, inject_tensor=None):
         """
         Pretraining loss for the model.
@@ -101,11 +102,7 @@ class AModelCluster(nn.Module):
         loss = F.mse_loss(x_pro, tensor_x)
 
         return loss
+    @abc.abstractmethod
+    def _cal_kl_loss(self, q, p): #FIXME KL loss is different for each of the model, redefined it in every model?
 
-    def _cal_kl_loss(self, q, p):
-        """
-
-        :return:
-        """
-        kl_loss = F.kl_div(q.log(), p, reduction="batchmean")
-        return kl_loss
+        return NotImplementedError

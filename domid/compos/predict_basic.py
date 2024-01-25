@@ -69,7 +69,7 @@ class Prediction:
                     vec_d.to(self.device),
                 )
 
-                if self.model.args.aname != "sdcn":
+                if self.model.args.model != "sdcn":
                     results = self.model.infer_d_v_2(tensor_x, inject_tensor)
                 else:
                     results = self.model.infer_d_v_2(tensor_x)
