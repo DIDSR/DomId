@@ -151,3 +151,5 @@ def mk_dec(parent_class=AModelCluster):
                 print(loss)
                 self.warmup_beta = warmup_beta
             return loss
+
+    return ModelDEC

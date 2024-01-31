@@ -7,9 +7,13 @@ from domainlab.algos.builder_diva import NodeAlgoBuilderDIVA
 from domainlab.algos.builder_erm import NodeAlgoBuilderERM
 from domainlab.algos.builder_hduva import NodeAlgoBuilderHDUVA
 from domainlab.algos.builder_jigen1 import NodeAlgoBuilderJiGen
+
 from domainlab.utils.u_import import import_path
 
 from domid.algos.builder_sdcn import NodeAlgoBuilderSDCN
+from domid.algos.builder_dec import NodeAlgoBuilderDEC
+# from domid.algos.builder_vade import NodeAlgoBuilderVaDE
+
 
 
 class AlgoBuilderChainNodeGetter:
@@ -44,7 +48,8 @@ class AlgoBuilderChainNodeGetter:
         """
 
         chain = NodeAlgoBuilderSDCN(None)
-
+        chain = NodeAlgoBuilderDEC(chain)
+        # chain =NodeAlgoBuilderVaDE(chain)
         chain = self.register_external_node(chain)
         node = chain.handle(self.model)
         head = node

@@ -12,6 +12,7 @@ class AModelCluster(nn.Module):
         self._decoratee = None #FIXME do i pass it to every model?
 
 
+
     def create_perf_obj(self, task):
         """
         Sets up the performance metrics used.
@@ -40,15 +41,18 @@ class AModelCluster(nn.Module):
 
         return metric_tr, metric_te, r_score_tr, r_score_te
 
-    def cal_loss(self, tensor_x, vec_y, vec_d, inj_tensor, img_ids):
+    def cal_loss(self, tensor_x, vec_y=None, vec_d=None, inj_tensor=None):
         """
         Calculates the loss for the model.
         """
+
         total_loss = self._cal_reconstruction_loss(tensor_x, inj_tensor)
-        if self._decoratee is not None:
-            kl_loss = self._decoratee._cal_kl_loss(tensor_x, vec_y, vec_d, inj_tensor)
-            total_loss += kl_loss
-        raise total_loss
+        #if self._decoratee is not None:
+
+        kl_loss = self._cal_kl_loss(tensor_x, vec_y, vec_d, inj_tensor)
+
+        total_loss += kl_loss
+        return total_loss
 
     def infer_d_v(self, x):
         """
@@ -60,6 +64,12 @@ class AModelCluster(nn.Module):
         """
         preds, *_ = self._inference(x)
         return preds.cpu().detach()
+    def extend(self, model):
+        """
+        extend the loss of the decoratee
+        """
+        self._decoratee = model
+
 
     def _extend_loss(self, tensor_x, tensor_y, tensor_d, others=None):
         """

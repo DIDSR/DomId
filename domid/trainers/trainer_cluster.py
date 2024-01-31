@@ -11,7 +11,9 @@ from domid.utils.storing import Storing
 
 
 class TrainerCluster(AbstractTrainer):
-    def __init__(self, model, task, observer, device, writer, pretrain=True, aconf=None):
+    #def __init__(self, model, task, observer, device, writer, pretrain=True, aconf=None):
+    def init_business(self, model, task, observer, device, aconf, flag_accept=True):
+
         """
         :param model: model to train
         :param task: task to train on
@@ -22,10 +24,10 @@ class TrainerCluster(AbstractTrainer):
         :param aconf: configuration parameters, including learning rate and pretrain threshold
         """
 
-        super().__init__()
+        #super().__init__()
         super().init_business(model, task, observer, device, aconf)
 
-        self.pretrain = pretrain
+        self.pretrain = True #FIXME add to agr line
         self.pretraining_finished = not self.pretrain
         self.lr = aconf.lr
         self.warmup_beta = 0.1
@@ -38,13 +40,13 @@ class TrainerCluster(AbstractTrainer):
             self.optimizer = optim.Adam(self.model.parameters(), lr=self.lr)
 
         self.epo_loss_tr = None
-        self.writer = writer
+        self.writer = None
         self.thres = aconf.pre_tr  # number of epochs for pretraining
         self.i_h, self.i_w = task.isize.h, task.isize.w
         self.args = aconf
         self.storage = Storing(self.args)
         self.loader_val = task.loader_val
-        self.aname = aconf.aname
+        self.aname = aconf.model
 
     def tr_epoch(self, epoch):
         """
@@ -143,19 +145,19 @@ class TrainerCluster(AbstractTrainer):
                 loss_val = pretrain.pretrain_loss(tensor_x_val, inject_tensor_val)
             else:
                 loss_val = self.model.cal_loss(tensor_x_val, inject_tensor_val, self.warmup_beta)
-
-        tensorboard_write(
-            self.writer,
-            self.model,
-            epoch,
-            self.lr,
-            self.warmup_beta,
-            acc_tr_y,
-            loss,
-            self.pretraining_finished,
-            tensor_x,
-            inject_tensor,
-        )
+        if self.writer is not None:
+            tensorboard_write(
+                self.writer,
+                self.model,
+                epoch,
+                self.lr,
+                self.warmup_beta,
+                acc_tr_y,
+                loss,
+                self.pretraining_finished,
+                tensor_x,
+                inject_tensor,
+            )
 
         # _____storing results and Z space__________
         self.storage.storing(

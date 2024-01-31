@@ -9,6 +9,10 @@ from domainlab.algos.trainers.train_mldg import TrainerMLDG
 
 from domid.trainers.trainer_cluster import TrainerCluster
 from domid.trainers.trainer_sdcn import TrainerSDCN
+from domid.trainers.trainer_cluster import TrainerCluster as TrainerDEC
+from domid.trainers.trainer_ae import TrainerCluster as TrainerAE
+from domid.trainers.trainer_cluster import TrainerCluster as TrainerVaDe
+
 class TrainerChainNodeGetter(object):
     """
     Chain of Responsibility: node is named in pattern Trainer[XXX] where the string
@@ -46,6 +50,10 @@ class TrainerChainNodeGetter(object):
 
         chain = TrainerBasic(None)
         chain = TrainerSDCN(chain)
+        chain = TrainerDEC(chain)
+        chain = TrainerAE(chain)
+        chain = TrainerVaDe(chain)
+
         node = chain.handle(self.request)
         head = node
         while self._list_str_trainer:

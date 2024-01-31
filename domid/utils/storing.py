@@ -115,9 +115,9 @@ class Storing:
             results_df.to_csv(os.path.join(self.args.path_to_results, "results.csv"), index=False)
 
         if self.args.inject_var:
-            model_name = "cd" + self.args.aname
+            model_name = "cd" + self.args.model
         else:
-            model_name = self.args.aname
+            model_name = self.args.model
         if self.last_epoch == epoch:
             row = [
                 {

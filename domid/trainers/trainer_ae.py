@@ -9,8 +9,10 @@ from domid.utils.perf_cluster import PerfCluster
 from domid.utils.storing import Storing
 
 
+
 class TrainerCluster(AbstractTrainer):
-    def __init__(self, model, task, observer, device, writer, pretrain=True, aconf=None):
+    #def __init__(self, model, task, observer, device, writer, pretrain=True, aconf=None):
+    def init_business(self, model, task, observer, device, aconf, flag_accept=True):
         """
         :param model: model to train
         :param task: task to train on

@@ -154,7 +154,7 @@ class TrainerSDCN(AbstractTrainer):
                     print("Epoch {}: Finished pretraining and starting to use the full model loss.".format(epoch))
                     print("".join(["#"] * 60))
 
-                loss = self.model.cal_loss(tensor_x,vec_y=None, vec_d=None, inj_tensor=None, img_ids=None)
+                loss = self.model.cal_loss(tensor_x)
             # print('loss', loss)
 
             loss = loss.sum()
@@ -198,7 +198,7 @@ class TrainerSDCN(AbstractTrainer):
             if epoch < self.thres and not self.pretraining_finished:
                 loss_val = pretrain.pretrain_loss(tensor_x_val)
             else:
-                loss_val = self.model.cal_loss(tensor_x_val, self.warmup_beta)
+                loss_val = self.model.cal_loss(tensor_x_val, None, None, None, self.warmup_beta)
 
         tensorboard_write(
             self.writer,

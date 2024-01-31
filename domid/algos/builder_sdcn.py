@@ -10,6 +10,7 @@ from domainlab.algos.observers.c_obvisitor_cleanup import ObVisitorCleanUp
 from domainlab.utils.utils_cuda import get_device
 from tensorboardX import SummaryWriter
 
+
 from domid.algos.observers.b_obvisitor_clustering_only import ObVisitorClusteringOnly
 from domid.models.model_sdcn import mk_sdcn
 #from domid.trainers.trainer_sdcn import TrainerCluster
@@ -45,10 +46,13 @@ class NodeAlgoBuilderSDCN(NodeAlgoBuilder):
             i_w=task.isize.w,
             args=args,
         )
+
+
         observer = ObVisitorCleanUp(ObVisitorClusteringOnly(exp, MSelOracleVisitor(MSelValPerf(max_es=args.es)), device))
         writer = SummaryWriter(logdir="debug/" + now)
         trainer = TrainerChainNodeGetter(args.trainer)()
         trainer.init_business(model, task, observer, device, args)
+        #model = model.extend(model)
         return trainer, model, observer, device
 
 

@@ -3,6 +3,7 @@ import datetime
 from domainlab.algos.a_algo_builder import NodeAlgoBuilder
 from domainlab.algos.msels.c_msel import MSelTrLoss
 from domainlab.algos.msels.c_msel_oracle import MSelOracleVisitor
+from domainlab.algos.msels.c_msel_val import MSelValPerf
 from domainlab.algos.observers.c_obvisitor_cleanup import ObVisitorCleanUp
 from domainlab.utils.utils_cuda import get_device
 from tensorboardX import SummaryWriter
@@ -12,6 +13,7 @@ from domid.models.model_ae import mk_ae
 from domid.trainers.trainer_ae import TrainerCluster
 from domainlab.algos.msels.c_msel_oracle import MSelOracleVisitor
 from domainlab.algos.msels.c_msel_val import MSelValPerf
+from domid.trainers.zoo_trainer import TrainerChainNodeGetter
 
 class NodeAlgoBuilderAE(NodeAlgoBuilder):
     def init_business(self, exp):
@@ -40,11 +42,13 @@ class NodeAlgoBuilderAE(NodeAlgoBuilder):
             i_w=task.isize.w,
             args=args,
         )
-        observer = ObVisitorCleanUp(ObVisitorClusteringOnly(exp, MSelOracleVisitor(MSelTrLoss(max_es=args.es)), device))
+        #observer = ObVisitorCleanUp(ObVisitorClusteringOnly(exp, MSelOracleVisitor(MSelTrLoss(max_es=args.es)), device))
+        observer = ObVisitorCleanUp(
+            ObVisitorClusteringOnly(exp, MSelOracleVisitor(MSelValPerf(max_es=args.es)), device))
         writer = SummaryWriter(logdir="debug/" + now)
         trainer = TrainerCluster(model, task, observer, device, writer, pretrain=pretrain, aconf=args)
 
-        return trainer
+        return trainer, model, observer, device
 
 
 def get_node_na():
