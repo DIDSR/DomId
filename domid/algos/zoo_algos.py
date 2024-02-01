@@ -12,7 +12,7 @@ from domainlab.utils.u_import import import_path
 
 from domid.algos.builder_sdcn import NodeAlgoBuilderSDCN
 from domid.algos.builder_dec import NodeAlgoBuilderDEC
-# from domid.algos.builder_vade import NodeAlgoBuilderVaDE
+from domid.algos.builder_vade import NodeAlgoBuilderVaDE
 
 
 
@@ -49,7 +49,7 @@ class AlgoBuilderChainNodeGetter:
 
         chain = NodeAlgoBuilderSDCN(None)
         chain = NodeAlgoBuilderDEC(chain)
-        # chain =NodeAlgoBuilderVaDE(chain)
+        chain =NodeAlgoBuilderVaDE(chain)
         chain = self.register_external_node(chain)
         node = chain.handle(self.model)
         head = node
