@@ -130,7 +130,7 @@ def mk_dec(parent_class=AModelCluster):
 
 
 
-        def _cal_kl_loss(self, x, inject_tensor, warmup_beta):
+        def _cal_kl_loss(self, x, inject_tensor, warmup_beta=0.1):
             """
             Calculates the KL-divergence loss between the predicted probabilities and the target distribution.
 

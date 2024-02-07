@@ -49,7 +49,7 @@ class AModelCluster(nn.Module):
         total_loss = self._cal_reconstruction_loss(tensor_x, inj_tensor)
         #if self._decoratee is not None:
 
-        kl_loss = self._cal_kl_loss(tensor_x, vec_y, vec_d, inj_tensor)
+        kl_loss = self._cal_kl_loss(tensor_x, inj_tensor)
 
         total_loss += kl_loss
         return total_loss

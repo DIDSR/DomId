@@ -72,7 +72,7 @@ def mk_vade(parent_class=AModelCluster):
             self.mu_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
             self.log_sigma2_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
 
-            self.loss_writter = SummaryWriter()
+            #self.loss_writter = SummaryWriter()
 
         def _inference(self, x):
             """Auxiliary function for inference
@@ -135,11 +135,31 @@ def mk_vade(parent_class=AModelCluster):
             :return: ELBO loss
             """
 
-            return self.ELBO_Loss(x, inject_domain, warmup_beta)
+            return self._cal_ELBO_loss(x, inject_domain, warmup_beta)
 
 
 
-        def _cal_reconstruction_loss(self, x, x_pro, log_sigma):
+        def _cal_reconstruction_loss(self, x, inject_tensor=[]):
+            z_mu, z_sigma2_log = self.encoder(x)
+            z = z_mu
+            if len(inject_tensor) > 0:
+                zy = torch.cat((z, inject_tensor), 1)
+            else:
+                zy = z
+
+
+            x_pro, *_ = self.decoder(zy)
+
+            if self.args.prior == "Bern":
+                L_rec = F.binary_cross_entropy(x_pro, x)
+            else:
+
+                sigma = torch.Tensor([0.9]).to(self.device)  # mean sigma of all images
+                log_sigma_est = torch.log(sigma).to(self.device)
+                L_rec = torch.mean(torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2, 2), 2), 1), 0) / sigma**2
+
+            return L_rec
+        def _cal_reconstruction_loss_helper(self, x, x_pro, log_sigma):
 
             if self.args.prior == "Bern":
                 L_rec = F.binary_cross_entropy(x_pro, x)
@@ -151,10 +171,10 @@ def mk_vade(parent_class=AModelCluster):
 
             return L_rec
 
-        def _cal_kl_loss(self, x, inject_domain, warmup_beta):
+        def _cal_ELBO_loss(self, x, inject_domain, warmup_beta):
             """ELBO loss function
             Using SGVB estimator and the reparametrization trick calculates ELBO loss.
-            Calculates loss between encoded input and input using ELBO equation (12) in the papaer.
+            Calculates loss between encoded input and input using ELBO equation (12) in the paper.
             :param tensor x: Input tensor of a shape [batchsize, 3, horzintal dim, vertical dim].
             :param int L: Number of Monte Carlo samples in the SGVB
             """
@@ -171,7 +191,7 @@ def mk_vade(parent_class=AModelCluster):
                     zy = z
 
                 x_pro, log_sigma = self.decoder(zy)  # x_pro, mu, sigma
-                L_rec += self.reconstruction_loss(x, x_pro, log_sigma)
+                L_rec += self._cal_reconstruction_loss_helper(x, x_pro, log_sigma) #FIXME
 
             L_rec /= self.L
             Loss = L_rec * x.size(1)

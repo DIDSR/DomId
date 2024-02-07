@@ -167,7 +167,7 @@ def mk_sdcn(parent_class=AModelCluster):
             weight = q**2 / q.sum(0)
             return (weight.t() / weight.sum(1)).t()
 
-        def _cal_kl_loss(self, x, vec_y, vec_d, inj_tensor, warmup_beta=None):
+        def _cal_kl_loss(self, x,inject_tensor=None, warmup_beta=None):
             """
             Compute the loss of the model.
             Concentrate two different objectives, i.e. clustering objective and classification objective, in one loss function.

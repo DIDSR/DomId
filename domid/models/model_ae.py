@@ -70,7 +70,7 @@ def mk_ae(parent_class=AModelCluster):
 
             self.counter = 0
             ex = str(datetime.now())  # .strftime("%H:%M")
-            self.local_tb = SummaryWriter(log_dir=os.path.join("local_tb", ex))
+            #self.local_tb = SummaryWriter(log_dir=os.path.join("local_tb", ex))
             self.random_ind = []
 
         def distance_between_clusters(self, cluster_layer):

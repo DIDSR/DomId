@@ -44,6 +44,7 @@ class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
         # observer = ObVisitorCleanUp(ObVisitorClusteringOnly(exp, MSelOracleVisitor(MSelTrLoss(max_es=args.es)), device))
         # writer = SummaryWriter(logdir="debug/" + now)
         # trainer = TrainerCluster(model, task, observer, device, writer, pretrain=pretrain, aconf=args)
+
         observer = ObVisitorCleanUp(
             ObVisitorClusteringOnly(exp, MSelOracleVisitor(MSelValPerf(max_es=args.es)), device))
         writer = SummaryWriter(logdir="debug/" + now)
