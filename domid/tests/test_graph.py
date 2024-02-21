@@ -85,7 +85,7 @@ def test_MNISTcolor_SDCN_graph_construction_heat():
             "mnistcolor10",
             "--bs",
             "50",
-            "--aname",
+            "--model",
             "sdcn",
             "--zd_dim",
             "5",
@@ -95,10 +95,11 @@ def test_MNISTcolor_SDCN_graph_construction_heat():
             "5",
             "--prior",
             "Bern",
-            "--model",
+            "--model_method",
             "linear",
             "--graph_method",
             "heat",
+
         ]
     )
 
@@ -126,7 +127,7 @@ def test_MNISTcolor_SDCN_graph_construction_ncos():
             "mnist",
             "--bs",
             "50",
-            "--aname",
+            "--model",
             "sdcn",
             "--zd_dim",
             "5",
@@ -136,7 +137,7 @@ def test_MNISTcolor_SDCN_graph_construction_ncos():
             "5",
             "--prior",
             "Bern",
-            "--model",
+            "--model_method",
             "linear",
             "--graph_method",
             "ncos",

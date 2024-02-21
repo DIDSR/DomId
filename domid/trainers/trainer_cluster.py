@@ -27,7 +27,10 @@ class TrainerCluster(AbstractTrainer):
         #super().__init__()
         super().init_business(model, task, observer, device, aconf)
 
-        self.pretrain = True #FIXME add to agr line
+        if aconf.pre_tr > 0:
+            self.pretrain = True
+        else:
+            self.pretrain = False
         self.pretraining_finished = not self.pretrain
         self.lr = aconf.lr
         self.warmup_beta = 0.1

@@ -36,7 +36,7 @@ def mk_sdcn(parent_class=AModelCluster):
             self.cluster_layer = nn.Parameter(torch.Tensor(self.d_dim, self.zd_dim))
             torch.nn.init.xavier_normal_(self.cluster_layer.data)
 
-            if self.args.model == "linear":
+            if self.args.model_method == "linear":
                 n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3, = (
                     500,
                     500,
@@ -122,7 +122,7 @@ def mk_sdcn(parent_class=AModelCluster):
                 - pi - [batch_size, n_clusters]
                 - logits - [batch_size, n_clusters]
             """
-            if self.args.model == "linear":
+            if self.args.model_method == "linear":
                 x = torch.reshape(x, (x.shape[0], x.shape[1] * x.shape[2] * x.shape[3]))
             enc_h1, enc_h2, enc_h3, z = self.encoder(x)
 

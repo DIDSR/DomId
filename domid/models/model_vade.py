@@ -44,7 +44,7 @@ def mk_vade(parent_class=AModelCluster):
             # if self.args.path_to_domain:    # FIXME: one can simply read from the file to find out the injected dimension
             #     self.dim_inject_domain = args.d_dim   # FIXME: allow arbitrary domain vector to be injected
 
-            if self.args.model == "linear":
+            if self.args.model_method == "linear":
                 self.encoder = LinearEncoder(zd_dim=zd_dim, input_dim=(i_c, i_h, i_w)).to(device)
                 self.decoder = LinearDecoder(prior=args.prior, zd_dim=zd_dim, input_dim=(i_c, i_h, i_w)).to(device)
                 if self.dim_inject_y:

@@ -88,8 +88,8 @@ class AModelCluster(nn.Module):
         return self._cal_reconstruction_loss(tensor_x, inject_tensor)
     def _cal_reconstruction_loss(self, tensor_x, inject_domain=None):
 
-        if self.args.model == "linear":
-            tensor_x = torch.reshape(tensor_x, (tensor_x.shape[0], tensor_x.shape[1] * tensor_x.shape[2] * tensor_x.shape[3]))
+        if self.args.model_method == "linear":
+            tensor_x = torch.reshape(tensor_x, (tensor_x.shape[0], -1))
 
         if self.args.feat_extract == "vae":
             z_mu, z_sigma2_log = self.encoder(tensor_x)

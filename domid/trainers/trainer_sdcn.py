@@ -34,7 +34,11 @@ class TrainerSDCN(AbstractTrainer):
 
         # breakpoint()
         # print(model)
-        self.pretrain = True
+        if aconf.pre_tr >0:
+            self.pretrain = True
+        else:
+            self.pretrain = False
+
         self.pretraining_finished = not self.pretrain
         self.lr = aconf.lr
         self.warmup_beta = 0.1

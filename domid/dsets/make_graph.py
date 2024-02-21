@@ -97,7 +97,6 @@ class GraphConstructor:
         """
 
         dist = self.distance_calc(features)
-        print(dist)
         connection_pairs = []
         inds = []
         for i in range(dist.shape[0]):

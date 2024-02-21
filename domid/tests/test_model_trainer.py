@@ -2,7 +2,7 @@ from domid.algos.builder_vade import NodeAlgoBuilderVaDE
 from domid.algos.observers.b_obvisitor_clustering_only import ObVisitorClusteringOnly
 from domid.arg_parser import mk_parser_main
 from domid.compos.exp.exp_main import Exp
-from domid.models.model_vade import ModelVaDE
+#from domid.models.model_vade import ModelVaDE
 from domid.tasks.task_mnist import NodeTaskMNIST
 from domid.trainers.trainer_cluster import TrainerCluster
 
@@ -11,6 +11,7 @@ from domid.trainers.trainer_cluster import TrainerCluster
 
 
 def experiment_train(args):
+
     exp = Exp(args)
     # exp.execute()
     exp.trainer.before_tr()
@@ -37,7 +38,7 @@ def test_MNIST_pretrain():
             "zout",
             "--task",
             "mnist",
-            "--aname",
+            "--model",
             "vade",
             "--apath",
             "domid/algos/builder_vade.py",
@@ -49,12 +50,14 @@ def test_MNIST_pretrain():
             "5",
             "--debug",
             "--nocu",
-            "--model",
+            "--model_method",
             "linear",
             "--prior",
             "Bern",
             "--pre_tr",
             "1",
+            "--trainer",
+            "cluster"
         ]
     )
     experiment_train(args)
@@ -79,7 +82,7 @@ def test_MNIST_train():
             "zout",
             "--task",
             "mnist",
-            "--aname",
+            "--model",
             "vade",
             "--apath",
             "domid/algos/builder_vade.py",
@@ -91,12 +94,14 @@ def test_MNIST_train():
             "5",
             "--debug",
             "--nocu",
-            "--model",
+            "--model_method",
             "linear",
             "--prior",
             "Bern",
             "--pre_tr",
             "0",
+            "--trainer",
+            "cluster"
         ]
     )
     experiment_train(args)
@@ -121,7 +126,7 @@ def test_MNIST_train_CNN():
             "zout",
             "--task",
             "mnist",
-            "--aname",
+            "--model",
             "vade",
             "--apath",
             "domid/algos/builder_vade.py",
@@ -133,12 +138,14 @@ def test_MNIST_train_CNN():
             "5",
             "--debug",
             "--nocu",
-            "--model",
+            "--model_method",
             "cnn",
             "--prior",
             "Bern",
             "--pre_tr",
             "0",
+            "--trainer",
+            "cluster"
         ]
     )
     experiment_train(args)
@@ -163,7 +170,7 @@ def test_MNISTcolor_train():
             "zout",
             "--task",
             "mnistcolor10",
-            "--aname",
+            "--model",
             "vade",
             "--apath",
             "domid/algos/builder_vade.py",
@@ -175,14 +182,17 @@ def test_MNISTcolor_train():
             "5",
             "--debug",
             "--nocu",
-            "--model",
+            "--model_method",
             "linear",
             "--prior",
             "Gaus",
             "--pre_tr",
             "0",
+            "--trainer",
+            "cluster"
         ]
     )
+
     experiment_train(args)
 
 
@@ -206,7 +216,7 @@ def test_MNISTcolor_train_CNN():
             "zout",
             "--task",
             "mnistcolor10",
-            "--aname",
+            "--model",
             "vade",
             "--apath",
             "domid/algos/builder_vade.py",
@@ -218,12 +228,14 @@ def test_MNISTcolor_train_CNN():
             "5",
             "--debug",
             "--nocu",
-            "--model",
+            "--model_method",
             "cnn",
             "--prior",
             "Gaus",
             "--pre_tr",
             "0",
+            "--trainer",
+            "cluster"
         ]
     )
     experiment_train(args)
@@ -248,7 +260,7 @@ def test_MNISTcolor_pretrain_CNN():
             "zout",
             "--task",
             "mnistcolor10",
-            "--aname",
+            "--model",
             "vade",
             "--apath",
             "domid/algos/builder_vade.py",
@@ -260,12 +272,14 @@ def test_MNISTcolor_pretrain_CNN():
             "5",
             "--debug",
             "--nocu",
-            "--model",
+            "--model_method",
             "cnn",
             "--prior",
             "Gaus",
             "--pre_tr",
             "1",
+            "--trainer",
+            "cluster"
         ]
     )
     experiment_train(args)
@@ -289,7 +303,7 @@ def test_M2YD_train_MNISTcolor():
             "9",
             "--task",
             "mnistcolor10",
-            "--aname",
+            "--model",
             "m2yd",
             "--zd_dim",
             "7",
@@ -326,7 +340,7 @@ def test_MNIST_conditionalOne_train():
             "zout",
             "--task",
             "mnist",
-            "--aname",
+            "--model",
             "vade",
             "--apath",
             "domid/algos/builder_vade.py",
@@ -338,7 +352,7 @@ def test_MNIST_conditionalOne_train():
             "5",
             "--debug",
             "--nocu",
-            "--model",
+            "--model_method",
             "cnn",
             "--prior",
             "Gaus",
@@ -348,6 +362,8 @@ def test_MNIST_conditionalOne_train():
             "10",
             "--inject_var",
             "digit",
+            "--trainer",
+            "cluster"
         ]
     )
     experiment_train(args)
@@ -372,7 +388,7 @@ def test_MNISTcolor_SDCN():
             "zout",
             "--task",
             "mnistcolor10",
-            "--aname",
+            "--model",
             "sdcn",
             "--apath",
             "domid/algos/builder_sdcn.py",
@@ -384,7 +400,7 @@ def test_MNISTcolor_SDCN():
             "5",
             "--debug",
             "--nocu",
-            "--model",
+            "--model_method",
             "cnn",
             "--prior",
             "Gaus",
@@ -394,6 +410,8 @@ def test_MNISTcolor_SDCN():
             "./notebooks/2023-11-30 10:52:19.451201_mnist_ae/",
             "--epos",
             "3",
+            "--trainer",
+            "sdcn"
         ]
     )
     experiment_train(args)
@@ -418,7 +436,7 @@ def test_MNISTcolor_AE():
             "zout",
             "--task",
             "mnistcolor10",
-            "--aname",
+            "--model",
             "ae",
             "--apath",
             "domid/algos/builder_ae.py",
@@ -430,7 +448,7 @@ def test_MNISTcolor_AE():
             "5",
             "--debug",
             "--nocu",
-            "--model",
+            "--model_method",
             "cnn",
             "--prior",
             "Gaus",
@@ -438,6 +456,9 @@ def test_MNISTcolor_AE():
             "1",
             "--epos",
             "3",
+            "--trainer",
+            "cluster"
+
         ]
     )
     experiment_train(args)
@@ -467,7 +488,7 @@ def test_MNISTcolor_AE():
 #             "zout",
 #             "--task",
 #             "mnist",
-#             "--aname",
+#             "--model",
 #             "vade",
 #             "--apath",
 #             "domid/algos/builder_vade.py",
