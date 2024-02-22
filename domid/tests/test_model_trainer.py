@@ -411,7 +411,9 @@ def test_MNISTcolor_SDCN():
             "--epos",
             "3",
             "--trainer",
-            "sdcn"
+            "sdcn",
+            "--feat_extract",
+            "ae"
         ]
     )
     experiment_train(args)
@@ -457,7 +459,9 @@ def test_MNISTcolor_AE():
             "--epos",
             "3",
             "--trainer",
-            "cluster"
+            "cluster",
+            "--feat_extract",
+            "ae"
 
         ]
     )
