@@ -47,6 +47,8 @@ def test_VADE_CNN_nonbinary():
             "cnn",
             "--pre_tr",
             "0",
+            "--trainer",
+            'cluster'
         ]
     )
     experiment_train(args)
@@ -88,6 +90,8 @@ def test_VADE_CNN():
             "cnn",
             "--pre_tr",
             "0",
+            "--trainer",
+            'cluster'
         ]
     )
     experiment_train(args)
@@ -129,6 +133,8 @@ def test_VADE_nonbinary():
             "Gaus",
             "--pre_tr",
             "0",
+            "--trainer",
+            'cluster'
         ]
     )
     experiment_train(args)
@@ -152,7 +158,7 @@ def test_VADE():
             "zout",
             "--task",
             "mnist",
-            "--model_method",
+            "--model",
             "vade",
             "--apath",
             "domid/algos/builder_vade.py",
@@ -168,6 +174,8 @@ def test_VADE():
             "--nocu",
             "--pre_tr",
             "0",
+            "--trainer",
+            'cluster'
         ]
     )
     experiment_train(args)
