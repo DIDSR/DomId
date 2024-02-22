@@ -27,7 +27,7 @@ def test_VADE_CNN_nonbinary():
             "zout",
             "--task",
             "mnist",
-            "-model",
+            "--model",
             "vade",
             "--apath",
             "domid/algos/builder_vade.py",
