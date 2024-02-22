@@ -27,6 +27,13 @@ class LinearEncoder(nn.Module):
     # mu, log_sigma2 = self.forward(x)
     # return mu
 
+    def get_z(self, x):
+        mu, log_sigma2 = self.forward(x)
+        return mu
+
+    def get_log_sigma2(self, x):
+        mu, log_sigma2 = self.forward(x)
+        return log_sigma2
     def forward(self, x):
         """
         :param x: input data, assumed to have 3 channels
