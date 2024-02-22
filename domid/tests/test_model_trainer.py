@@ -317,6 +317,8 @@ def test_M2YD_train_MNISTcolor():
             "--nocu",
             "--gamma_y",
             "3500",
+            '--trainer',
+            'cluster'
         ]
     )
     experiment_train(args)
@@ -459,7 +461,7 @@ def test_MNISTcolor_AE():
             "--epos",
             "3",
             "--trainer",
-            "cluster",
+            "ae",
             "--feat_extract",
             "ae"
 

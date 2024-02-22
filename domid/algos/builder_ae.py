@@ -10,7 +10,7 @@ from tensorboardX import SummaryWriter
 
 from domid.algos.observers.b_obvisitor_clustering_only import ObVisitorClusteringOnly
 from domid.models.model_ae import mk_ae
-from domid.trainers.trainer_ae import TrainerCluster
+
 from domainlab.algos.msels.c_msel_oracle import MSelOracleVisitor
 from domainlab.algos.msels.c_msel_val import MSelValPerf
 from domid.trainers.zoo_trainer import TrainerChainNodeGetter

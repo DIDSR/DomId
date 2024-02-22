@@ -10,6 +10,7 @@ from domainlab.algos.trainers.train_mldg import TrainerMLDG
 from domid.trainers.trainer_cluster import TrainerCluster
 from domid.trainers.trainer_sdcn import TrainerSDCN
 from domid.trainers.trainer_cluster import TrainerCluster
+from domid.trainers.trainer_ae import TrainerAE
 
 class TrainerChainNodeGetter(object):
     """
@@ -49,6 +50,8 @@ class TrainerChainNodeGetter(object):
         chain = TrainerBasic(None)
         chain = TrainerSDCN(chain)
         chain = TrainerCluster(chain)
+        chain = TrainerAE(chain)
+
 
         node = chain.handle(self.request)
         head = node

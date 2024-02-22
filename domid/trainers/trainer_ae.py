@@ -10,7 +10,7 @@ from domid.utils.storing import Storing
 
 
 
-class TrainerCluster(AbstractTrainer):
+class TrainerAE(AbstractTrainer):
     #def __init__(self, model, task, observer, device, writer, pretrain=True, aconf=None):
     def init_business(self, model, task, observer, device, aconf, flag_accept=True):
         """
@@ -41,13 +41,13 @@ class TrainerCluster(AbstractTrainer):
             self.optimizer = optim.Adam(self.model.parameters(), lr=self.lr)
 
         self.epo_loss_tr = None
-        self.writer = writer
+        self.writer = None
         self.thres = aconf.pre_tr  # number of epochs for pretraining
         self.i_h, self.i_w = task.isize.h, task.isize.w
         self.args = aconf
         self.storage = Storing(self.args)
         self.loader_val = task.loader_tr
-        self.aname = aconf.aname
+        self.aname = aconf.model
 
         # self.model.adj = GraphConstructor().construct_graph(self.loader_tr).to(self.device)
 
@@ -142,18 +142,18 @@ class TrainerCluster(AbstractTrainer):
                 loss_val = pretrain.pretrain_loss(tensor_x_val, inject_tensor_val)
             else:
                 loss_val = self.model.cal_loss(tensor_x_val, inject_tensor_val, self.warmup_beta)
-
-        tensorboard_write(
-            self.writer,
-            self.model,
-            epoch,
-            self.lr,
-            self.warmup_beta,
-            acc_tr_y,
-            loss,
-            self.pretraining_finished,
-            tensor_x,
-            inject_tensor,
+        if self.writer!=None:
+            tensorboard_write(
+                self.writer,
+                self.model,
+                epoch,
+                self.lr,
+                self.warmup_beta,
+                acc_tr_y,
+                loss,
+                self.pretraining_finished,
+                tensor_x,
+                inject_tensor,
         )
 
         # _____storing results and Z space__________
