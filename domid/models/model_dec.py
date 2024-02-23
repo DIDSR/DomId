@@ -97,14 +97,9 @@ def mk_dec(parent_class=AModelCluster):
             :return tensor pi: Tensor of the estimated cluster prevalences, p(c) (shape: [self.d_dim])
             :return tensor logits: Tensor where each column contains the log-probability p(c)p(z|c) for cluster c=0,...,self.d_dim-1 (shape: [batch_size, self.d_dim]).
             """
-            if self.args.feat_extract == "vae":
 
-                z_mu, z_sigma2_log = self.encoder(x)
-                z = z_mu  # no reparametrization
-            elif self.args.feat_extract == "ae":
-                *_, z_mu = self.encoder(x)
-                z_sigma2_log = torch.Tensor([]).to(self.device)
-                z = z_mu
+            z_mu = self.encoder.get_z(x)
+            z_sigma2_log = self.encoder.get_log_sigma2(x)
 
             probs_c = self.clusteringlayer(z_mu)  # in dec it is
             preds_c, logits, *_ = logit2preds_vpic(probs_c)  # preds c is oen hot encoded

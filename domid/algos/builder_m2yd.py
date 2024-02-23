@@ -39,15 +39,13 @@ class NodeAlgoBuilderM2YD(NodeAlgoBuilder):
             i_h=task.isize.h,
             i_w=task.isize.w,
         )
-        # observer = ObVisitorCleanUp(ObVisitorClustering(exp, MSelOracleVisitor(MSelTrLoss(max_es=args.es)), device))
-        # trainer = TrainerBasic()
-        # trainer.init_business(model, task, observer, device, args)
+
         observer = ObVisitorCleanUp(
             ObVisitorClusteringOnly(exp, MSelOracleVisitor(MSelValPerf(max_es=args.es)), device))
-        writer = SummaryWriter(logdir="debug/" + now)
+
         trainer = TrainerChainNodeGetter(args.trainer)()
         trainer.init_business(model, task, observer, device, args)
-        # model = model.extend(model)
+
         return trainer
 
 

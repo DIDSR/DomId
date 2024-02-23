@@ -41,7 +41,7 @@ class AModelCluster(nn.Module):
 
         return metric_tr, metric_te, r_score_tr, r_score_te
 
-    def cal_loss(self, tensor_x, vec_y=None, vec_d=None, inj_tensor=[]):
+    def cal_loss(self, tensor_x, vec_y=None, vec_d=None, inj_tensor=torch.Tensor([])):
         """
         Calculates the loss for the model.
         """
@@ -86,21 +86,17 @@ class AModelCluster(nn.Module):
         Pretraining loss for the model.
         """
         return self._cal_reconstruction_loss(tensor_x, inject_tensor)
-    def _cal_reconstruction_loss(self, tensor_x, inject_domain=None):
+
+    def _cal_reconstruction_loss(self, tensor_x, inject_domain=torch.Tensor([])):
 
         if self.args.model_method == "linear":
             tensor_x = torch.reshape(tensor_x, (tensor_x.shape[0], -1))
+        z = self.encoder.get_z(tensor_x)
 
-        if self.args.feat_extract == "vae":
-            z_mu, z_sigma2_log = self.encoder(tensor_x)
-            z = z_mu
-            if len(inject_domain) > 0:
-                zy = torch.cat((z, inject_domain), 1)
-            else:
-                zy = z
-        elif self.args.feat_extract == "ae":
-            *_, z_mu = self.encoder(tensor_x)
-            zy = z_mu
+        if len(inject_domain)>0:
+            zy = torch.cat((z, inject_domain), 1)
+        else:
+            zy = z
 
 
 

@@ -16,6 +16,8 @@ class LinearEncoderAE(nn.Module):
     def get_z(self, x):
         *_, z = self.forward(x)
         return z
+    def get_log_sigma2(self, x):
+        return None
     def forward(self, x):
         enc_h1 = F.relu(self.enc_1(x))
         enc_h2 = F.relu(self.enc_2(enc_h1))

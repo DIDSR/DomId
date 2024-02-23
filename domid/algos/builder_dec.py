@@ -26,11 +26,7 @@ class NodeAlgoBuilderDEC(NodeAlgoBuilder):
         zd_dim = args.zd_dim
         d_dim = args.d_dim
         L = args.L
-        pretrain = False
-        if args.pre_tr > 0:
-            pretrain = True
 
-        now = "zd_dim_" + str(zd_dim) + "_lr_" + str(args.lr) + "_" + str(datetime.datetime.now())
         model = mk_dec()(
             zd_dim=zd_dim,
             d_dim=d_dim,
@@ -45,9 +41,6 @@ class NodeAlgoBuilderDEC(NodeAlgoBuilder):
         observer = ObVisitorCleanUp(
             ObVisitorClusteringOnly(exp, MSelOracleVisitor(MSelValPerf(max_es=args.es)), device))
 
-        #observer = ObVisitorCleanUp(ObVisitorClusteringOnly(exp, MSelOracleVisitor(MSelTrLoss(max_es=args.es)), device))
-        writer = SummaryWriter(logdir="debug/" + now)
-        #
         trainer = TrainerChainNodeGetter(args.trainer)()
         trainer.init_business(model, task, observer, device, args)
 

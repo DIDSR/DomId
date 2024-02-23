@@ -140,7 +140,8 @@ def mk_vade(parent_class=AModelCluster):
 
 
         def _cal_reconstruction_loss(self, x, inject_tensor=[]):
-            z_mu, z_sigma2_log = self.encoder(x)
+            z_mu = self.encoder.get_z(x)
+            z_sigma2_log = self.encoder.get_log_sigma2(x)
             z = z_mu
             if len(inject_tensor) > 0:
                 zy = torch.cat((z, inject_tensor), 1)

@@ -35,7 +35,8 @@ class ConvolutionalEncoder(nn.Module):
     def get_z(self, x):
         *_, z = self.forward(x)
         return z
-
+    def get_log_sigma2(self, x):
+        return None
     def forward(self, x):
         """
         :param x: input data
