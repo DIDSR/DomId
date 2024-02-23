@@ -202,7 +202,7 @@ class TrainerSDCN(AbstractTrainer):
             if epoch < self.thres and not self.pretraining_finished:
                 loss_val = pretrain.pretrain_loss(tensor_x_val)
             else:
-                loss_val = self.model.cal_loss(tensor_x_val, None, None, None, self.warmup_beta)
+                loss_val = self.model.cal_loss(tensor_x_val)
 
         tensorboard_write(
             self.writer,

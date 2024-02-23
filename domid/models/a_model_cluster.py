@@ -45,7 +45,7 @@ class AModelCluster(nn.Module):
         """
         Calculates the loss for the model.
         """
-
+        breakpoint()
         total_loss = self._cal_reconstruction_loss(tensor_x, inj_tensor)
         #if self._decoratee is not None:
 
@@ -81,7 +81,7 @@ class AModelCluster(nn.Module):
         return None, None
 
     @abc.abstractmethod
-    def _cal_pretrain_loss(self, tensor_x, inject_tensor=None):
+    def _cal_pretrain_loss(self, tensor_x, inject_tensor=torch.Tensor([])):
         """
         Pretraining loss for the model.
         """
