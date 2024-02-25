@@ -46,7 +46,7 @@ class NodeAlgoBuilderM2YD(NodeAlgoBuilder):
         trainer = TrainerChainNodeGetter(args.trainer)()
         trainer.init_business(model, task, observer, device, args)
 
-        return trainer
+        return trainer, model, observer, device
 
 
 def get_node_na():

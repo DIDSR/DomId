@@ -12,6 +12,7 @@ from domainlab.utils.utils_class import store_args
 from domainlab.utils.utils_classif import get_label_na, logit2preds_vpic
 
 from domid.compos.nn_net import Net_MNIST
+from domid.utils.perf_cluster import PerfCluster
 
 def mk_m2yd(parent_class=AModelClassif):
     class ModelXY2D(AModelClassif):
@@ -46,15 +47,16 @@ def mk_m2yd(parent_class=AModelClassif):
 
 
         @store_args
-        def __init__(self, list_str_y, y_dim, zd_dim, gamma_y, device, i_c, i_h, i_w, dim_feat_x=10, list_str_d=None):
+        def __init__(self, list_str_y, y_dim, zd_dim, gamma_y, device, i_c, i_h, i_w, dim_feat_x=10):
             """
             :param y_dim: classification task class-label dimension
             :param zd_dim: dimension of latent variable $z_d$ dimension
             :param aux_y:
             """
-            super().__init__(list_str_y, list_str_d)
-            self.d_dim = zd_dim  # number of domains
+            super().__init__(list_str_y=list_str_y, net_classifier=None)
             self.infer_y_from_x = Net_MNIST(y_dim, self.i_h)
+            self._net_classifier = self.infer_y_from_x  # FIXME: this is a hack, and may not be needed at all
+            self.d_dim = zd_dim  # number of domains
             self.feat_x2concat_y = Net_MNIST(self.dim_feat_x, self.i_h)
             # FIXME: shall we share parameters between infer_y_from_x and self.feat_x2concat_y?
             self.infer_domain = LSEncoderDense(z_dim=self.zd_dim, dim_input=self.dim_feat_x + self.y_dim)
@@ -119,6 +121,21 @@ def mk_m2yd(parent_class=AModelClassif):
             lc_y = F.cross_entropy(y_hat, y_target, reduction="none")
             loss = nll - zd_p_minus_zd_q + self.gamma_y * lc_y
             return loss.mean()
+
+        def cal_perf_metric(self, loader_tr, device, loader_te=None):
+            """
+            Clustering performance metric on the training and test/validation sets.
+            """
+            self.perf_metric = PerfCluster(self.d_dim)  # FIXME: this is a hack because self.perf_metric is actually defined somewhere else (not in this file)
+            metric_te = None
+            metric_tr = None
+            with torch.no_grad():
+                metric_tr = self.perf_metric.cal_acc(self, loader_tr, device)
+                if loader_te is not None:
+                    metric_te = self.perf_metric.cal_acc(self, loader_te, device)
+            return metric_tr, metric_te, None, None
+            # FIXME: the None values are a hack, because of the clusteringOnly observer used with M2YD; eventually, need to update M2YD model to use a specializaed observer (probably the clustering observer, which needs refactoring, as opposed to the clusteringOnly one)
+
     return ModelXY2D
 
 def test_fun():

@@ -35,6 +35,7 @@ class Exp:
         self.epochs = self.args.epos
         self.epoch_counter = 1
         self.visitor = visitor(self)
+
     def execute(self):
         """
         train model

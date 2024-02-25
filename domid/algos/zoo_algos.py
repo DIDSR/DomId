@@ -14,6 +14,7 @@ from domid.algos.builder_sdcn import NodeAlgoBuilderSDCN
 from domid.algos.builder_dec import NodeAlgoBuilderDEC
 from domid.algos.builder_vade import NodeAlgoBuilderVaDE
 from domid.algos.builder_ae import NodeAlgoBuilderAE
+from domid.algos.builder_m2yd import NodeAlgoBuilderM2YD
 
 
 
@@ -50,8 +51,9 @@ class AlgoBuilderChainNodeGetter:
 
         chain = NodeAlgoBuilderSDCN(None)
         chain = NodeAlgoBuilderDEC(chain)
-        chain =NodeAlgoBuilderVaDE(chain)
+        chain = NodeAlgoBuilderVaDE(chain)
         chain = NodeAlgoBuilderAE(chain)
+        chain = NodeAlgoBuilderM2YD(chain)
         chain = self.register_external_node(chain)
         node = chain.handle(self.model)
         head = node

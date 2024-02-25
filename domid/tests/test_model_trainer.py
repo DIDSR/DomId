@@ -317,8 +317,8 @@ def test_M2YD_train_MNISTcolor():
             "--nocu",
             "--gamma_y",
             "3500",
-            '--trainer',
-            'cluster'
+            "--trainer",
+            "basic"
         ]
     )
     experiment_train(args)
