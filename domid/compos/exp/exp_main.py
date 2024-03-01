@@ -19,6 +19,7 @@ class Exp:
         """
         self.task = task
         if task is None:
+
             self.task = TaskChainNodeGetter(args)()
         self.task.init_business(args)
         self.args = args

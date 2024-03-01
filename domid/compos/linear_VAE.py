@@ -23,9 +23,6 @@ class LinearEncoder(nn.Module):
         )
         self.mu_layer = nn.Linear(features_dim[2], zd_dim)
         self.log_sigma2_layer = nn.Linear(features_dim[2], zd_dim)
-    #FIXME def get_z(self, x):
-    # mu, log_sigma2 = self.forward(x)
-    # return mu
 
     def get_z(self, x):
         mu, log_sigma2 = self.forward(x)
