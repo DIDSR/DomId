@@ -39,13 +39,18 @@ class PretrainingSDCN:
                     vec_d.to(self.device),
                 )
 
-                if self.args.task == "wsi" and self.args.model == "sdcn":
+                if self.args.random_batching:
+                    if len(other_vars) > 0:
+                        inject_tensor, image_id = other_vars
+                        if len(inject_tensor) > 0:
+                            inject_tensor = inject_tensor.to(self.device)
+                            
                     # note that for other tasks the graph is calculated once and the same graph is used for all the epochs; see domid/trainers/trainer_sdcn.py
                     patches_idx = self.model.random_ind[i]  # torch.randint(0, len(vec_y), (int(self.args.bs/3),))
                     tensor_x = tensor_x[patches_idx, :, :, :]
                     image_id = [image_id[patch_idx_num] for patch_idx_num in patches_idx]
-                    adj_mx, spar_mx = GraphConstructorWSI().construct_graph(
-                        tensor_x, image_id, self.model.graph_method, None
+                    adj_mx, spar_mx = GraphConstructorWSI(self.model.graph_method).construct_graph(
+                        tensor_x, image_id, None
                     )
                     self.model.adj = spar_mx
 

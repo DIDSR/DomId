@@ -27,8 +27,8 @@ class Prediction:
         """
 
         num_img = len(self.loader_tr.dataset)  # FIXME: this returns sample size + 1 for some reason
-        if self.model.args.task == "wsi" and self.model.args.aname == "sdcn":
-            num_img = int(self.model.args.bs / 3)
+        if self.model.args.task == "wsi" and self.model.args.model == "sdcn":
+            num_img = int(self.model.args.bs / 3 * num_img)
         z_proj = np.zeros((num_img, self.model.zd_dim))
         prob_proj = np.zeros((num_img, self.model.d_dim))
         input_imgs = np.zeros((num_img, 3, self.i_h, self.i_w))
@@ -53,9 +53,10 @@ class Prediction:
                     vec_y = vec_y[patches_idx, :]
                     vec_d = vec_d[patches_idx, :]
                     image_id = [image_id[patch_idx_num] for patch_idx_num in patches_idx]
-                    self.model.adj = GraphConstructorWSI().construct_graph(
-                        tensor_x, image_id, self.model.graph_method, None
+                    adj_mx, spar_mx = GraphConstructorWSI(self.model.graph_method).construct_graph(
+                        tensor_x, image_id, None
                     )
+                    self.model.adj = spar_mx
 
                 for ii in range(0, tensor_x.shape[0]):
 
@@ -74,7 +75,6 @@ class Prediction:
                 else:
                     results = self.model.infer_d_v_2(tensor_x)
                 preds, z, probs, x_pro = results[0], results[1], results[-2], results[-1]
-
                 z = z.detach().cpu().numpy()  # [batch_size, zd_dim]
                 input_imgs[counter : counter + tensor_x.shape[0], :, :, :] = tensor_x.cpu().detach().numpy()
                 z_proj[counter : counter + tensor_x.shape[0], :] = z

@@ -124,9 +124,10 @@ class TrainerSDCN(AbstractTrainer):
                 vec_d = vec_d[patches_idx, :]
                 image_id = [image_id[patch_idx_num] for patch_idx_num in patches_idx]
 
-                self.model.adj = self.graph_constr.construct_graph(
+                init_adj_mx, init_spar_mx = self.graph_constr.construct_graph(
                     tensor_x, image_id, self.storage.experiment_name
                 )
+                self.model.adj = init_spar_mx
 
             else:
                 self.model.adj = self.spar_mx[i]  # .to(self.device)
@@ -186,15 +187,19 @@ class TrainerSDCN(AbstractTrainer):
         for i, (tensor_x_val, vec_y_val, vec_d_val, *other_vars) in enumerate(self.loader_val):
 
             if self.args.random_batching:
+                if len(other_vars) > 0:
+                    inject_tensor, img_id_val = other_vars
+            
                 patches_idx = self.model.random_ind[i]  # torch.randint(0, len(vec_y), (int(self.args.bs/3),))
                 tensor_x_val = tensor_x_val[patches_idx, :, :, :]
                 vec_y_val = vec_y_val[patches_idx, :]
                 vec_d_val = vec_d_val[patches_idx, :]
                 img_id_val = [img_id_val[patch_idx_num] for patch_idx_num in patches_idx]
 
-                self.model.adj = self.graph_constr.construct_graph(
-                    tensor_x_val, img_id_val, self.graph_method, self.storage.experiment_name
+                init_adj_mx, init_spar_mx = self.graph_constr.construct_graph(
+                    tensor_x_val, img_id_val, self.storage.experiment_name
                 )
+                self.model.adj = init_spar_mx
 
             tensor_x_val, vec_y_val, vec_d_val = (
                 tensor_x_val.to(self.device),
