@@ -26,7 +26,7 @@ class PretrainingSDCN:
 
     def kmeans_cluster_assignement(self):
         num_img = len(self.loader_tr.dataset)
-        if self.args.task == "wsi" and self.args.aname == "sdcn":
+        if self.args.task == "wsi" and self.args.model == "sdcn":
             num_img = int(self.args.bs / 3)
         Z = np.zeros((num_img, self.model.zd_dim))
         counter = 0
@@ -39,7 +39,7 @@ class PretrainingSDCN:
                     vec_d.to(self.device),
                 )
 
-                if self.args.task == "wsi" and self.args.aname == "sdcn":
+                if self.args.task == "wsi" and self.args.model == "sdcn":
                     # note that for other tasks the graph is calculated once and the same graph is used for all the epochs; see domid/trainers/trainer_sdcn.py
                     patches_idx = self.model.random_ind[i]  # torch.randint(0, len(vec_y), (int(self.args.bs/3),))
                     tensor_x = tensor_x[patches_idx, :, :, :]

@@ -111,7 +111,10 @@ class TrainerSDCN(AbstractTrainer):
 
         # _____________one training epoch: start_______________________
         for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
-
+            if len(other_vars) > 0:
+                inject_tensor, image_id = other_vars
+                if len(inject_tensor) > 0:
+                    inject_tensor = inject_tensor.to(self.device)
             if i == 0:
                 self.model.batch_zero = True
             if self.args.random_batching:
@@ -122,7 +125,7 @@ class TrainerSDCN(AbstractTrainer):
                 image_id = [image_id[patch_idx_num] for patch_idx_num in patches_idx]
 
                 self.model.adj = self.graph_constr.construct_graph(
-                    tensor_x, image_id, self.graph_method, self.storage.experiment_name
+                    tensor_x, image_id, self.storage.experiment_name
                 )
 
             else:
