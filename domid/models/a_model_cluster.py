@@ -45,7 +45,6 @@ class AModelCluster(nn.Module):
         """
         Calculates the loss for the model.
         """
-        breakpoint()
         total_loss = self._cal_reconstruction_loss(tensor_x, inj_tensor)
         #if self._decoratee is not None:
 
