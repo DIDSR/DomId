@@ -41,7 +41,7 @@ class AModelCluster(nn.Module):
 
         return metric_tr, metric_te, r_score_tr, r_score_te
 
-    def cal_loss(self, tensor_x, inj_tensor=torch.Tensor([])):
+    def cal_loss(self, tensor_x, inj_tensor=torch.Tensor([]), warmup_beta = None):
         """
         Calculates the loss for the model.
         """

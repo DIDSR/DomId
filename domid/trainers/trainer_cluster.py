@@ -110,7 +110,7 @@ class TrainerCluster(AbstractTrainer):
                     print("".join(["#"] * 60))
                     print("Epoch {}: Finished pretraining and starting to use the full model loss.".format(epoch))
                     print("".join(["#"] * 60))
-
+                breakpoint()
                 loss = self.model.cal_loss(tensor_x, inject_tensor, self.warmup_beta)
 
             loss = loss.sum()

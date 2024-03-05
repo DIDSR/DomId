@@ -99,6 +99,7 @@ def mk_dec(parent_class=AModelCluster):
             """
 
             z_mu = self.encoder.get_z(x)
+            z = z_mu
             z_sigma2_log = self.encoder.get_log_sigma2(x)
 
             probs_c = self.clusteringlayer(z_mu)  # in dec it is
