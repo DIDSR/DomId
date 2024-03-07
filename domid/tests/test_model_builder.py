@@ -73,7 +73,13 @@ def test_VaDE_CNN():
         i_c=i_c,
         i_w=i_w,
         i_h=i_h,
-        args=args,
+        bs = args.bs,
+        dim_inject_y = args.dim_inject_y,
+        prior = args.prior,
+        random_batching=args.random_batching,
+        model_method=args.model_method,
+        pre_tr_weight_path=args.pre_tr_weight_path,
+        feat_extract=args.feat_extract
     )
 
     model_compiler(args, model)
@@ -111,7 +117,13 @@ def test_VaDE_linear():
         i_c=i_c,
         i_w=i_w,
         i_h=i_h,
-        args=args,
+        bs = args.bs,
+        dim_inject_y = args.dim_inject_y,
+        prior = args.prior,
+        random_batching=args.random_batching,
+        model_method=args.model_method,
+        pre_tr_weight_path=args.pre_tr_weight_path,
+        feat_extract=args.feat_extract
     )
 
     model_compiler(args, model)
