@@ -202,7 +202,6 @@ def mk_vade(parent_class=AModelCluster):
                     zy = torch.cat((z, inject_domain), 1)
                 else:
                     zy = z
-
                 x_pro, log_sigma = self.decoder(zy)  # x_pro, mu, sigma
                 L_rec += self._cal_reconstruction_loss_helper(x, x_pro, log_sigma) #FIXME
 
