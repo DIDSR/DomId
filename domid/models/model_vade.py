@@ -13,7 +13,8 @@ from domid.models.a_model_cluster import AModelCluster
 
 def mk_vade(parent_class=AModelCluster):
     class ModelVaDE(parent_class):
-        def __init__(self, zd_dim, d_dim, device, L, i_c, i_h, i_w, args):
+        def __init__(self, zd_dim, d_dim, device, i_c, i_h, i_w,bs,L=5, random_batching=False, model_method='cnn',
+                     prior='Bern',dim_inject_y = 0,pre_tr_weight_path =None, feat_extract = "vae"):
             """
             VaDE model (Jiang et al. 2017 "Variational Deep Embedding:
             An Unsupervised and Generative Approach to Clustering") with
@@ -32,27 +33,38 @@ def mk_vade(parent_class=AModelCluster):
             self.d_dim = d_dim
             self.device = device
             self.L = L
-            self.args = args
+            # self.args = args
             self.loss_epoch = 0
+            self.prior = prior
+            self.dim_inject_y = dim_inject_y
+            self.model_method = model_method
+            self.model = 'vade'
+            self.random_batching = random_batching
+            self.bs = bs
+            self.pre_tr_weight_path = pre_tr_weight_path
+            self.feat_extract = feat_extract
 
-            self.dim_inject_y = 0
 
-            if self.args.dim_inject_y:
-                self.dim_inject_y = self.args.dim_inject_y
+
+            # if self.args.dim_inject_y:
+            #     self.dim_inject_y = self.args.dim_inject_y
+
 
             # self.dim_inject_domain = 0
+
             # if self.args.path_to_domain:    # FIXME: one can simply read from the file to find out the injected dimension
             #     self.dim_inject_domain = args.d_dim   # FIXME: allow arbitrary domain vector to be injected
 
-            if self.args.model_method == "linear":
+           #if self.args.model_method == "linear":
+            if self.model_method == "linear":
                 self.encoder = LinearEncoder(zd_dim=zd_dim, input_dim=(i_c, i_h, i_w)).to(device)
-                self.decoder = LinearDecoder(prior=args.prior, zd_dim=zd_dim, input_dim=(i_c, i_h, i_w)).to(device)
-                if self.dim_inject_y:
+                self.decoder = LinearDecoder(prior=prior, zd_dim=zd_dim, input_dim=(i_c, i_h, i_w)).to(device)
+                if self.dim_inject_y>0:
                     warnings.warn("linear model decoder does not support label injection")
             else:
                 self.encoder = ConvolutionalEncoder(zd_dim=zd_dim, num_channels=i_c, i_w=i_w, i_h=i_h).to(device)
                 self.decoder = ConvolutionalDecoder(
-                    prior=args.prior,
+                    prior=prior,
                     zd_dim=zd_dim,  # 50
                     domain_dim=self.dim_inject_y,  #
                     # domain_dim=self.dim_inject_y,
@@ -151,7 +163,7 @@ def mk_vade(parent_class=AModelCluster):
 
             x_pro, *_ = self.decoder(zy)
 
-            if self.args.prior == "Bern":
+            if self.prior == "Bern":
                 L_rec = F.binary_cross_entropy(x_pro, x)
             else:
 
@@ -162,7 +174,7 @@ def mk_vade(parent_class=AModelCluster):
             return L_rec
         def _cal_reconstruction_loss_helper(self, x, x_pro, log_sigma):
 
-            if self.args.prior == "Bern":
+            if self.prior == "Bern":
                 L_rec = F.binary_cross_entropy(x_pro, x)
             else:
 

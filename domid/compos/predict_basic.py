@@ -27,8 +27,8 @@ class Prediction:
         """
 
         num_img = len(self.loader_tr.dataset)  # FIXME: this returns sample size + 1 for some reason
-        if self.model.args.task == "wsi" and self.model.args.model == "sdcn":
-            num_img = int(self.model.args.bs / 3 * num_img)
+        if self.model.random_batching:
+            num_img = int(self.model.bs / 3 * num_img)
         z_proj = np.zeros((num_img, self.model.zd_dim))
         prob_proj = np.zeros((num_img, self.model.d_dim))
         input_imgs = np.zeros((num_img, 3, self.i_h, self.i_w))
@@ -47,7 +47,7 @@ class Prediction:
                     if len(inject_tensor) > 0:
                         inject_tensor = inject_tensor.to(self.device)
 
-                if self.model.args.random_batching:
+                if self.model.random_batching:
                     patches_idx = self.model.random_ind[i]  # torch.randint(0, len(vec_y), (int(self.args.bs/3),))
                     tensor_x = tensor_x[patches_idx, :, :, :]
                     vec_y = vec_y[patches_idx, :]
@@ -70,7 +70,7 @@ class Prediction:
                     vec_d.to(self.device),
                 )
 
-                if self.model.args.model != "sdcn":
+                if self.model.model != "sdcn":
                     results = self.model.infer_d_v_2(tensor_x, inject_tensor)
                 else:
                     results = self.model.infer_d_v_2(tensor_x)

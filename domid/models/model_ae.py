@@ -16,20 +16,26 @@ from domid.models.a_model_cluster import AModelCluster
 def mk_ae(parent_class=AModelCluster):
 
     class ModelAE(parent_class):
-        def __init__(self, zd_dim, d_dim, device, L, i_c, i_h, i_w, args):
+        def __init__(self, zd_dim, d_dim, device, i_c, i_h, i_w, bs, L=5, random_batching=False, model_method='cnn',
+                     prior='Bern',dim_inject_y = 0,pre_tr_weight_path =None, feat_extract = "vae"):
 
             super(ModelAE, self).__init__()
             self.zd_dim = zd_dim
             self.d_dim = d_dim
             self.device = device
             self.L = L
-            self.args = args
+
             self.loss_epoch = 0
             self.batch_zero = True
             self.dim_inject_y = 0
 
-            if self.args.dim_inject_y:
-                self.dim_inject_y = self.args.dim_inject_y
+            self.dim_inject_y = dim_inject_y
+            self.model_method = model_method
+            self.prior = prior
+            self.feat_extract = feat_extract
+            self.random_batching = random_batching
+            self.pre_tr_weight_path = pre_tr_weight_path
+            self.model = 'ae'
 
             n_z = zd_dim
             n_input = i_c * i_h * i_w
@@ -45,26 +51,26 @@ def mk_ae(parent_class=AModelCluster):
             self.cluster_layer = nn.Parameter(torch.Tensor(self.d_dim, self.zd_dim))
             torch.nn.init.xavier_normal_(self.cluster_layer.data)
 
-            if self.args.model_method == "linear":
+            if self.model_method == "linear":
                 self.encoder = LinearEncoderAE(n_enc_1, n_enc_2, n_enc_3, n_input, n_z)
                 self.decoder = LinearDecoderAE(n_dec_1, n_dec_2, n_dec_3, n_input, n_z)
 
             else:
                 self.encoder = ConvolutionalEncoder(zd_dim=zd_dim, num_channels=i_c, i_w=i_w, i_h=i_h).to(device)
                 self.decoder = ConvolutionalDecoder(
-                    prior=args.prior,
+                    prior=prior,
                     zd_dim=zd_dim,  # 50
                     domain_dim=self.dim_inject_y,  #
                     # domain_dim=self.dim_inject_y,
                     h_dim=self.encoder.h_dim,
                     num_channels=i_c,
                 ).to(device)
-            if self.args.pre_tr_weight_path:
+            if self.pre_tr_weight_path:
                 self.encoder.load_state_dict(
-                    torch.load(self.args.pre_tr_weight_path + "encoder.pt", map_location=self.device)
+                    torch.load(self.pre_tr_weight_path + "encoder.pt", map_location=self.device)
                 )
                 self.decoder.load_state_dict(
-                    torch.load(self.args.pre_tr_weight_path + "decoder.pt", map_location=self.device)
+                    torch.load(self.pre_tr_weight_path + "decoder.pt", map_location=self.device)
                 )
                 print("Pre-trained weights loaded")
 
@@ -83,12 +89,12 @@ def mk_ae(parent_class=AModelCluster):
 
         def _inference(self, x, inject_tensor=None):
 
-            if self.args.model_method == "linear":
+            if self.model_method == "linear":
                 x = torch.reshape(x, (x.shape[0], x.shape[1] * x.shape[2] * x.shape[3]))
             enc_h1, enc_h2, enc_h3, z = self.encoder(x)
             # _, _, z, *_ = self._inference(x)
 
-            kmeans = KMeans(n_clusters=self.args.d_dim, n_init=20)
+            kmeans = KMeans(n_clusters=self.d_dim, n_init=20)
 
             kmeans.fit_predict(z.detach().cpu().numpy())
             # x_bar, *_ = self.decoder(z)

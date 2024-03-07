@@ -9,7 +9,8 @@ from domid.models.a_model_cluster import AModelCluster
 def mk_dec(parent_class=AModelCluster):
 
     class ModelDEC(parent_class):
-        def __init__(self, zd_dim, d_dim, L, device, i_c, i_h, i_w, args):
+        def __init__(self, zd_dim, d_dim, device, i_c, i_h, i_w,bs, L=5, random_batching=False, model_method='cnn',
+                     prior='Bern',dim_inject_y = 0,pre_tr_weight_path =None, feat_extract = "vae"):
             """
             DEC model (Xie et al. 2015 "Unsupervised Deep Embedding for Clustering Analysis") with
             fully connected encoder and decoder.
@@ -31,18 +32,26 @@ def mk_dec(parent_class=AModelCluster):
             self.alpha = 1  # FIXME
             self.hidden = zd_dim
             self.cluster_centers = None
-            self.dim_inject_y = 0
-            self.warmup_beta = 0
-            self.args = args
 
-            if self.args.feat_extract == "vae":
+            self.warmup_beta = 0
+            self.dim_inject_y = dim_inject_y
+            self.model_method = model_method
+            self.prior =prior
+            self.feat_extract = feat_extract
+            self.random_batching = random_batching
+            self.pre_tr_weight_path = pre_tr_weight_path
+            self.model = 'dec'
+
+
+
+            if self.feat_extract == "vae":
                 from domid.compos.cnn_VAE import ConvolutionalDecoder, ConvolutionalEncoder
-            elif self.args.feat_extract == "ae":
+            elif self.feat_extract == "ae":
                 from domid.compos.cnn_AE import ConvolutionalDecoder, ConvolutionalEncoder
 
             self.encoder = ConvolutionalEncoder(zd_dim=zd_dim, num_channels=i_c, i_w=i_w, i_h=i_h).to(device)
             self.decoder = ConvolutionalDecoder(
-                prior=args.prior,
+                prior=prior,
                 zd_dim=zd_dim,  # 50
                 domain_dim=self.dim_inject_y,  #
                 # domain_dim=self.dim_inject_y,
@@ -63,12 +72,12 @@ def mk_dec(parent_class=AModelCluster):
                 .log(),
                 requires_grad=True,
             )
-            if self.args.pre_tr_weight_path:
+            if self.pre_tr_weight_path:
                 self.encoder.load_state_dict(
-                    torch.load(self.args.pre_tr_weight_path + "encoder.pt", map_location=self.device)
+                    torch.load(self.pre_tr_weight_path + "encoder.pt", map_location=self.device)
                 )
                 self.decoder.load_state_dict(
-                    torch.load(self.args.pre_tr_weight_path + "decoder.pt", map_location=self.device)
+                    torch.load(self.pre_tr_weight_path + "decoder.pt", map_location=self.device)
                 )
                 print("AE is using pretrained weights. No need for pretraining epochs. ")
             self.log_sigma2_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)

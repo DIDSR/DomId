@@ -15,19 +15,30 @@ def mk_sdcn(parent_class=AModelCluster):
         The model is composed of a convolutional encoder and decoder, a GNN and a clustering layer.
         """
 
-        def __init__(self, zd_dim, d_dim, device, L, i_c, i_h, i_w, args):
+        def __init__(self, zd_dim, d_dim, device, i_c, i_h, i_w, bs, task, L=5 , random_batching=False,
+                     model_method='cnn', prior='Bern',dim_inject_y = 0, pre_tr_weight_path =None, feat_extract = "vae", graph_method='heat'):
 
             super(ModelSDCN, self).__init__()
             self.zd_dim = zd_dim
             self.d_dim = d_dim
             self.device = device
             self.L = L
-            self.args = args
-            self.loss_epoch = 0
-            self.dim_inject_y = 0
 
-            if self.args.dim_inject_y:
-                self.dim_inject_y = self.args.dim_inject_y
+            self.loss_epoch = 0
+            self.dim_inject_y = dim_inject_y
+            self.prior = prior
+            self.model_method = model_method
+            self.random_batching = random_batching
+            self.pre_tr_weight_path = pre_tr_weight_path
+            self.feat_extract = feat_extract
+            self.task = task
+            self.model = 'sdcn'
+
+
+
+
+            # if self.args.dim_inject_y:
+            #     self.dim_inject_y = self.args.dim_inject_y
 
             n_clusters = d_dim
             n_z = zd_dim
@@ -36,7 +47,7 @@ def mk_sdcn(parent_class=AModelCluster):
             self.cluster_layer = nn.Parameter(torch.Tensor(self.d_dim, self.zd_dim))
             torch.nn.init.xavier_normal_(self.cluster_layer.data)
 
-            if self.args.model_method == "linear":
+            if self.model_method == "linear":
                 n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3, = (
                     500,
                     500,
@@ -51,7 +62,7 @@ def mk_sdcn(parent_class=AModelCluster):
             else:
                 self.encoder = ConvolutionalEncoder(zd_dim=zd_dim, num_channels=i_c, i_w=i_w, i_h=i_h).to(device)
                 self.decoder = ConvolutionalDecoder(
-                    prior=args.prior,
+                    prior=prior,
                     zd_dim=zd_dim,  # 50
                     domain_dim=self.dim_inject_y,
                     h_dim=self.encoder.h_dim,
@@ -66,12 +77,12 @@ def mk_sdcn(parent_class=AModelCluster):
                     int((i_w / 2) ** 2 * self.encoder.num_filters[0]),
                 )
                 print("Filter sizes for GNN", n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3)
-            if self.args.pre_tr_weight_path:
+            if self.pre_tr_weight_path:
                 self.encoder.load_state_dict(
-                    torch.load(self.args.pre_tr_weight_path + "encoder.pt", map_location=self.device)
+                    torch.load(self.pre_tr_weight_path + "encoder.pt", map_location=self.device)
                 )
                 self.decoder.load_state_dict(
-                    torch.load(self.args.pre_tr_weight_path + "decoder.pt", map_location=self.device)
+                    torch.load(self.pre_tr_weight_path + "decoder.pt", map_location=self.device)
                 )
                 print("Pre-trained weights loaded")
             else:
@@ -98,15 +109,15 @@ def mk_sdcn(parent_class=AModelCluster):
             self.re_loss_running = 0
             self.ce_loss_running = 0
 
-            if "mnist" in self.args.task:
+            if "mnist" in self.task:
                 self.graph_method = "heat"
-            if "wsi" in self.args.task:
+            if "wsi" in self.task:
                 self.graph_method = "patch_distance"
-            if self.args.graph_method is not None:
-                self.graph_method = args.graph_method
+            if self.graph_method is not None:
+                self.graph_method = graph_method
 
-            if args.task == "wsi":
-                self.random_ind = [torch.randint(0, self.args.bs, (int(self.args.bs / 3),)) for i in range(0, 66)]
+            if self.task == "wsi":
+                self.random_ind = [torch.randint(0, self.bs, (int(self.bs / 3),)) for i in range(0, 66)]
             else:
                 self.random_ind = []
 
@@ -122,7 +133,7 @@ def mk_sdcn(parent_class=AModelCluster):
                 - pi - [batch_size, n_clusters]
                 - logits - [batch_size, n_clusters]
             """
-            if self.args.model_method == "linear":
+            if self.model_method == "linear":
                 x = torch.reshape(x, (x.shape[0], x.shape[1] * x.shape[2] * x.shape[3]))
             enc_h1, enc_h2, enc_h3, z = self.encoder(x)
 
@@ -191,7 +202,7 @@ def mk_sdcn(parent_class=AModelCluster):
 
             # self.local_tb.add_histogram('p', p, self.counter)
 
-            if self.args.model == "linear":
+            if self.model == "linear":
                 x = torch.reshape(x, (x.shape[0], x.shape[1] * x.shape[2] * x.shape[3]))
 
             kl_loss = F.kl_div(q.log(), p, reduction="batchmean")

@@ -88,7 +88,7 @@ class AModelCluster(nn.Module):
 
     def _cal_reconstruction_loss(self, tensor_x, inject_domain=torch.Tensor([])):
 
-        if self.args.model_method == "linear":
+        if self.model_method == "linear":
             tensor_x = torch.reshape(tensor_x, (tensor_x.shape[0], -1))
         z = self.encoder.get_z(tensor_x)
 

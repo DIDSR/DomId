@@ -32,11 +32,18 @@ class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
             zd_dim=zd_dim,
             d_dim=d_dim,
             device=device,
-            L=L,
             i_c=task.isize.c,
             i_h=task.isize.h,
             i_w=task.isize.w,
-            args=args,
+            bs = args.bs,
+            L = L,
+            dim_inject_y = args.dim_inject_y,
+            prior = args.prior,
+            random_batching=args.random_batching,
+            model_method=args.model_method,
+            pre_tr_weight_path=args.pre_tr_weight_path,
+            feat_extract=args.feat_extract
+
         )
 
         observer = ObVisitorCleanUp(
