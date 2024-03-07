@@ -60,7 +60,7 @@ def mk_parser_main():
     parser.add_argument("--feat_extract", type=str, default="vae", help="featue extractor method, either vae or ae")
     parser.add_argument(
         "--random_batching",
-        type=bool,
+        action="store_true",
         default=False,
         help="randomization of the samples inside one batch, only used in SDCN",
     )

@@ -43,7 +43,6 @@ def mk_dec(parent_class=AModelCluster):
             self.model = 'dec'
 
 
-
             if self.feat_extract == "vae":
                 from domid.compos.cnn_VAE import ConvolutionalDecoder, ConvolutionalEncoder
             elif self.feat_extract == "ae":
