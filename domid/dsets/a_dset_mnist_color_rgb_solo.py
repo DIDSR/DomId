@@ -236,7 +236,7 @@ class ADsetMNISTColorRGBSolo(Dataset, metaclass=abc.ABCMeta):
 
         if self.inject_variable:
             inject_tensor = self.df.loc[df_idx, self.inject_variable]
-            inject_tensor = mk_fun_label2onehot(self.inject_dim)(inject_tensor)
+            inject_tensor = mk_fun_label2onehot(self.inject_dim)(int(inject_tensor))
         else:
             inject_tensor = []
 
