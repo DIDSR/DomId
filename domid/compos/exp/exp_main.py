@@ -18,10 +18,10 @@ class Exp:
         :param task:
         """
         self.task = task
-        if task is None:
+        #if task is None: #FIXME Mariia doesn't understand why it is deafult for task to be None (potentially zoo_task needs to be changed)
+        self.task = TaskChainNodeGetter(args)()
+        self.task.init_business(args) #FIXME related to the above (might be able to be removed)
 
-            self.task = TaskChainNodeGetter(args)()
-        self.task.init_business(args)
         self.args = args
 
         algo_builder = AlgoBuilderChainNodeGetter(
