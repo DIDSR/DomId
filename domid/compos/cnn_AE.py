@@ -32,11 +32,14 @@ class ConvolutionalEncoder(nn.Module):
         self.bsnorm1 = nn.BatchNorm2d(num_filters[0])
         self.bsnorm2 = nn.BatchNorm2d(num_filters[1])
         self.bsnorm3 = nn.BatchNorm2d(num_filters[2])
+
     def get_z(self, x):
         *_, z = self.forward(x)
         return z
+
     def get_log_sigma2(self, x):
         return None
+
     def forward(self, x):
         """
         :param x: input data
@@ -87,7 +90,6 @@ class ConvolutionalDecoder(nn.Module):
             modules.append(nn.LeakyReLU())
         modules.append(nn.ConvTranspose2d(num_filters[-2], num_channels, kernel_size=k[-1], stride=2, padding=1))
         self.decod = nn.Sequential(*modules)
-
 
     def forward(self, z):
         """

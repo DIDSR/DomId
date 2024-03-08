@@ -1,9 +1,10 @@
 import datetime
 
 from domainlab.algos.a_algo_builder import NodeAlgoBuilder
-#from domainlab.algos.msels.c_msel import MSelTrLoss
-from domainlab.algos.msels.c_msel_val import MSelValPerf
 from domainlab.algos.msels.c_msel_oracle import MSelOracleVisitor
+
+# from domainlab.algos.msels.c_msel import MSelTrLoss
+from domainlab.algos.msels.c_msel_val import MSelValPerf
 from domainlab.algos.observers.c_obvisitor_cleanup import ObVisitorCleanUp
 from domainlab.utils.utils_cuda import get_device
 from tensorboardX import SummaryWriter
@@ -12,6 +13,7 @@ from domid.algos.observers.b_obvisitor_clustering_only import ObVisitorClusterin
 from domid.models.model_vade import mk_vade
 from domid.trainers.trainer_cluster import TrainerCluster
 from domid.trainers.zoo_trainer import TrainerChainNodeGetter
+
 
 class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
     def init_business(self, exp):
@@ -27,7 +29,6 @@ class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
         d_dim = args.d_dim
         L = args.L
 
-
         model = mk_vade()(
             zd_dim=zd_dim,
             d_dim=d_dim,
@@ -35,19 +36,19 @@ class NodeAlgoBuilderVaDE(NodeAlgoBuilder):
             i_c=task.isize.c,
             i_h=task.isize.h,
             i_w=task.isize.w,
-            bs = args.bs,
-            L = L,
-            dim_inject_y = args.dim_inject_y,
-            prior = args.prior,
+            bs=args.bs,
+            L=L,
+            dim_inject_y=args.dim_inject_y,
+            prior=args.prior,
             random_batching=args.random_batching,
             model_method=args.model_method,
             pre_tr_weight_path=args.pre_tr_weight_path,
-            feat_extract=args.feat_extract
-
+            feat_extract=args.feat_extract,
         )
 
         observer = ObVisitorCleanUp(
-            ObVisitorClusteringOnly(exp, MSelOracleVisitor(MSelValPerf(max_es=args.es)), device))
+            ObVisitorClusteringOnly(exp, MSelOracleVisitor(MSelValPerf(max_es=args.es)), device)
+        )
 
         trainer = TrainerChainNodeGetter(args.trainer)()
         trainer.init_business(model, task, observer, device, args)

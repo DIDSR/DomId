@@ -2,10 +2,10 @@ import torch
 import torch.utils.data
 
 from domid.arg_parser import mk_parser_main
-#from domid.models.model_m2yd import ModelXY2D
+
+# from domid.models.model_m2yd import ModelXY2D
 from domid.models.model_vade import mk_vade
 from domid.tasks.task_mnist import NodeTaskMNIST
-from domid.models.model_vade import mk_vade
 
 
 def model_compiler(args, model):
@@ -64,7 +64,7 @@ def test_VaDE_CNN():
         ]
     )
     i_c, i_w, i_h = 3, 32, 32
-    #zd_dim, d_dim, device, L, i_c, i_h, i_w, args
+    # zd_dim, d_dim, device, L, i_c, i_h, i_w, args
     model = mk_vade()(
         zd_dim=args.zd_dim,
         d_dim=args.d_dim,
@@ -73,17 +73,16 @@ def test_VaDE_CNN():
         i_c=i_c,
         i_w=i_w,
         i_h=i_h,
-        bs = args.bs,
-        dim_inject_y = args.dim_inject_y,
-        prior = args.prior,
+        bs=args.bs,
+        dim_inject_y=args.dim_inject_y,
+        prior=args.prior,
         random_batching=args.random_batching,
         model_method=args.model_method,
         pre_tr_weight_path=args.pre_tr_weight_path,
-        feat_extract=args.feat_extract
+        feat_extract=args.feat_extract,
     )
 
     model_compiler(args, model)
-
 
 
 def test_VaDE_linear():
@@ -105,7 +104,7 @@ def test_VaDE_linear():
             "--model",
             "vade",
             "--model_method",
-            "linear"
+            "linear",
         ]
     )
     i_c, i_w, i_h = 3, 32, 32
@@ -117,13 +116,13 @@ def test_VaDE_linear():
         i_c=i_c,
         i_w=i_w,
         i_h=i_h,
-        bs = args.bs,
-        dim_inject_y = args.dim_inject_y,
-        prior = args.prior,
+        bs=args.bs,
+        dim_inject_y=args.dim_inject_y,
+        prior=args.prior,
         random_batching=args.random_batching,
         model_method=args.model_method,
         pre_tr_weight_path=args.pre_tr_weight_path,
-        feat_extract=args.feat_extract
+        feat_extract=args.feat_extract,
     )
 
     model_compiler(args, model)

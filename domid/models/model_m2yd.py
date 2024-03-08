@@ -5,7 +5,6 @@ import torch.nn.functional as F
 from domainlab.compos.vae.compos.decoder_concat_vec_reshape_conv_gated_conv import (
     DecoderConcatLatentFCReshapeConvGatedConv,
 )
-
 from domainlab.compos.vae.compos.encoder import LSEncoderLinear as LSEncoderDense
 from domainlab.models.a_model_classif import AModelClassif
 from domainlab.utils.utils_class import store_args
@@ -13,6 +12,7 @@ from domainlab.utils.utils_classif import get_label_na, logit2preds_vpic
 
 from domid.compos.nn_net import Net_MNIST
 from domid.utils.perf_cluster import PerfCluster
+
 
 def mk_m2yd(parent_class=AModelClassif):
     class ModelXY2D(AModelClassif):
@@ -44,7 +44,6 @@ def mk_m2yd(parent_class=AModelClassif):
         FIXME: original M2 has prior Gaussian(0, I) for $z_d$, will this hinder learning of $z_d$
         on each component since the prior is draging each component to zero.
         """
-
 
         @store_args
         def __init__(self, list_str_y, y_dim, zd_dim, gamma_y, device, i_c, i_h, i_w, dim_feat_x=10):
@@ -126,7 +125,9 @@ def mk_m2yd(parent_class=AModelClassif):
             """
             Clustering performance metric on the training and test/validation sets.
             """
-            self.perf_metric = PerfCluster(self.d_dim)  # FIXME: this is a hack because self.perf_metric is actually defined somewhere else (not in this file)
+            self.perf_metric = PerfCluster(
+                self.d_dim
+            )  # FIXME: this is a hack because self.perf_metric is actually defined somewhere else (not in this file)
             metric_te = None
             metric_tr = None
             with torch.no_grad():
@@ -137,6 +138,7 @@ def mk_m2yd(parent_class=AModelClassif):
             # FIXME: the None values are a hack, because of the clusteringOnly observer used with M2YD; eventually, need to update M2YD model to use a specializaed observer (probably the clustering observer, which needs refactoring, as opposed to the clusteringOnly one)
 
     return ModelXY2D
+
 
 def test_fun():
     model = ModelXY2D(y_dim=10, zd_dim=8, gamma_y=3500, device=torch.device("cpu"), i_c=3, i_h=28, i_w=28)

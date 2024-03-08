@@ -10,6 +10,7 @@ from domid.compos.GNN import GNN
 from domid.compos.linear_AE import LinearDecoderAE, LinearEncoderAE
 from domid.models.a_model_cluster import AModelCluster
 
+
 def mk_sdcn(parent_class=AModelCluster):
     class ModelSDCN(parent_class):
         """
@@ -17,8 +18,25 @@ def mk_sdcn(parent_class=AModelCluster):
         The model is composed of a convolutional encoder and decoder, a GNN and a clustering layer.
         """
 
-        def __init__(self, zd_dim, d_dim, device, i_c, i_h, i_w, bs, task, L=5 , random_batching=False,
-                     model_method='cnn', prior='Bern',dim_inject_y = 0, pre_tr_weight_path =None, feat_extract = "vae", graph_method='heat'):
+        def __init__(
+            self,
+            zd_dim,
+            d_dim,
+            device,
+            i_c,
+            i_h,
+            i_w,
+            bs,
+            task,
+            L=5,
+            random_batching=False,
+            model_method="cnn",
+            prior="Bern",
+            dim_inject_y=0,
+            pre_tr_weight_path=None,
+            feat_extract="vae",
+            graph_method="heat",
+        ):
 
             super(ModelSDCN, self).__init__()
             self.zd_dim = zd_dim
@@ -34,10 +52,7 @@ def mk_sdcn(parent_class=AModelCluster):
             self.pre_tr_weight_path = pre_tr_weight_path
             self.feat_extract = feat_extract
             self.task = task
-            self.model = 'sdcn'
-
-
-
+            self.model = "sdcn"
 
             # if self.args.dim_inject_y:
             #     self.dim_inject_y = self.args.dim_inject_y
@@ -156,7 +171,6 @@ def mk_sdcn(parent_class=AModelCluster):
 
             return preds_c, probs_c, z, logits
 
-
         def infer_d_v_2(self, x):
             """
             Used for tensorboard visualizations only.
@@ -180,7 +194,7 @@ def mk_sdcn(parent_class=AModelCluster):
             weight = q**2 / q.sum(0)
             return (weight.t() / weight.sum(1)).t()
 
-        def _cal_kl_loss(self, x,inject_tensor=None, warmup_beta=None):
+        def _cal_kl_loss(self, x, inject_tensor=None, warmup_beta=None):
             """
             Compute the loss of the model.
             Concentrate two different objectives, i.e. clustering objective and classification objective, in one loss function.
@@ -233,15 +247,13 @@ def mk_sdcn(parent_class=AModelCluster):
             :param epoch:
             :param fun_scheduler: the hyperparameter scheduler object
             """
-            dict_rst = fun_scheduler(
-                epoch
-            )  # the __call__ method of hy
+            dict_rst = fun_scheduler(epoch)  # the __call__ method of hy
             # perparameter scheduler
             self.alpha = dict_rst["alpha"]
 
-
-
     return ModelSDCN
+
+
 # def test_fun(d_dim, zd_dim, device):
 #     device = torch.device("cpu")
 #     model = ModelVaDE(d_dim=d_dim, zd_dim=zd_dim, device=device)

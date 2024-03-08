@@ -13,12 +13,11 @@ from domid.utils.storing import Storing
 
 
 class TrainerSDCN(AbstractTrainer):
-
     def init_business(self, model, task, observer, device, aconf, flag_accept=True):
         """
         model, task, observer, device, aconf
         """
-    #def init_business(self, model, task, observer, device, writer, pretrain=True, aconf=None):
+        # def init_business(self, model, task, observer, device, writer, pretrain=True, aconf=None):
         # """
         # :param model: model to train
         # :param task: task to train on
@@ -29,12 +28,12 @@ class TrainerSDCN(AbstractTrainer):
         # :param aconf: configuration parameters, including learning rate and pretrain threshold
         # """
 
-        #super().__init__()
+        # super().__init__()
         super().init_business(model, task, observer, device, aconf)
 
         # breakpoint()
         # print(model)
-        if aconf.pre_tr >0:
+        if aconf.pre_tr > 0:
             self.pretrain = True
         else:
             self.pretrain = False
@@ -189,7 +188,7 @@ class TrainerSDCN(AbstractTrainer):
             if self.args.random_batching:
                 if len(other_vars) > 0:
                     inject_tensor, img_id_val = other_vars
-            
+
                 patches_idx = self.model.random_ind[i]  # torch.randint(0, len(vec_y), (int(self.args.bs/3),))
                 tensor_x_val = tensor_x_val[patches_idx, :, :, :]
                 vec_y_val = vec_y_val[patches_idx, :]

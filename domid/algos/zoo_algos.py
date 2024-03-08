@@ -7,15 +7,13 @@ from domainlab.algos.builder_diva import NodeAlgoBuilderDIVA
 from domainlab.algos.builder_erm import NodeAlgoBuilderERM
 from domainlab.algos.builder_hduva import NodeAlgoBuilderHDUVA
 from domainlab.algos.builder_jigen1 import NodeAlgoBuilderJiGen
-
 from domainlab.utils.u_import import import_path
 
-from domid.algos.builder_sdcn import NodeAlgoBuilderSDCN
-from domid.algos.builder_dec import NodeAlgoBuilderDEC
-from domid.algos.builder_vade import NodeAlgoBuilderVaDE
 from domid.algos.builder_ae import NodeAlgoBuilderAE
+from domid.algos.builder_dec import NodeAlgoBuilderDEC
 from domid.algos.builder_m2yd import NodeAlgoBuilderM2YD
-
+from domid.algos.builder_sdcn import NodeAlgoBuilderSDCN
+from domid.algos.builder_vade import NodeAlgoBuilderVaDE
 
 
 class AlgoBuilderChainNodeGetter:

@@ -1,24 +1,21 @@
 from domainlab.algos.a_algo_builder import NodeAlgoBuilder
-#from domainlab.algos.msels.c_msel import MSelTrLoss
+
+# from domainlab.algos.msels.c_msel import MSelTrLoss
 # from domainlab.algos.msels.c_msel_oracle import MSelOracleVisitor
 from domainlab.algos.msels.c_msel_oracle import MSelOracleVisitor
 from domainlab.algos.msels.c_msel_val import MSelValPerf
 from domainlab.algos.observers.c_obvisitor_cleanup import ObVisitorCleanUp
 from domainlab.algos.trainers.train_basic import TrainerBasic
 from domainlab.utils.utils_cuda import get_device
-
-from domid.algos.observers.b_obvisitor_clustering import ObVisitorClustering
-from domid.models.model_m2yd import mk_m2yd
-from domainlab.algos.observers.c_obvisitor_cleanup import ObVisitorCleanUp
-from domainlab.utils.utils_cuda import get_device
 from tensorboardX import SummaryWriter
 
-
+from domid.algos.observers.b_obvisitor_clustering import ObVisitorClustering
 from domid.algos.observers.b_obvisitor_clustering_only import ObVisitorClusteringOnly
+from domid.models.model_m2yd import mk_m2yd
 from domid.models.model_sdcn import mk_sdcn
-#from domid.trainers.trainer_sdcn import TrainerCluster
-from domid.trainers.zoo_trainer import TrainerChainNodeGetter
 
+# from domid.trainers.trainer_sdcn import TrainerCluster
+from domid.trainers.zoo_trainer import TrainerChainNodeGetter
 
 
 class NodeAlgoBuilderM2YD(NodeAlgoBuilder):
@@ -41,7 +38,8 @@ class NodeAlgoBuilderM2YD(NodeAlgoBuilder):
         )
 
         observer = ObVisitorCleanUp(
-            ObVisitorClusteringOnly(exp, MSelOracleVisitor(MSelValPerf(max_es=args.es)), device))
+            ObVisitorClusteringOnly(exp, MSelOracleVisitor(MSelValPerf(max_es=args.es)), device)
+        )
 
         trainer = TrainerChainNodeGetter(args.trainer)()
         trainer.init_business(model, task, observer, device, args)

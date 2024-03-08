@@ -12,12 +12,27 @@ from tensorboardX import SummaryWriter
 from domid.compos.cnn_AE import ConvolutionalDecoder, ConvolutionalEncoder
 from domid.compos.linear_AE import LinearDecoderAE, LinearEncoderAE
 from domid.models.a_model_cluster import AModelCluster
-from domid.models.a_model_cluster import AModelCluster
-def mk_ae(parent_class=AModelCluster):
 
+
+def mk_ae(parent_class=AModelCluster):
     class ModelAE(parent_class):
-        def __init__(self, zd_dim, d_dim, device, i_c, i_h, i_w, bs, L=5, random_batching=False, model_method='cnn',
-                     prior='Bern',dim_inject_y = 0,pre_tr_weight_path =None, feat_extract = "vae"):
+        def __init__(
+            self,
+            zd_dim,
+            d_dim,
+            device,
+            i_c,
+            i_h,
+            i_w,
+            bs,
+            L=5,
+            random_batching=False,
+            model_method="cnn",
+            prior="Bern",
+            dim_inject_y=0,
+            pre_tr_weight_path=None,
+            feat_extract="vae",
+        ):
 
             super(ModelAE, self).__init__()
             self.zd_dim = zd_dim
@@ -35,7 +50,7 @@ def mk_ae(parent_class=AModelCluster):
             self.feat_extract = feat_extract
             self.random_batching = random_batching
             self.pre_tr_weight_path = pre_tr_weight_path
-            self.model = 'ae'
+            self.model = "ae"
 
             n_z = zd_dim
             n_input = i_c * i_h * i_w
@@ -109,8 +124,6 @@ def mk_ae(parent_class=AModelCluster):
 
             return preds_c, probs_c, z, z_mu, z_sigma2_log, z_mu, z_sigma2_log, pi, logits
 
-
-
         def infer_d_v_2(self, x, inject_domain):
             """
             Used for tensorboard visualizations only.
@@ -129,8 +142,6 @@ def mk_ae(parent_class=AModelCluster):
         def _cal_loss(self, x, inject_domain, warmup_beta=None):
             loss = self._cal_pretrain_loss(x, inject_domain)
             return loss
-
-
 
     return ModelAE
 

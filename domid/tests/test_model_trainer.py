@@ -1,15 +1,17 @@
 import os
-import pytest
 import shutil
+
+import pytest
 
 from domid.algos.builder_vade import NodeAlgoBuilderVaDE
 from domid.algos.observers.b_obvisitor_clustering_only import ObVisitorClusteringOnly
 from domid.arg_parser import mk_parser_main
 from domid.compos.exp.exp_main import Exp
-#from domid.models.model_vade import ModelVaDE
+
+# from domid.models.model_vade import ModelVaDE
 from domid.tasks.task_mnist import NodeTaskMNIST
-from domid.trainers.trainer_cluster import TrainerCluster
 from domid.tests.utils import experiment_train
+from domid.trainers.trainer_cluster import TrainerCluster
 
 
 def train_MNISTcolor_AE(out_dir):
@@ -54,8 +56,7 @@ def train_MNISTcolor_AE(out_dir):
             "--trainer",
             "ae",
             "--feat_extract",
-            "ae"
-
+            "ae",
         ]
     )
     experiment_train(args, save_path=out_dir)
@@ -69,6 +70,7 @@ def ae_weights(tmp_path_factory):
     # often ae_weights() is used in the tests below.
     train_MNISTcolor_AE(ae_weights_dir)
     return ae_weights_dir
+
 
 def test_MNIST_pretrain(tmp_path):
     # MNIST vade linear test for pretaining
@@ -108,7 +110,7 @@ def test_MNIST_pretrain(tmp_path):
             "--pre_tr",
             "1",
             "--trainer",
-            "cluster"
+            "cluster",
         ]
     )
     experiment_train(args, save_path=tmp_path)
@@ -152,7 +154,7 @@ def test_MNIST_train(tmp_path):
             "--pre_tr",
             "0",
             "--trainer",
-            "cluster"
+            "cluster",
         ]
     )
     experiment_train(args, save_path=tmp_path)
@@ -196,7 +198,7 @@ def test_MNIST_train_CNN(tmp_path):
             "--pre_tr",
             "0",
             "--trainer",
-            "cluster"
+            "cluster",
         ]
     )
     experiment_train(args, save_path=tmp_path)
@@ -240,7 +242,7 @@ def test_MNISTcolor_train(tmp_path):
             "--pre_tr",
             "0",
             "--trainer",
-            "cluster"
+            "cluster",
         ]
     )
 
@@ -286,7 +288,7 @@ def test_MNISTcolor_train_CNN(tmp_path):
             "--pre_tr",
             "0",
             "--trainer",
-            "cluster"
+            "cluster",
         ]
     )
     experiment_train(args, save_path=tmp_path)
@@ -330,7 +332,7 @@ def test_MNISTcolor_pretrain_CNN(tmp_path):
             "--pre_tr",
             "1",
             "--trainer",
-            "cluster"
+            "cluster",
         ]
     )
     experiment_train(args, save_path=tmp_path)
@@ -369,7 +371,7 @@ def test_M2YD_train_MNISTcolor():
             "--gamma_y",
             "3500",
             "--trainer",
-            "basic"
+            "basic",
         ]
     )
     experiment_train(args)
@@ -416,7 +418,7 @@ def test_MNIST_conditionalOne_train(tmp_path):
             "--inject_var",
             "digit",
             "--trainer",
-            "cluster"
+            "cluster",
         ]
     )
     experiment_train(args, save_path=tmp_path)
@@ -471,7 +473,7 @@ def test_MNISTcolor_SDCN(tmp_path, ae_weights):
             "--trainer",
             "sdcn",
             "--feat_extract",
-            "ae"
+            "ae",
         ]
     )
     experiment_train(args, save_path=tmp_path)

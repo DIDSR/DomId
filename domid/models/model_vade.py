@@ -11,10 +11,26 @@ from domid.compos.cnn_VAE import ConvolutionalDecoder, ConvolutionalEncoder
 from domid.compos.linear_VAE import LinearDecoder, LinearEncoder
 from domid.models.a_model_cluster import AModelCluster
 
+
 def mk_vade(parent_class=AModelCluster):
     class ModelVaDE(parent_class):
-        def __init__(self, zd_dim, d_dim, device, i_c, i_h, i_w,bs,L=5, random_batching=False, model_method='cnn',
-                     prior='Bern',dim_inject_y = 0,pre_tr_weight_path =None, feat_extract = "vae"):
+        def __init__(
+            self,
+            zd_dim,
+            d_dim,
+            device,
+            i_c,
+            i_h,
+            i_w,
+            bs,
+            L=5,
+            random_batching=False,
+            model_method="cnn",
+            prior="Bern",
+            dim_inject_y=0,
+            pre_tr_weight_path=None,
+            feat_extract="vae",
+        ):
             """
             VaDE model (Jiang et al. 2017 "Variational Deep Embedding:
             An Unsupervised and Generative Approach to Clustering") with
@@ -38,28 +54,25 @@ def mk_vade(parent_class=AModelCluster):
             self.prior = prior
             self.dim_inject_y = dim_inject_y
             self.model_method = model_method
-            self.model = 'vade'
+            self.model = "vade"
             self.random_batching = random_batching
             self.bs = bs
             self.pre_tr_weight_path = pre_tr_weight_path
             self.feat_extract = feat_extract
 
-
-
             # if self.args.dim_inject_y:
             #     self.dim_inject_y = self.args.dim_inject_y
-
 
             # self.dim_inject_domain = 0
 
             # if self.args.path_to_domain:    # FIXME: one can simply read from the file to find out the injected dimension
             #     self.dim_inject_domain = args.d_dim   # FIXME: allow arbitrary domain vector to be injected
 
-           #if self.args.model_method == "linear":
+            # if self.args.model_method == "linear":
             if self.model_method == "linear":
                 self.encoder = LinearEncoder(zd_dim=zd_dim, input_dim=(i_c, i_h, i_w)).to(device)
                 self.decoder = LinearDecoder(prior=prior, zd_dim=zd_dim, input_dim=(i_c, i_h, i_w)).to(device)
-                if self.dim_inject_y>0:
+                if self.dim_inject_y > 0:
                     warnings.warn("linear model decoder does not support label injection")
             else:
                 self.encoder = ConvolutionalEncoder(zd_dim=zd_dim, num_channels=i_c, i_w=i_w, i_h=i_h).to(device)
@@ -84,7 +97,7 @@ def mk_vade(parent_class=AModelCluster):
             self.mu_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
             self.log_sigma2_c = nn.Parameter(torch.FloatTensor(self.d_dim, self.zd_dim).fill_(0), requires_grad=True)
 
-            #self.loss_writter = SummaryWriter()
+            # self.loss_writter = SummaryWriter()
 
         def _inference(self, x):
             """Auxiliary function for inference
@@ -124,7 +137,6 @@ def mk_vade(parent_class=AModelCluster):
 
             return preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits
 
-
         def infer_d_v_2(self, x, inject_domain):
             """
             Used for tensorboard visualizations only.
@@ -149,8 +161,6 @@ def mk_vade(parent_class=AModelCluster):
 
             return self._cal_ELBO_loss(x, inject_domain, warmup_beta)
 
-
-
         def _cal_reconstruction_loss(self, x, inject_tensor=[]):
             z_mu = self.encoder.get_z(x)
             z_sigma2_log = self.encoder.get_log_sigma2(x)
@@ -159,7 +169,6 @@ def mk_vade(parent_class=AModelCluster):
                 zy = torch.cat((z, inject_tensor), 1)
             else:
                 zy = z
-
 
             x_pro, *_ = self.decoder(zy)
 
@@ -172,6 +181,7 @@ def mk_vade(parent_class=AModelCluster):
                 L_rec = torch.mean(torch.sum(torch.sum(torch.sum(0.5 * (x - x_pro) ** 2, 2), 2), 1), 0) / sigma**2
 
             return L_rec
+
         def _cal_reconstruction_loss_helper(self, x, x_pro, log_sigma):
 
             if self.prior == "Bern":
@@ -203,7 +213,7 @@ def mk_vade(parent_class=AModelCluster):
                 else:
                     zy = z
                 x_pro, log_sigma = self.decoder(zy)  # x_pro, mu, sigma
-                L_rec += self._cal_reconstruction_loss_helper(x, x_pro, log_sigma) #FIXME
+                L_rec += self._cal_reconstruction_loss_helper(x, x_pro, log_sigma)  # FIXME
 
             L_rec /= self.L
             Loss = L_rec * x.size(1)
@@ -267,6 +277,8 @@ def mk_vade(parent_class=AModelCluster):
             )
 
     return ModelVaDE
+
+
 def test_fun(d_dim, zd_dim, device):
     device = torch.device("cpu")
     model = ModelVaDE(d_dim=d_dim, zd_dim=zd_dim, device=device)

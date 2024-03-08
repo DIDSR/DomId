@@ -22,7 +22,7 @@ class PretrainingSDCN:
         self.args = args
 
     def pretrain_loss(self, tensor_x):
-         return self.model._cal_pretrain_loss(tensor_x)
+        return self.model._cal_pretrain_loss(tensor_x)
 
     def kmeans_cluster_assignement(self):
         num_img = len(self.loader_tr.dataset)
@@ -44,7 +44,7 @@ class PretrainingSDCN:
                         inject_tensor, image_id = other_vars
                         if len(inject_tensor) > 0:
                             inject_tensor = inject_tensor.to(self.device)
-                            
+
                     # note that for other tasks the graph is calculated once and the same graph is used for all the epochs; see domid/trainers/trainer_sdcn.py
                     patches_idx = self.model.random_ind[i]  # torch.randint(0, len(vec_y), (int(self.args.bs/3),))
                     tensor_x = tensor_x[patches_idx, :, :, :]

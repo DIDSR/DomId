@@ -2,8 +2,9 @@ import datetime
 
 from domainlab.algos.zoo_algos import AlgoBuilderChainNodeGetter
 from domainlab.exp.exp_utils import AggWriter
-from domid.tasks.zoo_tasks import TaskChainNodeGetter
+
 from domid.algos.zoo_algos import AlgoBuilderChainNodeGetter
+from domid.tasks.zoo_tasks import TaskChainNodeGetter
 
 
 class Exp:
@@ -11,27 +12,23 @@ class Exp:
     Exp is combination of Task, Algorithm, and Configuration (including random seed)
     """
 
-    #def __init__(self, args, task=None):
+    # def __init__(self, args, task=None):
     def __init__(self, args, task=None, model=None, observer=None, visitor=AggWriter):
         """
         :param args:
         :param task:
         """
         self.task = task
-        #if task is None: #FIXME Mariia doesn't understand why it is deafult for task to be None (potentially zoo_task needs to be changed)
+        # if task is None: #FIXME Mariia doesn't understand why it is deafult for task to be None (potentially zoo_task needs to be changed)
         self.task = TaskChainNodeGetter(args)()
-        self.task.init_business(args) #FIXME related to the above (might be able to be removed)
+        self.task.init_business(args)  # FIXME related to the above (might be able to be removed)
 
         self.args = args
 
-        algo_builder = AlgoBuilderChainNodeGetter(
-            self.args.model, self.args.apath
-        )()
-        #self.visitor = AggWriter(self)
-        #algo_builder = AlgoBuilderChainNodeGetter(self.args)()  # request
-        self.trainer, self.model, observer_default, device = algo_builder.init_business(
-            self
-        )  # request
+        algo_builder = AlgoBuilderChainNodeGetter(self.args.model, self.args.apath)()
+        # self.visitor = AggWriter(self)
+        # algo_builder = AlgoBuilderChainNodeGetter(self.args)()  # request
+        self.trainer, self.model, observer_default, device = algo_builder.init_business(self)  # request
 
         self.epochs = self.args.epos
         self.epoch_counter = 1

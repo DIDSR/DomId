@@ -9,9 +9,8 @@ from domid.utils.perf_cluster import PerfCluster
 from domid.utils.storing import Storing
 
 
-
 class TrainerAE(AbstractTrainer):
-    #def __init__(self, model, task, observer, device, writer, pretrain=True, aconf=None):
+    # def __init__(self, model, task, observer, device, writer, pretrain=True, aconf=None):
     def init_business(self, model, task, observer, device, aconf, flag_accept=True):
         """
         :param model: model to train
@@ -142,7 +141,7 @@ class TrainerAE(AbstractTrainer):
                 loss_val = pretrain.pretrain_loss(tensor_x_val, inject_tensor_val)
             else:
                 loss_val = self.model.cal_loss(tensor_x_val, inject_tensor_val, self.warmup_beta)
-        if self.writer!=None:
+        if self.writer != None:
             tensorboard_write(
                 self.writer,
                 self.model,
@@ -154,7 +153,7 @@ class TrainerAE(AbstractTrainer):
                 self.pretraining_finished,
                 tensor_x,
                 inject_tensor,
-        )
+            )
 
         # _____storing results and Z space__________
         self.storage.storing(

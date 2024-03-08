@@ -157,8 +157,8 @@ class GraphConstructor:
             sparse_mx = self.sparse_mx_to_torch_sparse_tensor(adj_mat)
             sparse_matrices.append(sparse_mx)
             if experiment_folder is not None:
-                connect_path = (
-                    os.path.join("notebooks", experiment_folder, "connection_pairs_" + str(i) + ".pkl")
+                connect_path = os.path.join(
+                    "notebooks", experiment_folder, "connection_pairs_" + str(i) + ".pkl"
                 )  # FIXME move to zout
                 feat_path = os.path.join("notebooks", experiment_folder, "features_" + str(i) + ".pkl")
                 label_path = os.path.join("notebooks", experiment_folder, "labels_" + str(i) + ".pkl")

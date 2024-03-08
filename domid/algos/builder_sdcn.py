@@ -1,24 +1,25 @@
 import datetime
 
 from domainlab.algos.a_algo_builder import NodeAlgoBuilder
+
 # from domainlab.algos.msels.c_msel import MSelTrLoss
 # from domainlab.algos.msels.c_msel_oracle import MSelOracleVisitor
 from domainlab.algos.msels.c_msel_oracle import MSelOracleVisitor
 from domainlab.algos.msels.c_msel_val import MSelValPerf
-#from domainlab.algos.trainers.zoo_trainer import TrainerChainNodeGetter
+
+# from domainlab.algos.trainers.zoo_trainer import TrainerChainNodeGetter
 from domainlab.algos.observers.c_obvisitor_cleanup import ObVisitorCleanUp
 from domainlab.utils.utils_cuda import get_device
 from tensorboardX import SummaryWriter
 
-
 from domid.algos.observers.b_obvisitor_clustering_only import ObVisitorClusteringOnly
 from domid.models.model_sdcn import mk_sdcn
-#from domid.trainers.trainer_sdcn import TrainerCluster
+
+# from domid.trainers.trainer_sdcn import TrainerCluster
 from domid.trainers.zoo_trainer import TrainerChainNodeGetter
 
 
 class NodeAlgoBuilderSDCN(NodeAlgoBuilder):
-
     def init_business(self, exp):
         """
         Initialize model, observer, trainer. Return trainer.
@@ -39,16 +40,17 @@ class NodeAlgoBuilderSDCN(NodeAlgoBuilder):
             i_h=task.isize.h,
             i_w=task.isize.w,
             bs=args.bs,
-            task = args.task,
+            task=args.task,
             prior=args.prior,
             random_batching=args.random_batching,
             model_method=args.model_method,
             pre_tr_weight_path=args.pre_tr_weight_path,
-            feat_extract=args.feat_extract
+            feat_extract=args.feat_extract,
         )
 
-
-        observer = ObVisitorCleanUp(ObVisitorClusteringOnly(exp, MSelOracleVisitor(MSelValPerf(max_es=args.es)), device))
+        observer = ObVisitorCleanUp(
+            ObVisitorClusteringOnly(exp, MSelOracleVisitor(MSelValPerf(max_es=args.es)), device)
+        )
         trainer = TrainerChainNodeGetter(args.trainer)()
         trainer.init_business(model, task, observer, device, args)
 

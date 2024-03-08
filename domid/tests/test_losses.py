@@ -44,7 +44,7 @@ def test_VADE_CNN_nonbinary(tmp_path):
             "--pre_tr",
             "0",
             "--trainer",
-            'cluster'
+            "cluster",
         ]
     )
     experiment_train(args, save_path=tmp_path)
@@ -87,7 +87,7 @@ def test_VADE_CNN(tmp_path):
             "--pre_tr",
             "0",
             "--trainer",
-            'cluster'
+            "cluster",
         ]
     )
     experiment_train(args, save_path=tmp_path)
@@ -130,7 +130,7 @@ def test_VADE_nonbinary(tmp_path):
             "--pre_tr",
             "0",
             "--trainer",
-            'cluster'
+            "cluster",
         ]
     )
     experiment_train(args, save_path=tmp_path)
@@ -171,7 +171,7 @@ def test_VADE(tmp_path):
             "--pre_tr",
             "0",
             "--trainer",
-            'cluster'
+            "cluster",
         ]
     )
     experiment_train(args, save_path=tmp_path)

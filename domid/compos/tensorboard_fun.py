@@ -16,7 +16,7 @@ def tensorboard_write(
     inject_tensor=None,
     other_info=None,
 ):
-    if lr>2:
+    if lr > 2:
         writer.add_scalar("learning rate", lr, epoch)
         writer.add_scalar("warmup", warmup_beta, epoch)
         if not pretraining_finished:

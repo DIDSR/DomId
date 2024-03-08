@@ -7,10 +7,10 @@ from domainlab.algos.trainers.train_hyper_scheduler import TrainerHyperScheduler
 from domainlab.algos.trainers.train_matchdg import TrainerMatchDG
 from domainlab.algos.trainers.train_mldg import TrainerMLDG
 
+from domid.trainers.trainer_ae import TrainerAE
 from domid.trainers.trainer_cluster import TrainerCluster
 from domid.trainers.trainer_sdcn import TrainerSDCN
-from domid.trainers.trainer_cluster import TrainerCluster
-from domid.trainers.trainer_ae import TrainerAE
+
 
 class TrainerChainNodeGetter(object):
     """
@@ -43,15 +43,12 @@ class TrainerChainNodeGetter(object):
         if default is not None and self.request is None:
             self.request = default
         if lst_excludes is not None and self.request in lst_excludes:
-            raise RuntimeError(
-                f"desired {self.request} is not supported among {lst_excludes}"
-            )
+            raise RuntimeError(f"desired {self.request} is not supported among {lst_excludes}")
 
         chain = TrainerBasic(None)
         chain = TrainerSDCN(chain)
         chain = TrainerCluster(chain)
         chain = TrainerAE(chain)
-
 
         node = chain.handle(self.request)
         head = node

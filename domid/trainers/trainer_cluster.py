@@ -11,7 +11,7 @@ from domid.utils.storing import Storing
 
 
 class TrainerCluster(AbstractTrainer):
-    #def __init__(self, model, task, observer, device, writer, pretrain=True, aconf=None):
+    # def __init__(self, model, task, observer, device, writer, pretrain=True, aconf=None):
     def init_business(self, model, task, observer, device, aconf, flag_accept=True):
 
         """
@@ -24,7 +24,7 @@ class TrainerCluster(AbstractTrainer):
         :param aconf: configuration parameters, including learning rate and pretrain threshold
         """
 
-        #super().__init__()
+        # super().__init__()
         super().init_business(model, task, observer, device, aconf)
 
         if aconf.pre_tr > 0:

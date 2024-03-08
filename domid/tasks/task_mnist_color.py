@@ -17,7 +17,7 @@ class NodeTaskMNISTColor10(NodeTaskDictCluster):
     Use the deafult palette with 10 colors
     """
 
-    def init_business(self, args, trainer = None):
+    def init_business(self, args, trainer=None):
         """
         create a dictionary of datasets
         """

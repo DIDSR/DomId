@@ -8,11 +8,26 @@ from domainlab.utils.utils_classif import logit2preds_vpic
 from domid.compos.DEC_clustering_layer import DECClusteringLayer
 from domid.models.a_model_cluster import AModelCluster
 
-def mk_dec(parent_class=AModelCluster):
 
+def mk_dec(parent_class=AModelCluster):
     class ModelDEC(parent_class):
-        def __init__(self, zd_dim, d_dim, device, i_c, i_h, i_w,bs, L=5, random_batching=False, model_method='cnn',
-                     prior='Bern',dim_inject_y = 0,pre_tr_weight_path =None, feat_extract = "vae"):
+        def __init__(
+            self,
+            zd_dim,
+            d_dim,
+            device,
+            i_c,
+            i_h,
+            i_w,
+            bs,
+            L=5,
+            random_batching=False,
+            model_method="cnn",
+            prior="Bern",
+            dim_inject_y=0,
+            pre_tr_weight_path=None,
+            feat_extract="vae",
+        ):
             """
             DEC model (Xie et al. 2015 "Unsupervised Deep Embedding for Clustering Analysis") with
             fully connected encoder and decoder.
@@ -38,12 +53,11 @@ def mk_dec(parent_class=AModelCluster):
             self.warmup_beta = 0
             self.dim_inject_y = dim_inject_y
             self.model_method = model_method
-            self.prior =prior
+            self.prior = prior
             self.feat_extract = feat_extract
             self.random_batching = random_batching
             self.pre_tr_weight_path = pre_tr_weight_path
-            self.model = 'dec'
-
+            self.model = "dec"
 
             if self.feat_extract == "vae":
                 from domid.compos.cnn_VAE import ConvolutionalDecoder, ConvolutionalEncoder
@@ -121,7 +135,6 @@ def mk_dec(parent_class=AModelCluster):
 
             return preds_c, probs_c, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits
 
-
         def infer_d_v_2(self, x, inject_domain):
 
             results = self._inference(x)
@@ -133,8 +146,6 @@ def mk_dec(parent_class=AModelCluster):
             x_pro, *_ = self.decoder(zy)
             preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = (r.cpu().detach() for r in results)
             return preds, z_mu, z, log_sigma2_c, probs, x_pro
-
-
 
         def _cal_kl_loss(self, x, inject_tensor, warmup_beta=0.1):
             """
