@@ -67,10 +67,10 @@ def mk_ae(parent_class=AModelCluster):
                 ).to(device)
             if self.pre_tr_weight_path:
                 self.encoder.load_state_dict(
-                    torch.load(self.pre_tr_weight_path + "encoder.pt", map_location=self.device)
+                    torch.load(os.path.join(self.pre_tr_weight_path, "encoder.pt"), map_location=self.device)
                 )
                 self.decoder.load_state_dict(
-                    torch.load(self.pre_tr_weight_path + "decoder.pt", map_location=self.device)
+                    torch.load(os.path.join(self.pre_tr_weight_path, "decoder.pt"), map_location=self.device)
                 )
                 print("Pre-trained weights loaded")
 

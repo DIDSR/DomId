@@ -1,3 +1,5 @@
+import os
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -79,10 +81,10 @@ def mk_sdcn(parent_class=AModelCluster):
                 print("Filter sizes for GNN", n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3)
             if self.pre_tr_weight_path:
                 self.encoder.load_state_dict(
-                    torch.load(self.pre_tr_weight_path + "encoder.pt", map_location=self.device)
+                    torch.load(os.path.join(self.pre_tr_weight_path, "encoder.pt"), map_location=self.device)
                 )
                 self.decoder.load_state_dict(
-                    torch.load(self.pre_tr_weight_path + "decoder.pt", map_location=self.device)
+                    torch.load(os.path.join(self.pre_tr_weight_path, "decoder.pt"), map_location=self.device)
                 )
                 print("Pre-trained weights loaded")
             else:

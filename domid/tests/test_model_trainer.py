@@ -465,7 +465,7 @@ def test_MNISTcolor_SDCN(tmp_path, ae_weights):
             "--pre_tr",
             "1",
             "--pre_tr_weight_path",
-            str(ae_weights)+"/",
+            str(ae_weights),
             "--epos",
             "3",
             "--trainer",

@@ -24,8 +24,8 @@ class Storing:
 
         self.experiment_name = str(datetime.datetime.now()) + "_" + str(args.task) + "_" + str(args.model)
         self.last_epoch = args.epos
-        self.ex_path = "./notebooks/" + self.experiment_name
-        if not os.path.exists("./notebooks/" + self.experiment_name):
+        self.ex_path = os.path.join("./notebooks", self.experiment_name)
+        if not os.path.exists(os.path.join("./notebooks", self.experiment_name)):
             print("______Created directory to save result_________")
 
             os.mkdir(self.ex_path)
@@ -69,14 +69,14 @@ class Storing:
         pickle.dump(self.args, open(os.path.join(saving_dir, "commandline_arguments.p"), "wb"))
 
     def saving_model(self, model):
-        # path_dict ="./notebooks/"+self.experiment_name
+        # path_dict =os.path.join("./notebooks", self.experiment_name)
 
-        torch.save(model.encoder.state_dict(), self.ex_path + "/encoder.pt")
-        torch.save(model.decoder.state_dict(), self.ex_path + "/decoder.pt")
+        torch.save(model.encoder.state_dict(), os.path.join(self.ex_path, "encoder.pt"))
+        torch.save(model.decoder.state_dict(), os.path.join(self.ex_path, "decoder.pt"))
 
     def storing_z_space(self, Z, predictions, vec_y_labels, vec_d_labels, image_id_labels):
 
-        # exp_path =os.path.join("./notebooks/",self.experiment_name)
+        # exp_path =os.path.join("./notebooks",self.experiment_name)
         np.save(os.path.join(self.ex_path, "Z_space.npy"), Z)
         pickle.dump(Z, open(os.path.join(self.ex_path, "Z_space_picle.p"), "wb"))
 

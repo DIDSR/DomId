@@ -158,10 +158,10 @@ class GraphConstructor:
             sparse_matrices.append(sparse_mx)
             if experiment_folder is not None:
                 connect_path = (
-                    os.path.join("notebooks/", experiment_folder) + "/connection_pairs_" + str(i) + ".pkl"
+                    os.path.join("notebooks", experiment_folder, "connection_pairs_" + str(i) + ".pkl")
                 )  # FIXME move to zout
-                feat_path = os.path.join("notebooks/", experiment_folder) + "/features_" + str(i) + ".pkl"
-                label_path = os.path.join("notebooks/", experiment_folder) + "/labels_" + str(i) + ".pkl"
+                feat_path = os.path.join("notebooks", experiment_folder, "features_" + str(i) + ".pkl")
+                label_path = os.path.join("notebooks", experiment_folder, "labels_" + str(i) + ".pkl")
                 with open(connect_path, "wb") as file:
                     pickle.dump(connection_pairs, file)
 
