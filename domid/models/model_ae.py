@@ -139,7 +139,7 @@ def mk_ae(parent_class=AModelCluster):
 
             return preds, z_mu, z, log_sigma2_c, probs, x_pro
 
-        def _cal_loss(self, x, inject_domain, warmup_beta=None):
+        def cal_loss(self, x, inject_domain, warmup_beta=None):
             loss = self._cal_pretrain_loss(x, inject_domain)
             return loss
 

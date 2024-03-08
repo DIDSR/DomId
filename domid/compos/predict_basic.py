@@ -26,9 +26,12 @@ class Prediction:
         :return: image acquisition machine labels for the input images (when applicable/available)
         """
 
-        num_img = len(self.loader_tr.dataset)  # FIXME: this returns sample size + 1 for some reason
+        num_img = len(self.loader_tr.dataset)
+
+
         if self.model.random_batching:
-            num_img = int(self.model.bs / 3 * num_img)
+            bs = next(iter(self.loader_tr))[0].shape[0]
+            num_img = int(bs / 3 * num_img)
         z_proj = np.zeros((num_img, self.model.zd_dim))
         prob_proj = np.zeros((num_img, self.model.d_dim))
         input_imgs = np.zeros((num_img, 3, self.i_h, self.i_w))
@@ -83,7 +86,7 @@ class Prediction:
                 preds = preds.detach().cpu()
                 # domain_labels[counter : counter + z.shape[0], 0] = torch.argmax(preds, 1) + 1
                 predictions += (torch.argmax(preds, 1) + 1).tolist()
-                counter += z.shape[0]
+                counter += tensor_x.shape[0]
 
         return input_imgs, z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels
 

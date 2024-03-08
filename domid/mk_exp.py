@@ -21,6 +21,7 @@ def mk_exp(
     epos=10,
     inject_var=None,
     dim_inject=0,
+    pre_trained_weights_path = None
 ):
     """
     Creates a custom experiment. The user can specify the input parameters.
@@ -41,7 +42,7 @@ def mk_exp(
     str_arg = (
         f"--model={model} --trainer={trainer} --bs={batchsize} --task={task} "
         f"--prior={prior} --model_method={model_method} --feat_extract={feat_extract} "
-        f"--pre_tr={pre_tr} --epos={epos} --d_dim={len(train_domain.split(' '))} --inject_var={inject_var} --dim_inject_y={dim_inject}"
+        f"--pre_tr={pre_tr} --epos={epos} --d_dim={len(train_domain.split(' '))}"
     )
     if nocu:
         str_arg += " --nocu "
@@ -49,7 +50,11 @@ def mk_exp(
     str_arg += " --te_d " + test_domain
     if random_batching:
         str_arg += " --random_batching "
-
+    if inject_var is not None:
+        str_arg+=(f'--inject_var = {inject_var} - -dim_inject_y = {dim_inject}')
+    if pre_trained_weights_path is not None:
+        str_arg+=' --pre_tr_weight_path='+pre_trained_weights_path
+    print(str_arg)
     parser = mk_parser_main()
     conf = parser.parse_args(str_arg.split())
     print(conf)
