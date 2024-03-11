@@ -19,8 +19,10 @@ def mk_exp(
     feat_extract="vae",
     pre_tr=5,
     epos=10,
+    zd_dim=64,
     inject_var=None,
     dim_inject=0,
+    **kwargs
 ):
     """
     Creates a custom experiment. The user can specify the input parameters.
@@ -35,13 +37,14 @@ def mk_exp(
         - trainer: string,
         - test_domain: string,
         - batch size: int
+        - **kwargs: any additional parameters that can be processed by the arg_parser of DomId or DomainLab
 
     Returns: experiment
     """
     str_arg = (
         f"--model={model} --trainer={trainer} --bs={batchsize} --task={task} "
         f"--prior={prior} --model_method={model_method} --feat_extract={feat_extract} "
-        f"--pre_tr={pre_tr} --epos={epos} --d_dim={len(train_domain.split(' '))} --inject_var={inject_var} --dim_inject_y={dim_inject}"
+        f"--pre_tr={pre_tr} --epos={epos} --d_dim={len(train_domain.split(' '))} --zd_dim={zd_dim} --dim_inject_y={dim_inject}"
     )
     if nocu:
         str_arg += " --nocu "
@@ -49,6 +52,15 @@ def mk_exp(
     str_arg += " --te_d " + test_domain
     if random_batching:
         str_arg += " --random_batching "
+    if inject_var:
+        str_arg += " --inject_var " + inject_var
+
+    # Iterating over the Python kwargs dictionary
+    for key, value in kwargs.items():
+        if type(value) == bool:
+            str_arg += f" --{key}"
+        else:
+            str_arg += f" --{key}={value} "
 
     parser = mk_parser_main()
     conf = parser.parse_args(str_arg.split())
