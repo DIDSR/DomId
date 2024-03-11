@@ -130,8 +130,8 @@ class TrainerSDCN(AbstractTrainer):
 
             else:
                 self.model.adj = self.spar_mx[i]  # .to(self.device)
-
-            print("i_" + str(i), vec_y.argmax(dim=1).unique(), vec_d.argmax(dim=1).unique())
+            if i<3:
+                print("i_" + str(i), vec_y.argmax(dim=1).unique(), vec_d.argmax(dim=1).unique())
 
             tensor_x, vec_y, vec_d = (
                 tensor_x.to(self.device),
