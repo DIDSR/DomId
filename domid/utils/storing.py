@@ -37,7 +37,6 @@ class Storing:
 
     def storing(self, epoch, acc_tr_y, acc_tr_d, loss_tr, acc_val_y, acc_val_d, loss_val, r_score_tr, r_score_te):
 
-        # arguments = [str(args.aname), str(args.model), str(args.prior), str(args.zd_dim), str(args.te_d), str(args.tr_d), str(args.L), str(args.lr), str(args.bs), str(args.pre_tr), str(args.warmup)]
         self.loss.append(loss_tr)
         self.val_loss.append(loss_val)
 

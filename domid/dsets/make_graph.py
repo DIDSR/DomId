@@ -1,21 +1,14 @@
 import os
 import pickle
 
-import matplotlib.pyplot as plt
-import networkx as nx
 import numpy as np
-import pandas as pd
 import scipy.sparse as sp
 import torch
 from sklearn.metrics import pairwise_distances as pair
-from sklearn.metrics.pairwise import cosine_similarity as cos
 from sklearn.preprocessing import normalize
-from torch.utils.data import Dataset
-from torchvision import datasets, transforms
 
 
 class GraphConstructor:
-
     """
     Class to construct graph from features. This is only used in training for SDCN model.
     """

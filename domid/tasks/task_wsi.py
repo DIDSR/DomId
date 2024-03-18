@@ -51,7 +51,6 @@ class NodeTaskWSI(NodeTaskDictCluster):
         # be evaluated in if statement, in which case, no validation
         # set will be created. Otherwise, this argument is
         # the split ratio
-        dpath = args.dpath  # png_files/32, 16))]  # , transforms.ToTensor()]
         ind_global = self.get_list_domains().index(na_domain)
         df = pd.read_csv(args.meta_data_csv)
         mask = df[df["subject"] == ind_global]
@@ -70,14 +69,3 @@ class NodeTaskWSI(NodeTaskDictCluster):
             train_set = dset
             val_set = dset
         return train_set, val_set
-
-
-def test_fun():
-    from domainlab.arg_parser import mk_parser_main
-
-    parser = mk_parser_main()
-    args = parser.parse_args(["--te_d", "0", "--dpath", "zout", "--split", "0.2"])
-    node = NodeTaskMNIST()
-    node.get_list_domains()
-    node.list_str_y
-    node.init_business(args)

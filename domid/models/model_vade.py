@@ -5,11 +5,13 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from domainlab.utils.utils_classif import logit2preds_vpic
-from tensorboardX import SummaryWriter
 
 from domid.compos.cnn_VAE import ConvolutionalDecoder, ConvolutionalEncoder
 from domid.compos.linear_VAE import LinearDecoder, LinearEncoder
 from domid.models.a_model_cluster import AModelCluster
+
+# from tensorboardX import SummaryWriter
+
 
 
 def mk_vade(parent_class=AModelCluster):
@@ -49,7 +51,6 @@ def mk_vade(parent_class=AModelCluster):
             self.d_dim = d_dim
             self.device = device
             self.L = L
-            # self.args = args
             self.loss_epoch = 0
             self.prior = prior
             self.dim_inject_y = dim_inject_y
@@ -79,8 +80,7 @@ def mk_vade(parent_class=AModelCluster):
                 self.decoder = ConvolutionalDecoder(
                     prior=prior,
                     zd_dim=zd_dim,  # 50
-                    domain_dim=self.dim_inject_y,  #
-                    # domain_dim=self.dim_inject_y,
+                    domain_dim=self.dim_inject_y,
                     h_dim=self.encoder.h_dim,
                     num_channels=i_c,
                 ).to(device)
@@ -117,15 +117,6 @@ def mk_vade(parent_class=AModelCluster):
             z_mu, z_sigma2_log = self.encoder(x)
             z = torch.randn_like(z_mu) * torch.exp(z_sigma2_log / 2) + z_mu
             pi = F.softmax(self.log_pi, dim=0)
-            # if torch.any(pi<0.01):
-            #     for i in range(len(pi)):
-            #         if pi[i]<0.01:
-            #
-            #             difference = (0.01-pi[i])/(self.d_dim)
-            #             pi+= difference
-            #             pi[i]=0.01
-            # pi[:i]+=difference
-            # pi[i+1:]+=difference
 
             mu_c = self.mu_c
             log_sigma2_c = self.log_sigma2_c
@@ -147,7 +138,6 @@ def mk_vade(parent_class=AModelCluster):
             else:
                 zy = results[2]
 
-            # print(results[2].shape, inject_domain.shape, zy.shape)
             x_pro, *_ = self.decoder(zy)
             preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = (r.cpu().detach() for r in results)
             return preds, z_mu, z, log_sigma2_c, probs, x_pro

@@ -1,6 +1,5 @@
 import datetime
 
-from domainlab.algos.zoo_algos import AlgoBuilderChainNodeGetter
 from domainlab.exp.exp_utils import AggWriter
 
 from domid.algos.zoo_algos import AlgoBuilderChainNodeGetter
@@ -12,7 +11,6 @@ class Exp:
     Exp is combination of Task, Algorithm, and Configuration (including random seed)
     """
 
-    # def __init__(self, args, task=None):
     def __init__(self, args, task=None, model=None, observer=None, visitor=AggWriter):
         """
         :param args:

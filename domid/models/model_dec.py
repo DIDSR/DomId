@@ -2,7 +2,6 @@ import os
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 from domainlab.utils.utils_classif import logit2preds_vpic
 
 from domid.compos.DEC_clustering_layer import DECClusteringLayer
@@ -68,8 +67,7 @@ def mk_dec(parent_class=AModelCluster):
             self.decoder = ConvolutionalDecoder(
                 prior=prior,
                 zd_dim=zd_dim,  # 50
-                domain_dim=self.dim_inject_y,  #
-                # domain_dim=self.dim_inject_y,
+                domain_dim=self.dim_inject_y,
                 h_dim=self.encoder.h_dim,
                 num_channels=i_c,
             ).to(device)

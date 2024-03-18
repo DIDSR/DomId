@@ -28,7 +28,6 @@ class Prediction:
 
         num_img = len(self.loader_tr.dataset)
 
-
         if self.model.random_batching:
             bs = next(iter(self.loader_tr))[0].shape[0]
             num_img = int(bs / 3 * num_img)

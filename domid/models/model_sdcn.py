@@ -252,19 +252,3 @@ def mk_sdcn(parent_class=AModelCluster):
             self.alpha = dict_rst["alpha"]
 
     return ModelSDCN
-
-
-# def test_fun(d_dim, zd_dim, device):
-#     device = torch.device("cpu")
-#     model = ModelVaDE(d_dim=d_dim, zd_dim=zd_dim, device=device)
-#     x = torch.rand(2, 3, 28, 28)
-#     import numpy as np
-#
-#     a = np.zeros((2, 10))
-#     a = np.double(a)
-#     a[0, 1] = 1.0
-#     a[1, 8] = 1.0
-#     a
-#     y = torch.tensor(a, dtype=torch.float)
-#     model(x, y)
-#     model.cal_loss(x)

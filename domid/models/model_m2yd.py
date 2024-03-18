@@ -1,6 +1,5 @@
 import torch
 import torch.distributions as dist
-import torch.nn as nn
 import torch.nn.functional as F
 from domainlab.compos.vae.compos.decoder_concat_vec_reshape_conv_gated_conv import (
     DecoderConcatLatentFCReshapeConvGatedConv,

@@ -15,7 +15,7 @@ def mk_exp(
     pre_tr=5,
     epos=10,
     nocu=True,
-    **kwargs
+    **kwargs,
 ):
     """
     Creates a custom experiment. The user can specify the input parameters.

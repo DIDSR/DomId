@@ -1,4 +1,3 @@
-import numpy as np
 import torch.nn as nn
 
 from domid.compos.VAE_blocks import UnFlatten, get_output_shape

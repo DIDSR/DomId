@@ -2,10 +2,7 @@
 select trainer
 """
 from domainlab.algos.trainers.train_basic import TrainerBasic
-from domainlab.algos.trainers.train_dial import TrainerDIAL
 from domainlab.algos.trainers.train_hyper_scheduler import TrainerHyperScheduler
-from domainlab.algos.trainers.train_matchdg import TrainerMatchDG
-from domainlab.algos.trainers.train_mldg import TrainerMLDG
 
 from domid.trainers.trainer_ae import TrainerAE
 from domid.trainers.trainer_cluster import TrainerCluster

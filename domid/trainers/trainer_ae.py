@@ -3,14 +3,12 @@ from domainlab.algos.trainers.a_trainer import AbstractTrainer
 
 from domid.compos.predict_basic import Prediction
 from domid.compos.tensorboard_fun import tensorboard_write
-from domid.dsets.make_graph import GraphConstructor
 from domid.trainers.pretraining_KMeans import Pretraining
 from domid.utils.perf_cluster import PerfCluster
 from domid.utils.storing import Storing
 
 
 class TrainerAE(AbstractTrainer):
-    # def __init__(self, model, task, observer, device, writer, pretrain=True, aconf=None):
     def init_business(self, model, task, observer, device, aconf, flag_accept=True):
         """
         :param model: model to train
@@ -47,8 +45,6 @@ class TrainerAE(AbstractTrainer):
         self.storage = Storing(self.args)
         self.loader_val = task.loader_tr
         self.aname = aconf.model
-
-        # self.model.adj = GraphConstructor().construct_graph(self.loader_tr).to(self.device)
 
     def tr_epoch(self, epoch):
         """

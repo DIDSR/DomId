@@ -1,13 +1,10 @@
 import os
-from datetime import datetime
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 from domainlab.dsets.utils_data import mk_fun_label2onehot
 from domainlab.utils.utils_classif import logit2preds_vpic
 from sklearn.cluster import KMeans
-from tensorboardX import SummaryWriter
 
 from domid.compos.cnn_AE import ConvolutionalDecoder, ConvolutionalEncoder
 from domid.compos.linear_AE import LinearDecoderAE, LinearEncoderAE
