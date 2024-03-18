@@ -20,19 +20,17 @@ def mk_exp(
     """
     Creates a custom experiment. The user can specify the input parameters.
 
-    Input Parameters:
-        - task: create a task to a custom dataset by importing "mk_task_dset" function from
-        "domainlab.tasks.task_dset". For more explanation on the input params refer to the
-        documentation found in "domainlab.tasks.task_dset.py".
-        - model: create a model [NameOfModel] by importing "mk_[NameOfModel]" function from
-        "domainlab.models.model_[NameOfModel]". For a concrete example and explanation of the input
-        params refer to the documentation found in "domainlab.models.model_[NameOfModel].py"
-        - trainer: string,
-        - test_domain: string,
-        - batch size: int
-        - **kwargs: any additional parameters that can be processed by the arg_parser of DomId or DomainLab
-
-    Returns: experiment
+    :param task: use a predefined task in DomId, or create a task to a custom dataset. For more explanation on the
+    input params refer to the documentation found in "domainlab.tasks.task_dset.py".
+    :param model: create a model [NameOfModel] by importing the appropriate "mk_[NameOfModel]". For a concrete example
+    and explanation of the input params refer to the documentation found in "domainlab.models.model_[NameOfModel].py"
+    :param string trainer: for instance, 'ae', 'cluster', 'sdcn'; see the available trainers under 'domid/trainers/'
+    and 'domainlab/trainers/' or define your own trainer.
+    :param string test_domain: enumerate which domains from the chosen 'task' to use for training (separated by spaces)
+    :param string test_domain: enumerate which domains from the chosen 'task' to use for testing (separated by spaces)
+    :param int batchsize: batch size to use for training
+    :param \**kwargs: any additional parameters that can be processed by the arg_parser of DomId or DomainLab
+    :return exp: the experiment object
     """
     str_arg = (
         f"--model={model} --trainer={trainer} --bs={batchsize} --task={task} "
