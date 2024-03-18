@@ -1,21 +1,14 @@
 import os
 import pickle
 
-import matplotlib.pyplot as plt
-import networkx as nx
 import numpy as np
-import pandas as pd
 import scipy.sparse as sp
 import torch
 from sklearn.metrics import pairwise_distances as pair
-from sklearn.metrics.pairwise import cosine_similarity as cos
 from sklearn.preprocessing import normalize
-from torch.utils.data import Dataset
-from torchvision import datasets, transforms
 
 
 class GraphConstructor:
-
     """
     Class to construct graph from features. This is only used in training for SDCN model.
     """
@@ -97,7 +90,6 @@ class GraphConstructor:
         """
 
         dist = self.distance_calc(features)
-
         connection_pairs = []
         inds = []
         for i in range(dist.shape[0]):
@@ -158,11 +150,11 @@ class GraphConstructor:
             sparse_mx = self.sparse_mx_to_torch_sparse_tensor(adj_mat)
             sparse_matrices.append(sparse_mx)
             if experiment_folder is not None:
-                connect_path = (
-                    os.path.join("notebooks/", experiment_folder) + "/connection_pairs_" + str(i) + ".pkl"
+                connect_path = os.path.join(
+                    "notebooks", experiment_folder, "connection_pairs_" + str(i) + ".pkl"
                 )  # FIXME move to zout
-                feat_path = os.path.join("notebooks/", experiment_folder) + "/features_" + str(i) + ".pkl"
-                label_path = os.path.join("notebooks/", experiment_folder) + "/labels_" + str(i) + ".pkl"
+                feat_path = os.path.join("notebooks", experiment_folder, "features_" + str(i) + ".pkl")
+                label_path = os.path.join("notebooks", experiment_folder, "labels_" + str(i) + ".pkl")
                 with open(connect_path, "wb") as file:
                     pickle.dump(connection_pairs, file)
 

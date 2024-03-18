@@ -1,15 +1,11 @@
+import pytest
+
 from domid.arg_parser import mk_parser_main
 from domid.compos.exp.exp_main import Exp
+from domid.tests.utils import experiment_train
 
 
-def experiment_train(args):
-    exp = Exp(args)
-    exp.trainer.before_tr()
-    exp.trainer.tr_epoch(0)
-    # exp.trainer.post_tr()
-
-
-def test_VADE_CNN_nonbinary():
+def test_VADE_CNN_nonbinary(tmp_path):
     parser = mk_parser_main()
     args = parser.parse_args(
         [
@@ -27,7 +23,7 @@ def test_VADE_CNN_nonbinary():
             "zout",
             "--task",
             "mnist",
-            "--aname",
+            "--model",
             "vade",
             "--apath",
             "domid/algos/builder_vade.py",
@@ -43,16 +39,18 @@ def test_VADE_CNN_nonbinary():
             "--nocu",
             "--prior",
             "Gaus",
-            "--model",
+            "--model_method",
             "cnn",
             "--pre_tr",
             "0",
+            "--trainer",
+            "cluster",
         ]
     )
-    experiment_train(args)
+    experiment_train(args, save_path=tmp_path)
 
 
-def test_VADE_CNN():
+def test_VADE_CNN(tmp_path):
     parser = mk_parser_main()
     args = parser.parse_args(
         [
@@ -70,7 +68,7 @@ def test_VADE_CNN():
             "zout",
             "--task",
             "mnist",
-            "--aname",
+            "--model",
             "vade",
             "--apath",
             "domid/algos/builder_vade.py",
@@ -84,16 +82,18 @@ def test_VADE_CNN():
             "5",
             "--debug",
             "--nocu",
-            "--model",
+            "--model_method",
             "cnn",
             "--pre_tr",
             "0",
+            "--trainer",
+            "cluster",
         ]
     )
-    experiment_train(args)
+    experiment_train(args, save_path=tmp_path)
 
 
-def test_VADE_nonbinary():
+def test_VADE_nonbinary(tmp_path):
     parser = mk_parser_main()
     args = parser.parse_args(
         [
@@ -111,7 +111,7 @@ def test_VADE_nonbinary():
             "zout",
             "--task",
             "mnist",
-            "--aname",
+            "--model",
             "vade",
             "--apath",
             "domid/algos/builder_vade.py",
@@ -129,12 +129,14 @@ def test_VADE_nonbinary():
             "Gaus",
             "--pre_tr",
             "0",
+            "--trainer",
+            "cluster",
         ]
     )
-    experiment_train(args)
+    experiment_train(args, save_path=tmp_path)
 
 
-def test_VADE():
+def test_VADE(tmp_path):
     parser = mk_parser_main()
     args = parser.parse_args(
         [
@@ -152,7 +154,7 @@ def test_VADE():
             "zout",
             "--task",
             "mnist",
-            "--aname",
+            "--model",
             "vade",
             "--apath",
             "domid/algos/builder_vade.py",
@@ -168,6 +170,8 @@ def test_VADE():
             "--nocu",
             "--pre_tr",
             "0",
+            "--trainer",
+            "cluster",
         ]
     )
-    experiment_train(args)
+    experiment_train(args, save_path=tmp_path)

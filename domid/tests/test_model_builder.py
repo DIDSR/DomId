@@ -2,8 +2,9 @@ import torch
 import torch.utils.data
 
 from domid.arg_parser import mk_parser_main
-from domid.models.model_m2yd import ModelXY2D
-from domid.models.model_vade import ModelVaDE
+
+# from domid.models.model_m2yd import ModelXY2D
+from domid.models.model_vade import mk_vade
 from domid.tasks.task_mnist import NodeTaskMNIST
 
 
@@ -57,12 +58,14 @@ def test_VaDE_CNN():
             "--prior",
             "Bern",
             "--model",
+            "vade",
+            "--model_method",
             "cnn",
         ]
     )
     i_c, i_w, i_h = 3, 32, 32
-
-    model = ModelVaDE(
+    # zd_dim, d_dim, device, L, i_c, i_h, i_w, args
+    model = mk_vade()(
         zd_dim=args.zd_dim,
         d_dim=args.d_dim,
         device=torch.device("cpu"),
@@ -70,8 +73,15 @@ def test_VaDE_CNN():
         i_c=i_c,
         i_w=i_w,
         i_h=i_h,
-        args=args,
+        bs=args.bs,
+        dim_inject_y=args.dim_inject_y,
+        prior=args.prior,
+        random_batching=args.random_batching,
+        model_method=args.model_method,
+        pre_tr_weight_path=args.pre_tr_weight_path,
+        feat_extract=args.feat_extract,
     )
+
     model_compiler(args, model)
 
 
@@ -91,10 +101,14 @@ def test_VaDE_linear():
             "0.8",
             "--L",
             "5",
+            "--model",
+            "vade",
+            "--model_method",
+            "linear",
         ]
     )
     i_c, i_w, i_h = 3, 32, 32
-    model = ModelVaDE(
+    model = mk_vade()(
         zd_dim=args.zd_dim,
         d_dim=args.d_dim,
         device=torch.device("cpu"),
@@ -102,7 +116,13 @@ def test_VaDE_linear():
         i_c=i_c,
         i_w=i_w,
         i_h=i_h,
-        args=args,
+        bs=args.bs,
+        dim_inject_y=args.dim_inject_y,
+        prior=args.prior,
+        random_batching=args.random_batching,
+        model_method=args.model_method,
+        pre_tr_weight_path=args.pre_tr_weight_path,
+        feat_extract=args.feat_extract,
     )
 
     model_compiler(args, model)
@@ -120,7 +140,7 @@ def test_m2yd():
             "4",
             "--task",
             "mnistcolor10",
-            "--aname",
+            "--model",
             "m2yd",
             "--d_dim",
             "2",
@@ -131,14 +151,14 @@ def test_m2yd():
         ]
     )
     y_dim = args.d_dim
-    model = ModelXY2D(
-        list_str_y=args.tr_d,
-        y_dim=y_dim,
-        zd_dim=args.zd_dim,
-        gamma_y=args.gamma_y,
-        device=torch.device("cpu"),
-        i_c=3,
-        i_h=32,
-        i_w=32,
-    )
-    model_compiler(args, model)
+    # model = ModelXY2D(
+    #     list_str_y=args.tr_d,
+    #     y_dim=y_dim,
+    #     zd_dim=args.zd_dim,
+    #     gamma_y=args.gamma_y,
+    #     device=torch.device("cpu"),
+    #     i_c=3,
+    #     i_h=32,
+    #     i_w=32,
+    # )
+    # model_compiler(args, model)

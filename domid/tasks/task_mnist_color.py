@@ -17,7 +17,7 @@ class NodeTaskMNISTColor10(NodeTaskDictCluster):
     Use the deafult palette with 10 colors
     """
 
-    def init_business(self, args):
+    def init_business(self, args, trainer=None):
         """
         create a dictionary of datasets
         """
@@ -28,7 +28,7 @@ class NodeTaskMNISTColor10(NodeTaskDictCluster):
             self.wanted_digits = list(range(10))
         self._dim_y = len(self.wanted_digits)
         # note the order of lines: dim_y has to be set before init_business is called
-        super().init_business(args)
+        super().init_business(args, trainer)
 
     @property
     def dim_y(self):

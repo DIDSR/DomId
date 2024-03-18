@@ -10,6 +10,7 @@ def mk_parser_main():
     """
     Args for command line definition
     """
+
     parser = arg_parser.mk_parser_main()
     parser.add_argument("--d_dim", type=int, default=7, help="number of domains (or clusters)")
     parser.add_argument("--pre_tr", type=int, default=25, help="number of pretraining epochs")
@@ -21,7 +22,7 @@ def mk_parser_main():
         help="specifies whether binary or continuous-valued input data. Input either 'Bern' for Bernoulli or 'Gaus' for Gaussian prior distribution for the data.",
     )
     parser.add_argument(
-        "--model",
+        "--model_method",
         type=str,
         default="linear",
         help="specify 'linear' for a fully-connected or 'cnn' for a convolutional model architecture",
@@ -59,7 +60,7 @@ def mk_parser_main():
     parser.add_argument("--feat_extract", type=str, default="vae", help="featue extractor method, either vae or ae")
     parser.add_argument(
         "--random_batching",
-        type=bool,
+        action="store_true",
         default=False,
         help="randomization of the samples inside one batch, only used in SDCN",
     )

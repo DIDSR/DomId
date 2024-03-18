@@ -24,6 +24,14 @@ class LinearEncoder(nn.Module):
         self.mu_layer = nn.Linear(features_dim[2], zd_dim)
         self.log_sigma2_layer = nn.Linear(features_dim[2], zd_dim)
 
+    def get_z(self, x):
+        mu, log_sigma2 = self.forward(x)
+        return mu
+
+    def get_log_sigma2(self, x):
+        mu, log_sigma2 = self.forward(x)
+        return log_sigma2
+
     def forward(self, x):
         """
         :param x: input data, assumed to have 3 channels

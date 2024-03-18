@@ -1,4 +1,3 @@
-import numpy as np
 import torch.nn as nn
 
 from domid.compos.VAE_blocks import UnFlatten, get_output_shape
@@ -29,6 +28,14 @@ class ConvolutionalEncoder(nn.Module):
         self.h_dim = get_output_shape(self.encod, (1, num_channels, i_w, i_h))[1]
         self.mu_layer = nn.Linear(self.h_dim, zd_dim)
         self.log_sigma2_layer = nn.Linear(self.h_dim, zd_dim)
+
+    def get_z(self, x):
+        mu, _ = self.forward(x)
+        return mu
+
+    def get_log_sigma2(self, x):
+        _, log_sigma2 = self.forward(x)
+        return log_sigma2
 
     def forward(self, x):
         """

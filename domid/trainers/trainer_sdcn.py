@@ -12,23 +12,32 @@ from domid.utils.perf_cluster import PerfCluster
 from domid.utils.storing import Storing
 
 
-class TrainerCluster(AbstractTrainer):
-    def __init__(self, model, task, observer, device, writer, pretrain=True, aconf=None):
+class TrainerSDCN(AbstractTrainer):
+    def init_business(self, model, task, observer, device, aconf, flag_accept=True):
         """
-        :param model: model to train
-        :param task: task to train on
-        :param observer: observer to notify
-        :param device: device to use
-        :param writer: tensorboard writer
-        :param pretrain: whether to pretrain the model with MSE loss
-        :param aconf: configuration parameters, including learning rate and pretrain threshold
+        model, task, observer, device, aconf
         """
+        # def init_business(self, model, task, observer, device, writer, pretrain=True, aconf=None):
+        # """
+        # :param model: model to train
+        # :param task: task to train on
+        # :param observer: observer to notify
+        # :param device: device to use
+        # :param writer: tensorboard writer
+        # :param pretrain: whether to pretrain the model with MSE loss
+        # :param aconf: configuration parameters, including learning rate and pretrain threshold
+        # """
 
-        super().__init__()
+        # super().__init__()
         super().init_business(model, task, observer, device, aconf)
 
-        print(model)
-        self.pretrain = pretrain
+        # breakpoint()
+        # print(model)
+        if aconf.pre_tr > 0:
+            self.pretrain = True
+        else:
+            self.pretrain = False
+
         self.pretraining_finished = not self.pretrain
         self.lr = aconf.lr
         self.warmup_beta = 0.1
@@ -39,13 +48,13 @@ class TrainerCluster(AbstractTrainer):
             self.optimizer = optim.Adam(self.model.parameters(), lr=self.lr)
 
         self.epo_loss_tr = None
-        self.writer = writer
+        self.writer = None
         self.thres = aconf.pre_tr  # number of epochs for pretraining
         self.i_h, self.i_w = task.isize.h, task.isize.w
         self.args = aconf
         self.storage = Storing(self.args)
         self.loader_val = task.loader_tr
-        self.aname = aconf.aname
+        self.aname = aconf.model
         self.graph_method = self.model.graph_method
 
         assert self.graph_method, "Graph calculation methos should be specified"
@@ -101,7 +110,10 @@ class TrainerCluster(AbstractTrainer):
 
         # _____________one training epoch: start_______________________
         for i, (tensor_x, vec_y, vec_d, *other_vars) in enumerate(self.loader_tr):
-
+            if len(other_vars) > 0:
+                inject_tensor, image_id = other_vars
+                if len(inject_tensor) > 0:
+                    inject_tensor = inject_tensor.to(self.device)
             if i == 0:
                 self.model.batch_zero = True
             if self.args.random_batching:
@@ -111,14 +123,15 @@ class TrainerCluster(AbstractTrainer):
                 vec_d = vec_d[patches_idx, :]
                 image_id = [image_id[patch_idx_num] for patch_idx_num in patches_idx]
 
-                self.model.adj = self.graph_constr.construct_graph(
-                    tensor_x, image_id, self.graph_method, self.storage.experiment_name
+                init_adj_mx, init_spar_mx = self.graph_constr.construct_graph(
+                    tensor_x, image_id, self.storage.experiment_name
                 )
+                self.model.adj = init_spar_mx
 
             else:
                 self.model.adj = self.spar_mx[i]  # .to(self.device)
-
-            print("i_" + str(i), vec_y.argmax(dim=1).unique(), vec_d.argmax(dim=1).unique())
+            if i < 3:
+                print("i_" + str(i), vec_y.argmax(dim=1).unique(), vec_d.argmax(dim=1).unique())
 
             tensor_x, vec_y, vec_d = (
                 tensor_x.to(self.device),
@@ -173,15 +186,19 @@ class TrainerCluster(AbstractTrainer):
         for i, (tensor_x_val, vec_y_val, vec_d_val, *other_vars) in enumerate(self.loader_val):
 
             if self.args.random_batching:
+                if len(other_vars) > 0:
+                    inject_tensor, img_id_val = other_vars
+
                 patches_idx = self.model.random_ind[i]  # torch.randint(0, len(vec_y), (int(self.args.bs/3),))
                 tensor_x_val = tensor_x_val[patches_idx, :, :, :]
                 vec_y_val = vec_y_val[patches_idx, :]
                 vec_d_val = vec_d_val[patches_idx, :]
                 img_id_val = [img_id_val[patch_idx_num] for patch_idx_num in patches_idx]
 
-                self.model.adj = self.graph_constr.construct_graph(
-                    tensor_x_val, img_id_val, self.graph_method, self.storage.experiment_name
+                init_adj_mx, init_spar_mx = self.graph_constr.construct_graph(
+                    tensor_x_val, img_id_val, self.storage.experiment_name
                 )
+                self.model.adj = init_spar_mx
 
             tensor_x_val, vec_y_val, vec_d_val = (
                 tensor_x_val.to(self.device),
@@ -192,7 +209,7 @@ class TrainerCluster(AbstractTrainer):
             if epoch < self.thres and not self.pretraining_finished:
                 loss_val = pretrain.pretrain_loss(tensor_x_val)
             else:
-                loss_val = self.model.cal_loss(tensor_x_val, self.warmup_beta)
+                loss_val = self.model.cal_loss(tensor_x_val)
 
         tensorboard_write(
             self.writer,
@@ -235,6 +252,7 @@ class TrainerCluster(AbstractTrainer):
         """
         check the performance of randomly initialized weight
         """
+
         acc = PerfCluster.cal_acc(self.model, self.loader_tr, self.device)  # FIXME change tr to te
         print("before training, model accuracy:", acc)
 

@@ -3,14 +3,13 @@ from domainlab.algos.trainers.a_trainer import AbstractTrainer
 
 from domid.compos.predict_basic import Prediction
 from domid.compos.tensorboard_fun import tensorboard_write
-from domid.dsets.make_graph import GraphConstructor
 from domid.trainers.pretraining_KMeans import Pretraining
 from domid.utils.perf_cluster import PerfCluster
 from domid.utils.storing import Storing
 
 
-class TrainerCluster(AbstractTrainer):
-    def __init__(self, model, task, observer, device, writer, pretrain=True, aconf=None):
+class TrainerAE(AbstractTrainer):
+    def init_business(self, model, task, observer, device, aconf, flag_accept=True):
         """
         :param model: model to train
         :param task: task to train on
@@ -24,7 +23,11 @@ class TrainerCluster(AbstractTrainer):
         super().__init__()
         super().init_business(model, task, observer, device, aconf)
         print(model)
-        self.pretrain = pretrain
+        if aconf.pre_tr > 0:
+            self.pretrain = True
+        else:
+            self.pretrain = False
+
         self.pretraining_finished = not self.pretrain
         self.lr = aconf.lr
         self.warmup_beta = 0.1
@@ -35,15 +38,13 @@ class TrainerCluster(AbstractTrainer):
             self.optimizer = optim.Adam(self.model.parameters(), lr=self.lr)
 
         self.epo_loss_tr = None
-        self.writer = writer
+        self.writer = None
         self.thres = aconf.pre_tr  # number of epochs for pretraining
         self.i_h, self.i_w = task.isize.h, task.isize.w
         self.args = aconf
         self.storage = Storing(self.args)
         self.loader_val = task.loader_tr
-        self.aname = aconf.aname
-
-        # self.model.adj = GraphConstructor().construct_graph(self.loader_tr).to(self.device)
+        self.aname = aconf.model
 
     def tr_epoch(self, epoch):
         """
@@ -136,19 +137,19 @@ class TrainerCluster(AbstractTrainer):
                 loss_val = pretrain.pretrain_loss(tensor_x_val, inject_tensor_val)
             else:
                 loss_val = self.model.cal_loss(tensor_x_val, inject_tensor_val, self.warmup_beta)
-
-        tensorboard_write(
-            self.writer,
-            self.model,
-            epoch,
-            self.lr,
-            self.warmup_beta,
-            acc_tr_y,
-            loss,
-            self.pretraining_finished,
-            tensor_x,
-            inject_tensor,
-        )
+        if self.writer != None:
+            tensorboard_write(
+                self.writer,
+                self.model,
+                epoch,
+                self.lr,
+                self.warmup_beta,
+                acc_tr_y,
+                loss,
+                self.pretraining_finished,
+                tensor_x,
+                inject_tensor,
+            )
 
         # _____storing results and Z space__________
         self.storage.storing(

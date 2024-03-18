@@ -26,9 +26,11 @@ class Prediction:
         :return: image acquisition machine labels for the input images (when applicable/available)
         """
 
-        num_img = len(self.loader_tr.dataset)  # FIXME: this returns sample size + 1 for some reason
-        if self.model.args.task == "wsi" and self.model.args.aname == "sdcn":
-            num_img = int(self.model.args.bs / 3)
+        num_img = len(self.loader_tr.dataset)
+
+        if self.model.random_batching:
+            bs = next(iter(self.loader_tr))[0].shape[0]
+            num_img = int(bs / 3 * num_img)
         z_proj = np.zeros((num_img, self.model.zd_dim))
         prob_proj = np.zeros((num_img, self.model.d_dim))
         input_imgs = np.zeros((num_img, 3, self.i_h, self.i_w))
@@ -47,15 +49,16 @@ class Prediction:
                     if len(inject_tensor) > 0:
                         inject_tensor = inject_tensor.to(self.device)
 
-                if self.model.args.random_batching:
+                if self.model.random_batching:
                     patches_idx = self.model.random_ind[i]  # torch.randint(0, len(vec_y), (int(self.args.bs/3),))
                     tensor_x = tensor_x[patches_idx, :, :, :]
                     vec_y = vec_y[patches_idx, :]
                     vec_d = vec_d[patches_idx, :]
                     image_id = [image_id[patch_idx_num] for patch_idx_num in patches_idx]
-                    self.model.adj = GraphConstructorWSI().construct_graph(
-                        tensor_x, image_id, self.model.graph_method, None
+                    adj_mx, spar_mx = GraphConstructorWSI(self.model.graph_method).construct_graph(
+                        tensor_x, image_id, None
                     )
+                    self.model.adj = spar_mx
 
                 for ii in range(0, tensor_x.shape[0]):
 
@@ -69,12 +72,11 @@ class Prediction:
                     vec_d.to(self.device),
                 )
 
-                if self.model.args.aname != "sdcn":
+                if self.model.model != "sdcn":
                     results = self.model.infer_d_v_2(tensor_x, inject_tensor)
                 else:
                     results = self.model.infer_d_v_2(tensor_x)
                 preds, z, probs, x_pro = results[0], results[1], results[-2], results[-1]
-
                 z = z.detach().cpu().numpy()  # [batch_size, zd_dim]
                 input_imgs[counter : counter + tensor_x.shape[0], :, :, :] = tensor_x.cpu().detach().numpy()
                 z_proj[counter : counter + tensor_x.shape[0], :] = z
@@ -83,7 +85,7 @@ class Prediction:
                 preds = preds.detach().cpu()
                 # domain_labels[counter : counter + z.shape[0], 0] = torch.argmax(preds, 1) + 1
                 predictions += (torch.argmax(preds, 1) + 1).tolist()
-                counter += z.shape[0]
+                counter += tensor_x.shape[0]
 
         return input_imgs, z_proj, predictions, vec_y_labels, vec_d_labels, image_id_labels
 

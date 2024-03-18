@@ -1,4 +1,3 @@
-import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -32,6 +31,13 @@ class ConvolutionalEncoder(nn.Module):
         self.bsnorm1 = nn.BatchNorm2d(num_filters[0])
         self.bsnorm2 = nn.BatchNorm2d(num_filters[1])
         self.bsnorm3 = nn.BatchNorm2d(num_filters[2])
+
+    def get_z(self, x):
+        *_, z = self.forward(x)
+        return z
+
+    def get_log_sigma2(self, x):
+        return None
 
     def forward(self, x):
         """
