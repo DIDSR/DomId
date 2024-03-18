@@ -335,8 +335,7 @@ from sklearn.mixture import GaussianMixture
         :param tensor_x: the input image
         :return: the loss
         """
-        # import pdb; pdb.set_trace()
-        loss = self.model.pretrain_loss(tensor_x, inject_tensor)
+        loss = self.model._cal_pretrain_loss(tensor_x, inject_tensor)
         return loss</div>
 
 <div class="viewcode-block" id="Pretraining.GMM_fit"><a class="viewcode-back" href="../../../domid.trainers.html#domid.trainers.pretraining_GMM.Pretraining.GMM_fit">[docs]</a>    def GMM_fit(self):

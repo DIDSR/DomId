@@ -335,6 +335,14 @@ from domid.compos.VAE_blocks import linear_block
         self.mu_layer = nn.Linear(features_dim[2], zd_dim)
         self.log_sigma2_layer = nn.Linear(features_dim[2], zd_dim)</div>
 
+<div class="viewcode-block" id="LinearEncoder.get_z"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.linear_VAE.LinearEncoder.get_z">[docs]</a>    def get_z(self, x):
+        mu, log_sigma2 = self.forward(x)
+        return mu</div>
+
+<div class="viewcode-block" id="LinearEncoder.get_log_sigma2"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.linear_VAE.LinearEncoder.get_log_sigma2">[docs]</a>    def get_log_sigma2(self, x):
+        mu, log_sigma2 = self.forward(x)
+        return log_sigma2</div>
+
 <div class="viewcode-block" id="LinearEncoder.forward"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.linear_VAE.LinearEncoder.forward">[docs]</a>    def forward(self, x):
         """
         :param x: input data, assumed to have 3 channels

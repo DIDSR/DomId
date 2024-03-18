@@ -309,7 +309,9 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <h1 id="modules-domid-models-model-sdcn--page-root">Source code for domid.models.model_sdcn</h1><div class="highlight"><pre>
-<span></span>import torch
+<span></span>import os
+
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from domainlab.utils.utils_classif import logit2preds_vpic
@@ -320,241 +322,247 @@ from domid.compos.linear_AE import LinearDecoderAE, LinearEncoderAE
 from domid.models.a_model_cluster import AModelCluster
 
 
-<div class="viewcode-block" id="ModelSDCN"><a class="viewcode-back" href="../../../domid.models.html#domid.models.model_sdcn.ModelSDCN">[docs]</a>class ModelSDCN(AModelCluster):
-    """
-    ModelSDCN is a class that implements the SDCN model.(Bo D et al. 2020)
-    The model is composed of a convolutional encoder and decoder, a GNN and a clustering layer.
-    """
+<div class="viewcode-block" id="mk_sdcn"><a class="viewcode-back" href="../../../domid.models.html#domid.models.model_sdcn.mk_sdcn">[docs]</a>def mk_sdcn(parent_class=AModelCluster):
+    class ModelSDCN(parent_class):
+        """
+        ModelSDCN is a class that implements the SDCN model.(Bo D et al. 2020)
+        The model is composed of a convolutional encoder and decoder, a GNN and a clustering layer.
+        """
 
-<div class="viewcode-block" id="ModelSDCN.__init__"><a class="viewcode-back" href="../../../domid.models.html#domid.models.model_sdcn.ModelSDCN.__init__">[docs]</a>    def __init__(self, zd_dim, d_dim, device, L, i_c, i_h, i_w, args):
+        def __init__(
+            self,
+            zd_dim,
+            d_dim,
+            device,
+            i_c,
+            i_h,
+            i_w,
+            bs,
+            task,
+            L=5,
+            random_batching=False,
+            model_method="cnn",
+            prior="Bern",
+            dim_inject_y=0,
+            pre_tr_weight_path=None,
+            feat_extract="vae",
+            graph_method="heat",
+        ):
 
-        super(ModelSDCN, self).__init__()
-        self.zd_dim = zd_dim
-        self.d_dim = d_dim
-        self.device = device
-        self.L = L
-        self.args = args
-        self.loss_epoch = 0
-        self.dim_inject_y = 0
+            super(ModelSDCN, self).__init__()
+            self.zd_dim = zd_dim
+            self.d_dim = d_dim
+            self.device = device
+            self.L = L
 
-        if self.args.dim_inject_y:
-            self.dim_inject_y = self.args.dim_inject_y
+            self.loss_epoch = 0
+            self.dim_inject_y = dim_inject_y
+            self.prior = prior
+            self.model_method = model_method
+            self.random_batching = random_batching
+            self.pre_tr_weight_path = pre_tr_weight_path
+            self.feat_extract = feat_extract
+            self.task = task
+            self.model = "sdcn"
 
-        n_clusters = d_dim
-        n_z = zd_dim
-        n_input = i_c * i_h * i_w
+            # if self.args.dim_inject_y:
+            #     self.dim_inject_y = self.args.dim_inject_y
 
-        self.cluster_layer = nn.Parameter(torch.Tensor(self.d_dim, self.zd_dim))
-        torch.nn.init.xavier_normal_(self.cluster_layer.data)
+            n_clusters = d_dim
+            n_z = zd_dim
+            n_input = i_c * i_h * i_w
 
-        if self.args.model == "linear":
-            n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3, = (
-                500,
-                500,
-                2000,
-                2000,
-                500,
-                500,
-            )
-            self.encoder = LinearEncoderAE(n_enc_1, n_enc_2, n_enc_3, n_input, n_z)
-            self.decoder = LinearDecoderAE(n_dec_1, n_dec_2, n_dec_3, n_input, n_z)
+            self.cluster_layer = nn.Parameter(torch.Tensor(self.d_dim, self.zd_dim))
+            torch.nn.init.xavier_normal_(self.cluster_layer.data)
 
-        else:
-            self.encoder = ConvolutionalEncoder(zd_dim=zd_dim, num_channels=i_c, i_w=i_w, i_h=i_h).to(device)
-            self.decoder = ConvolutionalDecoder(
-                prior=args.prior,
-                zd_dim=zd_dim,  # 50
-                domain_dim=self.dim_inject_y,
-                h_dim=self.encoder.h_dim,
-                num_channels=i_c,
-            ).to(device)
-            n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3, = (
-                int((i_w / 2) ** 2 * self.encoder.num_filters[0]),
-                int((i_w / 4) ** 2 * self.encoder.num_filters[1]),
-                int((i_w / 8) ** 2 * self.encoder.num_filters[2]),
-                int((i_w / 8) ** 2 * self.encoder.num_filters[2]),
-                int((i_w / 4) ** 2 * self.encoder.num_filters[1]),
-                int((i_w / 2) ** 2 * self.encoder.num_filters[0]),
-            )
-            print("Filter sizes for GNN", n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3)
-        if self.args.pre_tr_weight_path:
-            self.encoder.load_state_dict(
-                torch.load(self.args.pre_tr_weight_path + "encoder.pt", map_location=self.device)
-            )
-            self.decoder.load_state_dict(
-                torch.load(self.args.pre_tr_weight_path + "decoder.pt", map_location=self.device)
-            )
-            print("Pre-trained weights loaded")
-        else:
-            raise ValueError("Pre-trianed weight path is not provided")
+            if self.model_method == "linear":
+                n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3, = (
+                    500,
+                    500,
+                    2000,
+                    2000,
+                    500,
+                    500,
+                )
+                self.encoder = LinearEncoderAE(n_enc_1, n_enc_2, n_enc_3, n_input, n_z)
+                self.decoder = LinearDecoderAE(n_dec_1, n_dec_2, n_dec_3, n_input, n_z)
 
-        self.gnn_model = GNN(n_input, n_enc_1, n_enc_2, n_enc_3, n_z, n_clusters, device)
-
-        if torch.cuda.device_count() &gt; 1:  # Check if multiple GPUs are available
-            print("Using DataParallel with {} GPUs.".format(torch.cuda.device_count()))
-            # self.gnn_model = torch.nn.DataParallel(self.gnn_model)  # Wrap the model for DataParallel
-            self.encoder = torch.nn.DataParallel(self.encoder)
-            self.decoder = torch.nn.DataParallel(self.decoder)
-
-        else:
-            if torch.cuda.device_count() == 1:
-                print("Using a single GPU.")
             else:
-                print("Using CPU(s).")
+                self.encoder = ConvolutionalEncoder(zd_dim=zd_dim, num_channels=i_c, i_w=i_w, i_h=i_h).to(device)
+                self.decoder = ConvolutionalDecoder(
+                    prior=prior,
+                    zd_dim=zd_dim,  # 50
+                    domain_dim=self.dim_inject_y,
+                    h_dim=self.encoder.h_dim,
+                    num_channels=i_c,
+                ).to(device)
+                n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3, = (
+                    int((i_w / 2) ** 2 * self.encoder.num_filters[0]),
+                    int((i_w / 4) ** 2 * self.encoder.num_filters[1]),
+                    int((i_w / 8) ** 2 * self.encoder.num_filters[2]),
+                    int((i_w / 8) ** 2 * self.encoder.num_filters[2]),
+                    int((i_w / 4) ** 2 * self.encoder.num_filters[1]),
+                    int((i_w / 2) ** 2 * self.encoder.num_filters[0]),
+                )
+                print("Filter sizes for GNN", n_enc_1, n_enc_2, n_enc_3, n_dec_1, n_dec_2, n_dec_3)
+            if self.pre_tr_weight_path:
+                self.encoder.load_state_dict(
+                    torch.load(os.path.join(self.pre_tr_weight_path, "encoder.pt"), map_location=self.device)
+                )
+                self.decoder.load_state_dict(
+                    torch.load(os.path.join(self.pre_tr_weight_path, "decoder.pt"), map_location=self.device)
+                )
+                print("Pre-trained weights loaded")
+            else:
+                raise ValueError("Pre-trianed weight path is not provided")
 
-        self.v = 1.0
-        self.counter = 0
-        self.q_activation = torch.zeros((10, 100))
-        self.kl_loss_running = 0
-        self.re_loss_running = 0
-        self.ce_loss_running = 0
+            self.gnn_model = GNN(n_input, n_enc_1, n_enc_2, n_enc_3, n_z, n_clusters, device)
 
-        if "mnist" in self.args.task:
-            self.graph_method = "heat"
-        if "wsi" in self.args.task:
-            self.graph_method = "patch_distance"
-        if self.args.graph_method is not None:
-            self.graph_method = args.graph_method
+            if torch.cuda.device_count() &gt; 1:  # Check if multiple GPUs are available
+                print("Using DataParallel with {} GPUs.".format(torch.cuda.device_count()))
+                # self.gnn_model = torch.nn.DataParallel(self.gnn_model)  # Wrap the model for DataParallel
+                self.encoder = torch.nn.DataParallel(self.encoder)
+                self.decoder = torch.nn.DataParallel(self.decoder)
 
-        if args.task == "wsi":
-            self.random_ind = [torch.randint(0, self.args.bs, (int(self.args.bs / 3),)) for i in range(0, 66)]
-        else:
-            self.random_ind = []</div>
+            else:
+                if torch.cuda.device_count() == 1:
+                    print("Using a single GPU.")
+                else:
+                    print("Using CPU(s).")
 
-    def _inference(self, x, inject_tensor=None):
-        """
-        :param x: [batch_size, n_channels, height, width]
-        :return:
-            - probs_c - [batch_size, n_clusters]
-            - q - [batch_size, n_clusters]
-            - z - [batch_size, n_z]
-            - z_mu - [batch_size, n_z]
-            - z_sigma2_log - [batch_size, n_z]
-            - pi - [batch_size, n_clusters]
-            - logits - [batch_size, n_clusters]
-        """
-        if self.args.model == "linear":
-            x = torch.reshape(x, (x.shape[0], x.shape[1] * x.shape[2] * x.shape[3]))
-        enc_h1, enc_h2, enc_h3, z = self.encoder(x)
+            self.v = 1.0
+            self.counter = 0
+            self.q_activation = torch.zeros((10, 100))
+            self.kl_loss_running = 0
+            self.re_loss_running = 0
+            self.ce_loss_running = 0
 
-        h = self.gnn_model(x, self.adj.to(self.device), enc_h1, enc_h2, enc_h3, z)
-        probs_c = F.softmax(
-            h, dim=1
-        )  # [batch_size, n_clusters] (batch_zise==number of samples) same as preds in the code
-        # and p is calculated using preds and target distribution.
+            if "mnist" in self.task:
+                self.graph_method = "heat"
+            if "wsi" in self.task:
+                self.graph_method = "patch_distance"
+            if self.graph_method is not None:
+                self.graph_method = graph_method
 
-        # Dual Self-supervised Module
-        q = 1.0 / (1.0 + torch.sum(torch.pow(z.unsqueeze(1) - self.cluster_layer, 2), 2)) / self.v
-        q = q.pow((self.v + 1.0) / 2.0)
-        q = (q.t() / torch.sum(q, 1)).t()
+            if self.task == "wsi":
+                self.random_ind = [torch.randint(0, self.bs, (int(self.bs / 3),)) for i in range(0, 66)]
+            else:
+                self.random_ind = []
 
-        logits = q.type(torch.float32)  # q in the paper and code
+        def _inference(self, x, inject_tensor=None):
+            """
+            :param x: [batch_size, n_channels, height, width]
+            :return:
+                - probs_c - [batch_size, n_clusters]
+                - q - [batch_size, n_clusters]
+                - z - [batch_size, n_z]
+                - z_mu - [batch_size, n_z]
+                - z_sigma2_log - [batch_size, n_z]
+                - pi - [batch_size, n_clusters]
+                - logits - [batch_size, n_clusters]
+            """
+            if self.model_method == "linear":
+                x = torch.reshape(x, (x.shape[0], x.shape[1] * x.shape[2] * x.shape[3]))
+            enc_h1, enc_h2, enc_h3, z = self.encoder(x)
 
-        preds_c, *_ = logit2preds_vpic(h)  # probs_c is F.softmax(logit, dim=1)
+            h = self.gnn_model(x, self.adj.to(self.device), enc_h1, enc_h2, enc_h3, z)
+            probs_c = F.softmax(
+                h, dim=1
+            )  # [batch_size, n_clusters] (batch_zise==number of samples) same as preds in the code
+            # and p is calculated using preds and target distribution.
 
-        return preds_c, probs_c, z, logits
+            # Dual Self-supervised Module
+            q = 1.0 / (1.0 + torch.sum(torch.pow(z.unsqueeze(1) - self.cluster_layer, 2), 2)) / self.v
+            q = q.pow((self.v + 1.0) / 2.0)
+            q = (q.t() / torch.sum(q, 1)).t()
 
-<div class="viewcode-block" id="ModelSDCN.infer_d_v"><a class="viewcode-back" href="../../../domid.models.html#domid.models.model_sdcn.ModelSDCN.infer_d_v">[docs]</a>    def infer_d_v(self, x):
-        """
-        Predict the cluster/domain of the input data.
-        Corresponds to equation (16) in the paper.
+            logits = q.type(torch.float32)  # q in the paper and code
 
-        :param tensor x: Input tensor of a shape [batchsize, 3, horzintal dim, vertical dim].
-        :return tensor preds: One hot encoded tensor of the predicted cluster assignment.
-        """
-        preds, *_ = self._inference(x)
-        return preds.cpu().detach()</div>
+            preds_c, *_ = logit2preds_vpic(h)  # probs_c is F.softmax(logit, dim=1)
 
-<div class="viewcode-block" id="ModelSDCN.infer_d_v_2"><a class="viewcode-back" href="../../../domid.models.html#domid.models.model_sdcn.ModelSDCN.infer_d_v_2">[docs]</a>    def infer_d_v_2(self, x):
-        """
-        Used for tensorboard visualizations only.
-        """
-        # import pdb; pdb.set_trace()
-        results = self._inference(x)
+            return preds_c, probs_c, z, logits
 
-        z = results[2]
+        def infer_d_v_2(self, x):
+            """
+            Used for tensorboard visualizations only.
+            """
+            # import pdb; pdb.set_trace()
+            results = self._inference(x)
 
-        # print(results[2].shape, inject_domain.shape, zy.shape)
-        x_pro = self.decoder(z)
-        preds_c, probs_c, z, logits = (r.cpu().detach() for r in results)
+            z = results[2]
 
-        return preds_c, z, probs_c, x_pro</div>
+            # print(results[2].shape, inject_domain.shape, zy.shape)
+            x_pro = self.decoder(z)
+            preds_c, probs_c, z, logits = (r.cpu().detach() for r in results)
 
-<div class="viewcode-block" id="ModelSDCN.target_distribution"><a class="viewcode-back" href="../../../domid.models.html#domid.models.model_sdcn.ModelSDCN.target_distribution">[docs]</a>    def target_distribution(self, q):
-        """
-        Compute the target distribution p, where p_i = (sum_j q_j)^2 / sum_j^2 q_j.
-        Corresponds to equation (12) from the paper.
-        """
-        weight = q**2 / q.sum(0)
-        return (weight.t() / weight.sum(1)).t()</div>
+            return preds_c, z, probs_c, x_pro
 
-<div class="viewcode-block" id="ModelSDCN.cal_loss"><a class="viewcode-back" href="../../../domid.models.html#domid.models.model_sdcn.ModelSDCN.cal_loss">[docs]</a>    def cal_loss(self, x, warmup_beta=None):
-        """
-        Compute the loss of the model.
-        Concentrate two different objectives, i.e. clustering objective and classification objective, in one loss function.
-        Corresponds to equation (15) in the paper.
-        :param tensor x: Input tensor of a shape [batchsize, 3, horzintal dim, vertical dim].
-        :param float warmup_beta: Warmup coefficient for the KL divergence term.
-        :return tensor loss: Loss tensor.
-        """
+        def target_distribution(self, q):
+            """
+            Compute the target distribution p, where p_i = (sum_j q_j)^2 / sum_j^2 q_j.
+            Corresponds to equation (12) from the paper.
+            """
+            weight = q**2 / q.sum(0)
+            return (weight.t() / weight.sum(1)).t()
 
-        preds_c, probs_c, z, logits = self._inference(x)
-        # logits is q in the paper
-        # probs_c is pred in the code
-        q = logits
-        pred = probs_c
+        def _cal_kl_loss(self, x, inject_tensor=None, warmup_beta=None):
+            """
+            Compute the loss of the model.
+            Concentrate two different objectives, i.e. clustering objective and classification objective, in one loss function.
+            Corresponds to equation (15) in the paper.
+            :param tensor x: Input tensor of a shape [batchsize, 3, horzintal dim, vertical dim].
+            :param float warmup_beta: Warmup coefficient for the KL divergence term.
+            :return tensor loss: Loss tensor.
+            """
 
-        x_bar = self.decoder(z)
-        q = q.data
+            preds_c, probs_c, z, logits = self._inference(x)
+            # logits is q in the paper
+            # probs_c is pred in the code
+            q = logits
+            pred = probs_c
 
-        # if self.counter==1:
-        p = self.target_distribution(q)
+            x_bar = self.decoder(z)
+            q = q.data
 
-        # self.local_tb.add_histogram('p', p, self.counter)
+            # if self.counter==1:
+            p = self.target_distribution(q)
 
-        if self.args.model == "linear":
-            x = torch.reshape(x, (x.shape[0], x.shape[1] * x.shape[2] * x.shape[3]))
+            # self.local_tb.add_histogram('p', p, self.counter)
 
-        kl_loss = F.kl_div(q.log(), p, reduction="batchmean")
-        ce_loss = F.kl_div(pred.log(), p, reduction="batchmean")
-        re_loss = F.mse_loss(x, x_bar)
+            if self.model == "linear":
+                x = torch.reshape(x, (x.shape[0], x.shape[1] * x.shape[2] * x.shape[3]))
 
-        loss = 0.1 * kl_loss + 0.01 * ce_loss + re_loss
+            kl_loss = F.kl_div(q.log(), p, reduction="batchmean")
+            ce_loss = F.kl_div(pred.log(), p, reduction="batchmean")
+            re_loss = F.mse_loss(x, x_bar)
 
-        self.kl_loss_running = kl_loss
-        self.ce_loss_running = ce_loss
-        self.re_loss_running = re_loss
+            loss = 0.1 * kl_loss + 0.01 * ce_loss + re_loss
 
-        return loss.type(torch.double)</div>
+            self.kl_loss_running = kl_loss
+            self.ce_loss_running = ce_loss
+            self.re_loss_running = re_loss
 
-<div class="viewcode-block" id="ModelSDCN.cal_loss_for_tensorboard"><a class="viewcode-back" href="../../../domid.models.html#domid.models.model_sdcn.ModelSDCN.cal_loss_for_tensorboard">[docs]</a>    def cal_loss_for_tensorboard(self):
-        return self.kl_loss_running, self.ce_loss_running, self.re_loss_running</div>
+            return loss.type(torch.double)
 
-<div class="viewcode-block" id="ModelSDCN.pretrain_loss"><a class="viewcode-back" href="../../../domid.models.html#domid.models.model_sdcn.ModelSDCN.pretrain_loss">[docs]</a>    def pretrain_loss(self, x):
-        if self.args.model == "linear":
-            x = torch.reshape(x, (x.shape[0], x.shape[1] * x.shape[2] * x.shape[3]))
-        enc_h1, enc_h2, enc_h3, z = self.encoder(x)
+        def cal_loss_for_tensorboard(self):
+            return self.kl_loss_running, self.ce_loss_running, self.re_loss_running
 
-        x_pro = self.decoder(z)
-        loss = F.mse_loss(x, x_pro)
+        def hyper_init(self, functor_scheduler):
+            """hyper_init.
+            :param functor_scheduler:
+            """
+            return functor_scheduler(trainer=None)
 
-        return loss</div></div>
+        def hyper_update(self, epoch, fun_scheduler):
+            """hyper_update.
+            :param epoch:
+            :param fun_scheduler: the hyperparameter scheduler object
+            """
+            dict_rst = fun_scheduler(epoch)  # the __call__ method of hy
+            # perparameter scheduler
+            self.alpha = dict_rst["alpha"]
 
-
-# def test_fun(d_dim, zd_dim, device):
-#     device = torch.device("cpu")
-#     model = ModelVaDE(d_dim=d_dim, zd_dim=zd_dim, device=device)
-#     x = torch.rand(2, 3, 28, 28)
-#     import numpy as np
-#
-#     a = np.zeros((2, 10))
-#     a = np.double(a)
-#     a[0, 1] = 1.0
-#     a[1, 8] = 1.0
-#     a
-#     y = torch.tensor(a, dtype=torch.float)
-#     model(x, y)
-#     model.cal_loss(x)
+    return ModelSDCN</div>
 </pre></div>
 
           </article>

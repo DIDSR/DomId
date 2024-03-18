@@ -314,6 +314,14 @@
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#domid.tests.test_graph.graph_constructor" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">graph_constructor()</span></code></a>
         </li>
+        <li class="md-nav__item"><a href="#domid.tests.test_graph.test_data" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">test_data()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#domid.tests.test_graph.test_graph_methods" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">test_graph_methods()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#domid.tests.test_graph.test_connection_calc" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">test_connection_calc()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#domid.tests.test_graph.test_mk_adj_mat" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">test_mk_adj_mat()</span></code></a>
+        </li>
         <li class="md-nav__item"><a href="#domid.tests.test_graph.test_MNISTcolor_SDCN_graph_construction_heat" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">test_MNISTcolor_SDCN_graph_construction_heat()</span></code></a>
         </li>
         <li class="md-nav__item"><a href="#domid.tests.test_graph.test_MNISTcolor_SDCN_graph_construction_ncos" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">test_MNISTcolor_SDCN_graph_construction_ncos()</span></code></a>
@@ -322,8 +330,6 @@
         </li>
         <li class="md-nav__item"><a href="#module-domid.tests.test_losses" class="md-nav__link">domid.tests.test_losses module</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.tests.test_losses.experiment_train" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">experiment_train()</span></code></a>
-        </li>
         <li class="md-nav__item"><a href="#domid.tests.test_losses.test_VADE_CNN_nonbinary" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">test_VADE_CNN_nonbinary()</span></code></a>
         </li>
         <li class="md-nav__item"><a href="#domid.tests.test_losses.test_VADE_CNN" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">test_VADE_CNN()</span></code></a>
@@ -358,7 +364,9 @@
         </li>
         <li class="md-nav__item"><a href="#module-domid.tests.test_model_trainer" class="md-nav__link">domid.tests.test_model_trainer module</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.tests.test_model_trainer.experiment_train" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">experiment_train()</span></code></a>
+        <li class="md-nav__item"><a href="#domid.tests.test_model_trainer.train_MNISTcolor_AE" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">train_MNISTcolor_AE()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#domid.tests.test_model_trainer.ae_weights" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ae_weights()</span></code></a>
         </li>
         <li class="md-nav__item"><a href="#domid.tests.test_model_trainer.test_MNIST_pretrain" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">test_MNIST_pretrain()</span></code></a>
         </li>
@@ -376,9 +384,15 @@
         </li>
         <li class="md-nav__item"><a href="#domid.tests.test_model_trainer.test_MNIST_conditionalOne_train" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">test_MNIST_conditionalOne_train()</span></code></a>
         </li>
-        <li class="md-nav__item"><a href="#domid.tests.test_model_trainer.test_MNISTcolor_SDCN" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">test_MNISTcolor_SDCN()</span></code></a>
-        </li>
         <li class="md-nav__item"><a href="#domid.tests.test_model_trainer.test_MNISTcolor_AE" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">test_MNISTcolor_AE()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#domid.tests.test_model_trainer.test_MNISTcolor_SDCN" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">test_MNISTcolor_SDCN()</span></code></a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#module-domid.tests.utils" class="md-nav__link">domid.tests.utils module</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#domid.tests.utils.experiment_train" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">experiment_train()</span></code></a>
         </li></ul>
             </nav>
         </li>
@@ -414,6 +428,22 @@
 <span class="sig-prename descclassname"><span class="pre">domid.tests.test_graph.</span></span><span class="sig-name descname"><span class="pre">graph_constructor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_graph.html#graph_constructor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_graph.graph_constructor" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py function">
+<dt class="sig sig-object py" id="domid.tests.test_graph.test_data">
+<span class="sig-prename descclassname"><span class="pre">domid.tests.test_graph.</span></span><span class="sig-name descname"><span class="pre">test_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_graph.html#test_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_graph.test_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="domid.tests.test_graph.test_graph_methods">
+<span class="sig-prename descclassname"><span class="pre">domid.tests.test_graph.</span></span><span class="sig-name descname"><span class="pre">test_graph_methods</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_graph.html#test_graph_methods"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_graph.test_graph_methods" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="domid.tests.test_graph.test_connection_calc">
+<span class="sig-prename descclassname"><span class="pre">domid.tests.test_graph.</span></span><span class="sig-name descname"><span class="pre">test_connection_calc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_graph.html#test_connection_calc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_graph.test_connection_calc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="domid.tests.test_graph.test_mk_adj_mat">
+<span class="sig-prename descclassname"><span class="pre">domid.tests.test_graph.</span></span><span class="sig-name descname"><span class="pre">test_mk_adj_mat</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_graph.html#test_mk_adj_mat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_graph.test_mk_adj_mat" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py function">
 <dt class="sig sig-object py" id="domid.tests.test_graph.test_MNISTcolor_SDCN_graph_construction_heat">
 <span class="sig-prename descclassname"><span class="pre">domid.tests.test_graph.</span></span><span class="sig-name descname"><span class="pre">test_MNISTcolor_SDCN_graph_construction_heat</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_graph.html#test_MNISTcolor_SDCN_graph_construction_heat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_graph.test_MNISTcolor_SDCN_graph_construction_heat" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -425,24 +455,20 @@
 <section id="module-domid.tests.test_losses">
 <span id="domid-tests-test-losses-module"></span><h2 id="module-domid.tests.test_losses">domid.tests.test_losses module<a class="headerlink" href="#module-domid.tests.test_losses" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
-<dt class="sig sig-object py" id="domid.tests.test_losses.experiment_train">
-<span class="sig-prename descclassname"><span class="pre">domid.tests.test_losses.</span></span><span class="sig-name descname"><span class="pre">experiment_train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_losses.html#experiment_train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_losses.experiment_train" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py function">
 <dt class="sig sig-object py" id="domid.tests.test_losses.test_VADE_CNN_nonbinary">
-<span class="sig-prename descclassname"><span class="pre">domid.tests.test_losses.</span></span><span class="sig-name descname"><span class="pre">test_VADE_CNN_nonbinary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_losses.html#test_VADE_CNN_nonbinary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_losses.test_VADE_CNN_nonbinary" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">domid.tests.test_losses.</span></span><span class="sig-name descname"><span class="pre">test_VADE_CNN_nonbinary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tmp_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_losses.html#test_VADE_CNN_nonbinary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_losses.test_VADE_CNN_nonbinary" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="domid.tests.test_losses.test_VADE_CNN">
-<span class="sig-prename descclassname"><span class="pre">domid.tests.test_losses.</span></span><span class="sig-name descname"><span class="pre">test_VADE_CNN</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_losses.html#test_VADE_CNN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_losses.test_VADE_CNN" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">domid.tests.test_losses.</span></span><span class="sig-name descname"><span class="pre">test_VADE_CNN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tmp_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_losses.html#test_VADE_CNN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_losses.test_VADE_CNN" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="domid.tests.test_losses.test_VADE_nonbinary">
-<span class="sig-prename descclassname"><span class="pre">domid.tests.test_losses.</span></span><span class="sig-name descname"><span class="pre">test_VADE_nonbinary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_losses.html#test_VADE_nonbinary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_losses.test_VADE_nonbinary" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">domid.tests.test_losses.</span></span><span class="sig-name descname"><span class="pre">test_VADE_nonbinary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tmp_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_losses.html#test_VADE_nonbinary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_losses.test_VADE_nonbinary" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="domid.tests.test_losses.test_VADE">
-<span class="sig-prename descclassname"><span class="pre">domid.tests.test_losses.</span></span><span class="sig-name descname"><span class="pre">test_VADE</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_losses.html#test_VADE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_losses.test_VADE" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">domid.tests.test_losses.</span></span><span class="sig-name descname"><span class="pre">test_VADE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tmp_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_losses.html#test_VADE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_losses.test_VADE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 </section>
 <section id="module-domid.tests.test_mnist_dataset">
@@ -482,32 +508,36 @@
 <section id="module-domid.tests.test_model_trainer">
 <span id="domid-tests-test-model-trainer-module"></span><h2 id="module-domid.tests.test_model_trainer">domid.tests.test_model_trainer module<a class="headerlink" href="#module-domid.tests.test_model_trainer" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
-<dt class="sig sig-object py" id="domid.tests.test_model_trainer.experiment_train">
-<span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_trainer.</span></span><span class="sig-name descname"><span class="pre">experiment_train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_trainer.html#experiment_train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_trainer.experiment_train" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="domid.tests.test_model_trainer.train_MNISTcolor_AE">
+<span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_trainer.</span></span><span class="sig-name descname"><span class="pre">train_MNISTcolor_AE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_trainer.html#train_MNISTcolor_AE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_trainer.train_MNISTcolor_AE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="domid.tests.test_model_trainer.ae_weights">
+<span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_trainer.</span></span><span class="sig-name descname"><span class="pre">ae_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tmp_path_factory</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_trainer.html#ae_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_trainer.ae_weights" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="domid.tests.test_model_trainer.test_MNIST_pretrain">
-<span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_trainer.</span></span><span class="sig-name descname"><span class="pre">test_MNIST_pretrain</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_trainer.html#test_MNIST_pretrain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_trainer.test_MNIST_pretrain" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_trainer.</span></span><span class="sig-name descname"><span class="pre">test_MNIST_pretrain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tmp_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_trainer.html#test_MNIST_pretrain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_trainer.test_MNIST_pretrain" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="domid.tests.test_model_trainer.test_MNIST_train">
-<span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_trainer.</span></span><span class="sig-name descname"><span class="pre">test_MNIST_train</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_trainer.html#test_MNIST_train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_trainer.test_MNIST_train" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_trainer.</span></span><span class="sig-name descname"><span class="pre">test_MNIST_train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tmp_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_trainer.html#test_MNIST_train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_trainer.test_MNIST_train" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="domid.tests.test_model_trainer.test_MNIST_train_CNN">
-<span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_trainer.</span></span><span class="sig-name descname"><span class="pre">test_MNIST_train_CNN</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_trainer.html#test_MNIST_train_CNN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_trainer.test_MNIST_train_CNN" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_trainer.</span></span><span class="sig-name descname"><span class="pre">test_MNIST_train_CNN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tmp_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_trainer.html#test_MNIST_train_CNN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_trainer.test_MNIST_train_CNN" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="domid.tests.test_model_trainer.test_MNISTcolor_train">
-<span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_trainer.</span></span><span class="sig-name descname"><span class="pre">test_MNISTcolor_train</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_trainer.html#test_MNISTcolor_train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_trainer.test_MNISTcolor_train" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_trainer.</span></span><span class="sig-name descname"><span class="pre">test_MNISTcolor_train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tmp_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_trainer.html#test_MNISTcolor_train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_trainer.test_MNISTcolor_train" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="domid.tests.test_model_trainer.test_MNISTcolor_train_CNN">
-<span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_trainer.</span></span><span class="sig-name descname"><span class="pre">test_MNISTcolor_train_CNN</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_trainer.html#test_MNISTcolor_train_CNN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_trainer.test_MNISTcolor_train_CNN" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_trainer.</span></span><span class="sig-name descname"><span class="pre">test_MNISTcolor_train_CNN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tmp_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_trainer.html#test_MNISTcolor_train_CNN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_trainer.test_MNISTcolor_train_CNN" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="domid.tests.test_model_trainer.test_MNISTcolor_pretrain_CNN">
-<span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_trainer.</span></span><span class="sig-name descname"><span class="pre">test_MNISTcolor_pretrain_CNN</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_trainer.html#test_MNISTcolor_pretrain_CNN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_trainer.test_MNISTcolor_pretrain_CNN" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_trainer.</span></span><span class="sig-name descname"><span class="pre">test_MNISTcolor_pretrain_CNN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tmp_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_trainer.html#test_MNISTcolor_pretrain_CNN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_trainer.test_MNISTcolor_pretrain_CNN" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="domid.tests.test_model_trainer.test_M2YD_train_MNISTcolor">
@@ -515,15 +545,22 @@
 <dd></dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="domid.tests.test_model_trainer.test_MNIST_conditionalOne_train">
-<span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_trainer.</span></span><span class="sig-name descname"><span class="pre">test_MNIST_conditionalOne_train</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_trainer.html#test_MNIST_conditionalOne_train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_trainer.test_MNIST_conditionalOne_train" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py function">
-<dt class="sig sig-object py" id="domid.tests.test_model_trainer.test_MNISTcolor_SDCN">
-<span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_trainer.</span></span><span class="sig-name descname"><span class="pre">test_MNISTcolor_SDCN</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_trainer.html#test_MNISTcolor_SDCN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_trainer.test_MNISTcolor_SDCN" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_trainer.</span></span><span class="sig-name descname"><span class="pre">test_MNIST_conditionalOne_train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tmp_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_trainer.html#test_MNIST_conditionalOne_train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_trainer.test_MNIST_conditionalOne_train" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="domid.tests.test_model_trainer.test_MNISTcolor_AE">
-<span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_trainer.</span></span><span class="sig-name descname"><span class="pre">test_MNISTcolor_AE</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_trainer.html#test_MNISTcolor_AE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_trainer.test_MNISTcolor_AE" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_trainer.</span></span><span class="sig-name descname"><span class="pre">test_MNISTcolor_AE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ae_weights</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_trainer.html#test_MNISTcolor_AE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_trainer.test_MNISTcolor_AE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="domid.tests.test_model_trainer.test_MNISTcolor_SDCN">
+<span class="sig-prename descclassname"><span class="pre">domid.tests.test_model_trainer.</span></span><span class="sig-name descname"><span class="pre">test_MNISTcolor_SDCN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tmp_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ae_weights</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/test_model_trainer.html#test_MNISTcolor_SDCN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.test_model_trainer.test_MNISTcolor_SDCN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+</section>
+<section id="module-domid.tests.utils">
+<span id="domid-tests-utils-module"></span><h2 id="module-domid.tests.utils">domid.tests.utils module<a class="headerlink" href="#module-domid.tests.utils" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="domid.tests.utils.experiment_train">
+<span class="sig-prename descclassname"><span class="pre">domid.tests.utils.</span></span><span class="sig-name descname"><span class="pre">experiment_train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/tests/utils.html#experiment_train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.tests.utils.experiment_train" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 </section>
 <section id="module-domid.tests">

@@ -314,14 +314,13 @@ from domainlab.algos.trainers.a_trainer import AbstractTrainer
 
 from domid.compos.predict_basic import Prediction
 from domid.compos.tensorboard_fun import tensorboard_write
-from domid.dsets.make_graph import GraphConstructor
 from domid.trainers.pretraining_KMeans import Pretraining
 from domid.utils.perf_cluster import PerfCluster
 from domid.utils.storing import Storing
 
 
-<div class="viewcode-block" id="TrainerCluster"><a class="viewcode-back" href="../../../domid.trainers.html#domid.trainers.trainer_ae.TrainerCluster">[docs]</a>class TrainerCluster(AbstractTrainer):
-<div class="viewcode-block" id="TrainerCluster.__init__"><a class="viewcode-back" href="../../../domid.trainers.html#domid.trainers.trainer_ae.TrainerCluster.__init__">[docs]</a>    def __init__(self, model, task, observer, device, writer, pretrain=True, aconf=None):
+<div class="viewcode-block" id="TrainerAE"><a class="viewcode-back" href="../../../domid.trainers.html#domid.trainers.trainer_ae.TrainerAE">[docs]</a>class TrainerAE(AbstractTrainer):
+<div class="viewcode-block" id="TrainerAE.init_business"><a class="viewcode-back" href="../../../domid.trainers.html#domid.trainers.trainer_ae.TrainerAE.init_business">[docs]</a>    def init_business(self, model, task, observer, device, aconf, flag_accept=True):
         """
         :param model: model to train
         :param task: task to train on
@@ -335,7 +334,11 @@ from domid.utils.storing import Storing
         super().__init__()
         super().init_business(model, task, observer, device, aconf)
         print(model)
-        self.pretrain = pretrain
+        if aconf.pre_tr &gt; 0:
+            self.pretrain = True
+        else:
+            self.pretrain = False
+
         self.pretraining_finished = not self.pretrain
         self.lr = aconf.lr
         self.warmup_beta = 0.1
@@ -346,17 +349,15 @@ from domid.utils.storing import Storing
             self.optimizer = optim.Adam(self.model.parameters(), lr=self.lr)
 
         self.epo_loss_tr = None
-        self.writer = writer
+        self.writer = None
         self.thres = aconf.pre_tr  # number of epochs for pretraining
         self.i_h, self.i_w = task.isize.h, task.isize.w
         self.args = aconf
         self.storage = Storing(self.args)
         self.loader_val = task.loader_tr
-        self.aname = aconf.aname</div>
+        self.aname = aconf.model</div>
 
-        # self.model.adj = GraphConstructor().construct_graph(self.loader_tr).to(self.device)
-
-<div class="viewcode-block" id="TrainerCluster.tr_epoch"><a class="viewcode-back" href="../../../domid.trainers.html#domid.trainers.trainer_ae.TrainerCluster.tr_epoch">[docs]</a>    def tr_epoch(self, epoch):
+<div class="viewcode-block" id="TrainerAE.tr_epoch"><a class="viewcode-back" href="../../../domid.trainers.html#domid.trainers.trainer_ae.TrainerAE.tr_epoch">[docs]</a>    def tr_epoch(self, epoch):
         """
         :param epoch: epoch number
         :return:
@@ -447,19 +448,19 @@ from domid.utils.storing import Storing
                 loss_val = pretrain.pretrain_loss(tensor_x_val, inject_tensor_val)
             else:
                 loss_val = self.model.cal_loss(tensor_x_val, inject_tensor_val, self.warmup_beta)
-
-        tensorboard_write(
-            self.writer,
-            self.model,
-            epoch,
-            self.lr,
-            self.warmup_beta,
-            acc_tr_y,
-            loss,
-            self.pretraining_finished,
-            tensor_x,
-            inject_tensor,
-        )
+        if self.writer != None:
+            tensorboard_write(
+                self.writer,
+                self.model,
+                epoch,
+                self.lr,
+                self.warmup_beta,
+                acc_tr_y,
+                loss,
+                self.pretraining_finished,
+                tensor_x,
+                inject_tensor,
+            )
 
         # _____storing results and Z space__________
         self.storage.storing(
@@ -477,14 +478,14 @@ from domid.utils.storing import Storing
         # self.storage.csv_dump(epoch)
         return flag_stop</div>
 
-<div class="viewcode-block" id="TrainerCluster.before_tr"><a class="viewcode-back" href="../../../domid.trainers.html#domid.trainers.trainer_ae.TrainerCluster.before_tr">[docs]</a>    def before_tr(self):
+<div class="viewcode-block" id="TrainerAE.before_tr"><a class="viewcode-back" href="../../../domid.trainers.html#domid.trainers.trainer_ae.TrainerAE.before_tr">[docs]</a>    def before_tr(self):
         """
         check the performance of randomly initialized weight
         """
         acc = PerfCluster.cal_acc(self.model, self.loader_tr, self.device)  # FIXME change tr to te
         print("before training, model accuracy:", acc)</div>
 
-<div class="viewcode-block" id="TrainerCluster.post_tr"><a class="viewcode-back" href="../../../domid.trainers.html#domid.trainers.trainer_ae.TrainerCluster.post_tr">[docs]</a>    def post_tr(self):
+<div class="viewcode-block" id="TrainerAE.post_tr"><a class="viewcode-back" href="../../../domid.trainers.html#domid.trainers.trainer_ae.TrainerAE.post_tr">[docs]</a>    def post_tr(self):
         print("training is done")
         self.observer.after_all()</div></div>
 </pre></div>

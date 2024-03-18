@@ -19,7 +19,6 @@ def mk_exp(
 ):
     """
     Creates a custom experiment. The user can specify the input parameters.
-
     :param task: use a predefined task in DomId, or create a task to a custom dataset. For more explanation on the
     input params refer to the documentation found in "domainlab.tasks.task_dset.py".
     :param model: create a model [NameOfModel] by importing the appropriate "mk_[NameOfModel]". For a concrete example

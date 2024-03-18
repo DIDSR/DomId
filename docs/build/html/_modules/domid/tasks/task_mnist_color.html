@@ -328,7 +328,7 @@ from domid.tasks.b_task_cluster import NodeTaskDictCluster
     Use the deafult palette with 10 colors
     """
 
-<div class="viewcode-block" id="NodeTaskMNISTColor10.init_business"><a class="viewcode-back" href="../../../domid.tasks.html#domid.tasks.task_mnist_color.NodeTaskMNISTColor10.init_business">[docs]</a>    def init_business(self, args):
+<div class="viewcode-block" id="NodeTaskMNISTColor10.init_business"><a class="viewcode-back" href="../../../domid.tasks.html#domid.tasks.task_mnist_color.NodeTaskMNISTColor10.init_business">[docs]</a>    def init_business(self, args, trainer=None):
         """
         create a dictionary of datasets
         """
@@ -339,7 +339,7 @@ from domid.tasks.b_task_cluster import NodeTaskDictCluster
             self.wanted_digits = list(range(10))
         self._dim_y = len(self.wanted_digits)
         # note the order of lines: dim_y has to be set before init_business is called
-        super().init_business(args)</div>
+        super().init_business(args, trainer)</div>
 
     @property
     def dim_y(self):
