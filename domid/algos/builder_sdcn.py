@@ -36,6 +36,7 @@ class NodeAlgoBuilderSDCN(NodeAlgoBuilder):
             model_method=args.model_method,
             pre_tr_weight_path=args.pre_tr_weight_path,
             feat_extract=args.feat_extract,
+            graph_method = args.graph_method
         )
 
         observer = ObVisitorCleanUp(
