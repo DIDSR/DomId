@@ -98,8 +98,14 @@ class TrainerSDCN(AbstractTrainer):
         :return:
         """
         print("Epoch {}.".format(epoch)) if self.pretraining_finished else print("Epoch {}. Pretraining.".format(epoch))
-
-        self.model.train()
+#         import pdb; pdb.set_trace()
+#         for name, param in self.model.named_parameters():
+#             if 'weight' in name:
+#                 weights = param.data.cpu().numpy()
+#                 print(weights.shape)
+                
+#                 pdb.set_trace()   
+#         self.model.train()
         self.epo_loss_tr = 0
 
         pretrain = PretrainingSDCN(
@@ -115,9 +121,9 @@ class TrainerSDCN(AbstractTrainer):
         kl_total = 0
         ce_total = 0
         re_total = 0
-        if self.args.task == "her2":
-            r_score_tr = prediction.epoch_tr_correlation()
-            r_score_te = prediction.epoch_val_correlation()  # validation set is used as a test set
+        # if self.args.task == "her2":
+        #     r_score_tr = prediction.epoch_tr_correlation()
+        #     r_score_te = prediction.epoch_val_correlation()  # validation set is used as a test set
         # ___________Define warm-up for ELBO loss_________
         if self.warmup_beta < 1 and self.pretraining_finished:
             self.warmup_beta = self.warmup_beta + 0.01
