@@ -6,7 +6,7 @@ from domid.compos.tensorboard_fun import tensorboard_write
 from domid.trainers.pretraining_KMeans import Pretraining
 from domid.utils.perf_cluster import PerfCluster
 from domid.utils.storing import Storing
-
+from tensorboardX import SummaryWriter
 
 class TrainerAE(AbstractTrainer):
     def init_business(self, model, task, observer, device, aconf, flag_accept=True):
@@ -38,11 +38,11 @@ class TrainerAE(AbstractTrainer):
             self.optimizer = optim.Adam(self.model.parameters(), lr=self.lr)
 
         self.epo_loss_tr = None
-        self.writer = None
         self.thres = aconf.pre_tr  # number of epochs for pretraining
         self.i_h, self.i_w = task.isize.h, task.isize.w
         self.args = aconf
         self.storage = Storing(self.args)
+        self.writer = SummaryWriter(logdir="debug/"+self.storage.experiment_name)
         self.loader_val = task.loader_tr
         self.aname = aconf.model
 
@@ -137,6 +137,7 @@ class TrainerAE(AbstractTrainer):
                 loss_val = pretrain.pretrain_loss(tensor_x_val, inject_tensor_val)
             else:
                 loss_val = self.model.cal_loss(tensor_x_val, inject_tensor_val, self.warmup_beta)
+        
         if self.writer != None:
             tensorboard_write(
                 self.writer,

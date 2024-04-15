@@ -14,7 +14,7 @@ def tensorboard_write(
     inject_tensor=None,
     other_info=None,
 ):
-    if lr > 2:
+    if lr > 0:
         writer.add_scalar("learning rate", lr, epoch)
         writer.add_scalar("warmup", warmup_beta, epoch)
         if not pretraining_finished:
@@ -39,10 +39,10 @@ def tensorboard_write(
             preds, *_, x_pro = model.infer_d_v_2(tensor_x, inject_tensor)
         else:
             preds, *_, x_pro = model.infer_d_v_2(tensor_x)
-
+        
         if len(x_pro.shape) < 3:
             x_pro = torch.reshape(x_pro, (x_pro.shape[0], tensor_x.shape[1], tensor_x.shape[2], tensor_x.shape[3]))
-
+        
         imgs = torch.cat(
             (
                 tensor_x[0:8, :, :, :],

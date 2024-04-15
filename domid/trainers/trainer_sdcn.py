@@ -231,19 +231,19 @@ class TrainerSDCN(AbstractTrainer):
                 loss_val = pretrain.pretrain_loss(tensor_x_val)
             else:
                 loss_val = self.model.cal_loss(tensor_x_val)
-
-        tensorboard_write(
-            self.writer,
-            self.model,
-            epoch,
-            self.lr,
-            self.warmup_beta,
-            acc_tr_y,
-            loss,
-            self.pretraining_finished,
-            tensor_x,
-            other_info=(kl_total, ce_total, re_total),
-        )
+        if self.writer!=None:
+            tensorboard_write(
+                self.writer,
+                self.model,
+                epoch,
+                self.lr,
+                self.warmup_beta,
+                acc_tr_y,
+                loss,
+                self.pretraining_finished,
+                tensor_x,
+                other_info=(kl_total, ce_total, re_total),
+            )
         if self.args.task == "wsi":
             self.model.random_ind = [torch.randint(0, self.args.bs, (int(self.args.bs / 3),)) for i in range(0, 65)]
 

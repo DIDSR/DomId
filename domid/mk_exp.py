@@ -15,6 +15,7 @@ def mk_exp(
     pre_tr=5,
     epos=10,
     nocu=True,
+    shuffling_off=False,
     **kwargs,
 ):
     """
@@ -40,6 +41,9 @@ def mk_exp(
     )
     if nocu:
         str_arg += " --nocu "
+    if shuffling_off:
+        str_arg += " --shuffling_off "
+        
     str_arg += " --tr_d " + train_domain
     str_arg += " --te_d " + test_domain
 
