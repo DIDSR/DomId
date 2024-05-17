@@ -165,6 +165,8 @@ html_theme_options = {
     "nav_links": [
         {"href": "about_link", "internal": True, "title": "About"},
         {"href": "readme_link", "internal": True, "title": "Quick Start"},
+        {"href": "addnew_link", "internal": True, "title": "Add New Modalitites to the Package"},
+        # {"href": "readme_link", "internal": True, "title": "Quick Start"},
         #        {
         #            "href": "doc_tasks",
         #            "internal": True,
