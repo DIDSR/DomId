@@ -6,7 +6,6 @@ from domainlab.algos.trainers.a_trainer import AbstractTrainer
 from domid.compos.predict_basic import Prediction
 from domid.compos.tensorboard_fun import tensorboard_write
 from domid.dsets.make_graph import GraphConstructor
-from domid.dsets.make_graph_her2 import GraphConstructorHER2
 from domid.dsets.make_graph_wsi import GraphConstructorWSI
 from domid.trainers.pretraining_sdcn import PretrainingSDCN
 from domid.utils.perf_cluster import PerfCluster

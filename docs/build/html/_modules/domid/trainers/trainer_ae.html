@@ -166,6 +166,8 @@
             <li class="md-tabs__item"><a href="../../../about_link.html" class="md-tabs__link">About</a></li>
             
             <li class="md-tabs__item"><a href="../../../readme_link.html" class="md-tabs__link">Quick Start</a></li>
+            
+            <li class="md-tabs__item"><a href="../../../addnew_link.html" class="md-tabs__link">Custom Datasets and Models</a></li>
           <li class="md-tabs__item"><a href="../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -311,6 +313,7 @@
   <h1 id="modules-domid-trainers-trainer-ae--page-root">Source code for domid.trainers.trainer_ae</h1><div class="highlight"><pre>
 <span></span>import torch.optim as optim
 from domainlab.algos.trainers.a_trainer import AbstractTrainer
+from tensorboardX import SummaryWriter
 
 from domid.compos.predict_basic import Prediction
 from domid.compos.tensorboard_fun import tensorboard_write
@@ -349,11 +352,11 @@ from domid.utils.storing import Storing
             self.optimizer = optim.Adam(self.model.parameters(), lr=self.lr)
 
         self.epo_loss_tr = None
-        self.writer = None
         self.thres = aconf.pre_tr  # number of epochs for pretraining
         self.i_h, self.i_w = task.isize.h, task.isize.w
         self.args = aconf
         self.storage = Storing(self.args)
+        self.writer = SummaryWriter(logdir="debug/" + self.storage.experiment_name)
         self.loader_val = task.loader_tr
         self.aname = aconf.model</div>
 
@@ -448,6 +451,7 @@ from domid.utils.storing import Storing
                 loss_val = pretrain.pretrain_loss(tensor_x_val, inject_tensor_val)
             else:
                 loss_val = self.model.cal_loss(tensor_x_val, inject_tensor_val, self.warmup_beta)
+
         if self.writer != None:
             tensorboard_write(
                 self.writer,

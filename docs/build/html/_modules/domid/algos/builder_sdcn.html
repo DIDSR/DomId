@@ -166,6 +166,8 @@
             <li class="md-tabs__item"><a href="../../../about_link.html" class="md-tabs__link">About</a></li>
             
             <li class="md-tabs__item"><a href="../../../readme_link.html" class="md-tabs__link">Quick Start</a></li>
+            
+            <li class="md-tabs__item"><a href="../../../addnew_link.html" class="md-tabs__link">Custom Datasets and Models</a></li>
           <li class="md-tabs__item"><a href="../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -347,6 +349,7 @@ from domid.trainers.zoo_trainer import TrainerChainNodeGetter
             model_method=args.model_method,
             pre_tr_weight_path=args.pre_tr_weight_path,
             feat_extract=args.feat_extract,
+            graph_method=args.graph_method,
         )
 
         observer = ObVisitorCleanUp(

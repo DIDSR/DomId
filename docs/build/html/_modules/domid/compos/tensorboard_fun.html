@@ -166,6 +166,8 @@
             <li class="md-tabs__item"><a href="../../../about_link.html" class="md-tabs__link">About</a></li>
             
             <li class="md-tabs__item"><a href="../../../readme_link.html" class="md-tabs__link">Quick Start</a></li>
+            
+            <li class="md-tabs__item"><a href="../../../addnew_link.html" class="md-tabs__link">Custom Datasets and Models</a></li>
           <li class="md-tabs__item"><a href="../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -325,7 +327,7 @@
     inject_tensor=None,
     other_info=None,
 ):
-    if lr &gt; 2:
+    if lr &gt; 0:
         writer.add_scalar("learning rate", lr, epoch)
         writer.add_scalar("warmup", warmup_beta, epoch)
         if not pretraining_finished:

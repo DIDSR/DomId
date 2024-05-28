@@ -166,6 +166,8 @@
             <li class="md-tabs__item"><a href="../../../about_link.html" class="md-tabs__link">About</a></li>
             
             <li class="md-tabs__item"><a href="../../../readme_link.html" class="md-tabs__link">Quick Start</a></li>
+            
+            <li class="md-tabs__item"><a href="../../../addnew_link.html" class="md-tabs__link">Custom Datasets and Models</a></li>
           <li class="md-tabs__item"><a href="../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -346,7 +348,7 @@ from domid.models.a_model_cluster import AModelCluster
             dim_inject_y=0,
             pre_tr_weight_path=None,
             feat_extract="vae",
-            graph_method="heat",
+            graph_method=None,
         ):
 
             super(ModelSDCN, self).__init__()
@@ -441,7 +443,7 @@ from domid.models.a_model_cluster import AModelCluster
                 self.graph_method = "heat"
             if "wsi" in self.task:
                 self.graph_method = "patch_distance"
-            if self.graph_method is not None:
+            if graph_method is not None:
                 self.graph_method = graph_method
 
             if self.task == "wsi":

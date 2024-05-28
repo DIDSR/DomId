@@ -166,6 +166,8 @@
             <li class="md-tabs__item"><a href="../../../about_link.html" class="md-tabs__link">About</a></li>
             
             <li class="md-tabs__item"><a href="../../../readme_link.html" class="md-tabs__link">Quick Start</a></li>
+            
+            <li class="md-tabs__item"><a href="../../../addnew_link.html" class="md-tabs__link">Custom Datasets and Models</a></li>
           <li class="md-tabs__item"><a href="../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -373,7 +375,8 @@ from sklearn.metrics import confusion_matrix
 
         model.eval()
         model_local = model.to(device)
-        df = clc()._load_csv_for_her2("../../HER2/combined_train")  # FIXME
+        # FIXME: hardcoded path
+        df = clc()._load_csv_for_her2("../../HER2/combined_train")
         image_id_labels = []
         domain_predictions = []
         with torch.no_grad():

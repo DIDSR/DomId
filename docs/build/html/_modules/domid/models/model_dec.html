@@ -166,6 +166,8 @@
             <li class="md-tabs__item"><a href="../../../about_link.html" class="md-tabs__link">About</a></li>
             
             <li class="md-tabs__item"><a href="../../../readme_link.html" class="md-tabs__link">Quick Start</a></li>
+            
+            <li class="md-tabs__item"><a href="../../../addnew_link.html" class="md-tabs__link">Custom Datasets and Models</a></li>
           <li class="md-tabs__item"><a href="../../index.html" class="md-tabs__link">Module code</a></li>
       </ul>
     </div>
@@ -453,7 +455,9 @@ from domid.models.a_model_cluster import AModelCluster
                 zy = results[2]
 
             x_pro, *_ = self.decoder(zy)
-            preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = (r.cpu().detach() for r in results)
+            preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = (
+                r.cpu().detach() if r is not None else None for r in results
+            )
             return preds, z_mu, z, log_sigma2_c, probs, x_pro
 
         def _cal_kl_loss(self, x, inject_tensor, warmup_beta=0.1):
