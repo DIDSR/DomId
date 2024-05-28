@@ -1,0 +1,490 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="lang:clipboard.copy" content="Copy to clipboard">
+  <meta name="lang:clipboard.copied" content="Copied to clipboard">
+  <meta name="lang:search.language" content="en">
+  <meta name="lang:search.pipeline.stopwords" content="True">
+  <meta name="lang:search.pipeline.trimmer" content="True">
+  <meta name="lang:search.result.none" content="No matching documents">
+  <meta name="lang:search.result.one" content="1 matching document">
+  <meta name="lang:search.result.other" content="# matching documents">
+  <meta name="lang:search.tokenizer" content="[\s\-]+">
+
+  
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
+
+    <style>
+      body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+    </style>
+  
+
+  <link rel="stylesheet" href="../_static/stylesheets/application.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-palette.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-fixes.css"/>
+  
+  <link rel="stylesheet" href="../_static/fonts/material-icons.css"/>
+  
+  <meta name="theme-color" content="#2196f3">
+  <script src="../_static/javascripts/modernizr.js"></script>
+  
+  
+    <link rel="apple-touch-icon" href="../_static/images/apple-icon-152x152.png"/>
+  
+  
+    <title>MICCAI 2023 Conference Paper &#8212; domid  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/material.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+  
+    <link rel="apple-touch-icon" href="../_static/images/apple-icon-152x152.png"/>
+  
+   
+
+  </head>
+  <body dir=ltr
+        data-md-color-primary=teal data-md-color-accent=cyan>
+  
+  <svg class="md-svg">
+    <defs data-children-count="0">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+      
+    </defs>
+  </svg>
+  
+  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
+  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
+  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+  <a href="#markdownfiles/conferences_commandlines" tabindex="1" class="md-skip"> Skip to content </a>
+  <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../index.html" title="domid  documentation"
+           class="md-header-nav__button md-logo">
+          
+            <i class="md-icon">school</i>
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          <span class="md-header-nav__topic">DomId</span>
+          <span class="md-header-nav__topic"> MICCAI 2023 Conference Paper </span>
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+        
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" action="../search.html" method="get" name="search">
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
+             autocapitalize="off" autocomplete="off" spellcheck="false"
+             data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            <a href="https://github.com/agisga/DomId" title="Go to repository" class="md-source" data-md-source="github">
+
+    <div class="md-source__icon">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="28" height="28">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    DomId
+  </div>
+</a>
+          </div>
+        </div>
+      
+      
+    </div>
+  </nav>
+</header>
+
+  
+  <div class="md-container">
+    
+    
+    
+  <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+      <ul class="md-tabs__list">
+            
+            <li class="md-tabs__item"><a href="../about_link.html" class="md-tabs__link">About</a></li>
+            
+            <li class="md-tabs__item"><a href="../readme_link.html" class="md-tabs__link">Quick Start</a></li>
+            
+            <li class="md-tabs__item"><a href="../addnew_link.html" class="md-tabs__link">Custom Datasets and Models</a></li>
+      </ul>
+    </div>
+  </nav>
+    <main class="md-main">
+      <div class="md-main__inner md-grid" data-md-component="container">
+        
+          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="../index.html" title="domid documentation" class="md-nav__button md-logo">
+      
+        <i class="md-icon">school</i>
+      
+    </a>
+    <a href="../index.html"
+       title="domid documentation">DomId</a>
+  </label>
+    <div class="md-nav__source">
+      <a href="https://github.com/agisga/DomId" title="Go to repository" class="md-source" data-md-source="github">
+
+    <div class="md-source__icon">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="28" height="28">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    DomId
+  </div>
+</a>
+    </div>
+  
+  
+
+  
+  <ul class="md-nav__list">
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">More information about the models</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../about_link.html" class="md-nav__link">About DomId</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Datasets and Tasks</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../domid.dsets.html" class="md-nav__link">domid.dsets package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../domid.tasks.html" class="md-nav__link">domid.tasks package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Models</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../domid.compos.html" class="md-nav__link">domid.compos package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../domid.models.html" class="md-nav__link">domid.models package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Training a Model</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../domid.algos.html" class="md-nav__link">domid.algos package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../domid.trainers.html" class="md-nav__link">domid.trainers package</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Utilities</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../domid.utils.html" class="md-nav__link">domid.utils package</a>
+      
+    
+    </li>
+  </ul>
+  
+
+</nav>
+              </div>
+            </div>
+          </div>
+          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">Contents</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#markdownfiles-conferences-commandlines--page-root" class="md-nav__link">MICCAI 2023 Conference Paper</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#vade-base-model-experiments" class="md-nav__link">VaDE Base Model Experiments</a>
+        </li>
+        <li class="md-nav__item"><a href="#cvade-her2-class-labels" class="md-nav__link">CVaDE: HER2 class labels</a>
+        </li>
+        <li class="md-nav__item"><a href="#cvade-her2-class-labels-previously-predicted-domain-labels" class="md-nav__link">CVaDE: HER2 class labels + previously predicted domain labels</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#chil-2024-conference" class="md-nav__link">CHIL 2024 Conference:</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#experiments-with-colored-mnist-dataset" class="md-nav__link">Experiments with Colored MNIST dataset</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#ae-pretraining" class="md-nav__link">AE pretraining</a>
+        </li>
+        <li class="md-nav__item"><a href="#sdcn" class="md-nav__link">SDCN</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#experiments-with-wash-u-dataset" class="md-nav__link">Experiments with Wash U dataset</a>
+        </li>
+        <li class="md-nav__item"><a href="#washu-dset" class="md-nav__link">WashU Dset</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#id1" class="md-nav__link">AE pretraining</a>
+        </li>
+        <li class="md-nav__item"><a href="#sdcn-training" class="md-nav__link">SDCN training</a>
+        </li>
+        <li class="md-nav__item"><a href="#vade-training" class="md-nav__link">VADE training</a>
+        </li>
+        <li class="md-nav__item"><a href="#dec-training" class="md-nav__link">DEC training</a>
+        </li></ul>
+            </nav>
+        </li></ul>
+            </nav>
+        </li>
+  </ul>
+</nav>
+              </div>
+            </div>
+          </div>
+        
+        <div class="md-content">
+          <article class="md-content__inner md-typeset" role="main">
+            
+  <section class="tex2jax_ignore mathjax_ignore" id="miccai-2023-conference-paper">
+<h1 id="markdownfiles-conferences-commandlines--page-root">MICCAI 2023 Conference Paper<a class="headerlink" href="#markdownfiles-conferences-commandlines--page-root" title="Permalink to this heading">¶</a></h1>
+<p>This is a summary of the steps to reproduce results presented in [Sidulova et al. 2023].
+Base Model experiments are the experiments with no condition applied to the model.</p>
+<p>[Sidulova et al. 2023] Sidulova, M., Sun, X., &amp; Gossmann, A. (2023). Deep Unsupervised Clustering for Conditional Identification of Subgroups Within a Digital Pathology Image Set. In H. Greenspan, A. Madabhushi, P. Mousavi, S. Salcudean, J. Duncan, T. Syeda-Mahmood, &amp; R. Taylor (Eds.), Medical Image Computing and Computer Assisted Intervention – MICCAI 2023 (Vol. 14227, pp. 666–675). Springer Nature Switzerland. <a class="reference external" href="https://doi.org/10.1007/978-3-031-43993-3_64">https://doi.org/10.1007/978-3-031-43993-3_64</a></p>
+<p>The same as in the <code class="docutils literal notranslate"><span class="pre">notebooks/case-study-HER2_VaDE_CDVaDE-DEC.ipynb</span></code>.</p>
+<section id="vade-base-model-experiments">
+<h2 id="vade-base-model-experiments">VaDE Base Model Experiments<a class="headerlink" href="#vade-base-model-experiments" title="Permalink to this heading">¶</a></h2>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>poetry run python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --epos=100 --aname=vade --zd_dim=250 --d_dim=3 \
+--apath=domid/algos/builder_vade.py --L=5 --pre_tr=20 --dpath "HER2/combined_train" --split 0.8 --bs 2 \
+--lr 0.00005 --prior Gaus --model cnn
+</pre></div>
+</div>
+<p><strong>Notes</strong>:</p>
+<ul class="simple">
+<li><p>Path to the dataset (<code class="docutils literal notranslate"><span class="pre">dpath</span></code>) needs to be adjusted depending on the location of the dataset.</p></li>
+<li><p>By default this and the other experiments below will use the GPU. If you wish to run the experiment on CPU use the command line argument <code class="docutils literal notranslate"><span class="pre">--nocu</span></code>.</p></li>
+</ul>
+</section>
+<section id="cvade-her2-class-labels">
+<h2 id="cvade-her2-class-labels">CVaDE: HER2 class labels<a class="headerlink" href="#cvade-her2-class-labels" title="Permalink to this heading">¶</a></h2>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>poetry run python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --epos=100 --aname=vade --zd_dim=250 --d_dim=3 \
+--apath=domid/algos/builder_vade.py --L=5 --pre_tr=20 --dpath "HER2/combined_train" --split 0.8 --bs 2 \
+--lr 0.00005 --prior Gaus --model cnn --dim_inject_y 3
+</pre></div>
+</div>
+<p><strong>Note</strong>: dimension of the injected labels (<code class="docutils literal notranslate"><span class="pre">dim_inject_y</span></code>) should be adjusted. Number of the possible class labels (e.g., for the HER2 dataset used in the paper it would be 3 - class 1, class 2, class 3)</p>
+</section>
+<section id="cvade-her2-class-labels-previously-predicted-domain-labels">
+<h2 id="cvade-her2-class-labels-previously-predicted-domain-labels">CVaDE: HER2 class labels + previously predicted domain labels<a class="headerlink" href="#cvade-her2-class-labels-previously-predicted-domain-labels" title="Permalink to this heading">¶</a></h2>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>poetry run python main_out.py --te_d 0 --tr_d 0 1 2 --task=her2 --epos=100 --aname=vade --zd_dim=250 --d_dim=3 \
+--apath=domid/algos/builder_vade.py --L=5 --pre_tr=20 --dpath "HER2/combined_train" --split 0.8 --bs 2 \
+--lr 0.00005 --prior Gaus --model cnn --dim_inject_y 6 --path_to_domain notebooks/2022-11-02\ 17\:30\:13.132561/
+</pre></div>
+</div>
+<p><strong>Notes</strong>:</p>
+<ul class="simple">
+<li><p>Dimension of the injected labels (<code class="docutils literal notranslate"><span class="pre">dim_inject_y</span></code>) in this case is the sum of the dimensions of the possible class labels and <code class="docutils literal notranslate"><span class="pre">d_dim</span></code> of previously predicted domains. (e.g. ).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">path_to_domain</span></code> is the path to the previously obtained results directory and needs to be specified. Predicted domain labels should be stored within the directory <code class="docutils literal notranslate"><span class="pre">path_to_domain</span></code> in the file <code class="docutils literal notranslate"><span class="pre">domain_labels.txt</span></code>.</p></li>
+</ul>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="chil-2024-conference">
+<h1 id="chil-2024-conference">CHIL 2024 Conference:<a class="headerlink" href="#chil-2024-conference" title="Permalink to this heading">¶</a></h1>
+<p>(in press) Sidulova M., Khaki S, Hegman I., Gossmann A. “Contextual unsupervised deep clustering of digital pathology dataset”, Accepted in CHIL 2024.</p>
+<section id="experiments-with-colored-mnist-dataset">
+<h2 id="experiments-with-colored-mnist-dataset">Experiments with Colored MNIST dataset<a class="headerlink" href="#experiments-with-colored-mnist-dataset" title="Permalink to this heading">¶</a></h2>
+<p>The following experiments are the same as in the <code class="docutils literal notranslate"><span class="pre">notebook/tutrial-MNIST-sdcn.ipynb</span></code>.</p>
+<section id="ae-pretraining">
+<h3 id="ae-pretraining">AE pretraining<a class="headerlink" href="#ae-pretraining" title="Permalink to this heading">¶</a></h3>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>poetry python main_out.py --te_d 0 --tr_d 0 1 2 3 4 5 6 7 8 9 --task=mnistcolor10 --epos=100 --aname ae --d_dim=10 --apath=domid/algos/builder_AE.py --bs 128 --lr 0.0001 --zd_dim=20 --pre_tr=0 --model cnn --prior Gaus
+</pre></div>
+</div>
+</section>
+<section id="sdcn">
+<h3 id="sdcn">SDCN<a class="headerlink" href="#sdcn" title="Permalink to this heading">¶</a></h3>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>poetry python main_out.py --te_d 0 --tr_d 0 1 2 3 4 5 6 7 8 9 --task=mnistcolor10 --epos=100 --aname sdcn --d_dim=10 --apath=domid/algos/builder_sdcn.py --bs 600 --lr 0.0001 --zd_dim=20 --pre_tr=2 --model cnn --prior Gaus --pre_tr_weight_path path/to/pretrained/AE/'
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>poetry python main_out.py --te_d 0 --tr_d 0 1 2 3 4 5 6 7 8 9 --task=mnistcolor10 --epos=100 --aname sdcn --d_dim=10 --apath=domid/algos/builder_sdcn.py --bs 600 --lr 0.0001 --zd_dim=20 --pre_tr=2 --model cnn --prior Gaus --pre_tr_weight_path 'path/to/pretrained/AE/’
+
+</pre></div>
+</div>
+<p>Sample pretrained AE for colored MNIST could be found in <code class="docutils literal notranslate"><span class="pre">./notebooks/2023-08-03</span> <span class="pre">09:06:05.234348_mnistcolor10_ae/</span></code>, <code class="docutils literal notranslate"><span class="pre">./notebooks/2023-08-01</span> <span class="pre">13:53:39.168459_mnistcolor10_ae/</span></code>.</p>
+</section>
+</section>
+<section id="experiments-with-wash-u-dataset">
+<h2 id="experiments-with-wash-u-dataset">Experiments with Wash U dataset<a class="headerlink" href="#experiments-with-wash-u-dataset" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="washu-dset">
+<h2 id="washu-dset">WashU Dset<a class="headerlink" href="#washu-dset" title="Permalink to this heading">¶</a></h2>
+<p>The following experiments are also set in <code class="docutils literal notranslate"><span class="pre">notebooks/case-study-WashU_AS_SDCN.ipynb</span></code>.</p>
+<section id="id1">
+<h3 id="id1">AE pretraining<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h3>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>CUDA_VISIBLE_DEVICES=2 python main_out.py --te_d 0 --tr_d 0 1 2 3 4 5 6 7 8 9 --task=weah --epos=100 --aname ae --d_dim=10 --apath=domid/algos/builder_AE.py --dpath '../../WashU-WSI-data/patches_WashU_Aperio/data/png_files/' --bs 128 --lr 0.0001 --zd_dim=100 --pre_tr=2 --model cnn --prior Gaus --tr_d_range 0 24
+</pre></div>
+</div>
+</section>
+<section id="sdcn-training">
+<h3 id="sdcn-training">SDCN training<a class="headerlink" href="#sdcn-training" title="Permalink to this heading">¶</a></h3>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>CUDA_VISIBLE_DEVICES=2 python main_out.py --te_d 0 --tr_d 0 1 2 3 4 5 6 7 8 9 --task=weah --epos=100 --aname sdcn --d_dim=6 --apath=domid/algos/builder_sdcn.py --dpath '../../WashU_with_coord/combined_training_with_coords/' --bs 1200 --lr 0.0001 --zd_dim=1000 --pre_tr=2 --model cnn --pre_tr_weight_path 'path/to/pretrained/AE' --tr_d_range 0 65 --meta_data_csv 'path/to_csv_file_that_is_generated_from_the_notebook.csv'
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Sample path to generated csv file: <code class="docutils literal notranslate"><span class="pre">../../WashU_with_coord/dset_WEAH.csv</span></code>, <code class="docutils literal notranslate"><span class="pre">../../WashU_with_coord/dset_WEAH_65_subjects_3_regions.csv</span></code>.</p></li>
+<li><p>Sample paths to pretrained AEs: <code class="docutils literal notranslate"><span class="pre">./notebooks/2023-06-30</span> <span class="pre">10:38:27.253550_weah_ae/</span></code>, <code class="docutils literal notranslate"><span class="pre">./notebooks/2023-07-05</span> <span class="pre">12:18:40.078628_weah_ae/</span></code>.</p></li>
+</ul>
+</section>
+<section id="vade-training">
+<h3 id="vade-training">VADE training<a class="headerlink" href="#vade-training" title="Permalink to this heading">¶</a></h3>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>CUDA_VISIBLE_DEVICES=2 python main_out.py --te_d 0 --tr_d 0 1 2 --task=weah --epos=50 --aname=vade --zd_dim=500 --d_dim=6 --apath=domid/algos/builder_vade.py --L=5 --pre_tr=17 --dpath "../../WashU_with_coord/combined_training_with_coords" --bs 4 --prior Gaus --model cnn --lr 0.0001 --tr_d_range 0 65 --meta_data_csv '../../WashU_with_coord/dset_WEAH_65_subjects_3_regions.csv'
+</pre></div>
+</div>
+</section>
+<section id="dec-training">
+<h3 id="dec-training">DEC training<a class="headerlink" href="#dec-training" title="Permalink to this heading">¶</a></h3>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>CUDA_VISIBLE_DEVICES=2 python main_out.py --te_d 0 --tr_d 0 1 2 --task=weah --epos=50 --aname=dec --zd_dim=500 --d_dim=6 --apath=domid/algos/builder_dec.py --L=5 --pre_tr=2 --dpath "../../WashU_with_coord/combined_training_with_coords" --bs 4 --prior Gaus --model cnn --lr 0.0001 --tr_d_range 0 6 --meta_data_csv '../../WashU_with_coord/dset_WEAH_65_subjects_3_regions.csv' --pre_tr_weight_path './notebooks/2023-06-30 10:38:27.253550_weah_ae/' --feat_extract ae
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Note: <code class="docutils literal notranslate"><span class="pre">--feat_extract</span></code> can be either “ae” of “vae”, option for loading pretrained weights also in place.</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+          </article>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer class="md-footer">
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+          
+          
+        </a>
+        
+      </nav>
+    </div>
+    <div class="md-footer-meta md-typeset">
+      <div class="md-footer-meta__inner md-grid">
+        <div class="md-footer-copyright">
+          <div class="md-footer-copyright__highlight">
+              &#169; Copyright 2024, FDA/CDRH/OSEL/DIDSR..
+              
+          </div>
+            Created using
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+             and
+            <a href="https://github.com/bashtage/sphinx-material/">Material for
+              Sphinx</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="../_static/javascripts/application.js"></script>
+  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
+  </body>
+</html>
