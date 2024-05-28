@@ -309,7 +309,8 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <h1 id="modules-domid-tests-test-graph--page-root">Source code for domid.tests.test_graph</h1><div class="highlight"><pre>
-<span></span>import torch
+<span></span>import numpy as np
+import torch
 from domainlab.tasks.utils_task import DsetDomainVecDecorator
 
 from domid.arg_parser import mk_parser_main
@@ -355,6 +356,35 @@ from domid.tasks.task_mnist_color import NodeTaskMNISTColor10
     return adjacency_matrices, sparse_matrices</div>
 
 
+<div class="viewcode-block" id="test_data"><a class="viewcode-back" href="../../../domid.tests.html#domid.tests.test_graph.test_data">[docs]</a>def test_data():
+    return np.array([[1, 2], [3, 4]])</div>
+
+
+<div class="viewcode-block" id="test_graph_methods"><a class="viewcode-back" href="../../../domid.tests.html#domid.tests.test_graph.test_graph_methods">[docs]</a>def test_graph_methods():
+    sample_mx = test_data()
+    dist1 = GraphConstructor("heat", 2).distance_calc(sample_mx)
+    dist2 = GraphConstructor("cos", 2).distance_calc(sample_mx)
+    dist3 = GraphConstructor("ncos", 2).distance_calc(sample_mx)
+
+    assert dist1.shape == (2, 2)
+    assert dist2.shape == (2, 2)
+    assert dist3.shape == (2, 2)</div>
+
+
+<div class="viewcode-block" id="test_connection_calc"><a class="viewcode-back" href="../../../domid.tests.html#domid.tests.test_graph.test_connection_calc">[docs]</a>def test_connection_calc():
+    sample_mx = test_data()
+    GraphConstructor("heat", 1).connection_calc(sample_mx)
+    GraphConstructor("cos", 1).connection_calc(sample_mx)
+    GraphConstructor("ncos", 1).connection_calc(sample_mx)</div>
+
+
+<div class="viewcode-block" id="test_mk_adj_mat"><a class="viewcode-back" href="../../../domid.tests.html#domid.tests.test_graph.test_mk_adj_mat">[docs]</a>def test_mk_adj_mat():
+    sample_mx = test_data()
+    graph_constructor = GraphConstructor("heat", 1)
+    dist, inds, connection_pairs = graph_constructor.connection_calc(sample_mx)
+    adj_mx = graph_constructor.mk_adj_mat(2, connection_pairs)</div>
+
+
 <div class="viewcode-block" id="test_MNISTcolor_SDCN_graph_construction_heat"><a class="viewcode-back" href="../../../domid.tests.html#domid.tests.test_graph.test_MNISTcolor_SDCN_graph_construction_heat">[docs]</a>def test_MNISTcolor_SDCN_graph_construction_heat():
     print("done")
     parser = mk_parser_main()
@@ -372,7 +402,7 @@ from domid.tasks.task_mnist_color import NodeTaskMNISTColor10
             "mnistcolor10",
             "--bs",
             "50",
-            "--aname",
+            "--model",
             "sdcn",
             "--zd_dim",
             "5",
@@ -382,7 +412,7 @@ from domid.tasks.task_mnist_color import NodeTaskMNISTColor10
             "5",
             "--prior",
             "Bern",
-            "--model",
+            "--model_method",
             "linear",
             "--graph_method",
             "heat",
@@ -413,7 +443,7 @@ from domid.tasks.task_mnist_color import NodeTaskMNISTColor10
             "mnist",
             "--bs",
             "50",
-            "--aname",
+            "--model",
             "sdcn",
             "--zd_dim",
             "5",
@@ -423,7 +453,7 @@ from domid.tasks.task_mnist_color import NodeTaskMNISTColor10
             "5",
             "--prior",
             "Bern",
-            "--model",
+            "--model_method",
             "linear",
             "--graph_method",
             "ncos",

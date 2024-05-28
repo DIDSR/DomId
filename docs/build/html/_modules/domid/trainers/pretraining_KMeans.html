@@ -336,7 +336,7 @@ from sklearn.cluster import KMeans
         :return: the loss
         """
         # import pdb; pdb.set_trace()
-        loss = self.model.pretrain_loss(tensor_x, inject_tensor)
+        loss = self.model._cal_pretrain_loss(tensor_x, inject_tensor)
         return loss</div>
 
 <div class="viewcode-block" id="Pretraining.model_fit"><a class="viewcode-back" href="../../../domid.trainers.html#domid.trainers.pretraining_KMeans.Pretraining.model_fit">[docs]</a>    def model_fit(self):

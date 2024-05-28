@@ -309,12 +309,8 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <h1 id="modules-domid-compos-linear-ae--page-root">Source code for domid.compos.linear_AE</h1><div class="highlight"><pre>
-<span></span>import numpy as np
-import torch
-import torch.nn as nn
+<span></span>import torch.nn as nn
 import torch.nn.functional as F
-
-from domid.compos.VAE_blocks import linear_block
 
 
 <div class="viewcode-block" id="LinearEncoderAE"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.linear_AE.LinearEncoderAE">[docs]</a>class LinearEncoderAE(nn.Module):
@@ -324,6 +320,13 @@ from domid.compos.VAE_blocks import linear_block
         self.enc_2 = nn.Linear(n_enc_1, n_enc_2)
         self.enc_3 = nn.Linear(n_enc_2, n_enc_3)
         self.z_layer = nn.Linear(n_enc_3, n_z)</div>
+
+<div class="viewcode-block" id="LinearEncoderAE.get_z"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.linear_AE.LinearEncoderAE.get_z">[docs]</a>    def get_z(self, x):
+        *_, z = self.forward(x)
+        return z</div>
+
+<div class="viewcode-block" id="LinearEncoderAE.get_log_sigma2"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.linear_AE.LinearEncoderAE.get_log_sigma2">[docs]</a>    def get_log_sigma2(self, x):
+        return None</div>
 
 <div class="viewcode-block" id="LinearEncoderAE.forward"><a class="viewcode-back" href="../../../domid.compos.html#domid.compos.linear_AE.LinearEncoderAE.forward">[docs]</a>    def forward(self, x):
         enc_h1 = F.relu(self.enc_1(x))

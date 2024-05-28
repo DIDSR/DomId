@@ -44,6 +44,14 @@ domid.algos.builder\_vade module
    :undoc-members:
    :show-inheritance:
 
+domid.algos.zoo\_algos module
+-----------------------------
+
+.. automodule:: domid.algos.zoo_algos
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

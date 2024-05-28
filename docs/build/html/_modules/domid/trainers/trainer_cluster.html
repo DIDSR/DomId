@@ -322,7 +322,8 @@ from domid.utils.storing import Storing
 
 
 <div class="viewcode-block" id="TrainerCluster"><a class="viewcode-back" href="../../../domid.trainers.html#domid.trainers.trainer_cluster.TrainerCluster">[docs]</a>class TrainerCluster(AbstractTrainer):
-<div class="viewcode-block" id="TrainerCluster.__init__"><a class="viewcode-back" href="../../../domid.trainers.html#domid.trainers.trainer_cluster.TrainerCluster.__init__">[docs]</a>    def __init__(self, model, task, observer, device, writer, pretrain=True, aconf=None):
+<div class="viewcode-block" id="TrainerCluster.init_business"><a class="viewcode-back" href="../../../domid.trainers.html#domid.trainers.trainer_cluster.TrainerCluster.init_business">[docs]</a>    def init_business(self, model, task, observer, device, aconf, flag_accept=True):
+
         """
         :param model: model to train
         :param task: task to train on
@@ -333,10 +334,13 @@ from domid.utils.storing import Storing
         :param aconf: configuration parameters, including learning rate and pretrain threshold
         """
 
-        super().__init__()
+        # super().__init__()
         super().init_business(model, task, observer, device, aconf)
 
-        self.pretrain = pretrain
+        if aconf.pre_tr &gt; 0:
+            self.pretrain = True
+        else:
+            self.pretrain = False
         self.pretraining_finished = not self.pretrain
         self.lr = aconf.lr
         self.warmup_beta = 0.1
@@ -349,13 +353,13 @@ from domid.utils.storing import Storing
             self.optimizer = optim.Adam(self.model.parameters(), lr=self.lr)
 
         self.epo_loss_tr = None
-        self.writer = writer
+        self.writer = None
         self.thres = aconf.pre_tr  # number of epochs for pretraining
         self.i_h, self.i_w = task.isize.h, task.isize.w
         self.args = aconf
         self.storage = Storing(self.args)
         self.loader_val = task.loader_val
-        self.aname = aconf.aname</div>
+        self.aname = aconf.model</div>
 
 <div class="viewcode-block" id="TrainerCluster.tr_epoch"><a class="viewcode-back" href="../../../domid.trainers.html#domid.trainers.trainer_cluster.TrainerCluster.tr_epoch">[docs]</a>    def tr_epoch(self, epoch):
         """
@@ -416,7 +420,6 @@ from domid.utils.storing import Storing
                     print("".join(["#"] * 60))
                     print("Epoch {}: Finished pretraining and starting to use the full model loss.".format(epoch))
                     print("".join(["#"] * 60))
-
                 loss = self.model.cal_loss(tensor_x, inject_tensor, self.warmup_beta)
 
             loss = loss.sum()
@@ -454,19 +457,19 @@ from domid.utils.storing import Storing
                 loss_val = pretrain.pretrain_loss(tensor_x_val, inject_tensor_val)
             else:
                 loss_val = self.model.cal_loss(tensor_x_val, inject_tensor_val, self.warmup_beta)
-
-        tensorboard_write(
-            self.writer,
-            self.model,
-            epoch,
-            self.lr,
-            self.warmup_beta,
-            acc_tr_y,
-            loss,
-            self.pretraining_finished,
-            tensor_x,
-            inject_tensor,
-        )
+        if self.writer is not None:
+            tensorboard_write(
+                self.writer,
+                self.model,
+                epoch,
+                self.lr,
+                self.warmup_beta,
+                acc_tr_y,
+                loss,
+                self.pretraining_finished,
+                tensor_x,
+                inject_tensor,
+            )
 
         # _____storing results and Z space__________
         self.storage.storing(

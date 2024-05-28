@@ -309,18 +309,14 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <h1 id="modules-domid-tests-test-losses--page-root">Source code for domid.tests.test_losses</h1><div class="highlight"><pre>
-<span></span>from domid.arg_parser import mk_parser_main
+<span></span>import pytest
+
+from domid.arg_parser import mk_parser_main
 from domid.compos.exp.exp_main import Exp
+from domid.tests.utils import experiment_train
 
 
-<div class="viewcode-block" id="experiment_train"><a class="viewcode-back" href="../../../domid.tests.html#domid.tests.test_losses.experiment_train">[docs]</a>def experiment_train(args):
-    exp = Exp(args)
-    exp.trainer.before_tr()
-    exp.trainer.tr_epoch(0)</div>
-    # exp.trainer.post_tr()
-
-
-<div class="viewcode-block" id="test_VADE_CNN_nonbinary"><a class="viewcode-back" href="../../../domid.tests.html#domid.tests.test_losses.test_VADE_CNN_nonbinary">[docs]</a>def test_VADE_CNN_nonbinary():
+<div class="viewcode-block" id="test_VADE_CNN_nonbinary"><a class="viewcode-back" href="../../../domid.tests.html#domid.tests.test_losses.test_VADE_CNN_nonbinary">[docs]</a>def test_VADE_CNN_nonbinary(tmp_path):
     parser = mk_parser_main()
     args = parser.parse_args(
         [
@@ -338,7 +334,7 @@ from domid.compos.exp.exp_main import Exp
             "zout",
             "--task",
             "mnist",
-            "--aname",
+            "--model",
             "vade",
             "--apath",
             "domid/algos/builder_vade.py",
@@ -354,16 +350,18 @@ from domid.compos.exp.exp_main import Exp
             "--nocu",
             "--prior",
             "Gaus",
-            "--model",
+            "--model_method",
             "cnn",
             "--pre_tr",
             "0",
+            "--trainer",
+            "cluster",
         ]
     )
-    experiment_train(args)</div>
+    experiment_train(args, save_path=tmp_path)</div>
 
 
-<div class="viewcode-block" id="test_VADE_CNN"><a class="viewcode-back" href="../../../domid.tests.html#domid.tests.test_losses.test_VADE_CNN">[docs]</a>def test_VADE_CNN():
+<div class="viewcode-block" id="test_VADE_CNN"><a class="viewcode-back" href="../../../domid.tests.html#domid.tests.test_losses.test_VADE_CNN">[docs]</a>def test_VADE_CNN(tmp_path):
     parser = mk_parser_main()
     args = parser.parse_args(
         [
@@ -381,7 +379,7 @@ from domid.compos.exp.exp_main import Exp
             "zout",
             "--task",
             "mnist",
-            "--aname",
+            "--model",
             "vade",
             "--apath",
             "domid/algos/builder_vade.py",
@@ -395,16 +393,18 @@ from domid.compos.exp.exp_main import Exp
             "5",
             "--debug",
             "--nocu",
-            "--model",
+            "--model_method",
             "cnn",
             "--pre_tr",
             "0",
+            "--trainer",
+            "cluster",
         ]
     )
-    experiment_train(args)</div>
+    experiment_train(args, save_path=tmp_path)</div>
 
 
-<div class="viewcode-block" id="test_VADE_nonbinary"><a class="viewcode-back" href="../../../domid.tests.html#domid.tests.test_losses.test_VADE_nonbinary">[docs]</a>def test_VADE_nonbinary():
+<div class="viewcode-block" id="test_VADE_nonbinary"><a class="viewcode-back" href="../../../domid.tests.html#domid.tests.test_losses.test_VADE_nonbinary">[docs]</a>def test_VADE_nonbinary(tmp_path):
     parser = mk_parser_main()
     args = parser.parse_args(
         [
@@ -422,7 +422,7 @@ from domid.compos.exp.exp_main import Exp
             "zout",
             "--task",
             "mnist",
-            "--aname",
+            "--model",
             "vade",
             "--apath",
             "domid/algos/builder_vade.py",
@@ -440,12 +440,14 @@ from domid.compos.exp.exp_main import Exp
             "Gaus",
             "--pre_tr",
             "0",
+            "--trainer",
+            "cluster",
         ]
     )
-    experiment_train(args)</div>
+    experiment_train(args, save_path=tmp_path)</div>
 
 
-<div class="viewcode-block" id="test_VADE"><a class="viewcode-back" href="../../../domid.tests.html#domid.tests.test_losses.test_VADE">[docs]</a>def test_VADE():
+<div class="viewcode-block" id="test_VADE"><a class="viewcode-back" href="../../../domid.tests.html#domid.tests.test_losses.test_VADE">[docs]</a>def test_VADE(tmp_path):
     parser = mk_parser_main()
     args = parser.parse_args(
         [
@@ -463,7 +465,7 @@ from domid.compos.exp.exp_main import Exp
             "zout",
             "--task",
             "mnist",
-            "--aname",
+            "--model",
             "vade",
             "--apath",
             "domid/algos/builder_vade.py",
@@ -479,9 +481,11 @@ from domid.compos.exp.exp_main import Exp
             "--nocu",
             "--pre_tr",
             "0",
+            "--trainer",
+            "cluster",
         ]
     )
-    experiment_train(args)</div>
+    experiment_train(args, save_path=tmp_path)</div>
 </pre></div>
 
           </article>

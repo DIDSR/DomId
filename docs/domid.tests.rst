@@ -52,6 +52,14 @@ domid.tests.test\_model\_trainer module
    :undoc-members:
    :show-inheritance:
 
+domid.tests.utils module
+------------------------
+
+.. automodule:: domid.tests.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

@@ -52,6 +52,14 @@ domid.trainers.trainer\_sdcn module
    :undoc-members:
    :show-inheritance:
 
+domid.trainers.zoo\_trainer module
+----------------------------------
+
+.. automodule:: domid.trainers.zoo_trainer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

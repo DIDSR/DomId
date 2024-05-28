@@ -270,9 +270,17 @@
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#domid.models.a_model_cluster.AModelCluster" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">AModelCluster</span></code></a><nav class="md-nav">
               <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#domid.models.a_model_cluster.AModelCluster.__init__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">AModelCluster.__init__()</span></code></a>
+        </li>
         <li class="md-nav__item"><a href="#domid.models.a_model_cluster.AModelCluster.create_perf_obj" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">AModelCluster.create_perf_obj()</span></code></a>
         </li>
         <li class="md-nav__item"><a href="#domid.models.a_model_cluster.AModelCluster.cal_perf_metric" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">AModelCluster.cal_perf_metric()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#domid.models.a_model_cluster.AModelCluster.cal_loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">AModelCluster.cal_loss()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#domid.models.a_model_cluster.AModelCluster.infer_d_v" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">AModelCluster.infer_d_v()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#domid.models.a_model_cluster.AModelCluster.extend" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">AModelCluster.extend()</span></code></a>
         </li></ul>
             </nav>
         </li></ul>
@@ -280,21 +288,7 @@
         </li>
         <li class="md-nav__item"><a href="#module-domid.models.model_ae" class="md-nav__link">domid.models.model_ae module</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.models.model_ae.ModelAE" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelAE</span></code></a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.models.model_ae.ModelAE.__init__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelAE.__init__()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_ae.ModelAE.distance_between_clusters" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelAE.distance_between_clusters()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_ae.ModelAE.infer_d_v" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelAE.infer_d_v()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_ae.ModelAE.infer_d_v_2" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelAE.infer_d_v_2()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_ae.ModelAE.cal_loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelAE.cal_loss()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_ae.ModelAE.pretrain_loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelAE.pretrain_loss()</span></code></a>
-        </li></ul>
-            </nav>
+        <li class="md-nav__item"><a href="#domid.models.model_ae.mk_ae" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">mk_ae()</span></code></a>
         </li>
         <li class="md-nav__item"><a href="#domid.models.model_ae.test_fun" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">test_fun()</span></code></a>
         </li></ul>
@@ -302,41 +296,13 @@
         </li>
         <li class="md-nav__item"><a href="#module-domid.models.model_dec" class="md-nav__link">domid.models.model_dec module</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.models.model_dec.ModelDEC" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelDEC</span></code></a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.models.model_dec.ModelDEC.__init__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelDEC.__init__()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_dec.ModelDEC.target_distribution" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelDEC.target_distribution()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_dec.ModelDEC.infer_d_v" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelDEC.infer_d_v()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_dec.ModelDEC.infer_d_v_2" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelDEC.infer_d_v_2()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_dec.ModelDEC.pretrain_loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelDEC.pretrain_loss()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_dec.ModelDEC.cal_loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelDEC.cal_loss()</span></code></a>
-        </li></ul>
-            </nav>
+        <li class="md-nav__item"><a href="#domid.models.model_dec.mk_dec" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">mk_dec()</span></code></a>
         </li></ul>
             </nav>
         </li>
         <li class="md-nav__item"><a href="#module-domid.models.model_m2yd" class="md-nav__link">domid.models.model_m2yd module</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.models.model_m2yd.ModelXY2D" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelXY2D</span></code></a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.models.model_m2yd.ModelXY2D.__init__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelXY2D.__init__()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_m2yd.ModelXY2D.cal_logit_y" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelXY2D.cal_logit_y()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_m2yd.ModelXY2D.infer_y_vpicn" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelXY2D.infer_y_vpicn()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_m2yd.ModelXY2D.infer_d_v" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelXY2D.infer_d_v()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_m2yd.ModelXY2D.forward" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelXY2D.forward()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_m2yd.ModelXY2D.cal_loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelXY2D.cal_loss()</span></code></a>
-        </li></ul>
-            </nav>
+        <li class="md-nav__item"><a href="#domid.models.model_m2yd.mk_m2yd" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">mk_m2yd()</span></code></a>
         </li>
         <li class="md-nav__item"><a href="#domid.models.model_m2yd.test_fun" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">test_fun()</span></code></a>
         </li></ul>
@@ -344,49 +310,13 @@
         </li>
         <li class="md-nav__item"><a href="#module-domid.models.model_sdcn" class="md-nav__link">domid.models.model_sdcn module</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.models.model_sdcn.ModelSDCN" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelSDCN</span></code></a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.models.model_sdcn.ModelSDCN.__init__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelSDCN.__init__()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_sdcn.ModelSDCN.infer_d_v" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelSDCN.infer_d_v()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_sdcn.ModelSDCN.infer_d_v_2" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelSDCN.infer_d_v_2()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_sdcn.ModelSDCN.target_distribution" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelSDCN.target_distribution()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_sdcn.ModelSDCN.cal_loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelSDCN.cal_loss()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_sdcn.ModelSDCN.cal_loss_for_tensorboard" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelSDCN.cal_loss_for_tensorboard()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_sdcn.ModelSDCN.pretrain_loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelSDCN.pretrain_loss()</span></code></a>
-        </li></ul>
-            </nav>
+        <li class="md-nav__item"><a href="#domid.models.model_sdcn.mk_sdcn" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">mk_sdcn()</span></code></a>
         </li></ul>
             </nav>
         </li>
         <li class="md-nav__item"><a href="#module-domid.models.model_vade" class="md-nav__link">domid.models.model_vade module</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE</span></code></a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE.__init__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE.__init__()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE.infer_d_v" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE.infer_d_v()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE.infer_d_v_2" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE.infer_d_v_2()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE.cal_loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE.cal_loss()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE.pretrain_loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE.pretrain_loss()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE.reconstruction_loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE.reconstruction_loss()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE.ELBO_Loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE.ELBO_Loss()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE.gaussian_pdfs_log" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE.gaussian_pdfs_log()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE.gaussian_pdf_log" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE.gaussian_pdf_log()</span></code></a>
-        </li></ul>
-            </nav>
+        <li class="md-nav__item"><a href="#domid.models.model_vade.mk_vade" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">mk_vade()</span></code></a>
         </li>
         <li class="md-nav__item"><a href="#domid.models.model_vade.test_fun" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">test_fun()</span></code></a>
         </li></ul>
@@ -510,9 +440,17 @@
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#domid.models.a_model_cluster.AModelCluster" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">AModelCluster</span></code></a><nav class="md-nav">
               <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#domid.models.a_model_cluster.AModelCluster.__init__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">AModelCluster.__init__()</span></code></a>
+        </li>
         <li class="md-nav__item"><a href="#domid.models.a_model_cluster.AModelCluster.create_perf_obj" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">AModelCluster.create_perf_obj()</span></code></a>
         </li>
         <li class="md-nav__item"><a href="#domid.models.a_model_cluster.AModelCluster.cal_perf_metric" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">AModelCluster.cal_perf_metric()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#domid.models.a_model_cluster.AModelCluster.cal_loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">AModelCluster.cal_loss()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#domid.models.a_model_cluster.AModelCluster.infer_d_v" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">AModelCluster.infer_d_v()</span></code></a>
+        </li>
+        <li class="md-nav__item"><a href="#domid.models.a_model_cluster.AModelCluster.extend" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">AModelCluster.extend()</span></code></a>
         </li></ul>
             </nav>
         </li></ul>
@@ -520,21 +458,7 @@
         </li>
         <li class="md-nav__item"><a href="#module-domid.models.model_ae" class="md-nav__link">domid.models.model_ae module</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.models.model_ae.ModelAE" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelAE</span></code></a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.models.model_ae.ModelAE.__init__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelAE.__init__()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_ae.ModelAE.distance_between_clusters" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelAE.distance_between_clusters()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_ae.ModelAE.infer_d_v" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelAE.infer_d_v()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_ae.ModelAE.infer_d_v_2" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelAE.infer_d_v_2()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_ae.ModelAE.cal_loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelAE.cal_loss()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_ae.ModelAE.pretrain_loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelAE.pretrain_loss()</span></code></a>
-        </li></ul>
-            </nav>
+        <li class="md-nav__item"><a href="#domid.models.model_ae.mk_ae" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">mk_ae()</span></code></a>
         </li>
         <li class="md-nav__item"><a href="#domid.models.model_ae.test_fun" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">test_fun()</span></code></a>
         </li></ul>
@@ -542,41 +466,13 @@
         </li>
         <li class="md-nav__item"><a href="#module-domid.models.model_dec" class="md-nav__link">domid.models.model_dec module</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.models.model_dec.ModelDEC" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelDEC</span></code></a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.models.model_dec.ModelDEC.__init__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelDEC.__init__()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_dec.ModelDEC.target_distribution" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelDEC.target_distribution()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_dec.ModelDEC.infer_d_v" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelDEC.infer_d_v()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_dec.ModelDEC.infer_d_v_2" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelDEC.infer_d_v_2()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_dec.ModelDEC.pretrain_loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelDEC.pretrain_loss()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_dec.ModelDEC.cal_loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelDEC.cal_loss()</span></code></a>
-        </li></ul>
-            </nav>
+        <li class="md-nav__item"><a href="#domid.models.model_dec.mk_dec" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">mk_dec()</span></code></a>
         </li></ul>
             </nav>
         </li>
         <li class="md-nav__item"><a href="#module-domid.models.model_m2yd" class="md-nav__link">domid.models.model_m2yd module</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.models.model_m2yd.ModelXY2D" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelXY2D</span></code></a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.models.model_m2yd.ModelXY2D.__init__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelXY2D.__init__()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_m2yd.ModelXY2D.cal_logit_y" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelXY2D.cal_logit_y()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_m2yd.ModelXY2D.infer_y_vpicn" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelXY2D.infer_y_vpicn()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_m2yd.ModelXY2D.infer_d_v" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelXY2D.infer_d_v()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_m2yd.ModelXY2D.forward" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelXY2D.forward()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_m2yd.ModelXY2D.cal_loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelXY2D.cal_loss()</span></code></a>
-        </li></ul>
-            </nav>
+        <li class="md-nav__item"><a href="#domid.models.model_m2yd.mk_m2yd" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">mk_m2yd()</span></code></a>
         </li>
         <li class="md-nav__item"><a href="#domid.models.model_m2yd.test_fun" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">test_fun()</span></code></a>
         </li></ul>
@@ -584,49 +480,13 @@
         </li>
         <li class="md-nav__item"><a href="#module-domid.models.model_sdcn" class="md-nav__link">domid.models.model_sdcn module</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.models.model_sdcn.ModelSDCN" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelSDCN</span></code></a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.models.model_sdcn.ModelSDCN.__init__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelSDCN.__init__()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_sdcn.ModelSDCN.infer_d_v" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelSDCN.infer_d_v()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_sdcn.ModelSDCN.infer_d_v_2" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelSDCN.infer_d_v_2()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_sdcn.ModelSDCN.target_distribution" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelSDCN.target_distribution()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_sdcn.ModelSDCN.cal_loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelSDCN.cal_loss()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_sdcn.ModelSDCN.cal_loss_for_tensorboard" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelSDCN.cal_loss_for_tensorboard()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_sdcn.ModelSDCN.pretrain_loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelSDCN.pretrain_loss()</span></code></a>
-        </li></ul>
-            </nav>
+        <li class="md-nav__item"><a href="#domid.models.model_sdcn.mk_sdcn" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">mk_sdcn()</span></code></a>
         </li></ul>
             </nav>
         </li>
         <li class="md-nav__item"><a href="#module-domid.models.model_vade" class="md-nav__link">domid.models.model_vade module</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE</span></code></a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE.__init__" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE.__init__()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE.infer_d_v" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE.infer_d_v()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE.infer_d_v_2" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE.infer_d_v_2()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE.cal_loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE.cal_loss()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE.pretrain_loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE.pretrain_loss()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE.reconstruction_loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE.reconstruction_loss()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE.ELBO_Loss" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE.ELBO_Loss()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE.gaussian_pdfs_log" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE.gaussian_pdfs_log()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#domid.models.model_vade.ModelVaDE.gaussian_pdf_log" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">ModelVaDE.gaussian_pdf_log()</span></code></a>
-        </li></ul>
-            </nav>
+        <li class="md-nav__item"><a href="#domid.models.model_vade.mk_vade" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">mk_vade()</span></code></a>
         </li>
         <li class="md-nav__item"><a href="#domid.models.model_vade.test_fun" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">test_fun()</span></code></a>
         </li></ul>
@@ -658,6 +518,11 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
 <p>Operations that all clustering models should have</p>
 <dl class="py method">
+<dt class="sig sig-object py" id="domid.models.a_model_cluster.AModelCluster.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/a_model_cluster.html#AModelCluster.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.a_model_cluster.AModelCluster.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p>
+</dd></dl>
+<dl class="py method">
 <dt class="sig sig-object py" id="domid.models.a_model_cluster.AModelCluster.create_perf_obj">
 <span class="sig-name descname"><span class="pre">create_perf_obj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/a_model_cluster.html#AModelCluster.create_perf_obj"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.a_model_cluster.AModelCluster.create_perf_obj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets up the performance metrics used.</p>
@@ -667,27 +532,16 @@
 <span class="sig-name descname"><span class="pre">cal_perf_metric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loader_tr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loader_te</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/a_model_cluster.html#AModelCluster.cal_perf_metric"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.a_model_cluster.AModelCluster.cal_perf_metric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clustering performance metric on the training and test/validation sets.</p>
 </dd></dl>
-</dd></dl>
-</section>
-<section id="module-domid.models.model_ae">
-<span id="domid-models-model-ae-module"></span><h2 id="module-domid.models.model_ae">domid.models.model_ae module<a class="headerlink" href="#module-domid.models.model_ae" title="Permalink to this heading">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="domid.models.model_ae.ModelAE">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">domid.models.model_ae.</span></span><span class="sig-name descname"><span class="pre">ModelAE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zd_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_ae.html#ModelAE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_ae.ModelAE" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#domid.models.a_model_cluster.AModelCluster" title="domid.models.a_model_cluster.AModelCluster"><code class="xref py py-class docutils literal notranslate"><span class="pre">AModelCluster</span></code></a></p>
 <dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_ae.ModelAE.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zd_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_ae.html#ModelAE.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_ae.ModelAE.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p>
+<dt class="sig sig-object py" id="domid.models.a_model_cluster.AModelCluster.cal_loss">
+<span class="sig-name descname"><span class="pre">cal_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensor_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inj_tensor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">tensor([])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warmup_beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/a_model_cluster.html#AModelCluster.cal_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.a_model_cluster.AModelCluster.cal_loss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the loss for the model.</p>
 </dd></dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_ae.ModelAE.distance_between_clusters">
-<span class="sig-name descname"><span class="pre">distance_between_clusters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cluster_layer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_ae.html#ModelAE.distance_between_clusters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_ae.ModelAE.distance_between_clusters" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_ae.ModelAE.infer_d_v">
-<span class="sig-name descname"><span class="pre">infer_d_v</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_ae.html#ModelAE.infer_d_v"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_ae.ModelAE.infer_d_v" title="Permalink to this definition">¶</a></dt>
-<dd><p>Predict the cluster/domain of the input data.</p>
+<dt class="sig sig-object py" id="domid.models.a_model_cluster.AModelCluster.infer_d_v">
+<span class="sig-name descname"><span class="pre">infer_d_v</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/a_model_cluster.html#AModelCluster.infer_d_v"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.a_model_cluster.AModelCluster.infer_d_v" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predict the cluster/domain of the input data.
+Corresponds to equation (16) in the paper.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>x</strong> (<em>tensor</em>) – Input tensor of a shape [batchsize, 3, horzintal dim, vertical dim].</p>
@@ -698,19 +552,18 @@
 </dl>
 </dd></dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_ae.ModelAE.infer_d_v_2">
-<span class="sig-name descname"><span class="pre">infer_d_v_2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inject_domain</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_ae.html#ModelAE.infer_d_v_2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_ae.ModelAE.infer_d_v_2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Used for tensorboard visualizations only.</p>
+<dt class="sig sig-object py" id="domid.models.a_model_cluster.AModelCluster.extend">
+<span class="sig-name descname"><span class="pre">extend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/a_model_cluster.html#AModelCluster.extend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.a_model_cluster.AModelCluster.extend" title="Permalink to this definition">¶</a></dt>
+<dd><p>extend the loss of the decoratee</p>
 </dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_ae.ModelAE.cal_loss">
-<span class="sig-name descname"><span class="pre">cal_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inject_domain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warmup_beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_ae.html#ModelAE.cal_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_ae.ModelAE.cal_loss" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_ae.ModelAE.pretrain_loss">
-<span class="sig-name descname"><span class="pre">pretrain_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inject_domain</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_ae.html#ModelAE.pretrain_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_ae.ModelAE.pretrain_loss" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 </dd></dl>
+</section>
+<section id="module-domid.models.model_ae">
+<span id="domid-models-model-ae-module"></span><h2 id="module-domid.models.model_ae">domid.models.model_ae module<a class="headerlink" href="#module-domid.models.model_ae" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="domid.models.model_ae.mk_ae">
+<span class="sig-prename descclassname"><span class="pre">domid.models.model_ae.</span></span><span class="sig-name descname"><span class="pre">mk_ae</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_class=&lt;class</span> <span class="pre">'domid.models.a_model_cluster.AModelCluster'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_ae.html#mk_ae"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_ae.mk_ae" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="domid.models.model_ae.test_fun">
 <span class="sig-prename descclassname"><span class="pre">domid.models.model_ae.</span></span><span class="sig-name descname"><span class="pre">test_fun</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zd_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_ae.html#test_fun"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_ae.test_fun" title="Permalink to this definition">¶</a></dt>
@@ -718,170 +571,17 @@
 </section>
 <section id="module-domid.models.model_dec">
 <span id="domid-models-model-dec-module"></span><h2 id="module-domid.models.model_dec">domid.models.model_dec module<a class="headerlink" href="#module-domid.models.model_dec" title="Permalink to this heading">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="domid.models.model_dec.ModelDEC">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">domid.models.model_dec.</span></span><span class="sig-name descname"><span class="pre">ModelDEC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zd_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_dec.html#ModelDEC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_dec.ModelDEC" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#domid.models.a_model_cluster.AModelCluster" title="domid.models.a_model_cluster.AModelCluster"><code class="xref py py-class docutils literal notranslate"><span class="pre">AModelCluster</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_dec.ModelDEC.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zd_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_dec.html#ModelDEC.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_dec.ModelDEC.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>DEC model (Xie et al. 2015 “Unsupervised Deep Embedding for Clustering Analysis”) with
-fully connected encoder and decoder.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>zd_dim</strong> – dimension of the latent space</p></li>
-<li><p><strong>d_dim</strong> – number of clusters for the clustering task</p></li>
-<li><p><strong>device</strong> – device to use, e.g., “cuda” or “cpu”</p></li>
-<li><p><strong>i_c</strong> – number of channels of the input image</p></li>
-<li><p><strong>i_h</strong> – height of the input image</p></li>
-<li><p><strong>i_w</strong> – width of the input image</p></li>
-<li><p><strong>args</strong> – command line arguments</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_dec.ModelDEC.target_distribution">
-<span class="sig-name descname"><span class="pre">target_distribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q_</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_dec.html#ModelDEC.target_distribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_dec.ModelDEC.target_distribution" title="Permalink to this definition">¶</a></dt>
-<dd><p>Corresponds to equation 3 from the paper.
-Calculates the target distribution for the Kullback-Leibler divergence loss.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>q</strong> – A tensor of the predicted cluster probabilities.</p>
-</dd>
-<dt class="field-even">Return tensor<span class="colon">:</span></dt>
-<dd class="field-even"><p>The calculated target distribution</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_dec.ModelDEC.infer_d_v">
-<span class="sig-name descname"><span class="pre">infer_d_v</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_dec.html#ModelDEC.infer_d_v"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_dec.ModelDEC.infer_d_v" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> – input tensor(image)</p>
-</dd>
-<dt class="field-even">Return tensor preds<span class="colon">:</span></dt>
-<dd class="field-even"><p>Predicted cluster assignments of shape  (shape: [batch_size, self.d_dim]).</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_dec.ModelDEC.infer_d_v_2">
-<span class="sig-name descname"><span class="pre">infer_d_v_2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inject_domain</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_dec.html#ModelDEC.infer_d_v_2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_dec.ModelDEC.infer_d_v_2" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="domid.models.model_dec.mk_dec">
+<span class="sig-prename descclassname"><span class="pre">domid.models.model_dec.</span></span><span class="sig-name descname"><span class="pre">mk_dec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_class=&lt;class</span> <span class="pre">'domid.models.a_model_cluster.AModelCluster'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_dec.html#mk_dec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_dec.mk_dec" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_dec.ModelDEC.pretrain_loss">
-<span class="sig-name descname"><span class="pre">pretrain_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inject_domain</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_dec.html#ModelDEC.pretrain_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_dec.ModelDEC.pretrain_loss" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_dec.ModelDEC.cal_loss">
-<span class="sig-name descname"><span class="pre">cal_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inject_tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warmup_beta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_dec.html#ModelDEC.cal_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_dec.ModelDEC.cal_loss" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the KL-divergence loss between the predicted probabilities and the target distribution.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> – input tensor/image</p></li>
-<li><p><strong>inject_tensor</strong> – tensor to inject (not used in DEC, only used in CDVaDE</p></li>
-<li><p><strong>warmup_beta</strong> – warm-up beta value</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return tensor loss (float)<span class="colon">:</span></dt>
-<dd class="field-even"><p>calculated KL-divergence loss value</p>
-</dd>
-</dl>
-</dd></dl>
-</dd></dl>
 </section>
 <section id="module-domid.models.model_m2yd">
 <span id="domid-models-model-m2yd-module"></span><h2 id="module-domid.models.model_m2yd">domid.models.model_m2yd module<a class="headerlink" href="#module-domid.models.model_m2yd" title="Permalink to this heading">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="domid.models.model_m2yd.ModelXY2D">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">domid.models.model_m2yd.</span></span><span class="sig-name descname"><span class="pre">ModelXY2D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list_str_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zd_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim_feat_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list_str_d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_m2yd.html#ModelXY2D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_m2yd.ModelXY2D" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">AModelClassif</span></code></p>
-<p>Let zd to be continuous vector, each component of zd represents the “attention” weight.
-For a cluster, that means the bigger the $zd_k$ value, the more likely the cluster assignment
-to component $k$. Note $zd_k~N(0,1)$.</p>
-<p>Computational Structure:
-generative path: (zd,y) -&gt; x (image)
-generative path: N(0,I) -&gt; zd (prior for zd)
-variational posterior path:
-1. x -&gt; y,
-2. [y, feat(x)] -&gt; z_d</p>
-<p>FIXME: if we change the variational inference order, instead of x-&gt;y, then [y,feat(x)]-&gt;z_d
-if we do first x-&gt;d (style extraction, texture prediction),
-then [feat(x),d]-&gt; y,  will this be better?</p>
-<p>KL divergence between posterior path vs generative(prior) path:
-1. x-&gt;y: auxiliary path (not regularized by generative path, but by supervised learning)
-no KL for y
-2. KL(q(z_d)|p(z_d)),
-q(z_d): [y,feat(x)]-&gt; z_d
-p(z_d): N(0,I)</p>
-<p>Auxilliary path: supervised learning of x-&gt;y</p>
-<p>FIXME: original M2 has prior Gaussian(0, I) for $z_d$, will this hinder learning of $z_d$
-on each component since the prior is draging each component to zero.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_m2yd.ModelXY2D.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list_str_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zd_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim_feat_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list_str_d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_m2yd.html#ModelXY2D.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_m2yd.ModelXY2D.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>y_dim</strong> – classification task class-label dimension</p></li>
-<li><p><strong>zd_dim</strong> – dimension of latent variable $z_d$ dimension</p></li>
-<li><p><strong>aux_y</strong> – </p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_m2yd.ModelXY2D.cal_logit_y">
-<span class="sig-name descname"><span class="pre">cal_logit_y</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensor_x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_m2yd.html#ModelXY2D.cal_logit_y"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_m2yd.ModelXY2D.cal_logit_y" title="Permalink to this definition">¶</a></dt>
-<dd><p>calculate the logit for softmax classification</p>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_m2yd.ModelXY2D.infer_y_vpicn">
-<span class="sig-name descname"><span class="pre">infer_y_vpicn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensor_x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_m2yd.html#ModelXY2D.infer_y_vpicn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_m2yd.ModelXY2D.infer_y_vpicn" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>tensor_x</strong> – input tensor</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p>vec_one_hot - (list) one-hot encoded classification output</p></li>
-<li><p>prob - (list) softmax probabilities per class</p></li>
-<li><p>ind - (int) index of maximal output class score</p></li>
-<li><p>confidence - (float) maximum probability (already included in prob)</p></li>
-<li><p>na_class - (string) class label for the maximum probability class</p></li>
-</ul>
-</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_m2yd.ModelXY2D.infer_d_v">
-<span class="sig-name descname"><span class="pre">infer_d_v</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensor_x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_m2yd.html#ModelXY2D.infer_d_v"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_m2yd.ModelXY2D.infer_d_v" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="domid.models.model_m2yd.mk_m2yd">
+<span class="sig-prename descclassname"><span class="pre">domid.models.model_m2yd.</span></span><span class="sig-name descname"><span class="pre">mk_m2yd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_class=&lt;class</span> <span class="pre">'domainlab.models.a_model_classif.AModelClassif'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_m2yd.html#mk_m2yd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_m2yd.mk_m2yd" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_m2yd.ModelXY2D.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensor_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vec_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vec_d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_m2yd.html#ModelXY2D.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_m2yd.ModelXY2D.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>forward.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> – </p></li>
-<li><p><strong>y</strong> – </p></li>
-<li><p><strong>d</strong> – </p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_m2yd.ModelXY2D.cal_loss">
-<span class="sig-name descname"><span class="pre">cal_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">others</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_m2yd.html#ModelXY2D.cal_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_m2yd.ModelXY2D.cal_loss" title="Permalink to this definition">¶</a></dt>
-<dd><p>calculate the loss</p>
-</dd></dl>
-</dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="domid.models.model_m2yd.test_fun">
 <span class="sig-prename descclassname"><span class="pre">domid.models.model_m2yd.</span></span><span class="sig-name descname"><span class="pre">test_fun</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_m2yd.html#test_fun"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_m2yd.test_fun" title="Permalink to this definition">¶</a></dt>
@@ -889,152 +589,17 @@ on each component since the prior is draging each component to zero.</p>
 </section>
 <section id="module-domid.models.model_sdcn">
 <span id="domid-models-model-sdcn-module"></span><h2 id="module-domid.models.model_sdcn">domid.models.model_sdcn module<a class="headerlink" href="#module-domid.models.model_sdcn" title="Permalink to this heading">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="domid.models.model_sdcn.ModelSDCN">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">domid.models.model_sdcn.</span></span><span class="sig-name descname"><span class="pre">ModelSDCN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zd_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_sdcn.html#ModelSDCN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_sdcn.ModelSDCN" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#domid.models.a_model_cluster.AModelCluster" title="domid.models.a_model_cluster.AModelCluster"><code class="xref py py-class docutils literal notranslate"><span class="pre">AModelCluster</span></code></a></p>
-<p>ModelSDCN is a class that implements the SDCN model.(Bo D et al. 2020)
-The model is composed of a convolutional encoder and decoder, a GNN and a clustering layer.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_sdcn.ModelSDCN.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zd_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_sdcn.html#ModelSDCN.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_sdcn.ModelSDCN.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_sdcn.ModelSDCN.infer_d_v">
-<span class="sig-name descname"><span class="pre">infer_d_v</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_sdcn.html#ModelSDCN.infer_d_v"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_sdcn.ModelSDCN.infer_d_v" title="Permalink to this definition">¶</a></dt>
-<dd><p>Predict the cluster/domain of the input data.
-Corresponds to equation (16) in the paper.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>tensor</em>) – Input tensor of a shape [batchsize, 3, horzintal dim, vertical dim].</p>
-</dd>
-<dt class="field-even">Return tensor preds<span class="colon">:</span></dt>
-<dd class="field-even"><p>One hot encoded tensor of the predicted cluster assignment.</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_sdcn.ModelSDCN.infer_d_v_2">
-<span class="sig-name descname"><span class="pre">infer_d_v_2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_sdcn.html#ModelSDCN.infer_d_v_2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_sdcn.ModelSDCN.infer_d_v_2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Used for tensorboard visualizations only.</p>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_sdcn.ModelSDCN.target_distribution">
-<span class="sig-name descname"><span class="pre">target_distribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_sdcn.html#ModelSDCN.target_distribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_sdcn.ModelSDCN.target_distribution" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the target distribution p, where p_i = (sum_j q_j)^2 / sum_j^2 q_j.
-Corresponds to equation (12) from the paper.</p>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_sdcn.ModelSDCN.cal_loss">
-<span class="sig-name descname"><span class="pre">cal_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warmup_beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_sdcn.html#ModelSDCN.cal_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_sdcn.ModelSDCN.cal_loss" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the loss of the model.
-Concentrate two different objectives, i.e. clustering objective and classification objective, in one loss function.
-Corresponds to equation (15) in the paper.
-:param tensor x: Input tensor of a shape [batchsize, 3, horzintal dim, vertical dim].
-:param float warmup_beta: Warmup coefficient for the KL divergence term.
-:return tensor loss: Loss tensor.</p>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_sdcn.ModelSDCN.cal_loss_for_tensorboard">
-<span class="sig-name descname"><span class="pre">cal_loss_for_tensorboard</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_sdcn.html#ModelSDCN.cal_loss_for_tensorboard"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_sdcn.ModelSDCN.cal_loss_for_tensorboard" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="domid.models.model_sdcn.mk_sdcn">
+<span class="sig-prename descclassname"><span class="pre">domid.models.model_sdcn.</span></span><span class="sig-name descname"><span class="pre">mk_sdcn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_class=&lt;class</span> <span class="pre">'domid.models.a_model_cluster.AModelCluster'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_sdcn.html#mk_sdcn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_sdcn.mk_sdcn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_sdcn.ModelSDCN.pretrain_loss">
-<span class="sig-name descname"><span class="pre">pretrain_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_sdcn.html#ModelSDCN.pretrain_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_sdcn.ModelSDCN.pretrain_loss" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-</dd></dl>
 </section>
 <section id="module-domid.models.model_vade">
 <span id="domid-models-model-vade-module"></span><h2 id="module-domid.models.model_vade">domid.models.model_vade module<a class="headerlink" href="#module-domid.models.model_vade" title="Permalink to this heading">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="domid.models.model_vade.ModelVaDE">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">domid.models.model_vade.</span></span><span class="sig-name descname"><span class="pre">ModelVaDE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zd_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_vade.html#ModelVaDE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_vade.ModelVaDE" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#domid.models.a_model_cluster.AModelCluster" title="domid.models.a_model_cluster.AModelCluster"><code class="xref py py-class docutils literal notranslate"><span class="pre">AModelCluster</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_vade.ModelVaDE.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zd_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i_w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_vade.html#ModelVaDE.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_vade.ModelVaDE.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>VaDE model (Jiang et al. 2017 “Variational Deep Embedding:
-An Unsupervised and Generative Approach to Clustering”) with
-fully connected encoder and decoder.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>zd_dim</strong> – dimension of the latent space</p></li>
-<li><p><strong>d_dim</strong> – number of clusters for the clustering task</p></li>
-<li><p><strong>device</strong> – device to use, e.g., “cuda” or “cpu”</p></li>
-<li><p><strong>i_c</strong> – number of channels of the input image</p></li>
-<li><p><strong>i_h</strong> – height of the input image</p></li>
-<li><p><strong>i_w</strong> – width of the input image</p></li>
-<li><p><strong>args</strong> – command line arguments</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_vade.ModelVaDE.infer_d_v">
-<span class="sig-name descname"><span class="pre">infer_d_v</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_vade.html#ModelVaDE.infer_d_v"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_vade.ModelVaDE.infer_d_v" title="Permalink to this definition">¶</a></dt>
-<dd><p>Predict the cluster/domain of the input data.
-Corresponds to equation (16) in the paper.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>tensor</em>) – Input tensor of a shape [batchsize, 3, horzintal dim, vertical dim].</p>
-</dd>
-<dt class="field-even">Return tensor preds<span class="colon">:</span></dt>
-<dd class="field-even"><p>One hot encoded tensor of the predicted cluster assignment.</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_vade.ModelVaDE.infer_d_v_2">
-<span class="sig-name descname"><span class="pre">infer_d_v_2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inject_domain</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_vade.html#ModelVaDE.infer_d_v_2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_vade.ModelVaDE.infer_d_v_2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Used for tensorboard visualizations only.</p>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_vade.ModelVaDE.cal_loss">
-<span class="sig-name descname"><span class="pre">cal_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inject_domain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warmup_beta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_vade.html#ModelVaDE.cal_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_vade.ModelVaDE.cal_loss" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function that is called in trainer_vade to calculate loss</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x</strong> – tensor with input data</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>ELBO loss</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_vade.ModelVaDE.pretrain_loss">
-<span class="sig-name descname"><span class="pre">pretrain_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inject_domain</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_vade.html#ModelVaDE.pretrain_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_vade.ModelVaDE.pretrain_loss" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="domid.models.model_vade.mk_vade">
+<span class="sig-prename descclassname"><span class="pre">domid.models.model_vade.</span></span><span class="sig-name descname"><span class="pre">mk_vade</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_class=&lt;class</span> <span class="pre">'domid.models.a_model_cluster.AModelCluster'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_vade.html#mk_vade"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_vade.mk_vade" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_vade.ModelVaDE.reconstruction_loss">
-<span class="sig-name descname"><span class="pre">reconstruction_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_pro</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_sigma</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_vade.html#ModelVaDE.reconstruction_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_vade.ModelVaDE.reconstruction_loss" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_vade.ModelVaDE.ELBO_Loss">
-<span class="sig-name descname"><span class="pre">ELBO_Loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inject_domain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warmup_beta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_vade.html#ModelVaDE.ELBO_Loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_vade.ModelVaDE.ELBO_Loss" title="Permalink to this definition">¶</a></dt>
-<dd><p>ELBO loss function
-Using SGVB estimator and the reparametrization trick calculates ELBO loss.
-Calculates loss between encoded input and input using ELBO equation (12) in the papaer.
-:param tensor x: Input tensor of a shape [batchsize, 3, horzintal dim, vertical dim].
-:param int L: Number of Monte Carlo samples in the SGVB</p>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_vade.ModelVaDE.gaussian_pdfs_log">
-<span class="sig-name descname"><span class="pre">gaussian_pdfs_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mus</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_sigma2s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_vade.html#ModelVaDE.gaussian_pdfs_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_vade.ModelVaDE.gaussian_pdfs_log" title="Permalink to this definition">¶</a></dt>
-<dd><p>helper function</p>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="domid.models.model_vade.ModelVaDE.gaussian_pdf_log">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gaussian_pdf_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_sigma2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_vade.html#ModelVaDE.gaussian_pdf_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_vade.ModelVaDE.gaussian_pdf_log" title="Permalink to this definition">¶</a></dt>
-<dd><p>subhelper function just one gausian pdf log calculation, used as a basis for gaussian_pdfs_log function
-:param x: tensor of shape [batch_size, self.zd_dim]
-:param mu: mean for the cluster distribution
-:param log_sigma2: variance parameters of the cluster distribtion
-:return: tensor with the Gaussian log probabilities of the shape of [batch_size, 1]</p>
-</dd></dl>
-</dd></dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="domid.models.model_vade.test_fun">
 <span class="sig-prename descclassname"><span class="pre">domid.models.model_vade.</span></span><span class="sig-name descname"><span class="pre">test_fun</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zd_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/domid/models/model_vade.html#test_fun"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#domid.models.model_vade.test_fun" title="Permalink to this definition">¶</a></dt>

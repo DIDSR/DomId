@@ -27,6 +27,14 @@ domid.arg\_parser module
    :undoc-members:
    :show-inheritance:
 
+domid.mk\_exp module
+--------------------
+
+.. automodule:: domid.mk_exp
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

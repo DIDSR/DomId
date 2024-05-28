@@ -333,11 +333,11 @@ from domid.dsets.make_graph_wsi import GraphConstructorWSI
         self.args = args</div>
 
 <div class="viewcode-block" id="PretrainingSDCN.pretrain_loss"><a class="viewcode-back" href="../../../domid.trainers.html#domid.trainers.pretraining_sdcn.PretrainingSDCN.pretrain_loss">[docs]</a>    def pretrain_loss(self, tensor_x):
-        return self.model.pretrain_loss(tensor_x)</div>
+        return self.model._cal_pretrain_loss(tensor_x)</div>
 
 <div class="viewcode-block" id="PretrainingSDCN.kmeans_cluster_assignement"><a class="viewcode-back" href="../../../domid.trainers.html#domid.trainers.pretraining_sdcn.PretrainingSDCN.kmeans_cluster_assignement">[docs]</a>    def kmeans_cluster_assignement(self):
         num_img = len(self.loader_tr.dataset)
-        if self.args.task == "wsi" and self.args.aname == "sdcn":
+        if self.args.task == "wsi" and self.args.model == "sdcn":
             num_img = int(self.args.bs / 3)
         Z = np.zeros((num_img, self.model.zd_dim))
         counter = 0
@@ -350,13 +350,18 @@ from domid.dsets.make_graph_wsi import GraphConstructorWSI
                     vec_d.to(self.device),
                 )
 
-                if self.args.task == "wsi" and self.args.aname == "sdcn":
+                if self.args.random_batching:
+                    if len(other_vars) &gt; 0:
+                        inject_tensor, image_id = other_vars
+                        if len(inject_tensor) &gt; 0:
+                            inject_tensor = inject_tensor.to(self.device)
+
                     # note that for other tasks the graph is calculated once and the same graph is used for all the epochs; see domid/trainers/trainer_sdcn.py
                     patches_idx = self.model.random_ind[i]  # torch.randint(0, len(vec_y), (int(self.args.bs/3),))
                     tensor_x = tensor_x[patches_idx, :, :, :]
                     image_id = [image_id[patch_idx_num] for patch_idx_num in patches_idx]
-                    adj_mx, spar_mx = GraphConstructorWSI().construct_graph(
-                        tensor_x, image_id, self.model.graph_method, None
+                    adj_mx, spar_mx = GraphConstructorWSI(self.model.graph_method).construct_graph(
+                        tensor_x, image_id, None
                     )
                     self.model.adj = spar_mx
 
