@@ -106,7 +106,7 @@ def mk_ae(parent_class=AModelCluster):
             enc_h1, enc_h2, enc_h3, z = self.encoder(x)
             # _, _, z, *_ = self._inference(x)
 
-            kmeans = KMeans(n_clusters=self.d_dim, n_init=20)
+            kmeans = KMeans(n_clusters=self.d_dim)
 
             kmeans.fit_predict(z.detach().cpu().numpy())
             # x_bar, *_ = self.decoder(z)

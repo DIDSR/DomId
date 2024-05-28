@@ -6,6 +6,7 @@ from domainlab.algos.trainers.a_trainer import AbstractTrainer
 from domid.compos.predict_basic import Prediction
 from domid.compos.tensorboard_fun import tensorboard_write
 from domid.dsets.make_graph import GraphConstructor
+from domid.dsets.make_graph_her2 import GraphConstructorHER2
 from domid.dsets.make_graph_wsi import GraphConstructorWSI
 from domid.trainers.pretraining_sdcn import PretrainingSDCN
 from domid.utils.perf_cluster import PerfCluster
@@ -54,20 +55,30 @@ class TrainerSDCN(AbstractTrainer):
         self.args = aconf
         self.storage = Storing(self.args)
         self.loader_val = task.loader_tr
+
         self.aname = aconf.model
+
         self.graph_method = self.model.graph_method
 
         assert self.graph_method, "Graph calculation methos should be specified"
         print("Graph calculation method is", self.graph_method)
 
+        if "her" in self.args.task:
+            # this calculates graph once and uses it for all the epochs
+            self.adj_mx, self.spar_mx = GraphConstructorHER2(self.graph_method).construct_graph(
+                self.loader_tr, self.storage.experiment_name
+            )  # .to(self.device)
+            self.model.adj = self.spar_mx[0]
+
         # Initializing GNN with a sample graph and calculating all the graphs is needed for all of the batches
-        if self.args.task != "wsi":
+        if "mnist" in self.args.task:
             # this calculates graph once and uses it for all the epochs
             self.adj_mx, self.spar_mx = GraphConstructor(self.graph_method).construct_graph(
                 self.loader_tr, self.storage.experiment_name
             )  # .to(self.device)
             self.model.adj = self.spar_mx[0]
-        else:
+
+        if "wsi" in self.args.task:
             # this initializes to calculate graph on the fly for every epoch
             # for the "wsi" task the graphs are constructed in domid/trainers/pretraining_sdcn.py
             self.graph_constr = GraphConstructorWSI(self.graph_method)
@@ -84,8 +95,13 @@ class TrainerSDCN(AbstractTrainer):
         :return:
         """
         print("Epoch {}.".format(epoch)) if self.pretraining_finished else print("Epoch {}. Pretraining.".format(epoch))
-
-        self.model.train()
+        #         import pdb; pdb.set_trace()
+        #         for name, param in self.model.named_parameters():
+        #             if 'weight' in name:
+        #                 weights = param.data.cpu().numpy()
+        #                 print(weights.shape)
+        #                 pdb.set_trace()
+        #         self.model.train()
         self.epo_loss_tr = 0
 
         pretrain = PretrainingSDCN(
@@ -101,9 +117,9 @@ class TrainerSDCN(AbstractTrainer):
         kl_total = 0
         ce_total = 0
         re_total = 0
-        if self.args.task == "her2":
-            r_score_tr = prediction.epoch_tr_correlation()
-            r_score_te = prediction.epoch_val_correlation()  # validation set is used as a test set
+        # if self.args.task == "her2":
+        #     r_score_tr = prediction.epoch_tr_correlation()
+        #     r_score_te = prediction.epoch_val_correlation()  # validation set is used as a test set
         # ___________Define warm-up for ELBO loss_________
         if self.warmup_beta < 1 and self.pretraining_finished:
             self.warmup_beta = self.warmup_beta + 0.01
@@ -130,6 +146,7 @@ class TrainerSDCN(AbstractTrainer):
 
             else:
                 self.model.adj = self.spar_mx[i]  # .to(self.device)
+
             if i < 3:
                 print("i_" + str(i), vec_y.argmax(dim=1).unique(), vec_d.argmax(dim=1).unique())
 
@@ -210,19 +227,19 @@ class TrainerSDCN(AbstractTrainer):
                 loss_val = pretrain.pretrain_loss(tensor_x_val)
             else:
                 loss_val = self.model.cal_loss(tensor_x_val)
-
-        tensorboard_write(
-            self.writer,
-            self.model,
-            epoch,
-            self.lr,
-            self.warmup_beta,
-            acc_tr_y,
-            loss,
-            self.pretraining_finished,
-            tensor_x,
-            other_info=(kl_total, ce_total, re_total),
-        )
+        if self.writer != None:
+            tensorboard_write(
+                self.writer,
+                self.model,
+                epoch,
+                self.lr,
+                self.warmup_beta,
+                acc_tr_y,
+                loss,
+                self.pretraining_finished,
+                tensor_x,
+                other_info=(kl_total, ce_total, re_total),
+            )
         if self.args.task == "wsi":
             self.model.random_ind = [torch.randint(0, self.args.bs, (int(self.args.bs / 3),)) for i in range(0, 65)]
 

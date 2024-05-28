@@ -71,7 +71,14 @@ class NodeTaskHER2(NodeTaskDictCluster):
             ]
         )
 
-        dset = DsetHER2(ind_global, args.dpath, args.d_dim, args.inject_var, transform=trans)
+        dset = DsetHER2(
+            ind_global,
+            args.dpath,
+            args.d_dim,
+            inject_variable=args.inject_var,
+            metadata_path=args.meta_data_csv,
+            transform=trans,
+        )
         train_set = dset
         val_set = dset
         # split dset into training and validation sets

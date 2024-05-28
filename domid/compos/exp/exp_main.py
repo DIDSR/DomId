@@ -27,7 +27,6 @@ class Exp:
         # self.visitor = AggWriter(self)
         # algo_builder = AlgoBuilderChainNodeGetter(self.args)()  # request
         self.trainer, self.model, observer_default, device = algo_builder.init_business(self)  # request
-
         self.epochs = self.args.epos
         self.epoch_counter = 1
         self.visitor = visitor(self)

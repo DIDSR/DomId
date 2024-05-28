@@ -4,5 +4,7 @@ figures/*
 notebooks/2022-*
 notebooks/2023-*
 notebooks/2024-*
+*/.ipynb_checkpoints/*
+.python-version
 #docs/build/*
 #docs/build/html/*

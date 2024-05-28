@@ -62,7 +62,8 @@ class PerfCorrelationHER2(PerfClassif):
 
         model.eval()
         model_local = model.to(device)
-        df = clc()._load_csv_for_her2("../../HER2/combined_train")  # FIXME
+        # FIXME: hardcoded path
+        df = clc()._load_csv_for_her2("../../HER2/combined_train")
         image_id_labels = []
         domain_predictions = []
         with torch.no_grad():

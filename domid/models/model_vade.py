@@ -13,7 +13,6 @@ from domid.models.a_model_cluster import AModelCluster
 # from tensorboardX import SummaryWriter
 
 
-
 def mk_vade(parent_class=AModelCluster):
     class ModelVaDE(parent_class):
         def __init__(

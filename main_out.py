@@ -4,6 +4,8 @@ import sys
 import torch
 from domainlab.exp.exp_cuda_seed import set_seed  # reproducibility
 
+# adjust and uncomment if needed for your setup:
+# sys.path.insert(0, "/path/to/DomId")
 from domid.arg_parser import parse_cmd_args
 from domid.compos.exp.exp_main import Exp
 

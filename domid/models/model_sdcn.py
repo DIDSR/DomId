@@ -35,7 +35,7 @@ def mk_sdcn(parent_class=AModelCluster):
             dim_inject_y=0,
             pre_tr_weight_path=None,
             feat_extract="vae",
-            graph_method="heat",
+            graph_method=None,
         ):
 
             super(ModelSDCN, self).__init__()
@@ -130,7 +130,7 @@ def mk_sdcn(parent_class=AModelCluster):
                 self.graph_method = "heat"
             if "wsi" in self.task:
                 self.graph_method = "patch_distance"
-            if self.graph_method is not None:
+            if graph_method is not None:
                 self.graph_method = graph_method
 
             if self.task == "wsi":
