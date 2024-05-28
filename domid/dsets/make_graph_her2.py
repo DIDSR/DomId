@@ -19,8 +19,9 @@ class GraphConstructorHER2(GraphConstructor):
         :param topk: number of connections per image
         """
         super().__init__(graph_method, topk)
+        # FIXME: hardcoded path
         self.meta_data_coord = pd.read_csv('../../parsed_HER2.csv')
-        
+
     def get_features_labels(self, dataset):
         """
         This funciton is used to get features and labels from dataset.

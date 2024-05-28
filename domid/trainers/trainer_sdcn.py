@@ -103,8 +103,7 @@ class TrainerSDCN(AbstractTrainer):
 #             if 'weight' in name:
 #                 weights = param.data.cpu().numpy()
 #                 print(weights.shape)
-                
-#                 pdb.set_trace()   
+#                 pdb.set_trace()
 #         self.model.train()
         self.epo_loss_tr = 0
 
