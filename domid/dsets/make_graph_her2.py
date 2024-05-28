@@ -1,10 +1,13 @@
+import os
+import pickle
+
 import numpy as np
 import pandas as pd
 import torch
-from domid.dsets.make_graph import GraphConstructor
-import os
-import pickle
 from sklearn.metrics import pairwise_distances as pair
+
+from domid.dsets.make_graph import GraphConstructor
+
 
 class GraphConstructorHER2(GraphConstructor):
     """
@@ -20,7 +23,7 @@ class GraphConstructorHER2(GraphConstructor):
         """
         super().__init__(graph_method, topk)
         # FIXME: hardcoded path
-        self.meta_data_coord = pd.read_csv('../../parsed_HER2.csv')
+        self.meta_data_coord = pd.read_csv("../../parsed_HER2.csv")
 
     def get_features_labels(self, dataset):
         """
@@ -28,11 +31,11 @@ class GraphConstructorHER2(GraphConstructor):
         :param dataset: Image dataset that can be batched or unbatched
         :return: X: features from the image (flattened images), labels: domain labels, region_labels: region labels if the dataset is WSI images
         """
-        #import pdb;pdb.set_trace()
+        # import pdb;pdb.set_trace()
         num_batches = len(dataset)
         num_img, i_c, i_w, i_h = next(iter(dataset))[0].shape
         X = torch.zeros((num_batches, num_img, i_c * i_w * i_h))
-        labels =[]
+        labels = []
         counter = 0
         for tensor_x, vec_y, vec_d, inj_tensor, img_ids in dataset:
             X[counter, :, :] = torch.reshape(tensor_x, (tensor_x.shape[0], i_c * i_w * i_h))
@@ -55,15 +58,14 @@ class GraphConstructorHER2(GraphConstructor):
             # import pdb;pdb.set_trace()
             dist = -0.5 * pair(features) ** 2
             dist = np.exp(dist)
-            
-#             features[features > 0] = 1
-#             dist = np.dot(features, features.T)
-    
-#             features[features > 0] = 1
-#             features = normalize(features, axis=1, norm="l1")
-#             dist = np.dot(features, features.T)
-                
-       
+
+            #             features[features > 0] = 1
+            #             dist = np.dot(features, features.T)
+
+            #             features[features > 0] = 1
+            #             features = normalize(features, axis=1, norm="l1")
+            #             dist = np.dot(features, features.T)
+
             # for i in range(num_coords):
             #     for j in range(i, num_coords):
             #         distance = np.sqrt(
@@ -71,27 +73,26 @@ class GraphConstructorHER2(GraphConstructor):
             #         )
             #         dist[i, j] = distance
             #         dist[j, i] = distance
-       
+
             for jj, target in enumerate(subject_id):
                 indices = [i for i, x in enumerate(subject_id) if x == target]
                 dist[indices, jj] = -1
                 dist[jj, indices] = -1
-                
-#                 for indx in indices:
-#                     distance_calc= np.sqrt(
-#                             (coordinates[jj][0] - coordinates[indx][0]) ** 2 + (coordinates[jj][1] - coordinates[indx][1]) ** 2
-#                         )
-#                     dist[indx, jj]=-distance_calc
-#                     dist[jj, indx]=-distance_calc
-                
-                
-#                 for index in indices:
-#                     dist[index, jj]=-1
-        
+
+        #                 for indx in indices:
+        #                     distance_calc= np.sqrt(
+        #                             (coordinates[jj][0] - coordinates[indx][0]) ** 2 + (coordinates[jj][1] - coordinates[indx][1]) ** 2
+        #                         )
+        #                     dist[indx, jj]=-distance_calc
+        #                     dist[jj, indx]=-distance_calc
+
+        #                 for index in indices:
+        #                     dist[index, jj]=-1
+
         else:
             dist = super().distance_calc(features)
         # import pdb;pdb.set_trace()
-        print('DISTANCE \n', dist)
+        print("DISTANCE \n", dist)
         return dist
 
     def connection_calc(self, features, region_labels):
@@ -138,40 +139,38 @@ class GraphConstructorHER2(GraphConstructor):
         :return: the adjacency matrix for one batch of data
         """
 
-#         print(features[0])
-#         print(img_ids[:5])
-#         img_id_short = [ii.split("/")[-1] for ii in img_ids]
-#         filtered_df = self.meta_data_coord[self.meta_data_coord['img_id'].isin(img_id_short)]
+        #         print(features[0])
+        #         print(img_ids[:5])
+        #         img_id_short = [ii.split("/")[-1] for ii in img_ids]
+        #         filtered_df = self.meta_data_coord[self.meta_data_coord['img_id'].isin(img_id_short)]
 
-        
-#         xx_values = filtered_df['X']
-#         yy_values = filtered_df['Y']
-        
-#         coordinates = list(zip(xx_values, yy_values))
-# #         coordinates = ["_".join(img_id.split("/")[-1].split("_")[-8:]) for img_id in img_ids]
-#         num_features = features.shape[0]
+        #         xx_values = filtered_df['X']
+        #         yy_values = filtered_df['Y']
 
-#         dist, inds, connection_pairs = self.connection_calc(features, coordinates)
-#         adj_mx = self.mk_adj_mat(num_features, connection_pairs)
-#         sparse_mx = self.sparse_mx_to_torch_sparse_tensor(adj_mx)
-        
-        
+        #         coordinates = list(zip(xx_values, yy_values))
+        # #         coordinates = ["_".join(img_id.split("/")[-1].split("_")[-8:]) for img_id in img_ids]
+        #         num_features = features.shape[0]
+
+        #         dist, inds, connection_pairs = self.connection_calc(features, coordinates)
+        #         adj_mx = self.mk_adj_mat(num_features, connection_pairs)
+        #         sparse_mx = self.sparse_mx_to_torch_sparse_tensor(adj_mx)
+
         ################3333
         sparse_matrices = []
         adjacency_matrices = []
-        features, img_ids = self.get_features_labels(dataset) #labels == img_ids
+        features, img_ids = self.get_features_labels(dataset)  # labels == img_ids
         batch_num = features.shape[0]
         num_features = features.shape[1]
 
         for i in range(0, batch_num):
             # import pdb; pdb.set_trace()
             img_id_short = [ii.split("/")[-1] for ii in img_ids[i]]
-            filtered_df = self.meta_data_coord[self.meta_data_coord['img_id'].isin(img_id_short)]
-            xx_values = filtered_df['X']
-            yy_values = filtered_df['Y']
-            sub_num = filtered_df['subject']
+            filtered_df = self.meta_data_coord[self.meta_data_coord["img_id"].isin(img_id_short)]
+            xx_values = filtered_df["X"]
+            yy_values = filtered_df["Y"]
+            sub_num = filtered_df["subject"]
             coordinates = list(zip(xx_values, yy_values, sub_num))
-            
+
             dist, inds, connection_pairs = self.connection_calc(features[i, :, :], coordinates)
             adj_mat = self.mk_adj_mat(num_features, connection_pairs)
             adjacency_matrices.append(adj_mat)

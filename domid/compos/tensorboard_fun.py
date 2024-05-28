@@ -39,10 +39,10 @@ def tensorboard_write(
             preds, *_, x_pro = model.infer_d_v_2(tensor_x, inject_tensor)
         else:
             preds, *_, x_pro = model.infer_d_v_2(tensor_x)
-        
+
         if len(x_pro.shape) < 3:
             x_pro = torch.reshape(x_pro, (x_pro.shape[0], tensor_x.shape[1], tensor_x.shape[2], tensor_x.shape[3]))
-        
+
         imgs = torch.cat(
             (
                 tensor_x[0:8, :, :, :],

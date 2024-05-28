@@ -142,7 +142,9 @@ def mk_dec(parent_class=AModelCluster):
                 zy = results[2]
 
             x_pro, *_ = self.decoder(zy)
-            preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = (r.cpu().detach() if r is not None else None for r in results)
+            preds, probs, z, z_mu, z_sigma2_log, mu_c, log_sigma2_c, pi, logits = (
+                r.cpu().detach() if r is not None else None for r in results
+            )
             return preds, z_mu, z, log_sigma2_c, probs, x_pro
 
         def _cal_kl_loss(self, x, inject_tensor, warmup_beta=0.1):

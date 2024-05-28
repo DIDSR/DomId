@@ -6,9 +6,8 @@ from domainlab.algos.trainers.a_trainer import AbstractTrainer
 from domid.compos.predict_basic import Prediction
 from domid.compos.tensorboard_fun import tensorboard_write
 from domid.dsets.make_graph import GraphConstructor
-from domid.dsets.make_graph_wsi import GraphConstructorWSI
-
 from domid.dsets.make_graph_her2 import GraphConstructorHER2
+from domid.dsets.make_graph_wsi import GraphConstructorWSI
 from domid.trainers.pretraining_sdcn import PretrainingSDCN
 from domid.utils.perf_cluster import PerfCluster
 from domid.utils.storing import Storing
@@ -56,16 +55,15 @@ class TrainerSDCN(AbstractTrainer):
         self.args = aconf
         self.storage = Storing(self.args)
         self.loader_val = task.loader_tr
-        
+
         self.aname = aconf.model
-        
+
         self.graph_method = self.model.graph_method
-        
 
         assert self.graph_method, "Graph calculation methos should be specified"
         print("Graph calculation method is", self.graph_method)
-        
-        if 'her' in self.args.task:
+
+        if "her" in self.args.task:
             # this calculates graph once and uses it for all the epochs
             self.adj_mx, self.spar_mx = GraphConstructorHER2(self.graph_method).construct_graph(
                 self.loader_tr, self.storage.experiment_name
@@ -73,15 +71,14 @@ class TrainerSDCN(AbstractTrainer):
             self.model.adj = self.spar_mx[0]
 
         # Initializing GNN with a sample graph and calculating all the graphs is needed for all of the batches
-        if 'mnist' in self.args.task:
+        if "mnist" in self.args.task:
             # this calculates graph once and uses it for all the epochs
             self.adj_mx, self.spar_mx = GraphConstructor(self.graph_method).construct_graph(
                 self.loader_tr, self.storage.experiment_name
             )  # .to(self.device)
             self.model.adj = self.spar_mx[0]
-        
-            
-        if 'wsi' in self.args.task:
+
+        if "wsi" in self.args.task:
             # this initializes to calculate graph on the fly for every epoch
             # for the "wsi" task the graphs are constructed in domid/trainers/pretraining_sdcn.py
             self.graph_constr = GraphConstructorWSI(self.graph_method)
@@ -98,13 +95,13 @@ class TrainerSDCN(AbstractTrainer):
         :return:
         """
         print("Epoch {}.".format(epoch)) if self.pretraining_finished else print("Epoch {}. Pretraining.".format(epoch))
-#         import pdb; pdb.set_trace()
-#         for name, param in self.model.named_parameters():
-#             if 'weight' in name:
-#                 weights = param.data.cpu().numpy()
-#                 print(weights.shape)
-#                 pdb.set_trace()
-#         self.model.train()
+        #         import pdb; pdb.set_trace()
+        #         for name, param in self.model.named_parameters():
+        #             if 'weight' in name:
+        #                 weights = param.data.cpu().numpy()
+        #                 print(weights.shape)
+        #                 pdb.set_trace()
+        #         self.model.train()
         self.epo_loss_tr = 0
 
         pretrain = PretrainingSDCN(
@@ -149,7 +146,7 @@ class TrainerSDCN(AbstractTrainer):
 
             else:
                 self.model.adj = self.spar_mx[i]  # .to(self.device)
-            
+
             if i < 3:
                 print("i_" + str(i), vec_y.argmax(dim=1).unique(), vec_d.argmax(dim=1).unique())
 
@@ -230,7 +227,7 @@ class TrainerSDCN(AbstractTrainer):
                 loss_val = pretrain.pretrain_loss(tensor_x_val)
             else:
                 loss_val = self.model.cal_loss(tensor_x_val)
-        if self.writer!=None:
+        if self.writer != None:
             tensorboard_write(
                 self.writer,
                 self.model,

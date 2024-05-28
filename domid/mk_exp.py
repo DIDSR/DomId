@@ -43,7 +43,7 @@ def mk_exp(
         str_arg += " --nocu "
     if shuffling_off:
         str_arg += " --shuffling_off "
-        
+
     str_arg += " --tr_d " + train_domain
     str_arg += " --te_d " + test_domain
 
