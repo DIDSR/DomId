@@ -18,7 +18,7 @@ grpcio = "^1.54.0"
 networkx = "^3.2.1"
 rich = "^13.7.0"
 domainlab = "^0.6.1"
-backpack-for-pytorch = "^1.6.0"
+setuptools = "^69.5.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.2.0"
