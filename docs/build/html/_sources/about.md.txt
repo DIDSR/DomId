@@ -51,14 +51,16 @@ However, original SDCN model faces significant scalability challenges that hinde
 particularly when dealing with whole-slide digital pathology images (WSI), which are typically of gigapixel size or larger.
 This limitation arises from SDCN need for constructing a graph on the entire dataset and the imperative to process all data in a single
 batch during training. To overcome this issue, we propose batching strategy to the SDCN training process and introduce 
-a novel batching approach tailored specifically for WSI data.
+a novel batching approach tailored specifically for WSI data. [6]
 
 # M2YD Model Summary
 
 The M2YD model is implemented as an experimental method, which combines an unsupervised VAE-based clustering neural network with simultaneous training of a neural network for a supervised classification task.
 At the current stage, the method/model is purely experimental (with limited validation), and thus not recommended for practical use, unless you know exactly what you are doing.
 
+# AE+K-means Model
 
+A two-stage approach where K-means clustering (a conventional clustering algorithm) is applied to the embedding space of a trained AE. This primarily serves as a baseline for performance comparisons.
 
 
 # References
@@ -67,11 +69,11 @@ At the current stage, the method/model is purely experimental (with limited vali
 
 [2] Kingma, Welling. "Auto-encoding variational bayes." ICLR 2013. (<https://arxiv.org/abs/1312.6114>) 
 
-[3] Xie, Girshick, Farhadi. "Unsupervised Deep Embedding for Clustering Analysis" (2016) (<http://arxiv.org/abs/1511.06335>)
+[3] Xie, Girshick, Farhadi. "Unsupervised Deep Embedding for Clustering Analysis." ICML 2016. (<http://arxiv.org/abs/1511.06335>)
 
 [4] Sidulova, Sun, Gossmann. "Deep Unsupervised Clustering for Conditional Identification of Subgroups Within a Digital Pathology Image Set." MICCAI, 2023. (<https://link.springer.com/chapter/10.1007/978-3-031-43993-3_64>)
 
 [5] Bo, Deyu, et al. "Structural deep clustering network." Proceedings of the web conference 2020. 2020. (<https://doi.org/10.1145/3366423.3380214>)
 
-[6] Sidulova, Kahaki, Hagemann, Gossmann. "Contextual unsupervised deep clustering in digital pathology." 2024 (in review)
+[6] Sidulova, Kahaki, Hagemann, Gossmann. "Contextual unsupervised deep clustering in digital pathology." CHIL 2024.
 

@@ -63,7 +63,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="domid.dsets package" href="domid.dsets.html" />
-    <link rel="prev" title="Welcome to DomId’s documentation!" href="index.html" />
+    <link rel="prev" title="Introduction" href="readme_link.html" />
   
     <link rel="apple-touch-icon" href="_static/images/apple-icon-152x152.png"/>
   
@@ -211,7 +211,19 @@
   <ul class="md-nav__list">
     <li class="md-nav__item">
     
-      <span class="md-nav__link caption"><span class="caption-text">More information about the models</span></span>
+      <span class="md-nav__link caption"><span class="caption-text">Introduction and Quick Start guide:</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="readme_link.html" class="md-nav__link">Introduction</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">More information about the models:</span></span>
     
     </li>
     <li class="md-nav__item">
@@ -237,6 +249,8 @@
         <li class="md-nav__item"><a href="#sdcn-model-summary" class="md-nav__link">SDCN Model Summary</a>
         </li>
         <li class="md-nav__item"><a href="#m2yd-model-summary" class="md-nav__link">M2YD Model Summary</a>
+        </li>
+        <li class="md-nav__item"><a href="#ae-k-means-model" class="md-nav__link">AE+K-means Model</a>
         </li>
         <li class="md-nav__item"><a href="#references" class="md-nav__link">References</a>
         </li></ul>
@@ -277,6 +291,13 @@
     
     
       <a href="#m2yd-model-summary" class="md-nav__link">M2YD Model Summary</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#ae-k-means-model" class="md-nav__link">AE+K-means Model</a>
       
     
     </li>
@@ -384,6 +405,8 @@
         </li>
         <li class="md-nav__item"><a href="#m2yd-model-summary" class="md-nav__link">M2YD Model Summary</a>
         </li>
+        <li class="md-nav__item"><a href="#ae-k-means-model" class="md-nav__link">AE+K-means Model</a>
+        </li>
         <li class="md-nav__item"><a href="#references" class="md-nav__link">References</a>
         </li></ul>
             </nav>
@@ -444,21 +467,25 @@ data points based on their embeddings.</p>
 particularly when dealing with whole-slide digital pathology images (WSI), which are typically of gigapixel size or larger.
 This limitation arises from SDCN need for constructing a graph on the entire dataset and the imperative to process all data in a single
 batch during training. To overcome this issue, we propose batching strategy to the SDCN training process and introduce
-a novel batching approach tailored specifically for WSI data.</p>
+a novel batching approach tailored specifically for WSI data. [6]</p>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="m2yd-model-summary">
 <h2 id="m2yd-model-summary">M2YD Model Summary<a class="headerlink" href="#m2yd-model-summary" title="Permalink to this heading">¶</a></h2>
 <p>The M2YD model is implemented as an experimental method, which combines an unsupervised VAE-based clustering neural network with simultaneous training of a neural network for a supervised classification task.
 At the current stage, the method/model is purely experimental (with limited validation), and thus not recommended for practical use, unless you know exactly what you are doing.</p>
 </section>
+<section class="tex2jax_ignore mathjax_ignore" id="ae-k-means-model">
+<h2 id="ae-k-means-model">AE+K-means Model<a class="headerlink" href="#ae-k-means-model" title="Permalink to this heading">¶</a></h2>
+<p>A two-stage approach where K-means clustering (a conventional clustering algorithm) is applied to the embedding space of a trained AE. This primarily serves as a baseline for performance comparisons.</p>
+</section>
 <section class="tex2jax_ignore mathjax_ignore" id="references">
 <h2 id="references">References<a class="headerlink" href="#references" title="Permalink to this heading">¶</a></h2>
 <p>[1] Jiang, Zhuxi, et al. “Variational deep embedding: An unsupervised and generative approach to clustering.” IJCAI 2017. (<a class="reference external" href="https://arxiv.org/abs/1611.05148">https://arxiv.org/abs/1611.05148</a>)</p>
 <p>[2] Kingma, Welling. “Auto-encoding variational bayes.” ICLR 2013. (<a class="reference external" href="https://arxiv.org/abs/1312.6114">https://arxiv.org/abs/1312.6114</a>)</p>
-<p>[3] Xie, Girshick, Farhadi. “Unsupervised Deep Embedding for Clustering Analysis” (2016) (<a class="reference external" href="http://arxiv.org/abs/1511.06335">http://arxiv.org/abs/1511.06335</a>)</p>
+<p>[3] Xie, Girshick, Farhadi. “Unsupervised Deep Embedding for Clustering Analysis.” ICML 2016. (<a class="reference external" href="http://arxiv.org/abs/1511.06335">http://arxiv.org/abs/1511.06335</a>)</p>
 <p>[4] Sidulova, Sun, Gossmann. “Deep Unsupervised Clustering for Conditional Identification of Subgroups Within a Digital Pathology Image Set.” MICCAI, 2023. (<a class="reference external" href="https://link.springer.com/chapter/10.1007/978-3-031-43993-3_64">https://link.springer.com/chapter/10.1007/978-3-031-43993-3_64</a>)</p>
 <p>[5] Bo, Deyu, et al. “Structural deep clustering network.” Proceedings of the web conference 2020. 2020. (<a class="reference external" href="https://doi.org/10.1145/3366423.3380214">https://doi.org/10.1145/3366423.3380214</a>)</p>
-<p>[6] Sidulova, Kahaki, Hagemann, Gossmann. “Contextual unsupervised deep clustering in digital pathology.” 2024 (in review)</p>
+<p>[6] Sidulova, Kahaki, Hagemann, Gossmann. “Contextual unsupervised deep clustering in digital pathology.” CHIL 2024.</p>
 </section>
 </section>
 
@@ -472,7 +499,7 @@ At the current stage, the method/model is purely experimental (with limited vali
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="index.html" title="Welcome to DomId’s documentation!"
+            <a href="readme_link.html" title="Introduction"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -481,7 +508,7 @@ At the current stage, the method/model is purely experimental (with limited vali
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> Welcome to DomId’s documentation! </span>
+                      class="md-footer-nav__direction"> Previous </span> Introduction </span>
               </div>
             </a>
           

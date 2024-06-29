@@ -62,6 +62,8 @@
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="About DomId" href="about_link.html" />
+    <link rel="prev" title="Welcome to DomId’s documentation!" href="index.html" />
   
     <link rel="apple-touch-icon" href="_static/images/apple-icon-152x152.png"/>
   
@@ -209,7 +211,85 @@
   <ul class="md-nav__list">
     <li class="md-nav__item">
     
-      <span class="md-nav__link caption"><span class="caption-text">More information about the models</span></span>
+      <span class="md-nav__link caption"><span class="caption-text">Introduction and Quick Start guide:</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    <label class="md-nav__link md-nav__link--active" for="__toc"> Introduction </label>
+    
+      <a href="#" class="md-nav__link md-nav__link--active">Introduction</a>
+      
+        
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">Contents</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#readme-link--page-root" class="md-nav__link">Introduction</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#domain-identification-domid-a-suite-of-deep-unsupervised-clustering-algorithms" class="md-nav__link">Domain Identification (DomId): A suite of deep unsupervised clustering algorithms</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#installation" class="md-nav__link">Installation</a>
+        </li>
+        <li class="md-nav__item"><a href="#usage" class="md-nav__link">Usage</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#vade-model" class="md-nav__link">VaDE model</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#applying-vade-to-mnist" class="md-nav__link">Applying VaDE to MNIST</a>
+        </li>
+        <li class="md-nav__item"><a href="#applying-vade-to-color-mnist" class="md-nav__link">Applying VaDE to Color-MNIST</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#dec-model" class="md-nav__link">DEC model</a>
+        </li>
+        <li class="md-nav__item"><a href="#custom-datasets" class="md-nav__link">Custom datasets</a>
+        </li>
+        <li class="md-nav__item"><a href="#cdvade-model" class="md-nav__link">CDVaDE model</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#training-cvade" class="md-nav__link">Training CVaDE:</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#sdcn-and-modified-sdcn-for-wsi-data" class="md-nav__link">SDCN, and modified SDCN for WSI data</a>
+        </li>
+        <li class="md-nav__item"><a href="#simultaneous-unsupervised-clustering-and-supervised-classification" class="md-nav__link">Simultaneous unsupervised clustering and supervised classification</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#m2yd-model" class="md-nav__link">M2YD model</a>
+        </li></ul>
+            </nav>
+        </li></ul>
+            </nav>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#references" class="md-nav__link">References</a>
+        </li></ul>
+            </nav>
+        </li>
+  </ul>
+</nav>
+      <ul class="md-nav__list"> 
+    <li class="md-nav__item">
+    
+    
+      <a href="#domain-identification-domid-a-suite-of-deep-unsupervised-clustering-algorithms" class="md-nav__link">Domain Identification (DomId): A suite of deep unsupervised clustering algorithms</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#references" class="md-nav__link">References</a>
+      
+    
+    </li></ul>
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">More information about the models:</span></span>
     
     </li>
     <li class="md-nav__item">
@@ -304,7 +384,7 @@
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#readme-link--page-root" class="md-nav__link">Introduction</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#domain-identification-domid" class="md-nav__link">Domain Identification (DomId)</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#domain-identification-domid-a-suite-of-deep-unsupervised-clustering-algorithms" class="md-nav__link">Domain Identification (DomId): A suite of deep unsupervised clustering algorithms</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#installation" class="md-nav__link">Installation</a>
         </li>
@@ -355,10 +435,15 @@
             
   <section id="introduction">
 <h1 id="readme-link--page-root">Introduction<a class="headerlink" href="#readme-link--page-root" title="Permalink to this heading">¶</a></h1>
-<section class="tex2jax_ignore mathjax_ignore" id="domain-identification-domid">
-<h2 id="domain-identification-domid">Domain Identification (DomId)<a class="headerlink" href="#domain-identification-domid" title="Permalink to this heading">¶</a></h2>
+<section class="tex2jax_ignore mathjax_ignore" id="domain-identification-domid-a-suite-of-deep-unsupervised-clustering-algorithms">
+<h2 id="domain-identification-domid-a-suite-of-deep-unsupervised-clustering-algorithms">Domain Identification (DomId): A suite of deep unsupervised clustering algorithms<a class="headerlink" href="#domain-identification-domid-a-suite-of-deep-unsupervised-clustering-algorithms" title="Permalink to this heading">¶</a></h2>
 <p><img alt="GH Actions CI " src="https://github.com/DIDSR/DomId/actions/workflows/ci.yml/badge.svg"/></p>
-<p>Deep unsupervised clustering algorithms for domain identification.</p>
+<p>DomId is a Python package offering a PyTorch-based suite of unsupervised deep clustering algorithms. The primary goal is to identify subgroups that have not been previously annotated within image datasets.</p>
+<p>Some of the implemented models are the Variational Deep Embedding (VaDE) model [Jiang et al., 2017], Conditionally Decoded Variational Deep Embedding (CDVaDE) [Sidulova et al., 2023], Deep Embedding Clustering (DEC) [Xie et al., 2016], Structural Deep Clustering Network (SDCN) [Bo et al., 2020].
+These clustering algorithms include a feature extractor component, which can be either an Autoencoders (AE) or a Variational Autoencoder (VAE). The package provides multiple AE and VAE architectures to choose from and includes instructions for extending the package with custom neural network architectures or clustering algorithms.</p>
+<p>Experiment tutorials in Jupyter notebooks are available for both the MNIST dataset and a digital pathology dataset.</p>
+<p>By adopting a highly modular design, the codebase prioritizes straightforward extensibility, so that new models, datasets or tasks can be added with ease.
+The software design of DomId follows the design principles of <a class="reference external" href="https://github.com/marrlab/DomainLab">DomainLab</a>, which is a modular Python package for training domain invariant neural networks and has been used to develop DomId.</p>
 <section id="installation">
 <h3 id="installation">Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple" start="0">
@@ -379,10 +464,10 @@
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>poetry install
 </pre></div>
 </div>
-<p><em>Note</em>: DomId will be published to PyPI in the near future, and the installation will be as easy as <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">domid</span></code>.</p>
 </section>
 <section id="usage">
 <h3 id="usage">Usage<a class="headerlink" href="#usage" title="Permalink to this heading">¶</a></h3>
+<p>The following examples demonstrate how to use the DomId Python package directly from your command line. You can also leverage its API within your Python scripts or notebooks for greater flexibility. For in-depth tutorials and case studies, please refer to the <a class="reference external" href="https://github.com/DIDSR/DomId/tree/main/notebooks"><code class="docutils literal notranslate"><span class="pre">notebooks</span></code> directory</a>.</p>
 <section id="vade-model">
 <h4 id="vade-model">VaDE model<a class="headerlink" href="#vade-model" title="Permalink to this heading">¶</a></h4>
 <p>The deep unsupervised clustering model VaDE has been proposed in [1].</p>
@@ -534,10 +619,10 @@ Here is a basic example to run the M2YD model on the Color-MNIST dataset:</p>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permalink to this heading">¶</a></h2>
 <p>[1] Jiang, Zhuxi, et al. “Variational deep embedding: An unsupervised and generative approach to clustering.” IJCAI 2017. (<a class="reference external" href="https://arxiv.org/abs/1611.05148">https://arxiv.org/abs/1611.05148</a>)</p>
 <p>[2] Kingma, Welling. “Auto-encoding variational bayes.” ICLR 2013. (<a class="reference external" href="https://arxiv.org/abs/1312.6114">https://arxiv.org/abs/1312.6114</a>)</p>
-<p>[3] Xie, Girshick, Farhadi. “Unsupervised Deep Embedding for Clustering Analysis” (2016) (<a class="reference external" href="http://arxiv.org/abs/1511.06335">http://arxiv.org/abs/1511.06335</a>)</p>
+<p>[3] Xie, Girshick, Farhadi. “Unsupervised Deep Embedding for Clustering Analysis.” ICML 2016. (<a class="reference external" href="http://arxiv.org/abs/1511.06335">http://arxiv.org/abs/1511.06335</a>)</p>
 <p>[4] Sidulova, Sun, Gossmann. “Deep Unsupervised Clustering for Conditional Identification of Subgroups Within a Digital Pathology Image Set.” MICCAI, 2023. (<a class="reference external" href="https://link.springer.com/chapter/10.1007/978-3-031-43993-3_64">https://link.springer.com/chapter/10.1007/978-3-031-43993-3_64</a>)</p>
 <p>[5] Bo, Deyu, et al. “Structural deep clustering network.” Proceedings of the web conference 2020. 2020. (<a class="reference external" href="https://doi.org/10.1145/3366423.3380214">https://doi.org/10.1145/3366423.3380214</a>)</p>
-<p>[6] Sidulova, Kahaki, Hagemann, Gossmann. “Contextual unsupervised deep clustering in digital pathology.” 2024 (in review)</p>
+<p>[6] Sidulova, Kahaki, Hagemann, Gossmann. “Contextual unsupervised deep clustering in digital pathology.” CHIL 2024.</p>
 </section>
 </section>
 
@@ -551,6 +636,30 @@ Here is a basic example to run the M2YD model on the Color-MNIST dataset:</p>
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
+            <a href="index.html" title="Welcome to DomId’s documentation!"
+               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
+               rel="prev">
+              <div class="md-flex__cell md-flex__cell--shrink">
+                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+              </div>
+              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+                <span class="md-flex__ellipsis">
+                  <span
+                      class="md-footer-nav__direction"> Previous </span> Welcome to DomId’s documentation! </span>
+              </div>
+            </a>
+          
+          
+            <a href="about_link.html" title="About DomId"
+               class="md-flex md-footer-nav__link md-footer-nav__link--next"
+               rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
+                class="md-flex__ellipsis"> <span
+                class="md-footer-nav__direction"> Next </span> About DomId </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink"><i
+                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
           
         </a>
         

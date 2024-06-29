@@ -14,28 +14,29 @@ Welcome to DomId's documentation!
 About DomId
 ===============
 
-The goal of this Python package is to provide a PyTorch-based platform for deep unsupervised clustering and domain identification.
+DomId is a Python package offering a PyTorch-based suite of unsupervised deep clustering algorithms. The primary goal is to identify subgroups that have not been previously annotated within image datasets.
 
-Currently implemented models include the Variational Deep Embedding (VaDE) model, Conditionally Decoded Variational Deep Embedding (CDVaDE), Deep Embedding Clustering (DEC). Other deep clustering models will be added in the future.
-For additioonal information see the sections below.
-For basic usage examples see: :doc:`readme_link`.
+Some of the implemented models are the Variational Deep Embedding (VaDE) model [Jiang et al., 2017], Conditionally Decoded Variational Deep Embedding (CDVaDE) [Sidulova et al., 2023], Deep Embedding Clustering (DEC) [Xie et al., 2016], Structural Deep Clustering Network (SDCN) [Bo et al., 2020].
+
+These clustering algorithms include a feature extractor component, which can be either an Autoencoders (AE) or a Variational Autoencoder (VAE). The package provides multiple AE and VAE architectures to choose from and includes instructions for extending the package with custom neural network architectures or clustering algorithms.
+
+Experiment tutorials in Jupyter notebooks are available for both the MNIST dataset and a digital pathology dataset.
+
+By adopting a highly modular design, the codebase prioritizes straightforward extensibility, so that new models, datasets or tasks can be added with ease.
+The software design of DomId follows the design principles of `DomainLab <https://github.com/marrlab/DomainLab>`_, which is a modular Python package for training domain invariant neural networks and has been used to develop DomId.
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Introduction and Quick Start guide:
+
+   readme_link
 
 
 .. toctree::
    :maxdepth: 1
-   :caption: More information about the models
+   :caption: More information about the models:
 
    about_link
-
-
-DomainLab
-==============
-DomainLab is a submodule that has been used to develop DomID, and it aims at learning domain invariant features by utilizing data from multiple domains so the learned feature can generalize to new unseen domains.
-
-.. toctree::
-   :maxdepth: 1
-   :caption: DomainLab
-
 
 
 Loading a Datasets and Defining a Task

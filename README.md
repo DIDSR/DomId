@@ -5,10 +5,9 @@
 DomId is a Python package offering a PyTorch-based suite of unsupervised deep clustering algorithms. The primary goal is to identify subgroups that have not been previously annotated within image datasets.
 
 Some of the implemented models are the Variational Deep Embedding (VaDE) model [Jiang et al., 2017], Conditionally Decoded Variational Deep Embedding (CDVaDE) [Sidulova et al., 2023], Deep Embedding Clustering (DEC) [Xie et al., 2016], Structural Deep Clustering Network (SDCN) [Bo et al., 2020].
-
 These clustering algorithms include a feature extractor component, which can be either an Autoencoders (AE) or a Variational Autoencoder (VAE). The package provides multiple AE and VAE architectures to choose from and includes instructions for extending the package with custom neural network architectures or clustering algorithms.
 
-Ready-to-use experiment tutorials in Jupyter notebooks are available for both the MNIST dataset and a digital pathology dataset.
+Experiment tutorials in Jupyter notebooks are available for both the MNIST dataset and a digital pathology dataset.
 
 By adopting a highly modular design, the codebase prioritizes straightforward extensibility, so that new models, datasets or tasks can be added with ease.
 The software design of DomId follows the design principles of [DomainLab](https://github.com/marrlab/DomainLab), which is a modular Python package for training domain invariant neural networks and has been used to develop DomId.
@@ -29,7 +28,7 @@ poetry install
 
 ## Usage
 
-The following examples demonstrate how to use the DomId Python package directly from your command line. You can also leverage its API within your Python scripts or notebooks for greater flexibility. For in-depth tutorials and case studies, please refer to the `notebooks` directory.
+The following examples demonstrate how to use the DomId Python package directly from your command line. You can also leverage its API within your Python scripts or notebooks for greater flexibility. For in-depth tutorials and case studies, please refer to the [`notebooks` directory](https://github.com/DIDSR/DomId/tree/main/notebooks).
 
 ### VaDE model
 

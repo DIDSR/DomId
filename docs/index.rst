@@ -23,7 +23,7 @@ These clustering algorithms include a feature extractor component, which can be 
 Experiment tutorials in Jupyter notebooks are available for both the MNIST dataset and a digital pathology dataset.
 
 By adopting a highly modular design, the codebase prioritizes straightforward extensibility, so that new models, datasets or tasks can be added with ease.
-The software design of DomId follows the design principles of [DomainLab](https://github.com/marrlab/DomainLab), which is a modular Python package for training domain invariant neural networks and has been used to develop DomId.
+The software design of DomId follows the design principles of `DomainLab <https://github.com/marrlab/DomainLab>`_, which is a modular Python package for training domain invariant neural networks and has been used to develop DomId.
 
 .. toctree::
    :maxdepth: 1
