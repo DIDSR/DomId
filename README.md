@@ -1,8 +1,17 @@
-# Domain Identification (DomId)
+# Domain Identification (DomId): A suite of deep unsupervised clustering algorithms
 
 ![GH Actions CI ](https://github.com/DIDSR/DomId/actions/workflows/ci.yml/badge.svg)
 
-Deep unsupervised clustering algorithms for domain identification.
+DomId is a Python package offering a PyTorch-based suite of unsupervised deep clustering algorithms. The primary goal is to identify subgroups that have not been previously annotated within image datasets.
+
+Some of the implemented models are the Variational Deep Embedding (VaDE) model [Jiang et al., 2017], Conditionally Decoded Variational Deep Embedding (CDVaDE) [Sidulova et al., 2023], Deep Embedding Clustering (DEC) [Xie et al., 2016], Structural Deep Clustering Network (SDCN) [Bo et al., 2020].
+
+These clustering algorithms include a feature extractor component, which can be either an Autoencoders (AE) or a Variational Autoencoder (VAE). The package provides multiple AE and VAE architectures to choose from and includes instructions for extending the package with custom neural network architectures or clustering algorithms.
+
+Ready-to-use experiment tutorials in Jupyter notebooks are available for both the MNIST dataset and a digital pathology dataset.
+
+By adopting a highly modular design, the codebase prioritizes straightforward extensibility, so that new models, datasets or tasks can be added with ease.
+The software design of DomId follows the design principles of [DomainLab](https://github.com/marrlab/DomainLab), which is a modular Python package for training domain invariant neural networks and has been used to develop DomId.
 
 ## Installation
 
@@ -18,9 +27,9 @@ git clone https://github.com/agisga/DomId.git
 poetry install
 ```
 
-*Note*: DomId will be published to PyPI in the near future, and the installation will be as easy as `pip install domid`.
-
 ## Usage
+
+The following examples demonstrate how to use the DomId Python package directly from your command line. You can also leverage its API within your Python scripts or notebooks for greater flexibility. For in-depth tutorials and case studies, please refer to the `notebooks` directory.
 
 ### VaDE model
 
@@ -187,10 +196,10 @@ poetry run python main_out.py --te_d 0 1 2 --tr_d 3 4 5 6 7 8 9 --task=mnistcolo
 
 [2] Kingma, Welling. "Auto-encoding variational bayes." ICLR 2013. (<https://arxiv.org/abs/1312.6114>) 
 
-[3] Xie, Girshick, Farhadi. "Unsupervised Deep Embedding for Clustering Analysis" (2016) (<http://arxiv.org/abs/1511.06335>)
+[3] Xie, Girshick, Farhadi. "Unsupervised Deep Embedding for Clustering Analysis." ICML 2016. (<http://arxiv.org/abs/1511.06335>)
 
 [4] Sidulova, Sun, Gossmann. "Deep Unsupervised Clustering for Conditional Identification of Subgroups Within a Digital Pathology Image Set." MICCAI, 2023. (<https://link.springer.com/chapter/10.1007/978-3-031-43993-3_64>)
 
 [5] Bo, Deyu, et al. "Structural deep clustering network." Proceedings of the web conference 2020. 2020. (<https://doi.org/10.1145/3366423.3380214>)
 
-[6] Sidulova, Kahaki, Hagemann, Gossmann. "Contextual unsupervised deep clustering in digital pathology." 2024 (in review)
+[6] Sidulova, Kahaki, Hagemann, Gossmann. "Contextual unsupervised deep clustering in digital pathology." CHIL 2024.
